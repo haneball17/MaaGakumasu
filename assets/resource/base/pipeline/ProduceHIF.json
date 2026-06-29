@@ -1,0 +1,338 @@
+{
+  "ProduceEntryHIF": {
+    "recognition": {
+      "type": "DirectHit",
+      "param": {}
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "next": [
+      "ProduceExit",
+      "ProduceHIFFinishedFlag",
+      "ProduceHIFGenerationFlag",
+      "ProduceHIFFailedFlag",
+      "[JumpBack]ProduceChooseHIFPItemFlag",
+      "[JumpBack]ProduceHIFSelectionModeFlag",
+      "[JumpBack]ProduceHIFRound2Flag",
+      "[JumpBack]ProduceHIFRound1Flag",
+      "[JumpBack]ProduceHIFFinalModeFlag",
+      "[JumpBack]ProduceCardsFlag",
+      "[JumpBack]ProduceRecognitionWorkOptions",
+      "[JumpBack]ProduceChooseGetFlag",
+      "[JumpBack]ProduceChooseStrengthenFlag",
+      "[JumpBack]ProduceChooseDeleteFlag",
+      "[JumpBack]ProduceKeepDrinkFlag",
+      "[JumpBack]ProduceShoppingFlag",
+      "[JumpBack]ProduceHIFButton",
+      "[JumpBack]ProduceSkip",
+      "ProduceHIFUnknownStop"
+    ]
+  },
+  "ProduceHIFSelectionModeFlag": {
+    "recognition": {
+      "type": "OCR",
+      "param": {
+        "expected": [
+          ".*????.*",
+          ".*??.*??.*"
+        ],
+        "roi": [
+          40,
+          40,
+          640,
+          220
+        ]
+      }
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "next": [
+      "ProduceChooseHIFEventFlag",
+      "ProduceHIFButton",
+      "ProduceHIFUnknownStop"
+    ],
+    "focus": {
+      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=????[/color]"
+    }
+  },
+  "ProduceHIFFinalModeFlag": {
+    "recognition": {
+      "type": "OCR",
+      "param": {
+        "expected": [
+          ".*??.*",
+          ".*??.*"
+        ],
+        "roi": [
+          40,
+          40,
+          640,
+          220
+        ]
+      }
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "next": [
+      "ProduceCardsFlag",
+      "ProduceHIFButton",
+      "ProduceHIFUnknownStop"
+    ],
+    "focus": {
+      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=??[/color]"
+    }
+  },
+  "ProduceHIFRound1Flag": {
+    "recognition": {
+      "type": "OCR",
+      "param": {
+        "expected": [
+          ".*Round\\s*1.*",
+          ".*ROUND\\s*1.*",
+          ".*1st.*Round.*"
+        ],
+        "roi": [
+          40,
+          40,
+          640,
+          220
+        ]
+      }
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "next": [
+      "ProduceCardsFlag",
+      "ProduceHIFButton",
+      "ProduceHIFUnknownStop"
+    ],
+    "focus": {
+      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=Round1[/color]"
+    }
+  },
+  "ProduceHIFRound2Flag": {
+    "recognition": {
+      "type": "OCR",
+      "param": {
+        "expected": [
+          ".*Round\\s*2.*",
+          ".*ROUND\\s*2.*",
+          ".*2nd.*Round.*"
+        ],
+        "roi": [
+          40,
+          40,
+          640,
+          220
+        ]
+      }
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "next": [
+      "ProduceCardsFlag",
+      "ProduceHIFButton",
+      "ProduceHIFUnknownStop"
+    ],
+    "focus": {
+      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=Round2[/color]"
+    }
+  },
+  "ProduceHIFGenerationFlag": {
+    "recognition": {
+      "type": "OCR",
+      "param": {
+        "expected": [
+          "??"
+        ],
+        "roi": [
+          260,
+          900,
+          200,
+          120
+        ]
+      }
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "next": [
+      "ProduceGeneration"
+    ],
+    "focus": {
+      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=????[/color]"
+    }
+  },
+  "ProduceHIFFinishedFlag": {
+    "recognition": {
+      "type": "TemplateMatch",
+      "param": {
+        "template": [
+          "produce/finished.png"
+        ],
+        "threshold": 0.9
+      }
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "next": [
+      "ProduceFinished"
+    ],
+    "focus": {
+      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=?????[/color]"
+    }
+  },
+  "ProduceHIFUnknownStop": {
+    "recognition": {
+      "type": "DirectHit",
+      "param": {}
+    },
+    "action": {
+      "type": "StopTask",
+      "param": {}
+    },
+    "focus": {
+      "Node.Action.Succeeded": {
+        "content": "? HIF ???????????????????",
+        "display": [
+          "log",
+          "notification"
+        ]
+      }
+    }
+  },
+  "ProduceChooseHIFEventFlag": {
+    "recognition": {
+      "type": "TemplateMatch",
+      "param": {
+        "template": [
+          "produce/Da.png",
+          "produce/Vi.png",
+          "produce/Vo.png",
+          "produce/chat.png",
+          "produce/lesson.png",
+          "produce/event.png",
+          "produce/go_out.png"
+        ],
+        "roi": [
+          0,
+          800,
+          720,
+          320
+        ]
+      }
+    },
+    "action": {
+      "type": "Custom",
+      "param": {
+        "custom_action": "ProduceChooseHIFEventAuto"
+      }
+    }
+  },
+  "ProduceChooseHIFPItemFlag": {
+    "recognition": {
+      "type": "OCR",
+      "param": {
+        "expected": [
+          ".*カスタムPアイテム.*",
+          ".*Pアイテム.*"
+        ],
+        "roi": [
+          40,
+          40,
+          640,
+          220
+        ]
+      }
+    },
+    "action": {
+      "type": "Custom",
+      "param": {
+        "custom_action": "ProduceChooseHIFPItemAuto"
+      }
+    },
+    "post_delay": 300
+  },
+  "ProduceHIFButton": {
+    "recognition": {
+      "type": "TemplateMatch",
+      "param": {
+        "template": [
+          "next.png",
+          "produce/retry.png",
+          "produce/decide.png",
+          "produce/skip_confirm.png",
+          "produce/drink_no.png",
+          "produce/close.png",
+          "produce/yes.png",
+          "produce/ok.png",
+          "produce/start.png",
+          "cancel.png"
+        ],
+        "order_by": "Score",
+        "roi": [
+          0,
+          780,
+          720,
+          500
+        ]
+      }
+    },
+    "action": {
+      "type": "Click",
+      "param": {
+        "target_offset": [
+          0,
+          0,
+          0,
+          -10
+        ]
+      }
+    },
+    "pre_delay": 100,
+    "post_delay": 150
+  },
+  "ProduceHIFFailedFlag": {
+    "recognition": {
+      "type": "TemplateMatch",
+      "param": {
+        "template": [
+          "produce/exam_failed.png"
+        ],
+        "roi": [
+          0,
+          700,
+          720,
+          250
+        ],
+        "threshold": 0.9
+      }
+    },
+    "action": {
+      "type": "StopTask",
+      "param": {}
+    },
+    "focus": {
+      "Node.Recognition.Succeeded": {
+        "content": "❌ HIF 考试失败",
+        "display": [
+          "log",
+          "notification"
+        ]
+      }
+    }
+  }
+}
