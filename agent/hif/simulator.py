@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import json
 from copy import deepcopy
-from dataclasses import asdict, dataclass, field
+from typing import Any, Literal, Iterable
 from pathlib import Path
-from typing import Any, Iterable, Literal
-
+from dataclasses import field, asdict, dataclass
 
 RoutePhase = Literal["selection", "selection_exam", "selection_item", "finals_prepare", "round1", "interval", "round2"]
 RewardKind = Literal["skill_acquire", "skill_upgrade", "skill_delete", "p_item"]
