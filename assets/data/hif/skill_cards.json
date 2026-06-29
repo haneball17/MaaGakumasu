@@ -1,0 +1,55 @@
+[
+  {
+    "name": "お姉さんの感覚",
+    "base_name": "お姉さんの感覚",
+    "wiki_id": "Rinami_SSR_0009",
+    "source": "seesaawiki",
+    "found": true,
+    "is_lesson_once": true,
+    "stamina_cost": 6,
+    "focus_cost": null,
+    "effect_summary": "好調6ターン + 最大体力10%回復 + 再演(手札有自然体の魅力则自身再使用，4回まで・ターン内1回)",
+    "tiers": {
+      "無印": {"stamina_cost": 6, "effect": "好調4ターン + 再演4回"},
+      "+": {"stamina_cost": 6, "effect": "好調6ターン + 再演4回"},
+      "++": {"stamina_cost": 5, "effect": "好調6ターン + 再演4回"},
+      "+++": {"stamina_cost": 4, "effect": "好調6ターン + 再演4回"}
+    },
+    "raw_cells": ["消費", "効果", "備考", "無印", "体力消費6", "好調が4ターン以上の場合、使用可好調4ターン最大体力の10%分体力回復再演：スキルカード使用後、手札にある自然体の魅力が1枚以上の場合、自身を再使用（4回まで・ターン内1回まで）", "重複不可レッスン中1回「【ガラクタロード】姫崎莉波」固有"]
+  },
+  {
+    "name": "自然体の魅力",
+    "base_name": "自然体の魅力",
+    "wiki_id": null,
+    "source": "manual_garakuta_rinami",
+    "found": true,
+    "is_lesson_once": true,
+    "stamina_cost": null,
+    "focus_cost": 5,
+    "effect_summary": "集中消費5 + 好調12ターン以上で使用可 + 1000%倍率火力(技能卡使用数毎+14) + 最大体力20%回復",
+    "tiers": {
+      "無印": {"focus_cost": 5, "effect": "好調12以上 + 1000%火力"},
+      "+": {"focus_cost": 5, "effect": "好調12以上 + 1000%火力(强化)"},
+      "++": {"focus_cost": 5, "effect": "好調12以上 + 1000%火力(再强化)"},
+      "+++": {"focus_cost": 4, "effect": "好調12以上 + 1000%火力(最终)"}
+    },
+    "raw_cells": [],
+    "note": "wiki_id 待补（ガラクタロード固有，消耗值来自 garakuta_rinami.py 硬编码）"
+  },
+  {
+    "name": "国民的アイドル",
+    "base_name": "国民的アイドル",
+    "wiki_id": null,
+    "source": "manual_garakuta_rinami",
+    "found": true,
+    "is_lesson_once": false,
+    "stamina_cost": null,
+    "focus_cost": null,
+    "effect_summary": "好調を1ターン消費 + 元気+13 + 技能效果再発1回 + 使用数+1（ガラクタロード收尾铺垫用）",
+    "tiers": {
+      "++": {"effect": "好調消費1 + 元気+13 + 再発1回 + 使用数+1"}
+    },
+    "raw_cells": [],
+    "note": "wiki_id 待补（BWIKI 有数据，seesaawiki 未命中，消耗待核实）"
+  }
+]
