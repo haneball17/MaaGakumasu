@@ -1,0 +1,1518 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-05-18T14:49:42+00:00",
+  "idol_cards": [
+    {
+      "idol_card_id": "c8d410a7a66fd7e6",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(Fighting My Way)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "067c06ab43b050b9",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(Boom Boom Pow)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "32f7c455bc6af3c3",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(冠菊)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "a8f9be8eea099237",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(古今東西ちょちょいのちょい)",
+      "recommended_effect": "感性·集中",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "93c84ab4f4c7ebc6",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(Campus mode!!)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "e46ca02c9f0570bc",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(桜フォトグラフ)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "70fab9c567d13d93",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(雨上がりのアイリス)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "2a4ffa2732701a5d",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(がむしゃらに行こう！)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "a344017d1bdeea11",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(Wildest Flower)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "feb4044ac5231ddc",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(Luna say maybe)",
+      "recommended_effect": "感性·集中",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "f21c676dfb86d3b4",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(アイヴイ)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "b4eb9d0881346cbf",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(仮装狂騒曲)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "828383bc0093d180",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(Campus mode!!)",
+      "recommended_effect": "感性·集中",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "eeb4d659667df4d5",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(雪解けに)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "ad2985dcb984817c",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(雨上がりのアイリス)",
+      "recommended_effect": "感性·好调",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "92df9cca22d0d541",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(がむしゃらに行こう！)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "5e81b16b53823808",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(一体いつから)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "e76321dd8ddf565f",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(ガラクタロード)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "64514c203712e237",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(世界一可愛い私)",
+      "recommended_effect": "理性·好印象",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "5e6ec5e77dfa081e",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(Yellow Big Bang！)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "a56d5d293fe882c8",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(冠菊)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "153455f48b00635a",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(White Night! White Wish!)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "2bf31048a6ac7ab9",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(Campus mode!!)",
+      "recommended_effect": "理性·好印象",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "4187c1838a4974ab",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(雨上がりのアイリス)",
+      "recommended_effect": "非凡·强气",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "520af463cf4cdd89",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(自己肯定感爆上げ↑↑しゅきしゅきソング)",
+      "recommended_effect": "感性·集中",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "88babb7cfddf37c0",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(がむしゃらに行こう！)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "47914b9627c10f00",
+      "idol_name_jp": "雨夜燕",
+      "idol_name_zh": "雨夜燕",
+      "card_name_jp": "雨夜燕(理論武装して)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "6f3999507d004da0",
+      "idol_name_jp": "雨夜燕",
+      "idol_name_zh": "雨夜燕",
+      "card_name_jp": "雨夜燕(Campus mode!!)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "0fffb41d4f711ed7",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(Fluorite)",
+      "recommended_effect": "感性·好调",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "cbb9974f20ecc6ad",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(キミとセミブルー)",
+      "recommended_effect": "感性·集中",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "9804828ae240fa54",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(Feel Jewel Dream)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "6ea81394aebc205a",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(Campus mode!!)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "2e2d97fc3f7805f9",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(雪解けに)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "8bddce8f7a1eec7a",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(ミラクルナナウ(ﾟ∀ﾟ)！)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "54fe00b4228635cf",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(見て)",
+      "recommended_effect": "感性·集中",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "28e4649b01ef3803",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(白線)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "4464d0b2a306cca8",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(冠菊)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "8cbc5ee6da88b919",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(White Night! White Wish!)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "a7baaf05a8d76645",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(Campus mode!!)",
+      "recommended_effect": "感性·集中",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "9115fe07b24e332c",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(極光)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "30a52aa161716618",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(桜フォトグラフ)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "305789a0e2a90a95",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(Howling over the World)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "f01b30a23794caf6",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(Atmosphere)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "a7ab6fdfb04098a9",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(ときめきエモーション)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "20914ebf5b1d1f06",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(Wonder Scale)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "84ef173b51f7b07a",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(日々、発見的ステップ！)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "a11ff17286d76991",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(ようこそ初星温泉)",
+      "recommended_effect": "感性·集中",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "0fdb61bb32da7341",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(仮装狂騒曲)",
+      "recommended_effect": "感性·集中",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "09c36e47e269bf9d",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(Campus mode!!)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "c0f0863ca59916cb",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(雪解けに)",
+      "recommended_effect": "理性·好印象",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "ca17d5802f87ecd9",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(Howling over the World)",
+      "recommended_effect": "非凡·强气",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "dc40a377e0fda188",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(空と約束)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "daccafd205692a83",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(みちなるひろがる)",
+      "recommended_effect": "感性·集中",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "65c9e900eb8b1602",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(Tame-Lie-One-Step)",
+      "recommended_effect": "感性·集中",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "949d3b2a76809faf",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(キミとセミブルー)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "1b1bc9c5ca1ccd0b",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(カクシタワタシ)",
+      "recommended_effect": "非凡·全力",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "6f5ecaee744fd3e5",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(Campus mode!!)",
+      "recommended_effect": "理性·好印象",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "3044e2cffc1f0048",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(桜フォトグラフ)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "4d4add59662cbb0e",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(Love & Joy)",
+      "recommended_effect": "感性·集中",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "d43eb60aac56b0d3",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(ミラクルナナウ(ﾟ∀ﾟ)！)",
+      "recommended_effect": "理性·好印象",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "4343bb6f5c29c79c",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(ときめきエモーション)",
+      "recommended_effect": "非凡·强气",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "903610b825b905e7",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(光景)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "b392cbe187caff9a",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(コントラスト)",
+      "recommended_effect": "感性·集中",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "cfa7558dcf21f306",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(仮装狂騒曲)",
+      "recommended_effect": "感性·好调",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "bd1f782faee26c8c",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(Campus mode!!)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "ee0380aa46a3945d",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(ハッピーミルフィーユ)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "98efa96a3662b143",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(サンフェーデッド)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "1cd9637550142dd9",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(ミラクルナナウ(ﾟ∀ﾟ)！)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "f5e340e552af64d6",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(みちなるひろがる)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "c51456d6a453bc46",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(小さな野望)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "09bbae90305f949a",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(Campus mode!!)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "31a74ff3c77eb5b6",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(ハッピーミルフィーユ)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "f17df1c6e959f97f",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(Our Chant)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "503ef1189051c7f2",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(Star-mine)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "bfd41b334042eb5b",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(赤裸々)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "f7301be0f42ee285",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(ENDLESS DANCE)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "8d4ee944f075a652",
+      "idol_name_jp": "秦谷美鈴",
+      "idol_name_zh": "秦谷美铃",
+      "card_name_jp": "秦谷美鈴(ツキノカメ)",
+      "recommended_effect": "非凡·温存",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "c9df49b74959a5a5",
+      "idol_name_jp": "秦谷美鈴",
+      "idol_name_zh": "秦谷美铃",
+      "card_name_jp": "秦谷美鈴(Campus mode!!)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "f5da14d4fc9bed41",
+      "idol_name_jp": "秦谷美鈴",
+      "idol_name_zh": "秦谷美铃",
+      "card_name_jp": "秦谷美鈴(Star-mine)",
+      "recommended_effect": "感性·好调",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "37358b668c86cf41",
+      "idol_name_jp": "秦谷美鈴",
+      "idol_name_zh": "秦谷美铃",
+      "card_name_jp": "秦谷美鈴(Superlative)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "f97a7955bef7f37c",
+      "idol_name_jp": "秦谷美鈴",
+      "idol_name_zh": "秦谷美铃",
+      "card_name_jp": "秦谷美鈴(ENDLESS DANCE)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "c20317f631ffbb93",
+      "idol_name_jp": "秦谷美鈴",
+      "idol_name_zh": "秦谷美铃",
+      "card_name_jp": "秦谷美鈴(VEIL)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "e1371d8124f4cf10",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(The Rolling Riceball)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "b975419bf8187851",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(White Night! White Wish!)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "c207c7544c7c671c",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(Campus mode!!)",
+      "recommended_effect": "非凡·全力",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "44d2d7b1bae1204f",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(Star-mine)",
+      "recommended_effect": "理性·好印象",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "21a34df9d7a99a38",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(グースーピー)",
+      "recommended_effect": "非凡·强气",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "ff78f678b78ba0e8",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(ENDLESS DANCE)",
+      "recommended_effect": "感性·集中",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "a46655b64db7976d",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(真っ白いページと水彩の主人公)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "7602023302df7e39",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(clumsy trick)",
+      "recommended_effect": "感性·集中",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "5a1aef36230665da",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(キミとセミブルー)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "bdb9a232b61aaa2e",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(ようこそ初星温泉)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "eae14925e4e40096",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(L.U.V)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "ee0b7aa381115362",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(Campus mode!!)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "0bc84745c98b2570",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(ハッピーミルフィーユ)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "c396d36b9240ea8a",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(Howling over the World)",
+      "recommended_effect": "感性·集中",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "9f23d7974c442f77",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(36℃ U･B･U)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "e96809d5f7677ddb",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(ガラクタロード)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "2fa0dcfd5eddfe93",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(わたしが一番！)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "78c24c32df4a1b68",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(一匹狼)",
+      "recommended_effect": "感性·集中",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "53b79cd7b0f9b2d4",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(カワイイ♡はじめました)",
+      "recommended_effect": "理性·好印象",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "2e8b0acf4e2e9259",
+      "idol_name_jp": "雨夜燕",
+      "idol_name_zh": "雨夜燕",
+      "card_name_jp": "雨夜燕(初志貫徹)",
+      "recommended_effect": "理性·好印象",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "af679922e9da35af",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(はじまりはカッコよく)",
+      "recommended_effect": "感性·好调",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "0e34c99d5fc3044b",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(一つ踏み出した先に)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "17eeef5dba71756b",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(胸を張って一歩ずつ)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "b31e2457c286e54b",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(夢へのリスタート)",
+      "recommended_effect": "感性·集中",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "3b96169d82ae12fb",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(一番向いてないこと)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "7d70b10d9ed4a66d",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(一番星)",
+      "recommended_effect": "非凡·全力",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "0a6037978c6ede41",
+      "idol_name_jp": "秦谷美鈴",
+      "idol_name_zh": "秦谷美铃",
+      "card_name_jp": "秦谷美鈴(ゆっくり、一歩ずつ)",
+      "recommended_effect": "非凡·温存",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "74871aa9e7c51fe0",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(アイドル、はじめっ！)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "eeb9b7c7417c0e47",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(『私らしさ』のはじまり)",
+      "recommended_effect": "感性·集中",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "5528eef35ceb2e6e",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(学園生活)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "0b6ed631ee7eba60",
+      "idol_name_jp": "花海咲季",
+      "idol_name_zh": "花海咲季",
+      "card_name_jp": "花海咲季(初声)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "4f4604f8ef986234",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(学園生活)",
+      "recommended_effect": "感性·集中",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "ae736d9f1978602e",
+      "idol_name_jp": "月村手毬",
+      "idol_name_zh": "月村手毬",
+      "card_name_jp": "月村手毬(初声)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "abb8d8826e0c26ca",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(学園生活)",
+      "recommended_effect": "理性·好印象",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "44ceecca7070e051",
+      "idol_name_jp": "藤田ことね",
+      "idol_name_zh": "藤田琴音",
+      "card_name_jp": "藤田ことね(初声)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "b9b7147cb0a5c3f1",
+      "idol_name_jp": "雨夜燕",
+      "idol_name_zh": "雨夜燕",
+      "card_name_jp": "雨夜燕(学園生活)",
+      "recommended_effect": "非凡·强气",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "188165e786b1dd4c",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(学園生活)",
+      "recommended_effect": "感性·好调",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "90da23706b759a59",
+      "idol_name_jp": "有村麻央",
+      "idol_name_zh": "有村麻央",
+      "card_name_jp": "有村麻央(初恋)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "9950a5282a4fcce9",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(学園生活)",
+      "recommended_effect": "理性·好印象",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "b302ca9d322cb247",
+      "idol_name_jp": "葛城リーリヤ",
+      "idol_name_zh": "葛城莉莉娅",
+      "card_name_jp": "葛城リーリヤ(初心)",
+      "recommended_effect": "感性·好调",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "b7834845e478ed25",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(学園生活)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "6f62963c1b5d0eb5",
+      "idol_name_jp": "倉本千奈",
+      "idol_name_zh": "仓本千奈",
+      "card_name_jp": "倉本千奈(初心)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "2166e5a461aa4239",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(学園生活)",
+      "recommended_effect": "感性·集中",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "9639d132b986dba2",
+      "idol_name_jp": "紫雲清夏",
+      "idol_name_zh": "紫云清夏",
+      "card_name_jp": "紫雲清夏(初恋)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "b9085fcb38dbcec5",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(学園生活)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "8b8f988b8f39d16c",
+      "idol_name_jp": "篠澤広",
+      "idol_name_zh": "筱泽广",
+      "card_name_jp": "篠澤広(初恋)",
+      "recommended_effect": "感性·集中",
+      "first": "Vo",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "a707dfecebe38b09",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(学園生活)",
+      "recommended_effect": "非凡·强气",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "c7c6ef92662fd69f",
+      "idol_name_jp": "十王星南",
+      "idol_name_zh": "十王星南",
+      "card_name_jp": "十王星南(初陣)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vi",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "11068d72c1e116e9",
+      "idol_name_jp": "秦谷美鈴",
+      "idol_name_zh": "秦谷美铃",
+      "card_name_jp": "秦谷美鈴(学園生活)",
+      "recommended_effect": "非凡·温存",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "0fcbd6c59b43714f",
+      "idol_name_jp": "秦谷美鈴",
+      "idol_name_zh": "秦谷美铃",
+      "card_name_jp": "秦谷美鈴(初陣)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vo",
+      "second": "Vi",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "12d4343c77d94c24",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(学園生活)",
+      "recommended_effect": "理性·干劲",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "00e26cb507fdc7c1",
+      "idol_name_jp": "花海佑芽",
+      "idol_name_zh": "花海佑芽",
+      "card_name_jp": "花海佑芽(初陣)",
+      "recommended_effect": "感性·好调",
+      "first": "Da",
+      "second": "Vo",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "ee2692bfb05bd9fc",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(学園生活)",
+      "recommended_effect": "感性·集中",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    },
+    {
+      "idol_card_id": "41080502845c8de0",
+      "idol_name_jp": "姫崎莉波",
+      "idol_name_zh": "姬崎莉波",
+      "card_name_jp": "姫崎莉波(初心)",
+      "recommended_effect": "理性·干劲",
+      "first": "Vi",
+      "second": "Da",
+      "derived_tags": []
+    }
+  ],
+  "skill_cards": [
+    {
+      "skill_card_id": "40c54ff3ff64ce38",
+      "name_jp": "???????",
+      "name_zh": "????",
+      "tags": [
+        "basic",
+        "score_main"
+      ],
+      "type": "basic",
+      "upgrade_priority": 1,
+      "delete_priority": 1
+    },
+    {
+      "skill_card_id": "564fe0bd37e52fc1",
+      "name_jp": "?????",
+      "name_zh": "????",
+      "tags": [
+        "basic",
+        "buff_main"
+      ],
+      "type": "basic",
+      "upgrade_priority": 0,
+      "delete_priority": 1
+    },
+    {
+      "skill_card_id": "846701fbea0ad7dd",
+      "name_jp": "??????",
+      "name_zh": "????",
+      "tags": [
+        "basic",
+        "buff_main"
+      ],
+      "type": "basic",
+      "upgrade_priority": 0,
+      "delete_priority": 1
+    },
+    {
+      "skill_card_id": "1d66612cc6eba909",
+      "name_jp": "?????",
+      "name_zh": "?????",
+      "tags": [
+        "buff_main"
+      ],
+      "type": "support",
+      "upgrade_priority": 1,
+      "delete_priority": 0
+    },
+    {
+      "skill_card_id": "9b4c71be7fa9a67d",
+      "name_jp": "?????????",
+      "name_zh": "???",
+      "tags": [
+        "buff_main"
+      ],
+      "type": "support",
+      "upgrade_priority": 1,
+      "delete_priority": 0
+    },
+    {
+      "skill_card_id": "f69c54d0761a88e8",
+      "name_jp": "???????",
+      "name_zh": "????",
+      "tags": [
+        "loop_core",
+        "draw_cycle",
+        "buff_main"
+      ],
+      "type": "engine",
+      "upgrade_priority": 3,
+      "delete_priority": 0
+    },
+    {
+      "skill_card_id": "dca7460577d0356c",
+      "name_jp": "????????",
+      "name_zh": "???",
+      "tags": [
+        "score_main"
+      ],
+      "type": "score",
+      "upgrade_priority": 2,
+      "delete_priority": 0
+    },
+    {
+      "skill_card_id": "be387d3e92027edd",
+      "name_jp": "????",
+      "name_zh": "??",
+      "tags": [
+        "trouble"
+      ],
+      "type": "trouble",
+      "upgrade_priority": 0,
+      "delete_priority": 5
+    }
+  ],
+  "p_items": [
+    {
+      "p_item_id": "62d769c741d6cca9",
+      "name_jp": "H.I.F????",
+      "name_zh": "H.I.F??",
+      "scenario": "HIF",
+      "tags": [
+        "star_synergy",
+        "card_gain"
+      ]
+    },
+    {
+      "p_item_id": "59a88ca882d8dcb8",
+      "name_jp": "???????",
+      "name_zh": "?????",
+      "scenario": "common",
+      "tags": [
+        "ppoint_gain"
+      ]
+    },
+    {
+      "p_item_id": "9218aec11fe3701b",
+      "name_jp": "???????",
+      "name_zh": "?????",
+      "scenario": "common",
+      "tags": [
+        "ppoint_gain"
+      ]
+    },
+    {
+      "p_item_id": "7463aad551d77d45",
+      "name_jp": "??????",
+      "name_zh": "????",
+      "scenario": "common",
+      "tags": [
+        "consult_discount"
+      ]
+    },
+    {
+      "p_item_id": "1f1b2dd11a5251d1",
+      "name_jp": "N.I.A??????",
+      "name_zh": "N.I.A???",
+      "scenario": "common",
+      "tags": [
+        "drink_gain"
+      ]
+    },
+    {
+      "p_item_id": "003025611b8b2980",
+      "name_jp": "???????",
+      "name_zh": "???",
+      "scenario": "common",
+      "tags": [
+        "card_gain"
+      ]
+    }
+  ]
+}

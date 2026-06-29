@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "entity": "skill_cards",
+  "updated_at": "2026-05-18T14:49:20+00:00",
+  "sources": [
+    {
+      "source": "manual_seed:hif-skill-cards",
+      "url": "https://gamerch.com/gakumasu/855252",
+      "fetched_at": "2026-05-18T14:49:20+00:00",
+      "fingerprint": "manual-seed-v1",
+      "item_count": 8,
+      "status": "seed",
+      "warning": "??? HIF ?????????????????"
+    }
+  ],
+  "records": [
+    {
+      "skill_card_id": "40c54ff3ff64ce38",
+      "source_keys": {
+        "seed_key": "appeal_basic"
+      },
+      "names": {
+        "jp": "???????",
+        "zh": "????"
+      },
+      "type": "basic",
+      "effect_text": "??????????????",
+      "derived_tags": [
+        "basic",
+        "score_main"
+      ],
+      "priority": {
+        "upgrade": 1,
+        "delete": 1
+      },
+      "sources": [
+        {
+          "source": "manual_seed:hif-skill-cards",
+          "url": "https://gamerch.com/gakumasu/855252",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 8,
+          "status": "seed",
+          "warning": "??? HIF ?????????????????"
+        }
+      ]
+    },
+    {
+      "skill_card_id": "564fe0bd37e52fc1",
+      "source_keys": {
+        "seed_key": "expression_basic"
+      },
+      "names": {
+        "jp": "?????",
+        "zh": "????"
+      },
+      "type": "basic",
+      "effect_text": "????????????",
+      "derived_tags": [
+        "basic",
+        "buff_main"
+      ],
+      "priority": {
+        "upgrade": 0,
+        "delete": 1
+      },
+      "sources": [
+        {
+          "source": "manual_seed:hif-skill-cards",
+          "url": "https://gamerch.com/gakumasu/855252",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 8,
+          "status": "seed",
+          "warning": "??? HIF ?????????????????"
+        }
+      ]
+    },
+    {
+      "skill_card_id": "846701fbea0ad7dd",
+      "source_keys": {
+        "seed_key": "pose_basic"
+      },
+      "names": {
+        "jp": "??????",
+        "zh": "????"
+      },
+      "type": "basic",
+      "effect_text": "????????????????????",
+      "derived_tags": [
+        "basic",
+        "buff_main"
+      ],
+      "priority": {
+        "upgrade": 0,
+        "delete": 1
+      },
+      "sources": [
+        {
+          "source": "manual_seed:hif-skill-cards",
+          "url": "https://gamerch.com/gakumasu/855252",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 8,
+          "status": "seed",
+          "warning": "??? HIF ?????????????????"
+        }
+      ]
+    },
+    {
+      "skill_card_id": "1d66612cc6eba909",
+      "source_keys": {
+        "seed_key": "spirited"
+      },
+      "names": {
+        "jp": "?????",
+        "zh": "?????"
+      },
+      "type": "support",
+      "effect_text": "???????????????",
+      "derived_tags": [
+        "buff_main"
+      ],
+      "priority": {
+        "upgrade": 1,
+        "delete": 0
+      },
+      "sources": [
+        {
+          "source": "manual_seed:hif-skill-cards",
+          "url": "https://gamerch.com/gakumasu/855252",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 8,
+          "status": "seed",
+          "warning": "??? HIF ?????????????????"
+        }
+      ]
+    },
+    {
+      "skill_card_id": "9b4c71be7fa9a67d",
+      "source_keys": {
+        "seed_key": "first_step"
+      },
+      "names": {
+        "jp": "?????????",
+        "zh": "???"
+      },
+      "type": "support",
+      "effect_text": "??????????????",
+      "derived_tags": [
+        "buff_main"
+      ],
+      "priority": {
+        "upgrade": 1,
+        "delete": 0
+      },
+      "sources": [
+        {
+          "source": "manual_seed:hif-skill-cards",
+          "url": "https://gamerch.com/gakumasu/855252",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 8,
+          "status": "seed",
+          "warning": "??? HIF ?????????????????"
+        }
+      ]
+    },
+    {
+      "skill_card_id": "f69c54d0761a88e8",
+      "source_keys": {
+        "seed_key": "stretch_talk"
+      },
+      "names": {
+        "jp": "???????",
+        "zh": "????"
+      },
+      "type": "engine",
+      "effect_text": "???????????????????",
+      "derived_tags": [
+        "loop_core",
+        "draw_cycle",
+        "buff_main"
+      ],
+      "priority": {
+        "upgrade": 3,
+        "delete": 0
+      },
+      "sources": [
+        {
+          "source": "manual_seed:hif-skill-cards",
+          "url": "https://gamerch.com/gakumasu/855252",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 8,
+          "status": "seed",
+          "warning": "??? HIF ?????????????????"
+        }
+      ]
+    },
+    {
+      "skill_card_id": "dca7460577d0356c",
+      "source_keys": {
+        "seed_key": "big_riceball"
+      },
+      "names": {
+        "jp": "????????",
+        "zh": "???"
+      },
+      "type": "score",
+      "effect_text": "???????????????",
+      "derived_tags": [
+        "score_main"
+      ],
+      "priority": {
+        "upgrade": 2,
+        "delete": 0
+      },
+      "sources": [
+        {
+          "source": "manual_seed:hif-skill-cards",
+          "url": "https://gamerch.com/gakumasu/855252",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 8,
+          "status": "seed",
+          "warning": "??? HIF ?????????????????"
+        }
+      ]
+    },
+    {
+      "skill_card_id": "be387d3e92027edd",
+      "source_keys": {
+        "seed_key": "trouble"
+      },
+      "names": {
+        "jp": "????",
+        "zh": "??"
+      },
+      "type": "trouble",
+      "effect_text": "HIF ??????????",
+      "derived_tags": [
+        "trouble"
+      ],
+      "priority": {
+        "upgrade": 0,
+        "delete": 5
+      },
+      "sources": [
+        {
+          "source": "manual_seed:hif-skill-cards",
+          "url": "https://gamerch.com/gakumasu/855252",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 8,
+          "status": "seed",
+          "warning": "??? HIF ?????????????????"
+        }
+      ]
+    }
+  ],
+  "notes": "??? HIF ?????????? Gamerch / Seesaa ??????"
+}

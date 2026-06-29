@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "entity": "p_items",
+  "updated_at": "2026-05-18T14:49:20+00:00",
+  "sources": [
+    {
+      "source": "manual_seed:hif-p-items",
+      "url": "https://wikiwiki.jp/gakumas/HIF/%E5%9F%BA%E6%9C%AC%E6%83%85%E5%A0%B1",
+      "fetched_at": "2026-05-18T14:49:20+00:00",
+      "fingerprint": "manual-seed-v1",
+      "item_count": 6,
+      "status": "seed",
+      "warning": "??? HIF ?????????????? Wiki ?????"
+    }
+  ],
+  "records": [
+    {
+      "p_item_id": "62d769c741d6cca9",
+      "source_keys": {
+        "seed_key": "hif_wappen"
+      },
+      "names": {
+        "jp": "H.I.F????",
+        "zh": "H.I.F??"
+      },
+      "scenario": "HIF",
+      "effect_text": "?????????????????? HIF ??????",
+      "derived_tags": [
+        "star_synergy",
+        "card_gain"
+      ],
+      "sources": [
+        {
+          "source": "manual_seed:hif-p-items",
+          "url": "https://wikiwiki.jp/gakumas/HIF/%E5%9F%BA%E6%9C%AC%E6%83%85%E5%A0%B1",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 6,
+          "status": "seed",
+          "warning": "??? HIF ?????????????? Wiki ?????"
+        }
+      ]
+    },
+    {
+      "p_item_id": "59a88ca882d8dcb8",
+      "source_keys": {
+        "seed_key": "gripper"
+      },
+      "names": {
+        "jp": "???????",
+        "zh": "?????"
+      },
+      "scenario": "common",
+      "effect_text": "?? P???????? P?????????",
+      "derived_tags": [
+        "ppoint_gain"
+      ],
+      "sources": [
+        {
+          "source": "manual_seed:hif-p-items",
+          "url": "https://wikiwiki.jp/gakumas/HIF/%E5%9F%BA%E6%9C%AC%E6%83%85%E5%A0%B1",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 6,
+          "status": "seed",
+          "warning": "??? HIF ?????????????? Wiki ?????"
+        }
+      ]
+    },
+    {
+      "p_item_id": "9218aec11fe3701b",
+      "source_keys": {
+        "seed_key": "stepper"
+      },
+      "names": {
+        "jp": "???????",
+        "zh": "?????"
+      },
+      "scenario": "common",
+      "effect_text": "?? P???????????????????",
+      "derived_tags": [
+        "ppoint_gain"
+      ],
+      "sources": [
+        {
+          "source": "manual_seed:hif-p-items",
+          "url": "https://wikiwiki.jp/gakumas/HIF/%E5%9F%BA%E6%9C%AC%E6%83%85%E5%A0%B1",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 6,
+          "status": "seed",
+          "warning": "??? HIF ?????????????? Wiki ?????"
+        }
+      ]
+    },
+    {
+      "p_item_id": "7463aad551d77d45",
+      "source_keys": {
+        "seed_key": "dumbbell"
+      },
+      "names": {
+        "jp": "??????",
+        "zh": "????"
+      },
+      "scenario": "common",
+      "effect_text": "??????????????",
+      "derived_tags": [
+        "consult_discount"
+      ],
+      "sources": [
+        {
+          "source": "manual_seed:hif-p-items",
+          "url": "https://wikiwiki.jp/gakumas/HIF/%E5%9F%BA%E6%9C%AC%E6%83%85%E5%A0%B1",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 6,
+          "status": "seed",
+          "warning": "??? HIF ?????????????? Wiki ?????"
+        }
+      ]
+    },
+    {
+      "p_item_id": "1f1b2dd11a5251d1",
+      "source_keys": {
+        "seed_key": "nia_tote"
+      },
+      "names": {
+        "jp": "N.I.A??????",
+        "zh": "N.I.A???"
+      },
+      "scenario": "common",
+      "effect_text": "P???????????????",
+      "derived_tags": [
+        "drink_gain"
+      ],
+      "sources": [
+        {
+          "source": "manual_seed:hif-p-items",
+          "url": "https://wikiwiki.jp/gakumas/HIF/%E5%9F%BA%E6%9C%AC%E6%83%85%E5%A0%B1",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 6,
+          "status": "seed",
+          "warning": "??? HIF ?????????????? Wiki ?????"
+        }
+      ]
+    },
+    {
+      "p_item_id": "003025611b8b2980",
+      "source_keys": {
+        "seed_key": "outing_bag"
+      },
+      "names": {
+        "jp": "???????",
+        "zh": "???"
+      },
+      "scenario": "common",
+      "effect_text": "??????????????????????",
+      "derived_tags": [
+        "card_gain"
+      ],
+      "sources": [
+        {
+          "source": "manual_seed:hif-p-items",
+          "url": "https://wikiwiki.jp/gakumas/HIF/%E5%9F%BA%E6%9C%AC%E6%83%85%E5%A0%B1",
+          "fetched_at": "2026-05-18T14:49:20+00:00",
+          "fingerprint": "manual-seed-v1",
+          "item_count": 6,
+          "status": "seed",
+          "warning": "??? HIF ?????????????? Wiki ?????"
+        }
+      ]
+    }
+  ],
+  "notes": "??? HIF ?????????????? Wiki ?????"
+}

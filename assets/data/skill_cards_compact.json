@@ -1,0 +1,95 @@
+[
+  {
+    "skill_card_id": "40c54ff3ff64ce38",
+    "name_jp": "???????",
+    "name_zh": "????",
+    "tags": [
+      "basic",
+      "score_main"
+    ],
+    "type": "basic",
+    "upgrade_priority": 1,
+    "delete_priority": 1
+  },
+  {
+    "skill_card_id": "564fe0bd37e52fc1",
+    "name_jp": "?????",
+    "name_zh": "????",
+    "tags": [
+      "basic",
+      "buff_main"
+    ],
+    "type": "basic",
+    "upgrade_priority": 0,
+    "delete_priority": 1
+  },
+  {
+    "skill_card_id": "846701fbea0ad7dd",
+    "name_jp": "??????",
+    "name_zh": "????",
+    "tags": [
+      "basic",
+      "buff_main"
+    ],
+    "type": "basic",
+    "upgrade_priority": 0,
+    "delete_priority": 1
+  },
+  {
+    "skill_card_id": "1d66612cc6eba909",
+    "name_jp": "?????",
+    "name_zh": "?????",
+    "tags": [
+      "buff_main"
+    ],
+    "type": "support",
+    "upgrade_priority": 1,
+    "delete_priority": 0
+  },
+  {
+    "skill_card_id": "9b4c71be7fa9a67d",
+    "name_jp": "?????????",
+    "name_zh": "???",
+    "tags": [
+      "buff_main"
+    ],
+    "type": "support",
+    "upgrade_priority": 1,
+    "delete_priority": 0
+  },
+  {
+    "skill_card_id": "f69c54d0761a88e8",
+    "name_jp": "???????",
+    "name_zh": "????",
+    "tags": [
+      "loop_core",
+      "draw_cycle",
+      "buff_main"
+    ],
+    "type": "engine",
+    "upgrade_priority": 3,
+    "delete_priority": 0
+  },
+  {
+    "skill_card_id": "dca7460577d0356c",
+    "name_jp": "????????",
+    "name_zh": "???",
+    "tags": [
+      "score_main"
+    ],
+    "type": "score",
+    "upgrade_priority": 2,
+    "delete_priority": 0
+  },
+  {
+    "skill_card_id": "be387d3e92027edd",
+    "name_jp": "????",
+    "name_zh": "??",
+    "tags": [
+      "trouble"
+    ],
+    "type": "trouble",
+    "upgrade_priority": 0,
+    "delete_priority": 5
+  }
+]

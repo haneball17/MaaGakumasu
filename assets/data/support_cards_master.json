@@ -1,0 +1,4643 @@
+{
+  "schema_version": 1,
+  "entity": "support_cards",
+  "updated_at": "2026-05-18T13:34:53+00:00",
+  "sources": [
+    {
+      "source": "github:chinosk6/GakumasTranslationData",
+      "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+      "fetched_at": "2026-05-18T13:34:53+00:00",
+      "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+      "item_count": 185,
+      "status": "ok",
+      "warning": ""
+    }
+  ],
+  "records": [
+    {
+      "support_card_id": "s_card-1-0000",
+      "source_keys": {
+        "translation_id": "s_card-1-0000"
+      },
+      "names": {
+        "jp": "认真拉伸运动",
+        "zh": "认真拉伸运动"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0001",
+      "source_keys": {
+        "translation_id": "s_card-1-0001"
+      },
+      "names": {
+        "jp": "全力，在这之后",
+        "zh": "全力，在这之后"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0002",
+      "source_keys": {
+        "translation_id": "s_card-1-0002"
+      },
+      "names": {
+        "jp": "分叉的发尾",
+        "zh": "分叉的发尾"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0003",
+      "source_keys": {
+        "translation_id": "s_card-1-0003"
+      },
+      "names": {
+        "jp": "王子殿下的一次呼吸",
+        "zh": "王子殿下的一次呼吸"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0004",
+      "source_keys": {
+        "translation_id": "s_card-1-0004"
+      },
+      "names": {
+        "jp": "值得依赖的前辈姐姐",
+        "zh": "值得依赖的前辈姐姐"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0005",
+      "source_keys": {
+        "translation_id": "s_card-1-0005"
+      },
+      "names": {
+        "jp": "意象训练",
+        "zh": "意象训练"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0006",
+      "source_keys": {
+        "translation_id": "s_card-1-0006"
+      },
+      "names": {
+        "jp": "专注的课后补习",
+        "zh": "专注的课后补习"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0007",
+      "source_keys": {
+        "translation_id": "s_card-1-0007"
+      },
+      "names": {
+        "jp": "开关ON！",
+        "zh": "开关ON！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0008",
+      "source_keys": {
+        "translation_id": "s_card-1-0008"
+      },
+      "names": {
+        "jp": "以憧憬为目标",
+        "zh": "以憧憬为目标"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0009",
+      "source_keys": {
+        "translation_id": "s_card-1-0009"
+      },
+      "names": {
+        "jp": "姐姐亲授菜单",
+        "zh": "姐姐亲授菜单"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0010",
+      "source_keys": {
+        "translation_id": "s_card-1-0010"
+      },
+      "names": {
+        "jp": "按照我的节奏",
+        "zh": "按照我的节奏"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0011",
+      "source_keys": {
+        "translation_id": "s_card-1-0011"
+      },
+      "names": {
+        "jp": "完美无缺的计划",
+        "zh": "完美无缺的计划"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-1-0012",
+      "source_keys": {
+        "translation_id": "s_card-1-0012"
+      },
+      "names": {
+        "jp": "严谨正直",
+        "zh": "严谨正直"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0000",
+      "source_keys": {
+        "translation_id": "s_card-2-0000"
+      },
+      "names": {
+        "jp": "全力的表白",
+        "zh": "全力的表白"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0001",
+      "source_keys": {
+        "translation_id": "s_card-2-0001"
+      },
+      "names": {
+        "jp": "现在就特意背过身去",
+        "zh": "现在就特意背过身去"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0002",
+      "source_keys": {
+        "translation_id": "s_card-2-0002"
+      },
+      "names": {
+        "jp": "悠闲而坚定",
+        "zh": "悠闲而坚定"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0003",
+      "source_keys": {
+        "translation_id": "s_card-2-0003"
+      },
+      "names": {
+        "jp": "没有爱的记忆是困难的",
+        "zh": "没有爱的记忆是困难的"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0004",
+      "source_keys": {
+        "translation_id": "s_card-2-0004"
+      },
+      "names": {
+        "jp": "手把手教学",
+        "zh": "手把手教学"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0005",
+      "source_keys": {
+        "translation_id": "s_card-2-0005"
+      },
+      "names": {
+        "jp": "圆润的脸颊",
+        "zh": "圆润的脸颊"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0006",
+      "source_keys": {
+        "translation_id": "s_card-2-0006"
+      },
+      "names": {
+        "jp": "诱人的股四头肌",
+        "zh": "诱人的股四头肌"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0007",
+      "source_keys": {
+        "translation_id": "s_card-2-0007"
+      },
+      "names": {
+        "jp": "轻飘飘又令人兴奋",
+        "zh": "轻飘飘又令人兴奋"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0008",
+      "source_keys": {
+        "translation_id": "s_card-2-0008"
+      },
+      "names": {
+        "jp": "开心又害羞的梦幻心情",
+        "zh": "开心又害羞的梦幻心情"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0009",
+      "source_keys": {
+        "translation_id": "s_card-2-0009"
+      },
+      "names": {
+        "jp": "实际食用！那个SSD",
+        "zh": "实际食用！那个SSD"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0010",
+      "source_keys": {
+        "translation_id": "s_card-2-0010"
+      },
+      "names": {
+        "jp": "我的节奏，我的生活",
+        "zh": "我的节奏，我的生活"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0011",
+      "source_keys": {
+        "translation_id": "s_card-2-0011"
+      },
+      "names": {
+        "jp": "心思与颤抖",
+        "zh": "心思与颤抖"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0012",
+      "source_keys": {
+        "translation_id": "s_card-2-0012"
+      },
+      "names": {
+        "jp": "让人放心不下的同学",
+        "zh": "让人放心不下的同学"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0013",
+      "source_keys": {
+        "translation_id": "s_card-2-0013"
+      },
+      "names": {
+        "jp": "总有一天，必会绽放",
+        "zh": "总有一天，必会绽放"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0014",
+      "source_keys": {
+        "translation_id": "s_card-2-0014"
+      },
+      "names": {
+        "jp": "第一个朋友",
+        "zh": "第一个朋友"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0015",
+      "source_keys": {
+        "translation_id": "s_card-2-0015"
+      },
+      "names": {
+        "jp": "耳机一人一半",
+        "zh": "耳机一人一半"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0016",
+      "source_keys": {
+        "translation_id": "s_card-2-0016"
+      },
+      "names": {
+        "jp": "哇呀！",
+        "zh": "哇呀！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0017",
+      "source_keys": {
+        "translation_id": "s_card-2-0017"
+      },
+      "names": {
+        "jp": "吧唧吧唧软乎乎",
+        "zh": "吧唧吧唧软乎乎"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0018",
+      "source_keys": {
+        "translation_id": "s_card-2-0018"
+      },
+      "names": {
+        "jp": "僵硬的拉伸",
+        "zh": "僵硬的拉伸"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0019",
+      "source_keys": {
+        "translation_id": "s_card-2-0019"
+      },
+      "names": {
+        "jp": "啪的一声定格",
+        "zh": "啪的一声定格"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0020",
+      "source_keys": {
+        "translation_id": "s_card-2-0020"
+      },
+      "names": {
+        "jp": "大海，一定要享受吧！",
+        "zh": "大海，一定要享受吧！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0021",
+      "source_keys": {
+        "translation_id": "s_card-2-0021"
+      },
+      "names": {
+        "jp": "第五类接触",
+        "zh": "第五类接触"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0022",
+      "source_keys": {
+        "translation_id": "s_card-2-0022"
+      },
+      "names": {
+        "jp": "今天只是来参观",
+        "zh": "今天只是来参观"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0023",
+      "source_keys": {
+        "translation_id": "s_card-2-0023"
+      },
+      "names": {
+        "jp": "温柔，同时又温暖",
+        "zh": "温柔，同时又温暖"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0024",
+      "source_keys": {
+        "translation_id": "s_card-2-0024"
+      },
+      "names": {
+        "jp": "紧紧地系上",
+        "zh": "紧紧地系上"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0025",
+      "source_keys": {
+        "translation_id": "s_card-2-0025"
+      },
+      "names": {
+        "jp": "蓬松的面具？",
+        "zh": "蓬松的面具？"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0026",
+      "source_keys": {
+        "translation_id": "s_card-2-0026"
+      },
+      "names": {
+        "jp": "咕嘟咕嘟、真香啊♪",
+        "zh": "咕嘟咕嘟、真香啊♪"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0027",
+      "source_keys": {
+        "translation_id": "s_card-2-0027"
+      },
+      "names": {
+        "jp": "休息时间来一杯咖啡",
+        "zh": "休息时间来一杯咖啡"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0028",
+      "source_keys": {
+        "translation_id": "s_card-2-0028"
+      },
+      "names": {
+        "jp": "出色的芒草！",
+        "zh": "出色的芒草！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0029",
+      "source_keys": {
+        "translation_id": "s_card-2-0029"
+      },
+      "names": {
+        "jp": "千奈的报恩",
+        "zh": "千奈的报恩"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0030",
+      "source_keys": {
+        "translation_id": "s_card-2-0030"
+      },
+      "names": {
+        "jp": "有趣的饮料",
+        "zh": "有趣的饮料"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0031",
+      "source_keys": {
+        "translation_id": "s_card-2-0031"
+      },
+      "names": {
+        "jp": "SSD的秘密",
+        "zh": "SSD的秘密"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0032",
+      "source_keys": {
+        "translation_id": "s_card-2-0032"
+      },
+      "names": {
+        "jp": "秋刀鱼，扑扑作响",
+        "zh": "秋刀鱼，扑扑作响"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0033",
+      "source_keys": {
+        "translation_id": "s_card-2-0033"
+      },
+      "names": {
+        "jp": "让我们火起来吧！",
+        "zh": "让我们火起来吧！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0034",
+      "source_keys": {
+        "translation_id": "s_card-2-0034"
+      },
+      "names": {
+        "jp": "抓住蜻蜓吧",
+        "zh": "抓住蜻蜓吧"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0035",
+      "source_keys": {
+        "translation_id": "s_card-2-0035"
+      },
+      "names": {
+        "jp": "十倍XL码！",
+        "zh": "十倍XL码！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0036",
+      "source_keys": {
+        "translation_id": "s_card-2-0036"
+      },
+      "names": {
+        "jp": "啾〜ω姿势☆",
+        "zh": "啾〜ω姿势☆"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0037",
+      "source_keys": {
+        "translation_id": "s_card-2-0037"
+      },
+      "names": {
+        "jp": "卡路里/2 快乐×2",
+        "zh": "卡路里/2 快乐×2"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0038",
+      "source_keys": {
+        "translation_id": "s_card-2-0038"
+      },
+      "names": {
+        "jp": "目标是顶点",
+        "zh": "目标是顶点"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0039",
+      "source_keys": {
+        "translation_id": "s_card-2-0039"
+      },
+      "names": {
+        "jp": "还要继续延伸",
+        "zh": "还要继续延伸"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0040",
+      "source_keys": {
+        "translation_id": "s_card-2-0040"
+      },
+      "names": {
+        "jp": "基础>应用",
+        "zh": "基础>应用"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0041",
+      "source_keys": {
+        "translation_id": "s_card-2-0041"
+      },
+      "names": {
+        "jp": "SSC的爆诞",
+        "zh": "SSC的爆诞"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0042",
+      "source_keys": {
+        "translation_id": "s_card-2-0042"
+      },
+      "names": {
+        "jp": "真诚的心意",
+        "zh": "真诚的心意"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0043",
+      "source_keys": {
+        "translation_id": "s_card-2-0043"
+      },
+      "names": {
+        "jp": "佑芽雪橇赛，冲锋！",
+        "zh": "佑芽雪橇赛，冲锋！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0044",
+      "source_keys": {
+        "translation_id": "s_card-2-0044"
+      },
+      "names": {
+        "jp": "噗和咻的二重奏",
+        "zh": "噗和咻的二重奏"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0045",
+      "source_keys": {
+        "translation_id": "s_card-2-0045"
+      },
+      "names": {
+        "jp": "爱虫的王子",
+        "zh": "爱虫的王子"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0046",
+      "source_keys": {
+        "translation_id": "s_card-2-0046"
+      },
+      "names": {
+        "jp": "噼里啪啦地砰",
+        "zh": "噼里啪啦地砰"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0047",
+      "source_keys": {
+        "translation_id": "s_card-2-0047"
+      },
+      "names": {
+        "jp": "奥义，三重跳绳！",
+        "zh": "奥义，三重跳绳！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0048",
+      "source_keys": {
+        "translation_id": "s_card-2-0048"
+      },
+      "names": {
+        "jp": "女孩们的♡聊天",
+        "zh": "女孩们的♡聊天"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0049",
+      "source_keys": {
+        "translation_id": "s_card-2-0049"
+      },
+      "names": {
+        "jp": "屈辱的第2名",
+        "zh": "屈辱的第2名"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0050",
+      "source_keys": {
+        "translation_id": "s_card-2-0050"
+      },
+      "names": {
+        "jp": "2名客人，这边请～♪",
+        "zh": "2名客人，这边请～♪"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0051",
+      "source_keys": {
+        "translation_id": "s_card-2-0051"
+      },
+      "names": {
+        "jp": "茶点，甜，淡茶，苦",
+        "zh": "茶点，甜，淡茶，苦"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0052",
+      "source_keys": {
+        "translation_id": "s_card-2-0052"
+      },
+      "names": {
+        "jp": "一・二・三！",
+        "zh": "一・二・三！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0053",
+      "source_keys": {
+        "translation_id": "s_card-2-0053"
+      },
+      "names": {
+        "jp": "噗通倒地",
+        "zh": "噗通倒地"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0054",
+      "source_keys": {
+        "translation_id": "s_card-2-0054"
+      },
+      "names": {
+        "jp": "困难重重时装秀",
+        "zh": "困难重重时装秀"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0056",
+      "source_keys": {
+        "translation_id": "s_card-2-0056"
+      },
+      "names": {
+        "jp": "Sparta&Spice",
+        "zh": "Sparta&Spice"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0058",
+      "source_keys": {
+        "translation_id": "s_card-2-0058"
+      },
+      "names": {
+        "jp": "凉爽的时刻",
+        "zh": "凉爽的时刻"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0059",
+      "source_keys": {
+        "translation_id": "s_card-2-0059"
+      },
+      "names": {
+        "jp": "徒弟的修行",
+        "zh": "徒弟的修行"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0060",
+      "source_keys": {
+        "translation_id": "s_card-2-0060"
+      },
+      "names": {
+        "jp": "当心栗子球",
+        "zh": "当心栗子球"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0061",
+      "source_keys": {
+        "translation_id": "s_card-2-0061"
+      },
+      "names": {
+        "jp": "用腹肌和背肌保持核心肌群！",
+        "zh": "用腹肌和背肌保持核心肌群！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0062",
+      "source_keys": {
+        "translation_id": "s_card-2-0062"
+      },
+      "names": {
+        "jp": "万圣节快乐～～！",
+        "zh": "万圣节快乐～～！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0063",
+      "source_keys": {
+        "translation_id": "s_card-2-0063"
+      },
+      "names": {
+        "jp": "温暖足部的穴位按摩",
+        "zh": "温暖足部的穴位按摩"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0064",
+      "source_keys": {
+        "translation_id": "s_card-2-0064"
+      },
+      "names": {
+        "jp": "日安的问候♪",
+        "zh": "日安的问候♪"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0065",
+      "source_keys": {
+        "translation_id": "s_card-2-0065"
+      },
+      "names": {
+        "jp": "睡王子",
+        "zh": "睡王子"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0066",
+      "source_keys": {
+        "translation_id": "s_card-2-0066"
+      },
+      "names": {
+        "jp": "伙伴吗？",
+        "zh": "伙伴吗？"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0067",
+      "source_keys": {
+        "translation_id": "s_card-2-0067"
+      },
+      "names": {
+        "jp": "太阳般的笑容，双双绽放",
+        "zh": "太阳般的笑容，双双绽放"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0068",
+      "source_keys": {
+        "translation_id": "s_card-2-0068"
+      },
+      "names": {
+        "jp": "友情的证明",
+        "zh": "友情的证明"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0069",
+      "source_keys": {
+        "translation_id": "s_card-2-0069"
+      },
+      "names": {
+        "jp": "启明星与王子大人",
+        "zh": "启明星与王子大人"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0070",
+      "source_keys": {
+        "translation_id": "s_card-2-0070"
+      },
+      "names": {
+        "jp": "洗好的衣物叠叠高",
+        "zh": "洗好的衣物叠叠高"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0071",
+      "source_keys": {
+        "translation_id": "s_card-2-0071"
+      },
+      "names": {
+        "jp": "小小见面礼☆",
+        "zh": "小小见面礼☆"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0072",
+      "source_keys": {
+        "translation_id": "s_card-2-0072"
+      },
+      "names": {
+        "jp": "骑士与顽皮的公主",
+        "zh": "骑士与顽皮的公主"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0073",
+      "source_keys": {
+        "translation_id": "s_card-2-0073"
+      },
+      "names": {
+        "jp": "韧带拉伸",
+        "zh": "韧带拉伸"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-2-0074",
+      "source_keys": {
+        "translation_id": "s_card-2-0074"
+      },
+      "names": {
+        "jp": "悠闲而美味的时光",
+        "zh": "悠闲而美味的时光"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0000",
+      "source_keys": {
+        "translation_id": "s_card-3-0000"
+      },
+      "names": {
+        "jp": "我也会做给你的！",
+        "zh": "我也会做给你的！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0001",
+      "source_keys": {
+        "translation_id": "s_card-3-0001"
+      },
+      "names": {
+        "jp": "我到底在做什么呢，",
+        "zh": "我到底在做什么呢，"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0002",
+      "source_keys": {
+        "translation_id": "s_card-3-0002"
+      },
+      "names": {
+        "jp": "这些家伙真麻烦啊",
+        "zh": "这些家伙真麻烦啊"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0003",
+      "source_keys": {
+        "translation_id": "s_card-3-0003"
+      },
+      "names": {
+        "jp": "交给姐姐吧！",
+        "zh": "交给姐姐吧！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0004",
+      "source_keys": {
+        "translation_id": "s_card-3-0004"
+      },
+      "names": {
+        "jp": "唔呃呃呃呃…………！",
+        "zh": "唔呃呃呃呃…………！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0005",
+      "source_keys": {
+        "translation_id": "s_card-3-0005"
+      },
+      "names": {
+        "jp": "在下一个樱花季节",
+        "zh": "在下一个樱花季节"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0006",
+      "source_keys": {
+        "translation_id": "s_card-3-0006"
+      },
+      "names": {
+        "jp": "辛苦了，千奈同学。",
+        "zh": "辛苦了，千奈同学。"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0007",
+      "source_keys": {
+        "translation_id": "s_card-3-0007"
+      },
+      "names": {
+        "jp": "简直像王子一样",
+        "zh": "简直像王子一样"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0008",
+      "source_keys": {
+        "translation_id": "s_card-3-0008"
+      },
+      "names": {
+        "jp": "好吃的表情，我收下啦～！",
+        "zh": "好吃的表情，我收下啦～！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0009",
+      "source_keys": {
+        "translation_id": "s_card-3-0009"
+      },
+      "names": {
+        "jp": "我们的话，只要努力就能做到",
+        "zh": "我们的话，只要努力就能做到"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0010",
+      "source_keys": {
+        "translation_id": "s_card-3-0010"
+      },
+      "names": {
+        "jp": "可爱与可爱叠加就是最可爱！",
+        "zh": "可爱与可爱叠加就是最可爱！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0011",
+      "source_keys": {
+        "translation_id": "s_card-3-0011"
+      },
+      "names": {
+        "jp": "我的眼睛不会看错",
+        "zh": "我的眼睛不会看错"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0012",
+      "source_keys": {
+        "translation_id": "s_card-3-0012"
+      },
+      "names": {
+        "jp": "又做了那么多不可能的事",
+        "zh": "又做了那么多不可能的事"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0013",
+      "source_keys": {
+        "translation_id": "s_card-3-0013"
+      },
+      "names": {
+        "jp": "啊啦，真巧",
+        "zh": "啊啦，真巧"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0014",
+      "source_keys": {
+        "translation_id": "s_card-3-0014"
+      },
+      "names": {
+        "jp": "真的吗。",
+        "zh": "真的吗。"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0015",
+      "source_keys": {
+        "translation_id": "s_card-3-0015"
+      },
+      "names": {
+        "jp": "以工作的心态来面对",
+        "zh": "以工作的心态来面对"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0016",
+      "source_keys": {
+        "translation_id": "s_card-3-0016"
+      },
+      "names": {
+        "jp": "一个人也不能少",
+        "zh": "一个人也不能少"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0017",
+      "source_keys": {
+        "translation_id": "s_card-3-0017"
+      },
+      "names": {
+        "jp": "瞧，一起拿吧♪",
+        "zh": "瞧，一起拿吧♪"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0018",
+      "source_keys": {
+        "translation_id": "s_card-3-0018"
+      },
+      "names": {
+        "jp": "第二次教室派对！",
+        "zh": "第二次教室派对！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0019",
+      "source_keys": {
+        "translation_id": "s_card-3-0019"
+      },
+      "names": {
+        "jp": "你是我骄傲的学生",
+        "zh": "你是我骄傲的学生"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0020",
+      "source_keys": {
+        "translation_id": "s_card-3-0020"
+      },
+      "names": {
+        "jp": "这就是食欲的秋天",
+        "zh": "这就是食欲的秋天"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0021",
+      "source_keys": {
+        "translation_id": "s_card-3-0021"
+      },
+      "names": {
+        "jp": "梅雨",
+        "zh": "梅雨"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0022",
+      "source_keys": {
+        "translation_id": "s_card-3-0022"
+      },
+      "names": {
+        "jp": "天气放晴了",
+        "zh": "天气放晴了"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0023",
+      "source_keys": {
+        "translation_id": "s_card-3-0023"
+      },
+      "names": {
+        "jp": "拜托别再涨了！",
+        "zh": "拜托别再涨了！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0024",
+      "source_keys": {
+        "translation_id": "s_card-3-0024"
+      },
+      "names": {
+        "jp": "不是‘ア’而是‘エ’！",
+        "zh": "不是‘ア’而是‘エ’！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0025",
+      "source_keys": {
+        "translation_id": "s_card-3-0025"
+      },
+      "names": {
+        "jp": "这是新的挑战的成功！",
+        "zh": "这是新的挑战的成功！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0026",
+      "source_keys": {
+        "translation_id": "s_card-3-0026"
+      },
+      "names": {
+        "jp": "真是的！好冷啊！",
+        "zh": "真是的！好冷啊！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0027",
+      "source_keys": {
+        "translation_id": "s_card-3-0027"
+      },
+      "names": {
+        "jp": "让我们享受夏天吧！",
+        "zh": "让我们享受夏天吧！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0028",
+      "source_keys": {
+        "translation_id": "s_card-3-0028"
+      },
+      "names": {
+        "jp": "暂时休战",
+        "zh": "暂时休战"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0029",
+      "source_keys": {
+        "translation_id": "s_card-3-0029"
+      },
+      "names": {
+        "jp": "我要尽情享受夏天！",
+        "zh": "我要尽情享受夏天！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0030",
+      "source_keys": {
+        "translation_id": "s_card-3-0030"
+      },
+      "names": {
+        "jp": "我也想要去那里！",
+        "zh": "我也想要去那里！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0031",
+      "source_keys": {
+        "translation_id": "s_card-3-0031"
+      },
+      "names": {
+        "jp": "烟花，要不要玩……？",
+        "zh": "烟花，要不要玩……？"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0032",
+      "source_keys": {
+        "translation_id": "s_card-3-0032"
+      },
+      "names": {
+        "jp": "培育真是辛苦呢",
+        "zh": "培育真是辛苦呢"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0033",
+      "source_keys": {
+        "translation_id": "s_card-3-0033"
+      },
+      "names": {
+        "jp": "让我们和好如初",
+        "zh": "让我们和好如初"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0034",
+      "source_keys": {
+        "translation_id": "s_card-3-0034"
+      },
+      "names": {
+        "jp": "两个人在一起时间过得真快呢",
+        "zh": "两个人在一起时间过得真快呢"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0035",
+      "source_keys": {
+        "translation_id": "s_card-3-0035"
+      },
+      "names": {
+        "jp": "慢慢地度过吧",
+        "zh": "慢慢地度过吧"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0036",
+      "source_keys": {
+        "translation_id": "s_card-3-0036"
+      },
+      "names": {
+        "jp": "很适合不是吗？",
+        "zh": "很适合不是吗？"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0037",
+      "source_keys": {
+        "translation_id": "s_card-3-0037"
+      },
+      "names": {
+        "jp": "完全是秋天的色彩呢！",
+        "zh": "完全是秋天的色彩呢！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0038",
+      "source_keys": {
+        "translation_id": "s_card-3-0038"
+      },
+      "names": {
+        "jp": "会长，准备工作万无一失",
+        "zh": "会长，准备工作万无一失"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0039",
+      "source_keys": {
+        "translation_id": "s_card-3-0039"
+      },
+      "names": {
+        "jp": "绝对会追上你的！",
+        "zh": "绝对会追上你的！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0040",
+      "source_keys": {
+        "translation_id": "s_card-3-0040"
+      },
+      "names": {
+        "jp": "差不多烤好了吧？",
+        "zh": "差不多烤好了吧？"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0041",
+      "source_keys": {
+        "translation_id": "s_card-3-0041"
+      },
+      "names": {
+        "jp": "闪闪发光的好漂亮～！",
+        "zh": "闪闪发光的好漂亮～！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0042",
+      "source_keys": {
+        "translation_id": "s_card-3-0042"
+      },
+      "names": {
+        "jp": "好温暖呢",
+        "zh": "好温暖呢"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0043",
+      "source_keys": {
+        "translation_id": "s_card-3-0043"
+      },
+      "names": {
+        "jp": "请等一下！",
+        "zh": "请等一下！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0044",
+      "source_keys": {
+        "translation_id": "s_card-3-0044"
+      },
+      "names": {
+        "jp": "再一次，从头开始！",
+        "zh": "再一次，从头开始！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0045",
+      "source_keys": {
+        "translation_id": "s_card-3-0045"
+      },
+      "names": {
+        "jp": "好，大家也一起吧♪",
+        "zh": "好，大家也一起吧♪"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0046",
+      "source_keys": {
+        "translation_id": "s_card-3-0046"
+      },
+      "names": {
+        "jp": "这就是我们的三年",
+        "zh": "这就是我们的三年"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0047",
+      "source_keys": {
+        "translation_id": "s_card-3-0047"
+      },
+      "names": {
+        "jp": "情人节♡会议中～！",
+        "zh": "情人节♡会议中～！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0048",
+      "source_keys": {
+        "translation_id": "s_card-3-0048"
+      },
+      "names": {
+        "jp": "绝对会交给你的！",
+        "zh": "绝对会交给你的！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0049",
+      "source_keys": {
+        "translation_id": "s_card-3-0049"
+      },
+      "names": {
+        "jp": "能一个人站起来吗？",
+        "zh": "能一个人站起来吗？"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0050",
+      "source_keys": {
+        "translation_id": "s_card-3-0050"
+      },
+      "names": {
+        "jp": "我喜欢你们",
+        "zh": "我喜欢你们"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0051",
+      "source_keys": {
+        "translation_id": "s_card-3-0051"
+      },
+      "names": {
+        "jp": "新生活开始了呢",
+        "zh": "新生活开始了呢"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0052",
+      "source_keys": {
+        "translation_id": "s_card-3-0052"
+      },
+      "names": {
+        "jp": "恭喜合格！",
+        "zh": "恭喜合格！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0053",
+      "source_keys": {
+        "translation_id": "s_card-3-0053"
+      },
+      "names": {
+        "jp": "来，再来一战！",
+        "zh": "来，再来一战！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0054",
+      "source_keys": {
+        "translation_id": "s_card-3-0054"
+      },
+      "names": {
+        "jp": "真是个够格的对手！",
+        "zh": "真是个够格的对手！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0055",
+      "source_keys": {
+        "translation_id": "s_card-3-0055"
+      },
+      "names": {
+        "jp": "就从这里开始吧！",
+        "zh": "就从这里开始吧！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0056",
+      "source_keys": {
+        "translation_id": "s_card-3-0056"
+      },
+      "names": {
+        "jp": "还是这么不坦率呢",
+        "zh": "还是这么不坦率呢"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0057",
+      "source_keys": {
+        "translation_id": "s_card-3-0057"
+      },
+      "names": {
+        "jp": "互相利用的朋友！",
+        "zh": "互相利用的朋友！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0058",
+      "source_keys": {
+        "translation_id": "s_card-3-0058"
+      },
+      "names": {
+        "jp": "这是自言自语",
+        "zh": "这是自言自语"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0059",
+      "source_keys": {
+        "translation_id": "s_card-3-0059"
+      },
+      "names": {
+        "jp": "大家关系超好♪",
+        "zh": "大家关系超好♪"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0060",
+      "source_keys": {
+        "translation_id": "s_card-3-0060"
+      },
+      "names": {
+        "jp": "寻人启事",
+        "zh": "寻人启事"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0061",
+      "source_keys": {
+        "translation_id": "s_card-3-0061"
+      },
+      "names": {
+        "jp": "让我听听大家的意见♪",
+        "zh": "让我听听大家的意见♪"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0062",
+      "source_keys": {
+        "translation_id": "s_card-3-0062"
+      },
+      "names": {
+        "jp": "好样的，仓本",
+        "zh": "好样的，仓本"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0063",
+      "source_keys": {
+        "translation_id": "s_card-3-0063"
+      },
+      "names": {
+        "jp": "这大概就是推活的快乐吧！",
+        "zh": "这大概就是推活的快乐吧！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0064",
+      "source_keys": {
+        "translation_id": "s_card-3-0064"
+      },
+      "names": {
+        "jp": "你一直都很努力呢。",
+        "zh": "你一直都很努力呢。"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0065",
+      "source_keys": {
+        "translation_id": "s_card-3-0065"
+      },
+      "names": {
+        "jp": "你们到底是什么关系？",
+        "zh": "你们到底是什么关系？"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0066",
+      "source_keys": {
+        "translation_id": "s_card-3-0066"
+      },
+      "names": {
+        "jp": "让人放心不下的孩子",
+        "zh": "让人放心不下的孩子"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0067",
+      "source_keys": {
+        "translation_id": "s_card-3-0067"
+      },
+      "names": {
+        "jp": "我和美铃，超要好的",
+        "zh": "我和美铃，超要好的"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0068",
+      "source_keys": {
+        "translation_id": "s_card-3-0068"
+      },
+      "names": {
+        "jp": "你是妈妈吗！",
+        "zh": "你是妈妈吗！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0069",
+      "source_keys": {
+        "translation_id": "s_card-3-0069"
+      },
+      "names": {
+        "jp": "若能永远延续",
+        "zh": "若能永远延续"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0070",
+      "source_keys": {
+        "translation_id": "s_card-3-0070"
+      },
+      "names": {
+        "jp": "嘿，我们来了！",
+        "zh": "嘿，我们来了！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0071",
+      "source_keys": {
+        "translation_id": "s_card-3-0071"
+      },
+      "names": {
+        "jp": "让我们嗨起来！",
+        "zh": "让我们嗨起来！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0072",
+      "source_keys": {
+        "translation_id": "s_card-3-0072"
+      },
+      "names": {
+        "jp": "哦呀，好险呀",
+        "zh": "哦呀，好险呀"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0073",
+      "source_keys": {
+        "translation_id": "s_card-3-0073"
+      },
+      "names": {
+        "jp": "ｖ来——比个耶ｖ",
+        "zh": "ｖ来——比个耶ｖ"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0074",
+      "source_keys": {
+        "translation_id": "s_card-3-0074"
+      },
+      "names": {
+        "jp": "更加详细一点！",
+        "zh": "更加详细一点！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0075",
+      "source_keys": {
+        "translation_id": "s_card-3-0075"
+      },
+      "names": {
+        "jp": "这根本就是城堡吧——！！",
+        "zh": "这根本就是城堡吧——！！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0076",
+      "source_keys": {
+        "translation_id": "s_card-3-0076"
+      },
+      "names": {
+        "jp": "月村手毬，真是有趣呢",
+        "zh": "月村手毬，真是有趣呢"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0077",
+      "source_keys": {
+        "translation_id": "s_card-3-0077"
+      },
+      "names": {
+        "jp": "放松很重要哦！",
+        "zh": "放松很重要哦！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0078",
+      "source_keys": {
+        "translation_id": "s_card-3-0078"
+      },
+      "names": {
+        "jp": "各就各位、预备、开始！",
+        "zh": "各就各位、预备、开始！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0079",
+      "source_keys": {
+        "translation_id": "s_card-3-0079"
+      },
+      "names": {
+        "jp": "终于找到你了！",
+        "zh": "终于找到你了！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0080",
+      "source_keys": {
+        "translation_id": "s_card-3-0080"
+      },
+      "names": {
+        "jp": "一定能拿到！",
+        "zh": "一定能拿到！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0081",
+      "source_keys": {
+        "translation_id": "s_card-3-0081"
+      },
+      "names": {
+        "jp": "圣诞快乐、姐姐♪",
+        "zh": "圣诞快乐、姐姐♪"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0082",
+      "source_keys": {
+        "translation_id": "s_card-3-0082"
+      },
+      "names": {
+        "jp": "为什么会在这里！？",
+        "zh": "为什么会在这里！？"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0083",
+      "source_keys": {
+        "translation_id": "s_card-3-0083"
+      },
+      "names": {
+        "jp": "光明正大翘课吗！？",
+        "zh": "光明正大翘课吗！？"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0084",
+      "source_keys": {
+        "translation_id": "s_card-3-0084"
+      },
+      "names": {
+        "jp": "是手毬的专场呢、对吧",
+        "zh": "是手毬的专场呢、对吧"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0085",
+      "source_keys": {
+        "translation_id": "s_card-3-0085"
+      },
+      "names": {
+        "jp": "这是直面自身的时间",
+        "zh": "这是直面自身的时间"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0086",
+      "source_keys": {
+        "translation_id": "s_card-3-0086"
+      },
+      "names": {
+        "jp": "给我，让我来示范一下！",
+        "zh": "给我，让我来示范一下！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0087",
+      "source_keys": {
+        "translation_id": "s_card-3-0087"
+      },
+      "names": {
+        "jp": "不管是穿搭还是化妆♪",
+        "zh": "不管是穿搭还是化妆♪"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0088",
+      "source_keys": {
+        "translation_id": "s_card-3-0088"
+      },
+      "names": {
+        "jp": "回忆的宝箱、呢",
+        "zh": "回忆的宝箱、呢"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0089",
+      "source_keys": {
+        "translation_id": "s_card-3-0089"
+      },
+      "names": {
+        "jp": "放马过来吧！",
+        "zh": "放马过来吧！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0090",
+      "source_keys": {
+        "translation_id": "s_card-3-0090"
+      },
+      "names": {
+        "jp": "发现你啦。",
+        "zh": "发现你啦。"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0091",
+      "source_keys": {
+        "translation_id": "s_card-3-0091"
+      },
+      "names": {
+        "jp": "是我赢了呢～！",
+        "zh": "是我赢了呢～！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0092",
+      "source_keys": {
+        "translation_id": "s_card-3-0092"
+      },
+      "names": {
+        "jp": "进化后的便当、好在意",
+        "zh": "进化后的便当、好在意"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0093",
+      "source_keys": {
+        "translation_id": "s_card-3-0093"
+      },
+      "names": {
+        "jp": "长途旅行辛苦啦！",
+        "zh": "长途旅行辛苦啦！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0094",
+      "source_keys": {
+        "translation_id": "s_card-3-0094"
+      },
+      "names": {
+        "jp": "上面吗——！！",
+        "zh": "上面吗——！！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0095",
+      "source_keys": {
+        "translation_id": "s_card-3-0095"
+      },
+      "names": {
+        "jp": "真期待派对呢！",
+        "zh": "真期待派对呢！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0096",
+      "source_keys": {
+        "translation_id": "s_card-3-0096"
+      },
+      "names": {
+        "jp": "与你的二人电车",
+        "zh": "与你的二人电车"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0097",
+      "source_keys": {
+        "translation_id": "s_card-3-0097"
+      },
+      "names": {
+        "jp": "……真是个吵闹的庆典呢",
+        "zh": "……真是个吵闹的庆典呢"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "support_card_id": "s_card-3-0098",
+      "source_keys": {
+        "translation_id": "s_card-3-0098"
+      },
+      "names": {
+        "jp": "大运动会，开始！",
+        "zh": "大运动会，开始！"
+      },
+      "rarity": "",
+      "effect_text": "",
+      "event_name": "",
+      "derived_tags": [],
+      "sources": [
+        {
+          "source": "github:chinosk6/GakumasTranslationData",
+          "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+          "fetched_at": "2026-05-18T13:34:53+00:00",
+          "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+          "item_count": 185,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5730 @@
+{
+  "schema_version": 1,
+  "entity": "idol_cards",
+  "updated_at": "2026-05-18T13:34:54+00:00",
+  "sources": [
+    {
+      "source": "seesaawiki:gakumasu-idol-cards",
+      "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+      "fetched_at": "2026-05-18T13:34:54+00:00",
+      "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+      "item_count": 136,
+      "status": "ok",
+      "warning": ""
+    }
+  ],
+  "records": [
+    {
+      "idol_card_id": "c8d410a7a66fd7e6",
+      "source_keys": {
+        "source_slug": "c8d410a7a66fd7e6",
+        "card_name_jp": "花海咲季(Fighting My Way)"
+      },
+      "names": {
+        "card_jp": "花海咲季(Fighting My Way)",
+        "card_zh": "花海咲季(Fighting My Way)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "Fighting My Way",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 100,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "067c06ab43b050b9",
+      "source_keys": {
+        "source_slug": "067c06ab43b050b9",
+        "card_name_jp": "花海咲季(Boom Boom Pow)"
+      },
+      "names": {
+        "card_jp": "花海咲季(Boom Boom Pow)",
+        "card_zh": "花海咲季(Boom Boom Pow)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "Boom Boom Pow",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 100,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/06/19",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "32f7c455bc6af3c3",
+      "source_keys": {
+        "source_slug": "32f7c455bc6af3c3",
+        "card_name_jp": "花海咲季(冠菊)"
+      },
+      "names": {
+        "card_jp": "花海咲季(冠菊)",
+        "card_zh": "花海咲季(冠菊)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "冠菊",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 100,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/08/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "a8f9be8eea099237",
+      "source_keys": {
+        "source_slug": "a8f9be8eea099237",
+        "card_name_jp": "花海咲季(古今東西ちょちょいのちょい)"
+      },
+      "names": {
+        "card_jp": "花海咲季(古今東西ちょちょいのちょい)",
+        "card_zh": "花海咲季(古今東西ちょちょいのちょい)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "古今東西ちょちょいのちょい",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 100,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/10/28",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "93c84ab4f4c7ebc6",
+      "source_keys": {
+        "source_slug": "93c84ab4f4c7ebc6",
+        "card_name_jp": "花海咲季(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "花海咲季(Campus mode!!)",
+        "card_zh": "花海咲季(Campus mode!!)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 100,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/12/26",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "e46ca02c9f0570bc",
+      "source_keys": {
+        "source_slug": "e46ca02c9f0570bc",
+        "card_name_jp": "花海咲季(桜フォトグラフ)"
+      },
+      "names": {
+        "card_jp": "花海咲季(桜フォトグラフ)",
+        "card_zh": "花海咲季(桜フォトグラフ)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "桜フォトグラフ",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 100,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2025/04/11",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "70fab9c567d13d93",
+      "source_keys": {
+        "source_slug": "70fab9c567d13d93",
+        "card_name_jp": "花海咲季(雨上がりのアイリス)"
+      },
+      "names": {
+        "card_jp": "花海咲季(雨上がりのアイリス)",
+        "card_zh": "花海咲季(雨上がりのアイリス)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "雨上がりのアイリス",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 100,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2025/05/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "2a4ffa2732701a5d",
+      "source_keys": {
+        "source_slug": "2a4ffa2732701a5d",
+        "card_name_jp": "花海咲季(がむしゃらに行こう！)"
+      },
+      "names": {
+        "card_jp": "花海咲季(がむしゃらに行こう！)",
+        "card_zh": "花海咲季(がむしゃらに行こう！)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "がむしゃらに行こう！",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 100,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/09/29",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "a344017d1bdeea11",
+      "source_keys": {
+        "source_slug": "a344017d1bdeea11",
+        "card_name_jp": "花海咲季(Wildest Flower)"
+      },
+      "names": {
+        "card_jp": "花海咲季(Wildest Flower)",
+        "card_zh": "花海咲季(Wildest Flower)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "Wildest Flower",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 100,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2026/03/19",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "feb4044ac5231ddc",
+      "source_keys": {
+        "source_slug": "feb4044ac5231ddc",
+        "card_name_jp": "月村手毬(Luna say maybe)"
+      },
+      "names": {
+        "card_jp": "月村手毬(Luna say maybe)",
+        "card_zh": "月村手毬(Luna say maybe)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "Luna say maybe",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 120,
+        "Da": 100,
+        "Vi": 80,
+        "stamina": 40,
+        "bonus": 8.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "f21c676dfb86d3b4",
+      "source_keys": {
+        "source_slug": "f21c676dfb86d3b4",
+        "card_name_jp": "月村手毬(アイヴイ)"
+      },
+      "names": {
+        "card_jp": "月村手毬(アイヴイ)",
+        "card_zh": "月村手毬(アイヴイ)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "アイヴイ",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 120,
+        "Da": 100,
+        "Vi": 80,
+        "stamina": 40,
+        "bonus": 8.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/05/22",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "b4eb9d0881346cbf",
+      "source_keys": {
+        "source_slug": "b4eb9d0881346cbf",
+        "card_name_jp": "月村手毬(仮装狂騒曲)"
+      },
+      "names": {
+        "card_jp": "月村手毬(仮装狂騒曲)",
+        "card_zh": "月村手毬(仮装狂騒曲)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "仮装狂騒曲",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 120,
+        "Da": 100,
+        "Vi": 80,
+        "stamina": 40,
+        "bonus": 8.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/09/30",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "828383bc0093d180",
+      "source_keys": {
+        "source_slug": "828383bc0093d180",
+        "card_name_jp": "月村手毬(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "月村手毬(Campus mode!!)",
+        "card_zh": "月村手毬(Campus mode!!)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 120,
+        "Da": 100,
+        "Vi": 80,
+        "stamina": 40,
+        "bonus": 8.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/12/26",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "eeb4d659667df4d5",
+      "source_keys": {
+        "source_slug": "eeb4d659667df4d5",
+        "card_name_jp": "月村手毬(雪解けに)"
+      },
+      "names": {
+        "card_jp": "月村手毬(雪解けに)",
+        "card_zh": "月村手毬(雪解けに)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "雪解けに",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 120,
+        "Da": 100,
+        "Vi": 80,
+        "stamina": 40,
+        "bonus": 8.5
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/02/28",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "ad2985dcb984817c",
+      "source_keys": {
+        "source_slug": "ad2985dcb984817c",
+        "card_name_jp": "月村手毬(雨上がりのアイリス)"
+      },
+      "names": {
+        "card_jp": "月村手毬(雨上がりのアイリス)",
+        "card_zh": "月村手毬(雨上がりのアイリス)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "雨上がりのアイリス",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 120,
+        "Da": 100,
+        "Vi": 80,
+        "stamina": 40,
+        "bonus": 8.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2025/05/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "92df9cca22d0d541",
+      "source_keys": {
+        "source_slug": "92df9cca22d0d541",
+        "card_name_jp": "月村手毬(がむしゃらに行こう！)"
+      },
+      "names": {
+        "card_jp": "月村手毬(がむしゃらに行こう！)",
+        "card_zh": "月村手毬(がむしゃらに行こう！)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "がむしゃらに行こう！",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 120,
+        "Da": 100,
+        "Vi": 80,
+        "stamina": 40,
+        "bonus": 8.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2025/10/10",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "5e81b16b53823808",
+      "source_keys": {
+        "source_slug": "5e81b16b53823808",
+        "card_name_jp": "月村手毬(一体いつから)"
+      },
+      "names": {
+        "card_jp": "月村手毬(一体いつから)",
+        "card_zh": "月村手毬(一体いつから)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "一体いつから",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 120,
+        "Da": 100,
+        "Vi": 80,
+        "stamina": 40,
+        "bonus": 8.5
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2026/01/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "e76321dd8ddf565f",
+      "source_keys": {
+        "source_slug": "e76321dd8ddf565f",
+        "card_name_jp": "月村手毬(ガラクタロード)"
+      },
+      "names": {
+        "card_jp": "月村手毬(ガラクタロード)",
+        "card_zh": "月村手毬(ガラクタロード)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "ガラクタロード",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 120,
+        "Da": 100,
+        "Vi": 80,
+        "stamina": 40,
+        "bonus": 8.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2026/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "64514c203712e237",
+      "source_keys": {
+        "source_slug": "64514c203712e237",
+        "card_name_jp": "藤田ことね(世界一可愛い私)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(世界一可愛い私)",
+        "card_zh": "藤田ことね(世界一可愛い私)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "世界一可愛い私",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 120,
+        "stamina": 39,
+        "bonus": 25.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "5e6ec5e77dfa081e",
+      "source_keys": {
+        "source_slug": "5e6ec5e77dfa081e",
+        "card_name_jp": "藤田ことね(Yellow Big Bang！)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(Yellow Big Bang！)",
+        "card_zh": "藤田ことね(Yellow Big Bang！)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "Yellow Big Bang！",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 120,
+        "stamina": 39,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/06/10",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "a56d5d293fe882c8",
+      "source_keys": {
+        "source_slug": "a56d5d293fe882c8",
+        "card_name_jp": "藤田ことね(冠菊)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(冠菊)",
+        "card_zh": "藤田ことね(冠菊)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "冠菊",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 120,
+        "stamina": 39,
+        "bonus": 25.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/08/11",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "153455f48b00635a",
+      "source_keys": {
+        "source_slug": "153455f48b00635a",
+        "card_name_jp": "藤田ことね(White Night! White Wish!)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(White Night! White Wish!)",
+        "card_zh": "藤田ことね(White Night! White Wish!)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "White Night! White Wish!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 120,
+        "stamina": 43,
+        "bonus": 25.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/11/28",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "2bf31048a6ac7ab9",
+      "source_keys": {
+        "source_slug": "2bf31048a6ac7ab9",
+        "card_name_jp": "藤田ことね(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(Campus mode!!)",
+        "card_zh": "藤田ことね(Campus mode!!)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 120,
+        "stamina": 39,
+        "bonus": 25.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/12/26",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "4187c1838a4974ab",
+      "source_keys": {
+        "source_slug": "4187c1838a4974ab",
+        "card_name_jp": "藤田ことね(雨上がりのアイリス)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(雨上がりのアイリス)",
+        "card_zh": "藤田ことね(雨上がりのアイリス)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "雨上がりのアイリス",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 120,
+        "stamina": 39,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/05/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "520af463cf4cdd89",
+      "source_keys": {
+        "source_slug": "520af463cf4cdd89",
+        "card_name_jp": "藤田ことね(自己肯定感爆上げ↑↑しゅきしゅきソング)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(自己肯定感爆上げ↑↑しゅきしゅきソング)",
+        "card_zh": "藤田ことね(自己肯定感爆上げ↑↑しゅきしゅきソング)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "自己肯定感爆上げ↑↑しゅきしゅきソング",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 120,
+        "stamina": 39,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2025/08/12",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "88babb7cfddf37c0",
+      "source_keys": {
+        "source_slug": "88babb7cfddf37c0",
+        "card_name_jp": "藤田ことね(がむしゃらに行こう！)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(がむしゃらに行こう！)",
+        "card_zh": "藤田ことね(がむしゃらに行こう！)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "がむしゃらに行こう！",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 120,
+        "stamina": 39,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2025/09/29",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "47914b9627c10f00",
+      "source_keys": {
+        "source_slug": "47914b9627c10f00",
+        "card_name_jp": "雨夜燕(理論武装して)"
+      },
+      "names": {
+        "card_jp": "雨夜燕(理論武装して)",
+        "card_zh": "雨夜燕(理論武装して)",
+        "idol_jp": "雨夜燕",
+        "idol_zh": "雨夜燕",
+        "song_jp": "理論武装して",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 115,
+        "Da": 135,
+        "Vi": 95,
+        "stamina": 37,
+        "bonus": 12.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2025/11/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "6f3999507d004da0",
+      "source_keys": {
+        "source_slug": "6f3999507d004da0",
+        "card_name_jp": "雨夜燕(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "雨夜燕(Campus mode!!)",
+        "card_zh": "雨夜燕(Campus mode!!)",
+        "idol_jp": "雨夜燕",
+        "idol_zh": "雨夜燕",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 115,
+        "Da": 135,
+        "Vi": 95,
+        "stamina": 37,
+        "bonus": 12.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2025/12/26",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "0fffb41d4f711ed7",
+      "source_keys": {
+        "source_slug": "0fffb41d4f711ed7",
+        "card_name_jp": "有村麻央(Fluorite)"
+      },
+      "names": {
+        "card_jp": "有村麻央(Fluorite)",
+        "card_zh": "有村麻央(Fluorite)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "Fluorite",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 90,
+        "Vi": 100,
+        "stamina": 39,
+        "bonus": 28.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "cbb9974f20ecc6ad",
+      "source_keys": {
+        "source_slug": "cbb9974f20ecc6ad",
+        "card_name_jp": "有村麻央(キミとセミブルー)"
+      },
+      "names": {
+        "card_jp": "有村麻央(キミとセミブルー)",
+        "card_zh": "有村麻央(キミとセミブルー)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "キミとセミブルー",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 90,
+        "Vi": 100,
+        "stamina": 39,
+        "bonus": 28.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/07/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "9804828ae240fa54",
+      "source_keys": {
+        "source_slug": "9804828ae240fa54",
+        "card_name_jp": "有村麻央(Feel Jewel Dream)"
+      },
+      "names": {
+        "card_jp": "有村麻央(Feel Jewel Dream)",
+        "card_zh": "有村麻央(Feel Jewel Dream)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "Feel Jewel Dream",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 90,
+        "Vi": 100,
+        "stamina": 39,
+        "bonus": 28.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/09/20",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "6ea81394aebc205a",
+      "source_keys": {
+        "source_slug": "6ea81394aebc205a",
+        "card_name_jp": "有村麻央(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "有村麻央(Campus mode!!)",
+        "card_zh": "有村麻央(Campus mode!!)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 90,
+        "Vi": 100,
+        "stamina": 39,
+        "bonus": 28.0
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/01/02",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "2e2d97fc3f7805f9",
+      "source_keys": {
+        "source_slug": "2e2d97fc3f7805f9",
+        "card_name_jp": "有村麻央(雪解けに)"
+      },
+      "names": {
+        "card_jp": "有村麻央(雪解けに)",
+        "card_zh": "有村麻央(雪解けに)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "雪解けに",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 90,
+        "Vi": 100,
+        "stamina": 39,
+        "bonus": 28.0
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2025/03/10",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "8bddce8f7a1eec7a",
+      "source_keys": {
+        "source_slug": "8bddce8f7a1eec7a",
+        "card_name_jp": "有村麻央(ミラクルナナウ(ﾟ∀ﾟ)！)"
+      },
+      "names": {
+        "card_jp": "有村麻央(ミラクルナナウ(ﾟ∀ﾟ)！)",
+        "card_zh": "有村麻央(ミラクルナナウ(ﾟ∀ﾟ)！)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "ミラクルナナウ(ﾟ∀ﾟ)！",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 90,
+        "Vi": 100,
+        "stamina": 39,
+        "bonus": 28.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2025/08/29",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "54fe00b4228635cf",
+      "source_keys": {
+        "source_slug": "54fe00b4228635cf",
+        "card_name_jp": "有村麻央(見て)"
+      },
+      "names": {
+        "card_jp": "有村麻央(見て)",
+        "card_zh": "有村麻央(見て)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "見て",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 90,
+        "Vi": 100,
+        "stamina": 39,
+        "bonus": 28.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2025/10/31",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "28e4649b01ef3803",
+      "source_keys": {
+        "source_slug": "28e4649b01ef3803",
+        "card_name_jp": "葛城リーリヤ(白線)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(白線)",
+        "card_zh": "葛城リーリヤ(白線)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "白線",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 80,
+        "Da": 100,
+        "Vi": 115,
+        "stamina": 39,
+        "bonus": 21.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "4464d0b2a306cca8",
+      "source_keys": {
+        "source_slug": "4464d0b2a306cca8",
+        "card_name_jp": "葛城リーリヤ(冠菊)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(冠菊)",
+        "card_zh": "葛城リーリヤ(冠菊)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "冠菊",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 80,
+        "Da": 100,
+        "Vi": 115,
+        "stamina": 39,
+        "bonus": 21.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/08/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "8cbc5ee6da88b919",
+      "source_keys": {
+        "source_slug": "8cbc5ee6da88b919",
+        "card_name_jp": "葛城リーリヤ(White Night! White Wish!)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(White Night! White Wish!)",
+        "card_zh": "葛城リーリヤ(White Night! White Wish!)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "White Night! White Wish!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 105,
+        "Vi": 120,
+        "stamina": 36,
+        "bonus": 21.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/12/09",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "a7baaf05a8d76645",
+      "source_keys": {
+        "source_slug": "a7baaf05a8d76645",
+        "card_name_jp": "葛城リーリヤ(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(Campus mode!!)",
+        "card_zh": "葛城リーリヤ(Campus mode!!)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 80,
+        "Da": 100,
+        "Vi": 115,
+        "stamina": 39,
+        "bonus": 21.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2025/01/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "9115fe07b24e332c",
+      "source_keys": {
+        "source_slug": "9115fe07b24e332c",
+        "card_name_jp": "葛城リーリヤ(極光)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(極光)",
+        "card_zh": "葛城リーリヤ(極光)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "極光",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 80,
+        "Da": 100,
+        "Vi": 115,
+        "stamina": 39,
+        "bonus": 21.0
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/03/21",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "30a52aa161716618",
+      "source_keys": {
+        "source_slug": "30a52aa161716618",
+        "card_name_jp": "葛城リーリヤ(桜フォトグラフ)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(桜フォトグラフ)",
+        "card_zh": "葛城リーリヤ(桜フォトグラフ)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "桜フォトグラフ",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 80,
+        "Da": 100,
+        "Vi": 115,
+        "stamina": 39,
+        "bonus": 21.0
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2025/04/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "305789a0e2a90a95",
+      "source_keys": {
+        "source_slug": "305789a0e2a90a95",
+        "card_name_jp": "葛城リーリヤ(Howling over the World)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(Howling over the World)",
+        "card_zh": "葛城リーリヤ(Howling over the World)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "Howling over the World",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 80,
+        "Da": 100,
+        "Vi": 115,
+        "stamina": 39,
+        "bonus": 21.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2025/06/09",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "f01b30a23794caf6",
+      "source_keys": {
+        "source_slug": "f01b30a23794caf6",
+        "card_name_jp": "葛城リーリヤ(Atmosphere)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(Atmosphere)",
+        "card_zh": "葛城リーリヤ(Atmosphere)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "Atmosphere",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 80,
+        "Da": 100,
+        "Vi": 115,
+        "stamina": 39,
+        "bonus": 21.0
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2025/12/08",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "a7ab6fdfb04098a9",
+      "source_keys": {
+        "source_slug": "a7ab6fdfb04098a9",
+        "card_name_jp": "葛城リーリヤ(ときめきエモーション)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(ときめきエモーション)",
+        "card_zh": "葛城リーリヤ(ときめきエモーション)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "ときめきエモーション",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 80,
+        "Da": 100,
+        "Vi": 115,
+        "stamina": 39,
+        "bonus": 21.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2026/04/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "20914ebf5b1d1f06",
+      "source_keys": {
+        "source_slug": "20914ebf5b1d1f06",
+        "card_name_jp": "倉本千奈(Wonder Scale)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(Wonder Scale)",
+        "card_zh": "倉本千奈(Wonder Scale)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "Wonder Scale",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "84ef173b51f7b07a",
+      "source_keys": {
+        "source_slug": "84ef173b51f7b07a",
+        "card_name_jp": "倉本千奈(日々、発見的ステップ！)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(日々、発見的ステップ！)",
+        "card_zh": "倉本千奈(日々、発見的ステップ！)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "日々、発見的ステップ！",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/08/22",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "a11ff17286d76991",
+      "source_keys": {
+        "source_slug": "a11ff17286d76991",
+        "card_name_jp": "倉本千奈(ようこそ初星温泉)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(ようこそ初星温泉)",
+        "card_zh": "倉本千奈(ようこそ初星温泉)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "ようこそ初星温泉",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/09/11",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "0fdb61bb32da7341",
+      "source_keys": {
+        "source_slug": "0fdb61bb32da7341",
+        "card_name_jp": "倉本千奈(仮装狂騒曲)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(仮装狂騒曲)",
+        "card_zh": "倉本千奈(仮装狂騒曲)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "仮装狂騒曲",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/09/30",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "09c36e47e269bf9d",
+      "source_keys": {
+        "source_slug": "09c36e47e269bf9d",
+        "card_name_jp": "倉本千奈(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(Campus mode!!)",
+        "card_zh": "倉本千奈(Campus mode!!)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2025/01/09",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "c0f0863ca59916cb",
+      "source_keys": {
+        "source_slug": "c0f0863ca59916cb",
+        "card_name_jp": "倉本千奈(雪解けに)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(雪解けに)",
+        "card_zh": "倉本千奈(雪解けに)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "雪解けに",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2025/02/28",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "ca17d5802f87ecd9",
+      "source_keys": {
+        "source_slug": "ca17d5802f87ecd9",
+        "card_name_jp": "倉本千奈(Howling over the World)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(Howling over the World)",
+        "card_zh": "倉本千奈(Howling over the World)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "Howling over the World",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/05/29",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "dc40a377e0fda188",
+      "source_keys": {
+        "source_slug": "dc40a377e0fda188",
+        "card_name_jp": "倉本千奈(空と約束)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(空と約束)",
+        "card_zh": "倉本千奈(空と約束)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "空と約束",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2025/10/21",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "daccafd205692a83",
+      "source_keys": {
+        "source_slug": "daccafd205692a83",
+        "card_name_jp": "倉本千奈(みちなるひろがる)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(みちなるひろがる)",
+        "card_zh": "倉本千奈(みちなるひろがる)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "みちなるひろがる",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2026/01/27",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "65c9e900eb8b1602",
+      "source_keys": {
+        "source_slug": "65c9e900eb8b1602",
+        "card_name_jp": "紫雲清夏(Tame-Lie-One-Step)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(Tame-Lie-One-Step)",
+        "card_zh": "紫雲清夏(Tame-Lie-One-Step)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "Tame-Lie-One-Step",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 115,
+        "Vi": 90,
+        "stamina": 38,
+        "bonus": 26.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "949d3b2a76809faf",
+      "source_keys": {
+        "source_slug": "949d3b2a76809faf",
+        "card_name_jp": "紫雲清夏(キミとセミブルー)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(キミとセミブルー)",
+        "card_zh": "紫雲清夏(キミとセミブルー)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "キミとセミブルー",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 115,
+        "Vi": 90,
+        "stamina": 38,
+        "bonus": 26.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/07/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "1b1bc9c5ca1ccd0b",
+      "source_keys": {
+        "source_slug": "1b1bc9c5ca1ccd0b",
+        "card_name_jp": "紫雲清夏(カクシタワタシ)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(カクシタワタシ)",
+        "card_zh": "紫雲清夏(カクシタワタシ)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "カクシタワタシ",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 115,
+        "Vi": 90,
+        "stamina": 38,
+        "bonus": 26.0
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2024/12/18",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "6f5ecaee744fd3e5",
+      "source_keys": {
+        "source_slug": "6f5ecaee744fd3e5",
+        "card_name_jp": "紫雲清夏(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(Campus mode!!)",
+        "card_zh": "紫雲清夏(Campus mode!!)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 115,
+        "Vi": 90,
+        "stamina": 38,
+        "bonus": 26.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2025/01/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "3044e2cffc1f0048",
+      "source_keys": {
+        "source_slug": "3044e2cffc1f0048",
+        "card_name_jp": "紫雲清夏(桜フォトグラフ)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(桜フォトグラフ)",
+        "card_zh": "紫雲清夏(桜フォトグラフ)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "桜フォトグラフ",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 115,
+        "Vi": 90,
+        "stamina": 38,
+        "bonus": 26.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2025/04/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "4d4add59662cbb0e",
+      "source_keys": {
+        "source_slug": "4d4add59662cbb0e",
+        "card_name_jp": "紫雲清夏(Love & Joy)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(Love & Joy)",
+        "card_zh": "紫雲清夏(Love & Joy)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "Love & Joy",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 115,
+        "Vi": 90,
+        "stamina": 38,
+        "bonus": 26.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2025/06/19",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "d43eb60aac56b0d3",
+      "source_keys": {
+        "source_slug": "d43eb60aac56b0d3",
+        "card_name_jp": "紫雲清夏(ミラクルナナウ(ﾟ∀ﾟ)！)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(ミラクルナナウ(ﾟ∀ﾟ)！)",
+        "card_zh": "紫雲清夏(ミラクルナナウ(ﾟ∀ﾟ)！)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "ミラクルナナウ(ﾟ∀ﾟ)！",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 115,
+        "Vi": 90,
+        "stamina": 38,
+        "bonus": 26.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2025/08/29",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "4343bb6f5c29c79c",
+      "source_keys": {
+        "source_slug": "4343bb6f5c29c79c",
+        "card_name_jp": "紫雲清夏(ときめきエモーション)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(ときめきエモーション)",
+        "card_zh": "紫雲清夏(ときめきエモーション)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "ときめきエモーション",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 100,
+        "Da": 115,
+        "Vi": 90,
+        "stamina": 38,
+        "bonus": 26.0
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2026/04/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "903610b825b905e7",
+      "source_keys": {
+        "source_slug": "903610b825b905e7",
+        "card_name_jp": "篠澤広(光景)"
+      },
+      "names": {
+        "card_jp": "篠澤広(光景)",
+        "card_zh": "篠澤広(光景)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "光景",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 120,
+        "Vi": 80,
+        "stamina": 36,
+        "bonus": 10.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "b392cbe187caff9a",
+      "source_keys": {
+        "source_slug": "b392cbe187caff9a",
+        "card_name_jp": "篠澤広(コントラスト)"
+      },
+      "names": {
+        "card_jp": "篠澤広(コントラスト)",
+        "card_zh": "篠澤広(コントラスト)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "コントラスト",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 120,
+        "Vi": 80,
+        "stamina": 36,
+        "bonus": 10.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/07/22",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "cfa7558dcf21f306",
+      "source_keys": {
+        "source_slug": "cfa7558dcf21f306",
+        "card_name_jp": "篠澤広(仮装狂騒曲)"
+      },
+      "names": {
+        "card_jp": "篠澤広(仮装狂騒曲)",
+        "card_zh": "篠澤広(仮装狂騒曲)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "仮装狂騒曲",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 120,
+        "Vi": 80,
+        "stamina": 36,
+        "bonus": 10.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/10/08",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "bd1f782faee26c8c",
+      "source_keys": {
+        "source_slug": "bd1f782faee26c8c",
+        "card_name_jp": "篠澤広(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "篠澤広(Campus mode!!)",
+        "card_zh": "篠澤広(Campus mode!!)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 120,
+        "Vi": 80,
+        "stamina": 36,
+        "bonus": 10.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2025/01/09",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "ee0380aa46a3945d",
+      "source_keys": {
+        "source_slug": "ee0380aa46a3945d",
+        "card_name_jp": "篠澤広(ハッピーミルフィーユ)"
+      },
+      "names": {
+        "card_jp": "篠澤広(ハッピーミルフィーユ)",
+        "card_zh": "篠澤広(ハッピーミルフィーユ)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "ハッピーミルフィーユ",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 120,
+        "Vi": 80,
+        "stamina": 36,
+        "bonus": 10.0
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2025/02/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "98efa96a3662b143",
+      "source_keys": {
+        "source_slug": "98efa96a3662b143",
+        "card_name_jp": "篠澤広(サンフェーデッド)"
+      },
+      "names": {
+        "card_jp": "篠澤広(サンフェーデッド)",
+        "card_zh": "篠澤広(サンフェーデッド)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "サンフェーデッド",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 120,
+        "Vi": 80,
+        "stamina": 36,
+        "bonus": 10.0
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/07/17",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "1cd9637550142dd9",
+      "source_keys": {
+        "source_slug": "1cd9637550142dd9",
+        "card_name_jp": "篠澤広(ミラクルナナウ(ﾟ∀ﾟ)！)"
+      },
+      "names": {
+        "card_jp": "篠澤広(ミラクルナナウ(ﾟ∀ﾟ)！)",
+        "card_zh": "篠澤広(ミラクルナナウ(ﾟ∀ﾟ)！)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "ミラクルナナウ(ﾟ∀ﾟ)！",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 120,
+        "Vi": 80,
+        "stamina": 36,
+        "bonus": 10.0
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2025/09/08",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "f5e340e552af64d6",
+      "source_keys": {
+        "source_slug": "f5e340e552af64d6",
+        "card_name_jp": "篠澤広(みちなるひろがる)"
+      },
+      "names": {
+        "card_jp": "篠澤広(みちなるひろがる)",
+        "card_zh": "篠澤広(みちなるひろがる)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "みちなるひろがる",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 125,
+        "Da": 120,
+        "Vi": 80,
+        "stamina": 36,
+        "bonus": 10.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2026/01/27",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "c51456d6a453bc46",
+      "source_keys": {
+        "source_slug": "c51456d6a453bc46",
+        "card_name_jp": "十王星南(小さな野望)"
+      },
+      "names": {
+        "card_jp": "十王星南(小さな野望)",
+        "card_zh": "十王星南(小さな野望)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "小さな野望",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 175,
+        "Da": 125,
+        "Vi": 140,
+        "stamina": 37,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2024/11/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "09bbae90305f949a",
+      "source_keys": {
+        "source_slug": "09bbae90305f949a",
+        "card_name_jp": "十王星南(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "十王星南(Campus mode!!)",
+        "card_zh": "十王星南(Campus mode!!)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 175,
+        "Da": 125,
+        "Vi": 140,
+        "stamina": 37,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2025/01/02",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "31a74ff3c77eb5b6",
+      "source_keys": {
+        "source_slug": "31a74ff3c77eb5b6",
+        "card_name_jp": "十王星南(ハッピーミルフィーユ)"
+      },
+      "names": {
+        "card_jp": "十王星南(ハッピーミルフィーユ)",
+        "card_zh": "十王星南(ハッピーミルフィーユ)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "ハッピーミルフィーユ",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 175,
+        "Da": 125,
+        "Vi": 140,
+        "stamina": 37,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2025/02/14",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "f17df1c6e959f97f",
+      "source_keys": {
+        "source_slug": "f17df1c6e959f97f",
+        "card_name_jp": "十王星南(Our Chant)"
+      },
+      "names": {
+        "card_jp": "十王星南(Our Chant)",
+        "card_zh": "十王星南(Our Chant)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "Our Chant",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 175,
+        "Da": 125,
+        "Vi": 140,
+        "stamina": 37,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2025/04/22",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "503ef1189051c7f2",
+      "source_keys": {
+        "source_slug": "503ef1189051c7f2",
+        "card_name_jp": "十王星南(Star-mine)"
+      },
+      "names": {
+        "card_jp": "十王星南(Star-mine)",
+        "card_zh": "十王星南(Star-mine)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "Star-mine",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 175,
+        "Da": 125,
+        "Vi": 140,
+        "stamina": 37,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2025/07/31",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "bfd41b334042eb5b",
+      "source_keys": {
+        "source_slug": "bfd41b334042eb5b",
+        "card_name_jp": "十王星南(赤裸々)"
+      },
+      "names": {
+        "card_jp": "十王星南(赤裸々)",
+        "card_zh": "十王星南(赤裸々)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "赤裸々",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 175,
+        "Da": 125,
+        "Vi": 140,
+        "stamina": 37,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2026/02/09",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "f7301be0f42ee285",
+      "source_keys": {
+        "source_slug": "f7301be0f42ee285",
+        "card_name_jp": "十王星南(ENDLESS DANCE)"
+      },
+      "names": {
+        "card_jp": "十王星南(ENDLESS DANCE)",
+        "card_zh": "十王星南(ENDLESS DANCE)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "ENDLESS DANCE",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 175,
+        "Da": 125,
+        "Vi": 140,
+        "stamina": 37,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2026/03/09",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "8d4ee944f075a652",
+      "source_keys": {
+        "source_slug": "8d4ee944f075a652",
+        "card_name_jp": "秦谷美鈴(ツキノカメ)"
+      },
+      "names": {
+        "card_jp": "秦谷美鈴(ツキノカメ)",
+        "card_zh": "秦谷美鈴(ツキノカメ)",
+        "idol_jp": "秦谷美鈴",
+        "idol_zh": "秦谷美铃",
+        "song_jp": "ツキノカメ",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 36,
+        "bonus": 20.0
+      },
+      "recommended_effect": {
+        "jp": "ｽアノマリー温存",
+        "zh": "非凡·温存"
+      },
+      "debut_date": "2025/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "c9df49b74959a5a5",
+      "source_keys": {
+        "source_slug": "c9df49b74959a5a5",
+        "card_name_jp": "秦谷美鈴(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "秦谷美鈴(Campus mode!!)",
+        "card_zh": "秦谷美鈴(Campus mode!!)",
+        "idol_jp": "秦谷美鈴",
+        "idol_zh": "秦谷美铃",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 125,
+        "Vi": 135,
+        "stamina": 36,
+        "bonus": 20.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2025/06/30",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "f5da14d4fc9bed41",
+      "source_keys": {
+        "source_slug": "f5da14d4fc9bed41",
+        "card_name_jp": "秦谷美鈴(Star-mine)"
+      },
+      "names": {
+        "card_jp": "秦谷美鈴(Star-mine)",
+        "card_zh": "秦谷美鈴(Star-mine)",
+        "idol_jp": "秦谷美鈴",
+        "idol_zh": "秦谷美铃",
+        "song_jp": "Star-mine",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 125,
+        "Vi": 135,
+        "stamina": 30,
+        "bonus": 20.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2025/07/31",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "37358b668c86cf41",
+      "source_keys": {
+        "source_slug": "37358b668c86cf41",
+        "card_name_jp": "秦谷美鈴(Superlative)"
+      },
+      "names": {
+        "card_jp": "秦谷美鈴(Superlative)",
+        "card_zh": "秦谷美鈴(Superlative)",
+        "idol_jp": "秦谷美鈴",
+        "idol_zh": "秦谷美铃",
+        "song_jp": "Superlative",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 125,
+        "Vi": 135,
+        "stamina": 30,
+        "bonus": 20.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2026/01/05",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "f97a7955bef7f37c",
+      "source_keys": {
+        "source_slug": "f97a7955bef7f37c",
+        "card_name_jp": "秦谷美鈴(ENDLESS DANCE)"
+      },
+      "names": {
+        "card_jp": "秦谷美鈴(ENDLESS DANCE)",
+        "card_zh": "秦谷美鈴(ENDLESS DANCE)",
+        "idol_jp": "秦谷美鈴",
+        "idol_zh": "秦谷美铃",
+        "song_jp": "ENDLESS DANCE",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 125,
+        "Vi": 135,
+        "stamina": 30,
+        "bonus": 20.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2026/02/27",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "c20317f631ffbb93",
+      "source_keys": {
+        "source_slug": "c20317f631ffbb93",
+        "card_name_jp": "秦谷美鈴(VEIL)"
+      },
+      "names": {
+        "card_jp": "秦谷美鈴(VEIL)",
+        "card_zh": "秦谷美鈴(VEIL)",
+        "idol_jp": "秦谷美鈴",
+        "idol_zh": "秦谷美铃",
+        "song_jp": "VEIL",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 36,
+        "bonus": 20.0
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2026/04/29",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "e1371d8124f4cf10",
+      "source_keys": {
+        "source_slug": "e1371d8124f4cf10",
+        "card_name_jp": "花海佑芽(The Rolling Riceball)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(The Rolling Riceball)",
+        "card_zh": "花海佑芽(The Rolling Riceball)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "The Rolling Riceball",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 95,
+        "Vi": 100,
+        "stamina": 36,
+        "bonus": 15.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/06/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "b975419bf8187851",
+      "source_keys": {
+        "source_slug": "b975419bf8187851",
+        "card_name_jp": "花海佑芽(White Night! White Wish!)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(White Night! White Wish!)",
+        "card_zh": "花海佑芽(White Night! White Wish!)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "White Night! White Wish!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 95,
+        "Vi": 100,
+        "stamina": 36,
+        "bonus": 15.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/11/28",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "c207c7544c7c671c",
+      "source_keys": {
+        "source_slug": "c207c7544c7c671c",
+        "card_name_jp": "花海佑芽(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(Campus mode!!)",
+        "card_zh": "花海佑芽(Campus mode!!)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 95,
+        "Vi": 100,
+        "stamina": 36,
+        "bonus": 15.0
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2025/01/09",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "44d2d7b1bae1204f",
+      "source_keys": {
+        "source_slug": "44d2d7b1bae1204f",
+        "card_name_jp": "花海佑芽(Star-mine)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(Star-mine)",
+        "card_zh": "花海佑芽(Star-mine)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "Star-mine",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 95,
+        "Vi": 100,
+        "stamina": 36,
+        "bonus": 15.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2025/07/31",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "21a34df9d7a99a38",
+      "source_keys": {
+        "source_slug": "21a34df9d7a99a38",
+        "card_name_jp": "花海佑芽(グースーピー)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(グースーピー)",
+        "card_zh": "花海佑芽(グースーピー)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "グースーピー",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 95,
+        "Vi": 100,
+        "stamina": 36,
+        "bonus": 15.0
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/11/28",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "ff78f678b78ba0e8",
+      "source_keys": {
+        "source_slug": "ff78f678b78ba0e8",
+        "card_name_jp": "花海佑芽(ENDLESS DANCE)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(ENDLESS DANCE)",
+        "card_zh": "花海佑芽(ENDLESS DANCE)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "ENDLESS DANCE",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 95,
+        "Vi": 100,
+        "stamina": 36,
+        "bonus": 15.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2026/02/27",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "a46655b64db7976d",
+      "source_keys": {
+        "source_slug": "a46655b64db7976d",
+        "card_name_jp": "花海佑芽(真っ白いページと水彩の主人公)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(真っ白いページと水彩の主人公)",
+        "card_zh": "花海佑芽(真っ白いページと水彩の主人公)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "真っ白いページと水彩の主人公",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 90,
+        "Da": 95,
+        "Vi": 100,
+        "stamina": 36,
+        "bonus": 15.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2026/04/10",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "7602023302df7e39",
+      "source_keys": {
+        "source_slug": "7602023302df7e39",
+        "card_name_jp": "姫崎莉波(clumsy trick)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(clumsy trick)",
+        "card_zh": "姫崎莉波(clumsy trick)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "clumsy trick",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 110,
+        "Vi": 110,
+        "stamina": 38,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "5a1aef36230665da",
+      "source_keys": {
+        "source_slug": "5a1aef36230665da",
+        "card_name_jp": "姫崎莉波(キミとセミブルー)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(キミとセミブルー)",
+        "card_zh": "姫崎莉波(キミとセミブルー)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "キミとセミブルー",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 110,
+        "Vi": 110,
+        "stamina": 38,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/07/12",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "bdb9a232b61aaa2e",
+      "source_keys": {
+        "source_slug": "bdb9a232b61aaa2e",
+        "card_name_jp": "姫崎莉波(ようこそ初星温泉)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(ようこそ初星温泉)",
+        "card_zh": "姫崎莉波(ようこそ初星温泉)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "ようこそ初星温泉",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 110,
+        "Vi": 110,
+        "stamina": 38,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/09/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "eae14925e4e40096",
+      "source_keys": {
+        "source_slug": "eae14925e4e40096",
+        "card_name_jp": "姫崎莉波(L.U.V)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(L.U.V)",
+        "card_zh": "姫崎莉波(L.U.V)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "L.U.V",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 80,
+        "Da": 105,
+        "Vi": 105,
+        "stamina": 41,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/10/18",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "ee0b7aa381115362",
+      "source_keys": {
+        "source_slug": "ee0b7aa381115362",
+        "card_name_jp": "姫崎莉波(Campus mode!!)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(Campus mode!!)",
+        "card_zh": "姫崎莉波(Campus mode!!)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "Campus mode!!",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 110,
+        "Vi": 110,
+        "stamina": 38,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2025/01/02",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "0bc84745c98b2570",
+      "source_keys": {
+        "source_slug": "0bc84745c98b2570",
+        "card_name_jp": "姫崎莉波(ハッピーミルフィーユ)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(ハッピーミルフィーユ)",
+        "card_zh": "姫崎莉波(ハッピーミルフィーユ)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "ハッピーミルフィーユ",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 110,
+        "Vi": 110,
+        "stamina": 38,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/02/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "c396d36b9240ea8a",
+      "source_keys": {
+        "source_slug": "c396d36b9240ea8a",
+        "card_name_jp": "姫崎莉波(Howling over the World)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(Howling over the World)",
+        "card_zh": "姫崎莉波(Howling over the World)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "Howling over the World",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 110,
+        "Vi": 110,
+        "stamina": 38,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2025/05/29",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "9f23d7974c442f77",
+      "source_keys": {
+        "source_slug": "9f23d7974c442f77",
+        "card_name_jp": "姫崎莉波(36℃ U･B･U)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(36℃ U･B･U)",
+        "card_zh": "姫崎莉波(36℃ U･B･U)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "36℃ U･B･U",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 110,
+        "Vi": 110,
+        "stamina": 38,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2025/09/17",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "e96809d5f7677ddb",
+      "source_keys": {
+        "source_slug": "e96809d5f7677ddb",
+        "card_name_jp": "姫崎莉波(ガラクタロード)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(ガラクタロード)",
+        "card_zh": "姫崎莉波(ガラクタロード)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "ガラクタロード",
+        "song_zh": ""
+      },
+      "rarity": "SSR",
+      "stats": {
+        "Vo": 85,
+        "Da": 110,
+        "Vi": 110,
+        "stamina": 38,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2026/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "2fa0dcfd5eddfe93",
+      "source_keys": {
+        "source_slug": "2fa0dcfd5eddfe93",
+        "card_name_jp": "花海咲季(わたしが一番！)"
+      },
+      "names": {
+        "card_jp": "花海咲季(わたしが一番！)",
+        "card_zh": "花海咲季(わたしが一番！)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "わたしが一番！",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 95,
+        "Da": 95,
+        "Vi": 100,
+        "stamina": 38,
+        "bonus": 19.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "78c24c32df4a1b68",
+      "source_keys": {
+        "source_slug": "78c24c32df4a1b68",
+        "card_name_jp": "月村手毬(一匹狼)"
+      },
+      "names": {
+        "card_jp": "月村手毬(一匹狼)",
+        "card_zh": "月村手毬(一匹狼)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "一匹狼",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 115,
+        "Da": 95,
+        "Vi": 75,
+        "stamina": 40,
+        "bonus": 7.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "53b79cd7b0f9b2d4",
+      "source_keys": {
+        "source_slug": "53b79cd7b0f9b2d4",
+        "card_name_jp": "藤田ことね(カワイイ♡はじめました)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(カワイイ♡はじめました)",
+        "card_zh": "藤田ことね(カワイイ♡はじめました)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "カワイイ♡はじめました",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 85,
+        "Da": 85,
+        "Vi": 115,
+        "stamina": 39,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "2e8b0acf4e2e9259",
+      "source_keys": {
+        "source_slug": "2e8b0acf4e2e9259",
+        "card_name_jp": "雨夜燕(初志貫徹)"
+      },
+      "names": {
+        "card_jp": "雨夜燕(初志貫徹)",
+        "card_zh": "雨夜燕(初志貫徹)",
+        "idol_jp": "雨夜燕",
+        "idol_zh": "雨夜燕",
+        "song_jp": "初志貫徹",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 110,
+        "Da": 130,
+        "Vi": 90,
+        "stamina": 37,
+        "bonus": 11.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2025/11/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "af679922e9da35af",
+      "source_keys": {
+        "source_slug": "af679922e9da35af",
+        "card_name_jp": "有村麻央(はじまりはカッコよく)"
+      },
+      "names": {
+        "card_jp": "有村麻央(はじまりはカッコよく)",
+        "card_zh": "有村麻央(はじまりはカッコよく)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "はじまりはカッコよく",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 120,
+        "Da": 85,
+        "Vi": 95,
+        "stamina": 39,
+        "bonus": 26.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "0e34c99d5fc3044b",
+      "source_keys": {
+        "source_slug": "0e34c99d5fc3044b",
+        "card_name_jp": "葛城リーリヤ(一つ踏み出した先に)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(一つ踏み出した先に)",
+        "card_zh": "葛城リーリヤ(一つ踏み出した先に)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "一つ踏み出した先に",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 75,
+        "Da": 95,
+        "Vi": 110,
+        "stamina": 39,
+        "bonus": 19.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "17eeef5dba71756b",
+      "source_keys": {
+        "source_slug": "17eeef5dba71756b",
+        "card_name_jp": "倉本千奈(胸を張って一歩ずつ)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(胸を張って一歩ずつ)",
+        "card_zh": "倉本千奈(胸を張って一歩ずつ)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "胸を張って一歩ずつ",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 70,
+        "Da": 110,
+        "Vi": 120,
+        "stamina": 37,
+        "bonus": 20.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "b31e2457c286e54b",
+      "source_keys": {
+        "source_slug": "b31e2457c286e54b",
+        "card_name_jp": "紫雲清夏(夢へのリスタート)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(夢へのリスタート)",
+        "card_zh": "紫雲清夏(夢へのリスタート)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "夢へのリスタート",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 95,
+        "Da": 110,
+        "Vi": 85,
+        "stamina": 38,
+        "bonus": 24.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "3b96169d82ae12fb",
+      "source_keys": {
+        "source_slug": "3b96169d82ae12fb",
+        "card_name_jp": "篠澤広(一番向いてないこと)"
+      },
+      "names": {
+        "card_jp": "篠澤広(一番向いてないこと)",
+        "card_zh": "篠澤広(一番向いてないこと)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "一番向いてないこと",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 120,
+        "Da": 115,
+        "Vi": 75,
+        "stamina": 36,
+        "bonus": 9.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "7d70b10d9ed4a66d",
+      "source_keys": {
+        "source_slug": "7d70b10d9ed4a66d",
+        "card_name_jp": "十王星南(一番星)"
+      },
+      "names": {
+        "card_jp": "十王星南(一番星)",
+        "card_zh": "十王星南(一番星)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "一番星",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 165,
+        "Da": 115,
+        "Vi": 130,
+        "stamina": 37,
+        "bonus": 23.5
+      },
+      "recommended_effect": {
+        "jp": "ｼアノマリー全力",
+        "zh": "非凡·全力"
+      },
+      "debut_date": "2024/11/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "0a6037978c6ede41",
+      "source_keys": {
+        "source_slug": "0a6037978c6ede41",
+        "card_name_jp": "秦谷美鈴(ゆっくり、一歩ずつ)"
+      },
+      "names": {
+        "card_jp": "秦谷美鈴(ゆっくり、一歩ずつ)",
+        "card_zh": "秦谷美鈴(ゆっくり、一歩ずつ)",
+        "idol_jp": "秦谷美鈴",
+        "idol_zh": "秦谷美铃",
+        "song_jp": "ゆっくり、一歩ずつ",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 80,
+        "Da": 110,
+        "Vi": 120,
+        "stamina": 36,
+        "bonus": 19.0
+      },
+      "recommended_effect": {
+        "jp": "ｽアノマリー温存",
+        "zh": "非凡·温存"
+      },
+      "debut_date": "2025/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "74871aa9e7c51fe0",
+      "source_keys": {
+        "source_slug": "74871aa9e7c51fe0",
+        "card_name_jp": "花海佑芽(アイドル、はじめっ！)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(アイドル、はじめっ！)",
+        "card_zh": "花海佑芽(アイドル、はじめっ！)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "アイドル、はじめっ！",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 85,
+        "Da": 90,
+        "Vi": 95,
+        "stamina": 36,
+        "bonus": 14.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/06/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "eeb9b7c7417c0e47",
+      "source_keys": {
+        "source_slug": "eeb9b7c7417c0e47",
+        "card_name_jp": "姫崎莉波(『私らしさ』のはじまり)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(『私らしさ』のはじまり)",
+        "card_zh": "姫崎莉波(『私らしさ』のはじまり)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "『私らしさ』のはじまり",
+        "song_zh": ""
+      },
+      "rarity": "SR",
+      "stats": {
+        "Vo": 80,
+        "Da": 105,
+        "Vi": 105,
+        "stamina": 38,
+        "bonus": 26.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "5528eef35ceb2e6e",
+      "source_keys": {
+        "source_slug": "5528eef35ceb2e6e",
+        "card_name_jp": "花海咲季(学園生活)"
+      },
+      "names": {
+        "card_jp": "花海咲季(学園生活)",
+        "card_zh": "花海咲季(学園生活)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 95,
+        "stamina": 38,
+        "bonus": 18.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "0b6ed631ee7eba60",
+      "source_keys": {
+        "source_slug": "0b6ed631ee7eba60",
+        "card_name_jp": "花海咲季(初声)"
+      },
+      "names": {
+        "card_jp": "花海咲季(初声)",
+        "card_zh": "花海咲季(初声)",
+        "idol_jp": "花海咲季",
+        "idol_zh": "花海咲季",
+        "song_jp": "初声",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 90,
+        "Da": 90,
+        "Vi": 95,
+        "stamina": 38,
+        "bonus": 20.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/08/10",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "4f4604f8ef986234",
+      "source_keys": {
+        "source_slug": "4f4604f8ef986234",
+        "card_name_jp": "月村手毬(学園生活)"
+      },
+      "names": {
+        "card_jp": "月村手毬(学園生活)",
+        "card_zh": "月村手毬(学園生活)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 110,
+        "Da": 90,
+        "Vi": 70,
+        "stamina": 40,
+        "bonus": 6.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "ae736d9f1978602e",
+      "source_keys": {
+        "source_slug": "ae736d9f1978602e",
+        "card_name_jp": "月村手毬(初声)"
+      },
+      "names": {
+        "card_jp": "月村手毬(初声)",
+        "card_zh": "月村手毬(初声)",
+        "idol_jp": "月村手毬",
+        "idol_zh": "月村手毬",
+        "song_jp": "初声",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 110,
+        "Da": 90,
+        "Vi": 70,
+        "stamina": 40,
+        "bonus": 6.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/08/10",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "abb8d8826e0c26ca",
+      "source_keys": {
+        "source_slug": "abb8d8826e0c26ca",
+        "card_name_jp": "藤田ことね(学園生活)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(学園生活)",
+        "card_zh": "藤田ことね(学園生活)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 80,
+        "Da": 80,
+        "Vi": 110,
+        "stamina": 39,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "44ceecca7070e051",
+      "source_keys": {
+        "source_slug": "44ceecca7070e051",
+        "card_name_jp": "藤田ことね(初声)"
+      },
+      "names": {
+        "card_jp": "藤田ことね(初声)",
+        "card_zh": "藤田ことね(初声)",
+        "idol_jp": "藤田ことね",
+        "idol_zh": "藤田琴音",
+        "song_jp": "初声",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 80,
+        "Da": 80,
+        "Vi": 110,
+        "stamina": 39,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/08/10",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "b9b7147cb0a5c3f1",
+      "source_keys": {
+        "source_slug": "b9b7147cb0a5c3f1",
+        "card_name_jp": "雨夜燕(学園生活)"
+      },
+      "names": {
+        "card_jp": "雨夜燕(学園生活)",
+        "card_zh": "雨夜燕(学園生活)",
+        "idol_jp": "雨夜燕",
+        "idol_zh": "雨夜燕",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 105,
+        "Da": 125,
+        "Vi": 85,
+        "stamina": 37,
+        "bonus": 10.0
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2025/11/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "188165e786b1dd4c",
+      "source_keys": {
+        "source_slug": "188165e786b1dd4c",
+        "card_name_jp": "有村麻央(学園生活)"
+      },
+      "names": {
+        "card_jp": "有村麻央(学園生活)",
+        "card_zh": "有村麻央(学園生活)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 115,
+        "Da": 80,
+        "Vi": 90,
+        "stamina": 39,
+        "bonus": 24.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "90da23706b759a59",
+      "source_keys": {
+        "source_slug": "90da23706b759a59",
+        "card_name_jp": "有村麻央(初恋)"
+      },
+      "names": {
+        "card_jp": "有村麻央(初恋)",
+        "card_zh": "有村麻央(初恋)",
+        "idol_jp": "有村麻央",
+        "idol_zh": "有村麻央",
+        "song_jp": "初恋",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 115,
+        "Da": 80,
+        "Vi": 90,
+        "stamina": 39,
+        "bonus": 28.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/10/14",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "9950a5282a4fcce9",
+      "source_keys": {
+        "source_slug": "9950a5282a4fcce9",
+        "card_name_jp": "葛城リーリヤ(学園生活)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(学園生活)",
+        "card_zh": "葛城リーリヤ(学園生活)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 70,
+        "Da": 90,
+        "Vi": 105,
+        "stamina": 39,
+        "bonus": 17.0
+      },
+      "recommended_effect": {
+        "jp": "ｶロジック好印象",
+        "zh": "理性·好印象"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "b302ca9d322cb247",
+      "source_keys": {
+        "source_slug": "b302ca9d322cb247",
+        "card_name_jp": "葛城リーリヤ(初心)"
+      },
+      "names": {
+        "card_jp": "葛城リーリヤ(初心)",
+        "card_zh": "葛城リーリヤ(初心)",
+        "idol_jp": "葛城リーリヤ",
+        "idol_zh": "葛城莉莉娅",
+        "song_jp": "初心",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 70,
+        "Da": 90,
+        "Vi": 105,
+        "stamina": 39,
+        "bonus": 19.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/09/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "b7834845e478ed25",
+      "source_keys": {
+        "source_slug": "b7834845e478ed25",
+        "card_name_jp": "倉本千奈(学園生活)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(学園生活)",
+        "card_zh": "倉本千奈(学園生活)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 65,
+        "Da": 105,
+        "Vi": 115,
+        "stamina": 37,
+        "bonus": 18.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "6f62963c1b5d0eb5",
+      "source_keys": {
+        "source_slug": "6f62963c1b5d0eb5",
+        "card_name_jp": "倉本千奈(初心)"
+      },
+      "names": {
+        "card_jp": "倉本千奈(初心)",
+        "card_zh": "倉本千奈(初心)",
+        "idol_jp": "倉本千奈",
+        "idol_zh": "仓本千奈",
+        "song_jp": "初心",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 65,
+        "Da": 105,
+        "Vi": 115,
+        "stamina": 37,
+        "bonus": 20.5
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2024/09/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "2166e5a461aa4239",
+      "source_keys": {
+        "source_slug": "2166e5a461aa4239",
+        "card_name_jp": "紫雲清夏(学園生活)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(学園生活)",
+        "card_zh": "紫雲清夏(学園生活)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 90,
+        "Da": 105,
+        "Vi": 80,
+        "stamina": 38,
+        "bonus": 22.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "9639d132b986dba2",
+      "source_keys": {
+        "source_slug": "9639d132b986dba2",
+        "card_name_jp": "紫雲清夏(初恋)"
+      },
+      "names": {
+        "card_jp": "紫雲清夏(初恋)",
+        "card_zh": "紫雲清夏(初恋)",
+        "idol_jp": "紫雲清夏",
+        "idol_zh": "紫云清夏",
+        "song_jp": "初恋",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 90,
+        "Da": 105,
+        "Vi": 80,
+        "stamina": 38,
+        "bonus": 24.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/10/14",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "b9085fcb38dbcec5",
+      "source_keys": {
+        "source_slug": "b9085fcb38dbcec5",
+        "card_name_jp": "篠澤広(学園生活)"
+      },
+      "names": {
+        "card_jp": "篠澤広(学園生活)",
+        "card_zh": "篠澤広(学園生活)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 115,
+        "Da": 110,
+        "Vi": 70,
+        "stamina": 36,
+        "bonus": 8.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "8b8f988b8f39d16c",
+      "source_keys": {
+        "source_slug": "8b8f988b8f39d16c",
+        "card_name_jp": "篠澤広(初恋)"
+      },
+      "names": {
+        "card_jp": "篠澤広(初恋)",
+        "card_zh": "篠澤広(初恋)",
+        "idol_jp": "篠澤広",
+        "idol_zh": "筱泽广",
+        "song_jp": "初恋",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 115,
+        "Da": 110,
+        "Vi": 70,
+        "stamina": 36,
+        "bonus": 8.0
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/10/14",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "a707dfecebe38b09",
+      "source_keys": {
+        "source_slug": "a707dfecebe38b09",
+        "card_name_jp": "十王星南(学園生活)"
+      },
+      "names": {
+        "card_jp": "十王星南(学園生活)",
+        "card_zh": "十王星南(学園生活)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 155,
+        "Da": 105,
+        "Vi": 120,
+        "stamina": 37,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｻアノマリー強気",
+        "zh": "非凡·强气"
+      },
+      "debut_date": "2024/11/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "c7c6ef92662fd69f",
+      "source_keys": {
+        "source_slug": "c7c6ef92662fd69f",
+        "card_name_jp": "十王星南(初陣)"
+      },
+      "names": {
+        "card_jp": "十王星南(初陣)",
+        "card_zh": "十王星南(初陣)",
+        "idol_jp": "十王星南",
+        "idol_zh": "十王星南",
+        "song_jp": "初陣",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 155,
+        "Da": 105,
+        "Vi": 120,
+        "stamina": 37,
+        "bonus": 22.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2025/07/04",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "11068d72c1e116e9",
+      "source_keys": {
+        "source_slug": "11068d72c1e116e9",
+        "card_name_jp": "秦谷美鈴(学園生活)"
+      },
+      "names": {
+        "card_jp": "秦谷美鈴(学園生活)",
+        "card_zh": "秦谷美鈴(学園生活)",
+        "idol_jp": "秦谷美鈴",
+        "idol_zh": "秦谷美铃",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 36,
+        "bonus": 18.0
+      },
+      "recommended_effect": {
+        "jp": "ｽアノマリー温存",
+        "zh": "非凡·温存"
+      },
+      "debut_date": "2025/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "0fcbd6c59b43714f",
+      "source_keys": {
+        "source_slug": "0fcbd6c59b43714f",
+        "card_name_jp": "秦谷美鈴(初陣)"
+      },
+      "names": {
+        "card_jp": "秦谷美鈴(初陣)",
+        "card_zh": "秦谷美鈴(初陣)",
+        "idol_jp": "秦谷美鈴",
+        "idol_zh": "秦谷美铃",
+        "song_jp": "初陣",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 75,
+        "Da": 115,
+        "Vi": 125,
+        "stamina": 36,
+        "bonus": 18.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2025/07/04",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "12d4343c77d94c24",
+      "source_keys": {
+        "source_slug": "12d4343c77d94c24",
+        "card_name_jp": "花海佑芽(学園生活)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(学園生活)",
+        "card_zh": "花海佑芽(学園生活)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 80,
+        "Da": 85,
+        "Vi": 90,
+        "stamina": 36,
+        "bonus": 13.0
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/06/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "00e26cb507fdc7c1",
+      "source_keys": {
+        "source_slug": "00e26cb507fdc7c1",
+        "card_name_jp": "花海佑芽(初陣)"
+      },
+      "names": {
+        "card_jp": "花海佑芽(初陣)",
+        "card_zh": "花海佑芽(初陣)",
+        "idol_jp": "花海佑芽",
+        "idol_zh": "花海佑芽",
+        "song_jp": "初陣",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 80,
+        "Da": 85,
+        "Vi": 90,
+        "stamina": 36,
+        "bonus": 13.0
+      },
+      "recommended_effect": {
+        "jp": "ｱセンス好調",
+        "zh": "感性·好调"
+      },
+      "debut_date": "2025/07/04",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "ee2692bfb05bd9fc",
+      "source_keys": {
+        "source_slug": "ee2692bfb05bd9fc",
+        "card_name_jp": "姫崎莉波(学園生活)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(学園生活)",
+        "card_zh": "姫崎莉波(学園生活)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "学園生活",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 75,
+        "Da": 100,
+        "Vi": 100,
+        "stamina": 38,
+        "bonus": 24.5
+      },
+      "recommended_effect": {
+        "jp": "ｲセンス集中",
+        "zh": "感性·集中"
+      },
+      "debut_date": "2024/05/16",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    },
+    {
+      "idol_card_id": "41080502845c8de0",
+      "source_keys": {
+        "source_slug": "41080502845c8de0",
+        "card_name_jp": "姫崎莉波(初心)"
+      },
+      "names": {
+        "card_jp": "姫崎莉波(初心)",
+        "card_zh": "姫崎莉波(初心)",
+        "idol_jp": "姫崎莉波",
+        "idol_zh": "姬崎莉波",
+        "song_jp": "初心",
+        "song_zh": ""
+      },
+      "rarity": "R",
+      "stats": {
+        "Vo": 75,
+        "Da": 100,
+        "Vi": 100,
+        "stamina": 38,
+        "bonus": 28.5
+      },
+      "recommended_effect": {
+        "jp": "ｷロジックやる気",
+        "zh": "理性·干劲"
+      },
+      "debut_date": "2024/09/01",
+      "derived_tags": [],
+      "unique_skill": null,
+      "p_item": null,
+      "sources": [
+        {
+          "source": "seesaawiki:gakumasu-idol-cards",
+          "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+          "fetched_at": "2026-05-18T13:34:54+00:00",
+          "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+          "item_count": 136,
+          "status": "ok",
+          "warning": ""
+        }
+      ]
+    }
+  ]
+}

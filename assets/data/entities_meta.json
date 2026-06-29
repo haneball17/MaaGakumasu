@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-05-18T13:34:54+00:00",
+  "mode": "normalize",
+  "sources": [
+    {
+      "source": "github:chinosk6/GakumasTranslationData",
+      "url": "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json",
+      "fetched_at": "2026-05-18T13:34:53+00:00",
+      "fingerprint": "89b24d7f776a8f7c4ae03715854bb7dfd099c30072f2372ca5afd1c7235566d8",
+      "item_count": 185,
+      "status": "ok",
+      "warning": ""
+    },
+    {
+      "source": "seesaawiki:gakumasu-idol-cards",
+      "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7",
+      "fetched_at": "2026-05-18T13:34:54+00:00",
+      "fingerprint": "02f3dac48a32c150d9d6634f182781350afcb599673b66c1d39d0214ac907535",
+      "item_count": 136,
+      "status": "ok",
+      "warning": ""
+    }
+  ]
+}
