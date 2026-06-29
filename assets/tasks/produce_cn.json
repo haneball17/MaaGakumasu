@@ -27,6 +27,42 @@
     }
   ],
   "option": {
+    "培育难度": {
+      "type": "select",
+      "default_case": "初",
+      "cases": [
+        {
+          "name": "初",
+          "option": [
+            "「初」难度"
+          ]
+        },
+        {
+          "name": "NIA",
+          "option": [
+            "「NIA」难度"
+          ]
+        },
+        {
+          "name": "HIF",
+          "pipeline_override": {
+            "ProduceChooseScenario": {
+              "recognition": {
+                "param": {
+                  "template": [
+                    "produce/produce_mainpage_hif.png"
+                  ]
+                }
+              }
+            },
+            "ProduceEntryFlag": {
+              "next": "ProduceEntryHIF"
+            }
+          }
+        }
+      ],
+      "label": "$培育难度"
+    },
     "培育偶像-zh_CN": {
       "type": "select",
       "default_case": "紫云清夏",

@@ -42,6 +42,23 @@
           "option": [
             "「NIA」难度"
           ]
+        },
+        {
+          "name": "HIF",
+          "pipeline_override": {
+            "ProduceChooseScenario": {
+              "recognition": {
+                "param": {
+                  "template": [
+                    "produce/produce_mainpage_hif.png"
+                  ]
+                }
+              }
+            },
+            "ProduceEntryFlag": {
+              "next": "ProduceEntryHIF"
+            }
+          }
         }
       ],
       "label": "$培育难度"

@@ -452,3 +452,5 @@ config
 debug
 *.bat
 *.bak
+.cache/
+.cache/gakumas-data/

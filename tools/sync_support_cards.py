@@ -1,27 +1,20 @@
-import os
-import json
-import difflib
-import urllib.request
+"""??????????????????
 
-URL = "https://raw.githubusercontent.com/chinosk6/GakumasTranslationData/main/local-files/masterTrans/SupportCard.json"
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "assets", "data")
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, "support_cards.json")
+???????? `assets/data/support_cards.json`?
+???? `tools/data_pipeline.py` ???????
+?????? legacy compact???????
+`python tools/data_pipeline.py derive --write-legacy-compact`
+"""
 
-
-def main():
-    with urllib.request.urlopen(URL) as response:
-        data = json.loads(response.read().decode("utf-8"))
-
-    cards = data.get("data", [])
-
-    result = [{"id": card["id"], "name": card["name"]} for card in cards]
-
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(result, f, ensure_ascii=False, indent=2)
-
-    print(f"Saved {len(result)} support cards to {OUTPUT_FILE}")
+from data_pipeline import run_derive
+from data_pipeline import run_normalize
 
 
-if __name__ == "__main__":
+def main() -> None:
+    run_normalize()
+    run_derive()
+    print('??? support_cards_master.json??? .cache/gakumas-data/ ?? support_cards ????')
+
+
+if __name__ == '__main__':
     main()
