@@ -739,7 +739,17 @@ class HardGate:
         if forced and not candidate.forced:
             return HardGateResult(False, "当前步骤存在强制行动")
 
-        if step.phase == "interval" and candidate.category != "interval_budget":
+        interval_categories = {
+            "interval_budget",
+            "shop_purchase",
+            "select_change",
+            "drink",
+            "skill_upgrade",
+            "skill_customize",
+            "stamina_recover",
+            "finish_interval",
+        }
+        if step.phase == "interval" and candidate.category not in interval_categories:
             return HardGateResult(False, "Interval 仅允许预算决策")
 
         if state.stamina <= 10 and candidate.stamina_delta < 0 and candidate.category not in {"outing", "exam", "round_exam"}:
@@ -903,6 +913,8 @@ class StateReducer:
         if candidate.category in {"consult", "finals_consult"}:
             next_state.refresh_count += 1
 
+        self._apply_observed_state_after(next_state, step, candidate)
+
         next_state.decision_history.append(
             {
                 "step_id": step.step_id,
@@ -913,6 +925,33 @@ class StateReducer:
             }
         )
         return next_state
+
+    @staticmethod
+    def _apply_observed_state_after(state: SimulationState, step: RouteStep, candidate: CandidateAction) -> None:
+        observed = candidate.metadata.get("observed_state_after")
+        if not isinstance(observed, dict):
+            return
+
+        observed_int_fields = {
+            "stamina",
+            "max_stamina",
+            "p_points",
+            "star_value",
+            "deck_size",
+            "trial_readiness",
+            "memory_quality",
+            "deck_quality",
+            "finals_readiness",
+            "interval_budget",
+            "support_event_progress",
+        }
+        for field_name in observed_int_fields:
+            value = observed.get(field_name)
+            if isinstance(value, int | float):
+                setattr(state, field_name, max(0, int(value)))
+
+        state.stamina = min(state.max_stamina, state.stamina)
+        state.snapshots.setdefault("observed_state_after", {})[step.step_id] = deepcopy(observed)
 
 
 class SnapshotBuilder:
@@ -992,6 +1031,26 @@ class BeamPlanner:
                 confidence=0.0,
                 unknown_factors=["all_candidates_blocked"],
                 fallback_reason="全部候选被 HardGate 阻断",
+            )
+
+        observed_action_id = step.metadata.get("observed_selected_action_id")
+        observed_evaluation = next((item for item in allowed if item.action.action_id == observed_action_id), None)
+        if observed_evaluation is not None:
+            return DecisionResult(
+                selected_action={
+                    "action_id": observed_evaluation.action.action_id,
+                    "name": observed_evaluation.action.name,
+                    "category": observed_evaluation.action.category,
+                    "phase": observed_evaluation.action.phase,
+                },
+                candidate_scores=[self._serialize_candidate_score(item) for item in evaluations],
+                rule_hits=[
+                    "observed_replay_forced_choice",
+                    *[reason for item in evaluations for reason in ([item.hard_gate.blocked_reason] if item.hard_gate.blocked_reason else [])],
+                ],
+                top_reasons=["真实观测回放强制选择", *observed_evaluation.top_reasons],
+                confidence=1.0,
+                unknown_factors=observed_evaluation.unknown_factors,
             )
 
         allowed.sort(key=lambda item: item.total_score, reverse=True)
@@ -1390,19 +1449,25 @@ def replay_hif_case(
     case_file: str | Path,
     initial_state: SimulationState | None = None,
 ) -> dict[str, Any]:
-    payload = json.loads(Path(case_file).read_text(encoding="utf-8"))
-    route_steps = [
-        RouteStep(
-            step_id=step["step_id"],
-            label=step["label"],
-            phase=step["phase"],
-            day_number=step["day_number"],
-            candidates=[CandidateAction(**candidate) for candidate in step["candidates"]],
-            metadata=step.get("metadata", {}),
-        )
-        for step in payload["steps"]
-    ]
-    return simulate_hif_route(scenario, profile, route_steps, initial_state=initial_state)
+    from agent.hif.observed_case import (  # noqa: I001 延迟导入避免与 observed_case 的循环依赖
+        build_initial_state_from_observed_case,
+        build_route_steps_from_observed_case,
+        load_observed_hif_case,
+    )
+
+    case = load_observed_hif_case(case_file)
+    route_steps = build_route_steps_from_observed_case(case)
+    replay_initial_state = initial_state or build_initial_state_from_observed_case(case)
+    result = simulate_hif_route(scenario, profile, route_steps, initial_state=replay_initial_state)
+    result["observed_case"] = {
+        "case_id": case.case_id,
+        "profile": case.profile,
+        "step_count": len(case.steps),
+        "random_event_types": [event.event_type for event in case.observed_random_events],
+        "recognition_screen_states": [hint.screen_state for hint in case.recognition_hints],
+        "open_questions": case.open_questions,
+    }
+    return result
 
 
 def _completion_ratio(current: int | float, target: int | float) -> float:
