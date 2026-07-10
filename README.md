@@ -30,7 +30,7 @@
 
 ## 功能概览
 
-详细说明请查看 [功能说明](docs/zh_cn/功能说明.md)。当前 README 以 v1.4.0 更新公告与任务配置为准。
+详细说明请查看 [功能说明](docs/zh_cn/功能说明.md)。当前 README 记录 `feat/hif` 分支开发状态；主线发布状态请同时参考 `assets/resource/Changelog.md`。
 
 | 模块 | 当前支持 |
 | --- | --- |
@@ -39,7 +39,7 @@
 | 社团互动 | 自动请求库存较少的物品，或按配置指定请求 |
 | 安排工作 | 领取奖励、自动或指定偶像、指定工作时长 |
 | 商店购买 | 扭蛋、金币、AP 购买，支持自动免费刷新 |
-| 自动培育 | 初 `REGULAR/PRO/MASTER`，NIA `PRO/MASTER`，支持中断继续、初流程失败重试、老师建议、道具与卡片优先级 |
+| 自动培育 | 初 `REGULAR/PRO/MASTER`，NIA `PRO/MASTER`，支持中断继续、初流程失败重试、老师建议、道具与卡片优先级；HIF 处于开发分支实验阶段 |
 | 适配能力 | Mirror 酱更新、插件版汉化、DMM 版、支援卡库存识别、繁体 i18n |
 
 ### 自动培育
@@ -59,10 +59,42 @@
 - 初流程考试失败自动重试
 - 跟随老师的建议
 - NIA 事件、镜像挑战、指导事件等自动选择逻辑
+- `feat/hif` 分支已加入 HIF 培育入口、Pipeline 骨架与离线模拟器，但尚未完成实机闭环
+
+### HIF 开发分支现状
+
+> [!NOTE]
+> 以下内容记录 `feat/hif` 分支截至 `2026-07-09` 的开发状态。HIF 相关能力仍处于开发与验证阶段，不代表主线稳定功能。
+
+当前 `feat/hif` 分支已经完成 HIF 的文档、数据、离线模拟与部分 Pipeline 集成：
+
+- 任务配置中已加入 `HIF` 培育难度，入口跳转到 `ProduceEntryHIF`。
+- 已新增 `ProduceHIF.json` 作为 HIF Pipeline 状态机骨架。
+- 已新增 HIF 离线模拟器 `agent/hif/simulator.py`，支持样例路线模拟、候选行动评分、Hard/Soft gate、Beam lookahead、奖励排序、选拔快照和评价报告。
+- 已新增 HIF 出牌决策层 `agent/hif/decisions/`，当前重点支持姬崎莉波 `ガラクタロード` 好调路线的再演压缩策略。
+- 已新增 `ExamStateReader` 适配层，负责将 YOLO/OCR 识别结果转换为出牌决策所需的 `ExamState`。
+- 当前测试覆盖 47 个用例，包含 HIF 路线模拟、奖励评分、出牌决策与适配层测试，最近一次本地执行结果为 `47 passed`。
+
+当前仍未完成的关键工作：
+
+- HIF Round1/Round2 仍接通用 `ProduceCardsFlag`，尚未接入专用 `ProduceCardsHIF` action。
+- `ExamStateReader` 中多个数值字段 ROI 仍是占位坐标，需要 MuMu 实机截图校准。
+- 出牌点击坐标与执行逻辑仍依赖实机验证。
+- 模拟器目前使用样例候选池，不是真实完整候选池；`HIFボーナス`、真实奖励池、事件随机、公开课收益波动等还没有完整结构化。
+- `feat/hif` 分支相对当前 `origin/main` 存在主线提交差异，后续合并前需要处理同步与冲突。
+
+后续建议优先级：
+
+1. 补 `ProduceCardsHIF` action 骨架，并接入 `ProduceHIF.json`。
+2. 使用 MuMu 实机校准 HIF 出牌与数值读取 ROI。
+3. 将真实候选池、奖励池与 HIF Bonus 参数补入模拟器。
+4. 同步主线最新改动后再考虑合并或发布。
 
 ### 后续计划
 
 - [ ] 初 `LEGEND` 培育适配
+- [ ] HIF 实机 ROI 校准与 `ProduceCardsHIF` 接入
+- [ ] HIF 真实候选池、奖励池与 HIF Bonus 数据结构化
 - [ ] 更多语言补充
 - [ ] 更多自动培育样本覆盖
 

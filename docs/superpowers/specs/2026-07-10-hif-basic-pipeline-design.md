@@ -18,6 +18,8 @@
 
 ## 方案选择
 
+`docs/hif/finals-daily-log.md` 是本设计的主要流程依据：页面名称、候选类型、交互顺序、日文 OCR 文案、初版 ROI 和“已确认/未知”边界均以该实机记录为准。`docs/hif/hif-simulator-flow-design.md` 仅用于说明后续模拟与决策模块的边界；MaaFramework 官方文档只约束 Pipeline 和 Agent 的实现机制。
+
 采用“Pipeline 页面路由 + Agent 预设动作”的分层方案。
 
 - Pipeline 只负责以高置信模板/OCR 路由页面，定义顺序、超时、回跳和安全停止。
