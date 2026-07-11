@@ -1,0 +1,32 @@
+{
+	"profile_name": "rinami_garakuta_kansei_good_condition",
+	"idol_name_jp": "姫崎莉波",
+	"card_name_keyword": "ガラクタロード",
+	"plan": "センス",
+	"build": "好調",
+	"support_deck": {
+		"locked_core": [],
+		"flex_slots": []
+	},
+	"preferred_skill_tags": {
+		"buff_main": 3.0,
+		"loop_core": 2.8,
+		"draw_cycle": 2.6,
+		"score_main": 2.2,
+		"basic": 1.0,
+		"trouble": -4.0
+	},
+	"preferred_p_item_tags": {
+		"star_synergy": 3.0,
+		"card_gain": 2.4,
+		"ppoint_gain": 2.1,
+		"consult_discount": 1.7,
+		"drink_gain": 1.2
+	},
+	"reward_priorities": {
+		"skill_acquire": 1.0,
+		"skill_upgrade": 0.9,
+		"skill_delete": 0.85,
+		"p_item": 0.95
+	}
+}

@@ -1,0 +1,1098 @@
+{
+	"schema_version": 1,
+	"updated_at": "2026-07-03T02:26:00+00:00",
+	"source": "seesaawiki(日文) + gamekee(中文) + 人工翻译(兜底)",
+	"total_cards": 121,
+	"name_zh_coverage": "121/121",
+	"cards": [
+		{
+			"name_jp": "軽い足取り",
+			"name_zh": "轻快舞步",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力2",
+			"key_effect": "好调+3回合 + 参数+9"
+		},
+		{
+			"name_jp": "愛嬌",
+			"name_zh": "爱娇",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力2",
+			"key_effect": "参数+21"
+		},
+		{
+			"name_jp": "準備運動",
+			"name_zh": "热身运动",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力2",
+			"key_effect": "参数+10"
+		},
+		{
+			"name_jp": "ファンサ",
+			"name_zh": "服务精神",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力2",
+			"key_effect": "参数+22"
+		},
+		{
+			"name_jp": "勢い任せ",
+			"name_zh": "顺势而为",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力3",
+			"key_effect": "参数+12"
+		},
+		{
+			"name_jp": "ハイタッチ",
+			"name_zh": "击掌",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "参数+24"
+		},
+		{
+			"name_jp": "トークタイム",
+			"name_zh": "谈话时间",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力6",
+			"key_effect": "参数+50"
+		},
+		{
+			"name_jp": "軌道修正",
+			"name_zh": "轨道修正",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": "参数+6 + 参数+3"
+		},
+		{
+			"name_jp": "パンプアップ",
+			"name_zh": "蓄力",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": "好调+3回合 + 参数+6"
+		},
+		{
+			"name_jp": "エキサイト",
+			"name_zh": "兴奋",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力4",
+			"key_effect": "好调+4回合 + 参数+17"
+		},
+		{
+			"name_jp": "ペース配分",
+			"name_zh": "配速",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "好调+4回合 + 参数+5"
+		},
+		{
+			"name_jp": "バランス感覚",
+			"name_zh": "平衡感",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力2",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "楽観的",
+			"name_zh": "乐天派",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "无消耗",
+			"key_effect": "好调+4回合"
+		},
+		{
+			"name_jp": "深呼吸",
+			"name_zh": "深呼吸",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力2",
+			"key_effect": "好调+3回合"
+		},
+		{
+			"name_jp": "ひと呼吸",
+			"name_zh": "喘口气",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力5",
+			"key_effect": "好调+4回合"
+		},
+		{
+			"name_jp": "決めポーズ",
+			"name_zh": "经典姿势",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": "参数+29"
+		},
+		{
+			"name_jp": "アドリブ",
+			"name_zh": "即兴演奏",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力2",
+			"key_effect": "好调+4回合 + 参数+12"
+		},
+		{
+			"name_jp": "情熱ターン",
+			"name_zh": "情热回转",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力4",
+			"key_effect": "参数+19"
+		},
+		{
+			"name_jp": "飛躍",
+			"name_zh": "飞跃",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "参数+13 + 参数+15"
+		},
+		{
+			"name_jp": "祝福",
+			"name_zh": "祝福",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力4",
+			"key_effect": "好调+1回合 + 参数+52"
+		},
+		{
+			"name_jp": "スタートダッシュ",
+			"name_zh": "起跑",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力5",
+			"key_effect": "参数+50"
+		},
+		{
+			"name_jp": "スタンドプレー",
+			"name_zh": "精彩表演",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力3",
+			"key_effect": "参数+12"
+		},
+		{
+			"name_jp": "シュプレヒコール",
+			"name_zh": "应援声浪",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "集中2 / focus消費2",
+			"key_effect": "好调+3回合 + 参数+16"
+		},
+		{
+			"name_jp": "立ち位置チェック",
+			"name_zh": "站位确认",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "集中3 / focus消費3",
+			"key_effect": "参数+48"
+		},
+		{
+			"name_jp": "破竹の勢い",
+			"name_zh": "破竹之势",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "参数+7"
+		},
+		{
+			"name_jp": "眼力",
+			"name_zh": "眼力",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "大声援",
+			"name_zh": "大声援",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "好调+4回合"
+		},
+		{
+			"name_jp": "演出計画",
+			"name_zh": "演出策划",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "好调+6回合 + 参数+1"
+		},
+		{
+			"name_jp": "願いの力",
+			"name_zh": "心愿之力",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "参数+1"
+		},
+		{
+			"name_jp": "静かな意志",
+			"name_zh": "沉静的意志",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "好调+3回合"
+		},
+		{
+			"name_jp": "始まりの合図",
+			"name_zh": "开始的信号",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": "好调+7回合"
+		},
+		{
+			"name_jp": "意地",
+			"name_zh": "倔强",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "存在感",
+			"name_zh": "存在感",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "good_condition消費1",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "成功への道筋",
+			"name_zh": "通向成功的道路",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "good_condition消費1",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "スポットライト",
+			"name_zh": "聚光灯",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力3",
+			"key_effect": "好调+8回合 + 参数+1"
+		},
+		{
+			"name_jp": "一発勝負",
+			"name_zh": "一决胜负",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "スリリング",
+			"name_zh": "惊险刺激",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "好调+7回合 + 使用数+1"
+		},
+		{
+			"name_jp": "大胆不敵",
+			"name_zh": "大胆无畏",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力1",
+			"key_effect": "好调+3回合 + 使用数+1"
+		},
+		{
+			"name_jp": "精神統一",
+			"name_zh": "精神统一",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力3",
+			"key_effect": "参数+3"
+		},
+		{
+			"name_jp": "コール&レスポンス",
+			"name_zh": "呼喊与回应",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力4",
+			"key_effect": "参数+15 + 参数+34"
+		},
+		{
+			"name_jp": "バズワード",
+			"name_zh": "流行语",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "体力7",
+			"key_effect": "参数+71"
+		},
+		{
+			"name_jp": "成就",
+			"name_zh": "成就",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力8",
+			"key_effect": "好调+7回合 + 参数+46"
+		},
+		{
+			"name_jp": "魅惑のパフォーマンス",
+			"name_zh": "魅惑的表演",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力7",
+			"key_effect": "好调+4回合 + 参数+65"
+		},
+		{
+			"name_jp": "至高のエンタメ",
+			"name_zh": "至高的演出",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "集中2 / focus消費2",
+			"key_effect": "参数+5 + 参数+1"
+		},
+		{
+			"name_jp": "覚醒",
+			"name_zh": "觉醒",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": false,
+			"cost_summary": "good_condition消費1",
+			"key_effect": "参数+4 + 参数+2"
+		},
+		{
+			"name_jp": "脚光",
+			"name_zh": "瞩目",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "good_condition消費2",
+			"key_effect": "参数+9 + 使用数+1"
+		},
+		{
+			"name_jp": "話題沸騰",
+			"name_zh": "话题沸腾",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "great_condition消費1",
+			"key_effect": "分数倍率30% + 参数+60"
+		},
+		{
+			"name_jp": "国民的アイドル",
+			"name_zh": "国民级偶像",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "good_condition消費1",
+			"key_effect": "使用数+1 + 参数+1"
+		},
+		{
+			"name_jp": "魅惑の視線",
+			"name_zh": "魅惑的视线",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "集中3 / focus消費3",
+			"key_effect": "好调+7回合 + 使用数+1"
+		},
+		{
+			"name_jp": "鳴り止まない拍手",
+			"name_zh": "经久不息的掌声",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "好调+3回合"
+		},
+		{
+			"name_jp": "天真爛漫",
+			"name_zh": "天真烂漫",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "天賦の才",
+			"name_zh": "天赋之才",
+			"card_type": "common",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "好调+4回合 + 使用数+1"
+		},
+		{
+			"name_jp": "お姉ちゃんだもの！",
+			"name_zh": "因为我是姐姐嘛！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": "参数+11 + 参数+1"
+		},
+		{
+			"name_jp": "おアツイ視線",
+			"name_zh": "热切的视线",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "参数+1"
+		},
+		{
+			"name_jp": "ご指導ご鞭撻",
+			"name_zh": "悉心指导",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "参数+4 + 参数+1"
+		},
+		{
+			"name_jp": "ストレッチ談議",
+			"name_zh": "拉伸闲谈",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "参数+9 + 参数+1"
+		},
+		{
+			"name_jp": "全力サポート",
+			"name_zh": "全力支援",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1 + 参数+1"
+		},
+		{
+			"name_jp": "旬の味わい",
+			"name_zh": "时令风味",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "参数+9 + 参数+2"
+		},
+		{
+			"name_jp": "花萌ゆ季節",
+			"name_zh": "花开的季节",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1 + 参数+1"
+		},
+		{
+			"name_jp": "陽だまりの生徒会室",
+			"name_zh": "向阳的学生会室",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "心のアルバム",
+			"name_zh": "心灵的相册",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "参数+8 + 参数+1"
+		},
+		{
+			"name_jp": "ティーパーティ",
+			"name_zh": "茶会",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1 + 参数+1"
+		},
+		{
+			"name_jp": "光のステージ",
+			"name_zh": "光之舞台",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "新生徒会爆誕！",
+			"name_zh": "新学生会诞生！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "薄れゆく壁",
+			"name_zh": "渐消的隔阂",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "参数+1 + 参数+1"
+		},
+		{
+			"name_jp": "みずたまりスキップ",
+			"name_zh": "水洼里跳格子",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "紅葉ランニング",
+			"name_zh": "红叶跑步",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "勝負はこれから！",
+			"name_zh": "胜负才刚开始！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "参数+8 + 参数+1"
+		},
+		{
+			"name_jp": "夏夜に咲く思い出",
+			"name_zh": "夏夜绽放的回忆",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "参数+4 + 使用数+1"
+		},
+		{
+			"name_jp": "月明かりに包まれて",
+			"name_zh": "沐浴在月光下",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "勝利をつかめ！",
+			"name_zh": "抓住胜利！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1 + 参数+1"
+		},
+		{
+			"name_jp": "執念キャッチャー",
+			"name_zh": "执念捕手",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": "使用数+1 + 参数+1"
+		},
+		{
+			"name_jp": "キメ顔で自撮り",
+			"name_zh": "摆个酷pose自拍",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "好调+4回合 + 参数+1"
+		},
+		{
+			"name_jp": "切れた鼻緒が結んだ絆",
+			"name_zh": "断掉的鼻绪系起的羁绊",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "好调+6回合 + 参数+1"
+		},
+		{
+			"name_jp": "気になる……",
+			"name_zh": "在意……",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "参数+1 + 参数+1"
+		},
+		{
+			"name_jp": "喧嘩するほど仲がいい",
+			"name_zh": "越吵感情越好",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力4",
+			"key_effect": "好调+4回合 + 参数+1"
+		},
+		{
+			"name_jp": "はじける水しぶき",
+			"name_zh": "飞溅的水花",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力6",
+			"key_effect": "参数+57 + 参数+1"
+		},
+		{
+			"name_jp": "交わる感情",
+			"name_zh": "交织的感情",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "参数+13"
+		},
+		{
+			"name_jp": "光の夜",
+			"name_zh": "光之夜",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "好调+3回合"
+		},
+		{
+			"name_jp": "練習再開！",
+			"name_zh": "重新练习！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "好调+5回合 + 使用数+1"
+		},
+		{
+			"name_jp": "ほぐれるひととき",
+			"name_zh": "放松的时刻",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "good_condition消費1",
+			"key_effect": "参数+3 + 参数+1"
+		},
+		{
+			"name_jp": "奥義、受け流し！",
+			"name_zh": "奥义·招架！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "参数+10 + 参数+10"
+		},
+		{
+			"name_jp": "なに聴いてるの？",
+			"name_zh": "你在听什么？",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "こうかい……？",
+			"name_zh": "后悔……？",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "ディテールが肝心",
+			"name_zh": "细节至上",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "分数倍率400%"
+		},
+		{
+			"name_jp": "草笛ハーモニー",
+			"name_zh": "草叶笛合奏",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "味見はいかが",
+			"name_zh": "尝尝味道如何",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "ダメダメクッキング",
+			"name_zh": "糟糕的厨艺",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力4",
+			"key_effect": "参数+1 + 参数+1"
+		},
+		{
+			"name_jp": "お泊り猛勉強",
+			"name_zh": "留宿苦学",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": "参数+7 + 参数+1"
+		},
+		{
+			"name_jp": "その本、おもしろい？",
+			"name_zh": "那本书，有趣吗？",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力4",
+			"key_effect": "分数倍率190% + 分数倍率100%"
+		},
+		{
+			"name_jp": "ほかほか焼き芋",
+			"name_zh": "热腾腾的烤红薯",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力4",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "対象、ロックオン",
+			"name_zh": "目标锁定",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "参数+3"
+		},
+		{
+			"name_jp": "あこがれ不良ムーブ",
+			"name_zh": "憧憬的不良行径",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "spirit消費2",
+			"key_effect": "使用数+1 + 参数+1"
+		},
+		{
+			"name_jp": "ふれんどめもりーず",
+			"name_zh": "朋友们的回忆",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "spirit消費2",
+			"key_effect": "分数倍率210.0% + 分数倍率210%"
+		},
+		{
+			"name_jp": "お姉ちゃん、参戦！",
+			"name_zh": "姐姐参战！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "分数倍率150.0% + 分数倍率150%"
+		},
+		{
+			"name_jp": "頭上に注意！",
+			"name_zh": "注意上方！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1 / raw:ﾇｹ",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "お手並み拝見",
+			"name_zh": "见识你的本事",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3 / raw:ﾇｹ",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "愛情レインボー",
+			"name_zh": "爱的彩虹",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "小さなお客さん",
+			"name_zh": "小小的访客",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "参数+24 + 参数+24"
+		},
+		{
+			"name_jp": "雨宿りのバス停",
+			"name_zh": "避雨的公交站",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "参数+1 + 参数+1"
+		},
+		{
+			"name_jp": "バレンタイン大作戦！",
+			"name_zh": "情人节大作战！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "対戦お願いします！",
+			"name_zh": "请和我对局！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "いたずらサンタさん",
+			"name_zh": "恶作剧圣诞老人",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": "使用数+1 + 参数+3"
+		},
+		{
+			"name_jp": "寒空リサイタル",
+			"name_zh": "寒空独唱会",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "せーのでぱくっ！",
+			"name_zh": "预备——开吃！",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力4",
+			"key_effect": "参数+7 + 参数+2"
+		},
+		{
+			"name_jp": "ガタゴトすやすや",
+			"name_zh": "咣当咣当好梦",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "あつあつはふはふ",
+			"name_zh": "热热乎乎呼呼",
+			"card_type": "support_unique",
+			"owner": null,
+			"is_lesson_once": true,
+			"cost_summary": "体力6 / raw:ﾇｹ",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "包容力",
+			"name_zh": "包容力",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "无消耗",
+			"key_effect": "参数+4"
+		},
+		{
+			"name_jp": "初めてのお相手",
+			"name_zh": "第一次的搭档",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "分数倍率70%"
+		},
+		{
+			"name_jp": "寄り添う気持ち",
+			"name_zh": "依偎的心意",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力5",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "距離感",
+			"name_zh": "距离感",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力1",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "入道雲と、きみ",
+			"name_zh": "积雨云与你",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "好调+5回合"
+		},
+		{
+			"name_jp": "さっぱりひといき",
+			"name_zh": "清爽一刻",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "分数倍率110%"
+		},
+		{
+			"name_jp": "また、明日",
+			"name_zh": "明天见",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力5",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "アイドルにしてくれた",
+			"name_zh": "让我成为偶像的人",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": "参数+33 + 参数+1"
+		},
+		{
+			"name_jp": "受け取ってくれる？",
+			"name_zh": "能收下吗？",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力2",
+			"key_effect": ""
+		},
+		{
+			"name_jp": "どんな世界でも",
+			"name_zh": "无论哪个世界",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "参数+22 + 使用数+1"
+		},
+		{
+			"name_jp": "微熱ノスタルジー",
+			"name_zh": "微热的怀旧",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力3",
+			"key_effect": "使用数+1"
+		},
+		{
+			"name_jp": "お姉さんの感覚",
+			"name_zh": "姐姐的感觉",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "体力4",
+			"key_effect": "好调+6回合"
+		},
+		{
+			"name_jp": "自然体の魅力",
+			"name_zh": "自然体的魅力",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "集中4 / focus消費4",
+			"key_effect": "分数倍率1200.0% + 参数+2"
+		},
+		{
+			"name_jp": "甘く溶ける心",
+			"name_zh": "甜蜜融化的心",
+			"card_type": "p_idol_unique",
+			"owner": "姫崎莉波",
+			"is_lesson_once": true,
+			"cost_summary": "raw:ﾇｹ",
+			"key_effect": ""
+		}
+	]
+}
