@@ -1,0 +1,563 @@
+{
+    "$__mpe_config_TEST_HIF": {
+        "$__mpe_code": {
+            "prefix": "",
+            "coordinateMode": "absolute-v1",
+            "savedViewport": {
+                "x": -1094,
+                "y": -2462,
+                "zoom": 0.65
+            },
+            "filename": "TEST_HIF",
+            "version": "v1.7.0"
+        }
+    },
+    "produce_hif_mainevent_btn": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/button_hif_mainevent.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "produce_hif_mainevent_next"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 1710,
+                "y": 4848
+            }
+        }
+    },
+    "produce_hif_mainevent_next": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "next.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "produce_hif_produce_start_btn"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 2068,
+                "y": 4822
+            }
+        }
+    },
+    "produce_hif_produce_start_btn": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/button_hif_producestart.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "produce_hif_transition_click"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 2346,
+                "y": 4827
+            }
+        }
+    },
+    "produce_hif_buffall_view": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/scene_buffall_flag.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Swipe",
+            "param": {
+                "begin": [
+                    457,
+                    719,
+                    1,
+                    1
+                ],
+                "end_offset": [
+                    [
+                        0,
+                        -540,
+                        0,
+                        0
+                    ]
+                ],
+                "end_hold": [
+                    200
+                ]
+            }
+        },
+        "$__mpe_code": {
+            "position": {
+                "x": 1775,
+                "y": 3243
+            }
+        }
+    },
+    "produce_hif_memory_gen_btn": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/button_memory_gen.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "$__mpe_code": {
+            "position": {
+                "x": 1076,
+                "y": 3475
+            }
+        }
+    },
+    "produce_hif_lesson_vi_1": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/button_hif_lesson_vi.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "produce_hif_lesson_vi_2"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3260,
+                "y": 4534
+            }
+        }
+    },
+    "produce_hif_lesson_vo": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/button_hif_lesson_vo.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "$__mpe_code": {
+            "position": {
+                "x": 3259,
+                "y": 4783
+            }
+        }
+    },
+    "produce_hif_lesson_da": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/button_hif_lesson_da.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "$__mpe_code": {
+            "position": {
+                "x": 3258,
+                "y": 5024
+            }
+        }
+    },
+    "produce_hif_transition_click": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    341,
+                    204,
+                    0,
+                    3
+                ]
+            }
+        },
+        "post_delay": 200,
+        "next": [
+            "produce_hif_mainevent_entrance_flag",
+            "produce_hif_transition_click"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 2714,
+                "y": 4797
+            }
+        }
+    },
+    "produce_hif_mainevent_entrance_flag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/flag_hif_mainevent_enterance.png"
+                ]
+            }
+        },
+        "next": [
+            "produce_hif_lesson_vi_1",
+            "produce_hif_lesson_vo",
+            "produce_hif_lesson_da"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 2981,
+                "y": 4853
+            }
+        }
+    },
+    "$__mpe_group_HIF_本战加载_TEST_HIF": {
+        "$__mpe_code": {
+            "position": {
+                "x": 2657,
+                "y": 4754
+            },
+            "color": "blue",
+            "childrenLabels": [
+                "produce_hif_transition_click",
+                "produce_hif_mainevent_entrance_flag"
+            ],
+            "width": 602,
+            "height": 341
+        }
+    },
+    "$__mpe_group_HIF_本战准备_TEST_HIF": {
+        "$__mpe_code": {
+            "position": {
+                "x": 2055,
+                "y": 4783
+            },
+            "color": "blue",
+            "childrenLabels": [
+                "produce_hif_mainevent_next",
+                "produce_hif_produce_start_btn"
+            ],
+            "width": 527,
+            "height": 298
+        }
+    },
+    "$__mpe_group_HIF本战_DAY1_TEST_HIF": {
+        "$__mpe_code": {
+            "position": {
+                "x": 3176,
+                "y": 4470
+            },
+            "color": "green",
+            "childrenLabels": [
+                "produce_hif_lesson_vi_1",
+                "produce_hif_lesson_vo",
+                "produce_hif_lesson_da",
+                "produce_hif_lesson_vi_2",
+                "produce_hif_cardpick_koutyou_1",
+                "produce_hif_cardpick_koutyou_2"
+            ],
+            "width": 2215,
+            "height": 846
+        }
+    },
+    "produce_hif_lesson_vi_2": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/button_hif_lesson_vi.png"
+                ],
+                "threshold": [
+                    0.6
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "produce_hif_cardpick_koutyou_1"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3594,
+                "y": 4535
+            }
+        }
+    },
+    "produce_hif_cardpick_koutyou_1": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    341,
+                    697,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "produce_hif_cardpick_koutyou_2"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3950,
+                "y": 4565
+            }
+        }
+    },
+    "produce_hif_cardpick_koutyou_2": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    341,
+                    697,
+                    1,
+                    1
+                ]
+            }
+        },
+        "$__mpe_code": {
+            "position": {
+                "x": 4309,
+                "y": 4561
+            }
+        },
+        "next": [
+            "produce_hif_cardchange_enter_flag"
+        ]
+    },
+    "produce_hif_day1_cardswitch_flag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/flag_hif_day1_cardswitch.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "$__mpe_code": {
+            "position": {
+                "x": 4175,
+                "y": 4123
+            }
+        }
+    },
+    "hif_test_entry": {
+        "next": [
+            "produce_home_loop"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 112,
+                "y": 4083
+            }
+        }
+    },
+    "produce_home_flag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "home.png",
+                    "home_1.png"
+                ]
+            }
+        },
+        "next": [
+            "produce_home_start"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 752,
+                "y": 4070
+            }
+        }
+    },
+    "produce_hif_lack_ap_cancel": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/cancel.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "post_wait_freezes": 200,
+        "focus": {
+            "Node.Action.Succeeded": "[color:green]已放弃使用体力药[/color]"
+        },
+        "next": [],
+        "$__mpe_code": {
+            "position": {
+                "x": 432,
+                "y": 3718
+            }
+        }
+    },
+    "produce_home_loop": {
+        "next": [
+            "produce_home_flag"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 432,
+                "y": 4062
+            }
+        }
+    },
+    "produce_main_page_flag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    500,
+                    1050,
+                    200,
+                    80
+                ],
+                "template": [
+                    "produce/produce_mainpage_ranking.png"
+                ]
+            }
+        },
+        "next": [
+            "produce_hif_mainevent_btn"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 1407,
+                "y": 4810
+            }
+        }
+    },
+    "produce_home_start": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "home.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "post_wait_freezes": 200,
+        "next": [
+            "produce_main_page_flag"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 1072,
+                "y": 4804
+            }
+        }
+    },
+    "produce_hif_popup_close": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    264,
+                    1080,
+                    200,
+                    186
+                ],
+                "template": [
+                    "close_icon.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "post_wait_freezes": 500,
+        "$__mpe_code": {
+            "position": {
+                "x": 752,
+                "y": 5653
+            }
+        }
+    },
+    "$__mpe_external_BackHome_TEST_HIF": {
+        "$__mpe_code": {
+            "position": {
+                "x": 752,
+                "y": 3830
+            }
+        }
+    },
+    "$__mpe_external_ReturnHome_TEST_HIF": {
+        "$__mpe_code": {
+            "position": {
+                "x": 752,
+                "y": 3930
+            }
+        }
+    },
+    "produce_hif_cardchange_enter_flag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/HIF/flag_hif_day1_cardswitch.png"
+                ],
+                "threshold": 0.8,
+                "roi": [
+                    0,
+                    0,
+                    720,
+                    1280
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]cardchange: 识别到【卡牌变换】界面入口[/color]"
+        },
+        "next": [
+            "ProduceEntryHIF"
+        ]
+    }
+}

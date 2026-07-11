@@ -73,27 +73,27 @@
 - 已新增 HIF 离线模拟器 `agent/hif/simulator.py`，支持样例路线模拟、候选行动评分、Hard/Soft gate、Beam lookahead、奖励排序、选拔快照和评价报告。
 - 已新增 HIF 出牌决策层 `agent/hif/decisions/`，当前重点支持姬崎莉波 `ガラクタロード` 好调路线的再演压缩策略。
 - 已新增 `ExamStateReader` 适配层，负责将 YOLO/OCR 识别结果转换为出牌决策所需的 `ExamState`。
-- 当前测试覆盖 47 个用例，包含 HIF 路线模拟、奖励评分、出牌决策与适配层测试，最近一次本地执行结果为 `47 passed`。
+- `Round1/Round2` 已接入专用 `ProduceCardsHIF`：默认仅记录影子决策；单步执行需要完整状态、唯一手牌目标与点击后截图验证。
+- 已加入 HIF Journal、页面分类、阶段化 P 道具路线、ROI 校准文件和只读控制器探测工具。
 
 当前仍未完成的关键工作：
 
-- HIF Round1/Round2 仍接通用 `ProduceCardsFlag`，尚未接入专用 `ProduceCardsHIF` action。
-- `ExamStateReader` 中多个数值字段 ROI 仍是占位坐标，需要 MuMu 实机截图校准。
-- 出牌点击坐标与执行逻辑仍依赖实机验证。
-- 模拟器目前使用样例候选池，不是真实完整候选池；`HIFボーナス`、真实奖励池、事件随机、公开课收益波动等还没有完整结构化。
+- `ExamStateReader` 中多个数值字段尚未完成 MuMu 实机 ROI 校准；未校准时自动点击会安全停止。
+- Interval 的真实商品/价格候选池、饮料满仓选择、Live 快进和选拔模式候选池仍缺实机样本，当前只采证后停止。
+- 模拟器的真实完整候选池、`HIFボーナス`、事件随机与公开课收益波动仍需继续结构化。
 - `feat/hif` 分支相对当前 `origin/main` 存在主线提交差异，后续合并前需要处理同步与冲突。
 
 后续建议优先级：
 
-1. 补 `ProduceCardsHIF` action 骨架，并接入 `ProduceHIF.json`。
-2. 使用 MuMu 实机校准 HIF 出牌与数值读取 ROI。
+1. 使用 MuMu 实机校准 HIF 出牌与数值读取 ROI，并回放 Journal。
+2. 完成 Interval 商品候选、饮料满仓、Live 快进与选拔页面的实机样本。
 3. 将真实候选池、奖励池与 HIF Bonus 参数补入模拟器。
-4. 同步主线最新改动后再考虑合并或发布。
+4. 通过完整实机闭环后再考虑开放连续模式、同步主线或发布。
 
 ### 后续计划
 
 - [ ] 初 `LEGEND` 培育适配
-- [ ] HIF 实机 ROI 校准与 `ProduceCardsHIF` 接入
+- [ ] HIF 实机 ROI 校准与 `ProduceCardsHIF` 单步验证
 - [ ] HIF 真实候选池、奖励池与 HIF Bonus 数据结构化
 - [ ] 更多语言补充
 - [ ] 更多自动培育样本覆盖

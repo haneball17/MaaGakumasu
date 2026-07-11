@@ -1,8 +1,8 @@
 """卡牌元数据查表（HIF 技能卡消耗查询）。
 
 从原 Maa-gakumas-bot 仓库 app/data/card_meta.py 移植：
-- 数据源改为本仓库 assets/data/hif/skill_cards.json（3 张关键卡的消耗数据）
-- 决策大脑（play.py）据此查询「お姉さんの感覚=6体力」「自然体の魅力=5集中」
+- 数据源为本仓库 ``assets/data/hif/skill_cards_master.json``（121 张卡）
+- 决策大脑据此查询卡牌消耗，避免关键卡手工表与 OCR 词典发生漂移
 - lru_cache 避免重复读盘；模糊匹配兜底档位符号（+ / 無印）
 
 本模块零 maafw 依赖，仅依赖标准库，可离线单测。
@@ -10,14 +10,10 @@
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
 from functools import lru_cache
 from dataclasses import dataclass
 
-# assets/data/hif/skill_cards.json 相对仓库根的路径。
-# hand_meta.py 位于 agent/hif/decisions/，上溯 4 级到仓库根，再进 assets/data/hif。
-_DATA_PATH = Path(__file__).resolve().parents[3] / "assets" / "data" / "hif" / "skill_cards.json"
+from agent.hif.catalog import load_hif_catalog
 
 
 @dataclass(slots=True, frozen=True)
@@ -34,17 +30,22 @@ class CardMeta:
 
 @lru_cache(maxsize=1)
 def _load_skill_cards() -> dict[str, dict]:
-    """加载 skill_cards.json，返回 {卡名: 原始dict}（lru_cache 避免重复读盘）。
+    """从 HIF 统一主数据建立卡牌元数据表。
 
-    数据文件缺失时返回空表（如测试环境无数据），调用方应处理 None 回退默认值。
+    旧实现只读取三张关键卡，导致 OCR 词典和奖励决策与主数据脱节。现在统一
+    使用 ``skill_cards_master.json`` 的 121 张卡；缺失的卡仍由调用方按 None 降级。
     """
-    if not _DATA_PATH.exists():
-        return {}
-    raw = json.loads(_DATA_PATH.read_text(encoding="utf-8"))
-    # 用 name 做主键（含档位符号的完整名），同时建 base_name 索引方便按基础名查。
+
     table: dict[str, dict] = {}
-    for card in raw:
-        table[card["name"]] = card
+    for card in load_hif_catalog().skill_cards.values():
+        table[card.name_jp] = {
+            "name": card.name_jp,
+            "base_name": card.name_jp,
+            "is_lesson_once": card.is_lesson_once,
+            "stamina_cost": card.stamina_cost,
+            "focus_cost": card.focus_cost,
+            "effect_summary": card.effect_text,
+        }
     return table
 
 

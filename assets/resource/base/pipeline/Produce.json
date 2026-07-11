@@ -237,10 +237,23 @@
             "param": {}
         },
         "next": [
-            "ProduceLackAP",
-            "ProduceChooseIdolFlag"
+            "ProduceAfterChooseDifficulty"
         ],
         "post_wait_freezes": 200
+    },
+    "ProduceAfterChooseDifficulty": {
+        "recognition": {
+            "type": "DirectHit",
+            "param": {}
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceLackAP",
+            "ProduceChooseIdolFlag"
+        ]
     },
     "ProduceLackAP": {
         "recognition": {

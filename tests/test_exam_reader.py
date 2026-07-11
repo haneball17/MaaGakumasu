@@ -23,6 +23,7 @@ from agent.hif.adapters.exam_reader import (
     NumericRead,
     CardDetection,
     ExamStateReader,
+    ExamStateObservation,
     _parse_numeric,
     build_exam_state,
     build_hand_summary,
@@ -51,6 +52,7 @@ def test_is_good_condition_card() -> None:
     assert is_good_condition_card("自然体の魅力") is True
     assert is_good_condition_card("アピールの基礎") is True
     assert is_good_condition_card("好調ターン") is True
+    assert is_good_condition_card("シュプレヒコール") is True
     assert is_good_condition_card("トラブル") is False
     assert is_good_condition_card("") is False
 
@@ -280,3 +282,12 @@ def test_reader_skips_zero_roi_numerics() -> None:
     numerics = reader.read_numerics()
     # 所有 ROI 当前为占位（全0），应全部跳过
     assert numerics == {}
+
+
+def test_exam_observation_exposes_missing_fields_for_execution_gate() -> None:
+    """未校准 ROI 时只能影子决策，不能被自动点击层误认为完整状态。"""
+    observation = ExamStateReader(_MockOcrPort([])).read_exam_observation(ExamRound.HONSEN_R1, total_turns=9, stamina=None)
+
+    assert isinstance(observation, ExamStateObservation)
+    assert {"hand", "stamina", "focus", "turn", "flow"}.issubset(observation.missing_fields)
+    assert observation.screen_confidence == 0.0

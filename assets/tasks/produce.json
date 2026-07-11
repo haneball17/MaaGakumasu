@@ -6,6 +6,7 @@
       "option": [
         "培育难度",
         "HIF预设",
+        "HIF执行模式",
         "培育偶像",
         "培育次数",
         "使用体力药",
@@ -69,7 +70,8 @@
                 "param": {
                   "custom_action": "ProduceHIFChooseFinalModeAuto"
                 }
-              }
+              },
+              "next": ["ProduceHIFPreparationEntry"]
             }
           }
         }
@@ -87,6 +89,12 @@
           "name": "莉波好调（实验）",
           "pipeline_override": {
             "ProduceChooseHIFEventFlag": {
+              "custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "round1_mode": "observe_and_stop"
+              }
+            },
+            "ProduceChooseHIFPItemFlag": {
               "custom_action_param": {
                 "preset_id": "rinami_good_condition_safe",
                 "round1_mode": "observe_and_stop"
@@ -128,7 +136,7 @@
                 "round1_mode": "observe_and_stop"
               }
             },
-            "ProduceHIFRound1ObserveFlag": {
+            "ProduceHIFRound1ActionFlag": {
               "custom_action_param": {
                 "preset_id": "rinami_good_condition_safe",
                 "round1_mode": "observe_and_stop"
@@ -139,6 +147,38 @@
       ],
       "label": "$HIF预设",
       "description": "$HIF预设说明"
+    },
+    "HIF执行模式": {
+      "type": "select",
+      "default_case": "观测（默认）",
+      "cases": [
+        {
+          "name": "观测（默认）",
+          "label": "$HIF观测模式"
+        },
+        {
+          "name": "单步执行（实验）",
+          "label": "$HIF单步执行模式",
+          "pipeline_override": {
+            "ProduceHIFRound1ActionFlag": {
+              "custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "round": "round1",
+                "execution_mode": "single_step"
+              }
+            },
+            "ProduceHIFRound2ActionFlag": {
+              "custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "round": "round2",
+                "execution_mode": "single_step"
+              }
+            }
+          }
+        }
+      ],
+      "label": "$HIF执行模式",
+      "description": "$HIF执行模式说明"
     },
     "「初」难度": {
       "type": "select",
@@ -516,7 +556,7 @@
         {
           "name": "Yes",
           "pipeline_override": {
-            "ProduceChooseDifficulty": {
+            "ProduceAfterChooseDifficulty": {
               "next": [
                 "ProduceLackAP",
                 "ProduceChooseIdolNext"
@@ -527,7 +567,7 @@
         {
           "name": "No",
           "pipeline_override": {
-            "ProduceChooseDifficulty": {
+            "ProduceAfterChooseDifficulty": {
               "next": [
                 "ProduceLackAP",
                 "ProduceChooseIdolFlag"

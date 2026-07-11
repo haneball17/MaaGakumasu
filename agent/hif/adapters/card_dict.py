@@ -13,6 +13,7 @@ YOLO(cards.onnx) 只输出 cards/suggestions/useless 三类 + box 位置，不�
 
 from __future__ import annotations
 
+from agent.hif.catalog import load_hif_catalog
 from agent.hif.decisions.hand_meta import _load_skill_cards
 
 # ガラクタロード策略必中的 3 张关键卡（决策分支 1/2/3 的触发条件）。
@@ -92,6 +93,9 @@ def is_good_condition_card(card_name: str) -> bool:
     """
     if not card_name:
         return False
+    card = load_hif_catalog().skill_cards.get(card_name)
+    if card is not None:
+        return "good_condition" in card.tags
     if card_name in KEY_CARDS:
         return True
     if card_name in COMMON_GOOD_CONDITION_CARDS:

@@ -1,3 +1,10 @@
+from .domain import HIFPhase, HIFDecision, HIFCandidate, HIFRuntimeState
+from .ui_map import HIFUiMap, HIFUiButton, load_hif_ui_map
+from .catalog import HIFDrink, HIFCatalog, HIFSkillCard, HIFCustomPItem, HIFScheduleDay, load_hif_catalog
+from .runtime import HIF_FRAME_SIZE, HIFFrameTransform, HIFFrameValidation, get_image_size, propose_hif_frame_transforms, validate_hif_frame
+from .screens import HIFScreenState, HIFScreenObservation, classify_hif_screen
+from .session import HIFRunSession, get_runtime_hif_session, reset_runtime_hif_session
+from .interval import HIFIntervalPolicy, HIFIntervalPlanner
 from .simulator import (
     DecisionResult,
     HardGateResult,
@@ -26,6 +33,8 @@ from .simulator import (
     build_reward_options_from_data,
     build_default_hif_evaluation_config,
 )
+from .calibration import HIFRoiCalibration, load_hif_roi_calibration
+from .route_planner import HIFRankedName, HIFRoutePlanner
 
 __all__ = [
     "CandidateAction",
@@ -54,4 +63,35 @@ __all__ = [
     "replay_hif_case",
     "simulate_hif_rewards",
     "simulate_hif_route",
+    "HIF_FRAME_SIZE",
+    "HIFFrameValidation",
+    "HIFFrameTransform",
+    "get_image_size",
+    "propose_hif_frame_transforms",
+    "validate_hif_frame",
+    "HIFCatalog",
+    "HIFCustomPItem",
+    "HIFDrink",
+    "HIFScheduleDay",
+    "HIFSkillCard",
+    "load_hif_catalog",
+    "HIFCandidate",
+    "HIFDecision",
+    "HIFPhase",
+    "HIFRuntimeState",
+    "HIFRankedName",
+    "HIFRoutePlanner",
+    "HIFRoiCalibration",
+    "load_hif_roi_calibration",
+    "HIFScreenObservation",
+    "HIFScreenState",
+    "classify_hif_screen",
+    "HIFRunSession",
+    "get_runtime_hif_session",
+    "reset_runtime_hif_session",
+    "HIFUiButton",
+    "HIFUiMap",
+    "load_hif_ui_map",
+    "HIFIntervalPlanner",
+    "HIFIntervalPolicy",
 ]

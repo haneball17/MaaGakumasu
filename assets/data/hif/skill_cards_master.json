@@ -1,0 +1,4021 @@
+{
+  "schema_version": 1,
+  "entity": "skill_cards_raw",
+  "updated_at": "2026-07-01T08:28:23+00:00",
+  "sources": [
+    {
+      "source": "seesaawiki:skill-cards-sense",
+      "url": "https://seesaawiki.jp/gakumasu/d/%A5%B9%A5%AD%A5%EB%A5%AB%A1%BC%A5%C9%B0%EC%CD%F7",
+      "fetched_at": "2026-07-01T08:28:14+00:00",
+      "item_count": 52,
+      "status": "ok",
+      "warning": ""
+    },
+    {
+      "source": "seesaawiki:skill-cards-support",
+      "url": "https://seesaawiki.jp/gakumasu/d/%A5%B9%A5%AD%A5%EB%A5%AB%A1%BC%A5%C9%B0%EC%CD%F7/%A5%B5%A5%DD%A1%BC%A5%C8%A5%AB%A1%BC%A5%C9%B8%C7%CD%AD",
+      "fetched_at": "2026-07-01T08:28:19+00:00",
+      "item_count": 55,
+      "status": "ok",
+      "warning": ""
+    },
+    {
+      "source": "seesaawiki:skill-cards-rinami",
+      "url": "https://seesaawiki.jp/gakumasu/d/%A5%B9%A5%AD%A5%EB%A5%AB%A1%BC%A5%C9%B0%EC%CD%F7/P%A5%A2%A5%A4%A5%C9%A5%EB%B8%C7%CD%AD",
+      "fetched_at": "2026-07-01T08:28:22+00:00",
+      "item_count": 14,
+      "status": "ok",
+      "warning": ""
+    }
+  ],
+  "cards": [
+    {
+      "wiki_id": "com_S_R_A_0001",
+      "name_jp": "軽い足取り",
+      "page_category": "sense",
+      "note_raw": "",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+6 好調 2ターン"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 9 好調 3 ターン"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+9 好調 3ターン"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+9 好調 3ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0002",
+      "name_jp": "愛嬌",
+      "page_category": "sense",
+      "note_raw": "パンプアップとのスイッチ",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+13"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 21"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+21"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+21"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0003",
+      "name_jp": "準備運動",
+      "page_category": "sense",
+      "note_raw": "",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+6 集中 +2"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 9 集中 + 3"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+ 10 集中 +3"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+10 集中 +3"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0004",
+      "name_jp": "ファンサ",
+      "page_category": "sense",
+      "note_raw": "PLv2で解放",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+10"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+ 16"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+ 19"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+ 22"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0005",
+      "name_jp": "勢い任せ",
+      "page_category": "sense",
+      "note_raw": "PLv9で解放",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+6 好調 状態の場合、 集中 +3"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 9 好調 状態の場合、 集中 + 4"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+ 10 好調 状態の場合、 集中 +4"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+ 12 好調 状態の場合、 集中 +4"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0006",
+      "name_jp": "ハイタッチ",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv13で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+17( 集中 効果を1.5倍適用)"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 23 ( 集中 効果を 2 倍適用)"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+ 24 ( 集中 効果を2倍適用)"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+24( 集中 効果を2倍適用)"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0007",
+      "name_jp": "トークタイム",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv14で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "好調 状態の場合、使用可 パラメータ+27"
+        },
+        "+": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "好調 状態の場合、使用可 パラメータ+ 38"
+        },
+        "++": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "好調 状態の場合、使用可 パラメータ+ 44"
+        },
+        "+++": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "好調 状態の場合、使用可 パラメータ+ 50"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0008",
+      "name_jp": "軌道修正",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv51で解放バランス感覚とのスイッチ",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+6 集中 +2 除外以外にある トラブルカード が2枚以上の場合、パラメータ+3"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+6 集中 + 3 除外以外にある トラブルカード が2枚以上の場合、パラメータ+3"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+6 集中 +3 除外以外にある トラブルカード が2枚以上の場合、パラメータ+3"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "パラメータ+6 集中 +3 除外以外にある トラブルカード が2枚以上の場合、パラメータ+3"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0009",
+      "name_jp": "パンプアップ",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv52で解放愛嬌とのスイッチ",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+6 好調 2ターン 除外以外にある トラブルカード が2枚以上の場合、パラメータ+3"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+6 好調 3 ターン 除外以外にある トラブルカード が2枚以上の場合、パラメータ+3"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+6 好調 3ターン 除外以外にある トラブルカード が2枚以上の場合、パラメータ+ 4"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "パラメータ+6 好調 3ターン 除外以外にある トラブルカード が2枚以上の場合、パラメータ+4"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0010",
+      "name_jp": "エキサイト",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv56で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+6 絶好調 3ターン"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 10 絶好調 4 ターン"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 13 絶好調 4ターン"
+        },
+        "+++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 17 絶好調 4ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_A_0011",
+      "name_jp": "ペース配分",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv67で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "絶好調 状態の場合、使用可 パラメータ+3 集中 +3 好調 3ターン"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "絶好調 状態の場合、使用可 パラメータ+ 5 集中 + 4 好調 4 ターン"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "絶好調 状態の場合、使用可 パラメータ+5 集中 +4 好調 4ターン"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "絶好調 状態の場合、使用可 パラメータ+5 集中 +4 好調 4ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_M_0001",
+      "name_jp": "バランス感覚",
+      "page_category": "sense",
+      "note_raw": "軌道修正とのスイッチ",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "集中 +3"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "元気 +1 集中 + 4"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "元気 + 3 集中 +4"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "元気 + 5 集中 +4"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_M_0002",
+      "name_jp": "楽観的",
+      "page_category": "sense",
+      "note_raw": "PLv4で解放",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 3ターン 好調 状態の場合、 集中 +1"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 4 ターン 好調 状態の場合、 集中 +1"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "好調 4ターン 好調 状態の場合、 集中 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "好調 4ターン 好調 状態の場合、 集中 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_M_0003",
+      "name_jp": "深呼吸",
+      "page_category": "sense",
+      "note_raw": "PLv19で解放",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 +2 集中 が3以上の場合、 好調 3ターン"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 + 3 集中 が3以上の場合、 好調 3ターン"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 + 4 集中 が3以上の場合、 好調 3ターン"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "集中 +4 集中 が3以上の場合、 好調 3ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_R_M_0004",
+      "name_jp": "ひと呼吸",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv47で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "好調 3ターン 集中 +4"
+        },
+        "+": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "好調 4 ターン 集中 + 5"
+        },
+        "++": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "好調 4ターン 集中 +5"
+        },
+        "+++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "好調 4ターン 集中 +5"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0001",
+      "name_jp": "決めポーズ",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回スリリングとのスイッチ",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+18"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+ 27"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+ 28"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "パラメータ+ 29"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0002",
+      "name_jp": "アドリブ",
+      "page_category": "sense",
+      "note_raw": "",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+5 好調 3ターン"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 9 好調 4 ターン"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+ 11 好調 4ターン"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+ 12 好調 4ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0003",
+      "name_jp": "情熱ターン",
+      "page_category": "sense",
+      "note_raw": "",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "パラメータ+11 集中 +3"
+        },
+        "+": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "パラメータ+ 18 集中 + 4"
+        },
+        "++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "パラメータ+ 19 集中 +4"
+        },
+        "+++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+19 集中 +4"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0004",
+      "name_jp": "飛躍",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv6で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "パラメータ+13 集中 が6以上の場合、パラメータ+15"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "パラメータ+13 集中 が6以上の場合、パラメータ+15"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "パラメータ+13 集中 が6以上の場合、パラメータ+15"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "パラメータ+13 集中 が6以上の場合、パラメータ+15"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0005",
+      "name_jp": "祝福",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv7で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "パラメータ+26 好調 1ターン"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "パラメータ+ 40 好調 1ターン"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "パラメータ+ 46 好調 1ターン"
+        },
+        "+++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "パラメータ+ 52 好調 1ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0006",
+      "name_jp": "スタートダッシュ",
+      "page_category": "sense",
+      "note_raw": "重複不可PLv22で解放大胆不敵とのスイッチ",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "パラメータ+30 元気 +10 消費体力増加 2ターン"
+        },
+        "+": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "パラメータ+ 40 元気 +10 消費体力増加 2ターン"
+        },
+        "++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "パラメータ+ 45 元気 +10 消費体力増加 2ターン"
+        },
+        "+++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "パラメータ+ 50 元気 +10 消費体力増加 2ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0007",
+      "name_jp": "スタンドプレー",
+      "page_category": "sense",
+      "note_raw": "重複不可PLv24で解放",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "パラメータ+12 元気 +7 集中 +5 消費体力増加 2ターン"
+        },
+        "+": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "パラメータ+12 元気 +7 集中 + 7 消費体力増加 2ターン"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+12 元気 +7 集中 +7 消費体力増加 2ターン"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+12 元気 +7 集中 +7 消費体力増加 2ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0008",
+      "name_jp": "シュプレヒコール",
+      "page_category": "sense",
+      "note_raw": "重複不可PLv33で解放",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "パラメータ+6 好調 2ターン スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": 2,
+          "cost_raw": "集中消費2",
+          "effect_raw": "パラメータ+6 好調 3 ターン スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": 2,
+          "cost_raw": "集中消費2",
+          "effect_raw": "パラメータ+ 12 好調 3ターン スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": 2,
+          "cost_raw": "集中消費2",
+          "effect_raw": "パラメータ+ 16 好調 3ターン スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0009",
+      "name_jp": "立ち位置チェック",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv51で解放25/08/22に好調効果2倍適用が追加され、無印のパラメータの値が25→30に増加した",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "元気 +15 パラメータ+30（ 好調 効果を2倍適用） 元気増加無効 2ターン"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "元気 +15 パラメータ+ 40 （ 好調 効果を2倍適用） 元気増加無効 2ターン"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "元気 + 17 パラメータ+ 45 （ 好調 効果を2倍適用） 元気増加無効 2ターン"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "元気 + 20 パラメータ+ 48 （ 好調 効果を2倍適用） 元気増加無効 2ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_A_0010",
+      "name_jp": "破竹の勢い",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv69で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 が8ターン以上の場合、使用可 集中 +5 以降の3ターンの間、ターン開始時、パラメータ+5"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 が8ターン以上の場合、使用可 集中 + 7 以降の 4 ターンの間、ターン開始時、パラメータ+5"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 が8ターン以上の場合、使用可 集中 + 9 以降の4ターンの間、ターン開始時、パラメータ+ 7"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 が8ターン以上の場合、使用可 集中 + 10 以降の4ターンの間、ターン開始時、パラメータ+7"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0001",
+      "name_jp": "眼力",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回一発勝負とのスイッチ",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "元気 +6 集中 +3"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "元気 + 8 集中 + 4"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "元気 + 11 集中 +4"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "元気 + 14 集中 +4"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0002",
+      "name_jp": "大声援",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "元気 +6 好調 3ターン"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "元気 + 8 好調 4 ターン"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "元気 + 11 好調 4ターン"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "元気 + 14 好調 4ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0003",
+      "name_jp": "演出計画",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv17で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "絶好調 3ターン 以降、 アクティブスキルカード 使用時、 固定元気 +2"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "絶好調 4 ターン 以降、 アクティブスキルカード 使用時、 固定元気 +2"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "絶好調 5 ターン 以降、 アクティブスキルカード 使用時、 固定元気 +2"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "絶好調 6 ターン 以降、 アクティブスキルカード 使用時、 固定元気 +2"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0004",
+      "name_jp": "願いの力",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv18で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "集中 +2 以降、 アクティブスキルカード 使用時、 集中 +1"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 + 3 以降、 アクティブスキルカード 使用時、 集中 +1"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 + 4 以降、 アクティブスキルカード 使用時、 集中 +1"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 + 5 以降、 アクティブスキルカード 使用時、 集中 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0005",
+      "name_jp": "静かな意志",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv20で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "レッスン開始時手札に入る 集中 +3 好調 2ターン"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "レッスン開始時手札に入る 集中 + 4 好調 3 ターン"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "レッスン開始時手札に入る 集中 +4 好調 3ターン"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "レッスン開始時手札に入る 集中 +4 好調 3ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0006",
+      "name_jp": "始まりの合図",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv28で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "好調 5ターン"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "好調 7 ターン"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 7ターン"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "好調 7ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0007",
+      "name_jp": "意地",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv29で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "元気 +3 集中 +4"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "元気 + 5 集中 + 5"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "元気 +5 集中 +5"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "-0",
+          "effect_raw": "元気 +5 集中 +5"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0008",
+      "name_jp": "存在感",
+      "page_category": "sense",
+      "note_raw": "重複不可PLv31で解放",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費2",
+          "effect_raw": "集中 +4 スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1",
+          "effect_raw": "集中 + 5 スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1",
+          "effect_raw": "集中 + 6 スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1",
+          "effect_raw": "集中 + 7 スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0009",
+      "name_jp": "成功への道筋",
+      "page_category": "sense",
+      "note_raw": "レッスン中1回PLv36で解放25/08/22に好調コスト値が2→1ターンに減少し、元気増加量が2(+は4)から一律で5になった",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "元気 +5 集中 +7"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "元気 +5 集中 + 9"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "元気 +5 集中 + 10"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "元気 + 6 集中 + 11"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0010",
+      "name_jp": "スポットライト",
+      "page_category": "sense",
+      "note_raw": "PLv49で解放25/08/22に好調増加量が一律で1ターン増加し、発動予約で次ターンおよび2ターン後にカードを引く効果が追加された",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 +7 好調 5ターン 次のターン、スキルカードを2枚引く 2ターン後、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 + 9 好調 6 ターン 次のターン、スキルカードを2枚引く 2ターン後、スキルカードを引く"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 +9 好調 7 ターン 次のターン、スキルカードを2枚引く 2ターン後、スキルカードを引く"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 +9 好調 8 ターン 次のターン、スキルカードを2枚引く 2ターン後、スキルカードを引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0011",
+      "name_jp": "一発勝負",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv53で解放眼力とのスイッチ",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "集中 +7 スキルカード使用数追加 +1 スキルカードを引く 眠気 を山札のランダムな位置に生成"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "集中 + 8 スキルカード使用数追加 +1 スキルカードを引く 眠気 を山札のランダムな位置に生成"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 +8 スキルカード使用数追加 +1 スキルカードを引く 眠気 を山札のランダムな位置に生成"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "集中 +8 スキルカード使用数追加 +1 スキルカードを引く 眠気 を山札のランダムな位置に生成"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0012",
+      "name_jp": "スリリング",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv54で解放決めポーズとのスイッチ",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 5ターン スキルカード使用数追加 +1 スキルカードを引く 眠気 を山札のランダムな位置に生成"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 7 ターン スキルカード使用数追加 +1 スキルカードを引く 眠気 を山札のランダムな位置に生成"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "好調 7ターン スキルカード使用数追加 +1 スキルカードを引く 眠気 を山札のランダムな位置に生成"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "好調 7ターン スキルカード使用数追加 +1 スキルカードを引く 眠気 を山札のランダムな位置に生成"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0013",
+      "name_jp": "大胆不敵",
+      "page_category": "sense",
+      "note_raw": "重複不可PLv56で解放スタートダッシュとのスイッチ",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "好調 3ターン 集中 +5 スキルカード使用数追加 +1 眠気 を山札のランダムな位置に生成"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "好調 3ターン 集中 +5 スキルカード使用数追加 +1 眠気 を山札のランダムな位置に生成"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "好調 3ターン 集中 +5 スキルカード使用数追加 +1 眠気 を山札のランダムな位置に生成"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "好調 3ターン 集中 +5 スキルカード使用数追加 +1 眠気 を山札のランダムな位置に生成"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SR_M_0014",
+      "name_jp": "精神統一",
+      "page_category": "sense",
+      "note_raw": "PLv74で解放26/02/19に元気増加量が一律で3増加し、集中増加量が8→5(+は10→6)に減少し、集中強化の効果が追加され、使用条件の「好調が15ターン以下の場合」が集中強化の付与条件に変更された",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 +6 集中 +5 以降の3ターンの間、ターン開始後、スキルカードを引く 好調 が15ターン以下の場合、 集中強化 20%（3ターン）"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 + 8 集中 + 6 以降の3ターンの間、ターン開始後、スキルカードを引く 好調 が15ターン以下の場合、 集中強化 20%（3ターン）"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 +8 集中 + 7 以降の3ターンの間、ターン開始後、スキルカードを引く 好調 が15ターン以下の場合、 集中強化 20%（3ターン）"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 +8 集中 + 8 以降の3ターンの間、ターン開始後、スキルカードを引く 好調 が15ターン以下の場合、 集中強化 20%（3ターン）"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_A_0001",
+      "name_jp": "コール&レスポンス",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv11で解放脚光とのスイッチ",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "パラメータ+15 集中 が3以上の場合、パラメータ+15"
+        },
+        "+": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "パラメータ+15 集中 が3以上の場合、パラメータ+ 34( 集中 効果を1.5倍適用)"
+        },
+        "++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "パラメータ+15 集中 が3以上の場合、パラメータ+34( 集中 効果を1.5倍適用)"
+        },
+        "+++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+15 集中 が3以上の場合、パラメータ+34( 集中 効果を1.5倍適用)"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_A_0002",
+      "name_jp": "バズワード",
+      "page_category": "sense",
+      "note_raw": "重複不可PLv12で解放話題沸騰とのスイッチ",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "好調 状態の場合、使用可 パラメータ+38"
+        },
+        "+": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "好調 状態の場合、使用可 パラメータ+ 54"
+        },
+        "++": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "好調 状態の場合、使用可 パラメータ+ 63"
+        },
+        "+++": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "好調 状態の場合、使用可 パラメータ+ 71"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_A_0003",
+      "name_jp": "成就",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv41で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 10,
+          "focus_cost": null,
+          "cost_raw": "-10",
+          "effect_raw": "好調 4ターン 次のターン、パラメータ+32"
+        },
+        "+": {
+          "stamina_cost": 10,
+          "focus_cost": null,
+          "cost_raw": "-10",
+          "effect_raw": "好調 7 ターン 次のターン、パラメータ+ 40"
+        },
+        "++": {
+          "stamina_cost": 9,
+          "focus_cost": null,
+          "cost_raw": "-9",
+          "effect_raw": "好調 7ターン 次のターン、パラメータ+ 44"
+        },
+        "+++": {
+          "stamina_cost": 8,
+          "focus_cost": null,
+          "cost_raw": "-8",
+          "effect_raw": "好調 7ターン 次のターン、パラメータ+ 46"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_A_0004",
+      "name_jp": "魅惑のパフォーマンス",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv43で解放25/05/19に2ターン後のパラメータ上昇が追加され、絶好調のターンが1ターン伸びた",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 8,
+          "focus_cost": null,
+          "cost_raw": "-8",
+          "effect_raw": "好調 状態の場合、使用可 絶好調 3ターン 次のターン、パラメータ+38 2ターン後、パラメータ+21（ 好調 効果を2倍適用）"
+        },
+        "+": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "好調 状態の場合、使用可 絶好調 4 ターン 次のターン、パラメータ+ 47 2ターン後、パラメータ+21（ 好調 効果を2倍適用）"
+        },
+        "++": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "好調 状態の場合、使用可 絶好調 4ターン 次のターン、パラメータ+ 56 2ターン後、パラメータ+21（ 好調 効果を2倍適用）"
+        },
+        "+++": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "好調 状態の場合、使用可 絶好調 4ターン 次のターン、パラメータ+ 65 2ターン後、パラメータ+21（ 好調 効果を2倍適用）"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_A_0005",
+      "name_jp": "至高のエンタメ",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv50で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "次のターン、スキルカードを引く 以降、 アクティブスキルカード 使用時、パラメータ+4"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": 2,
+          "cost_raw": "集中消費2",
+          "effect_raw": "次のターン、スキルカードを引く 以降、 アクティブスキルカード 使用時、パラメータ+ 5"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": 2,
+          "cost_raw": "集中消費2",
+          "effect_raw": "元気+4 次のターン、スキルカードを引く 以降、 アクティブスキルカード 使用時、パラメータ+5"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": 2,
+          "cost_raw": "集中消費2",
+          "effect_raw": "元気+ 8 次のターン、スキルカードを引く 以降、 アクティブスキルカード 使用時、パラメータ+5"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_A_0006",
+      "name_jp": "覚醒",
+      "page_category": "sense",
+      "note_raw": "重複不可PLv53で解放",
+      "is_lesson_once": false,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1",
+          "effect_raw": "パラメータ+3(2回) 集中 +4"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1",
+          "effect_raw": "パラメータ+ 4 (2回) 集中 + 6"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1",
+          "effect_raw": "パラメータ+4(2回) 集中 + 7"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1",
+          "effect_raw": "パラメータ+4(2回) 集中 + 8"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_A_0007",
+      "name_jp": "脚光",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv75で解放26/02/19より追加コール&レスポンスとのスイッチ",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費2",
+          "effect_raw": "集中 +7 スキルカード使用数追加 +1 以降、 好調 が20ターン以下の場合、スキルカード使用後2回ごとに、パラメータ+5（ 集中 効果を3倍適用）・ 好調減少 3"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費2",
+          "effect_raw": "集中 +7 スキルカード使用数追加 +1 以降、 好調 が20ターン以下の場合、スキルカード使用後2回ごとに、パラメータ+ 6 （ 集中 効果を 4 倍適用）・ 好調減少 3"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費2",
+          "effect_raw": "集中 +7 スキルカード使用数追加 +1 以降、 好調 が20ターン以下の場合、スキルカード使用後2回ごとに、パラメータ+ 7 （ 集中 効果を4倍適用）・ 好調減少 3"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費2",
+          "effect_raw": "集中 +7 スキルカード使用数追加 +1 以降、 好調 が20ターン以下の場合、スキルカード使用後2回ごとに、パラメータ+ 9 （ 集中 効果を4倍適用）・ 好調減少 3"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_A_0008",
+      "name_jp": "話題沸騰",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv78で解放バズワードとのスイッチ",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "絶好調消費1",
+          "effect_raw": "好調 が8ターン以上の場合、使用可 パラメータ+37（ 好調 効果を2倍適用） パラメータ上昇量増加 30%（1ターン）"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "絶好調消費1",
+          "effect_raw": "好調 が8ターン以上の場合、使用可 パラメータ+ 50 （ 好調 効果を 2.5 倍適用） パラメータ上昇量増加 30%（1ターン）"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "絶好調消費1",
+          "effect_raw": "好調 が8ターン以上の場合、使用可 パラメータ+ 53 （ 好調 効果を 3 倍適用） パラメータ上昇量増加 30%（1ターン）"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "絶好調消費1",
+          "effect_raw": "好調 が8ターン以上の場合、使用可 パラメータ+ 60 （ 好調 効果を 3.5 倍適用） パラメータ上昇量増加 30%（1ターン）"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_M_0001",
+      "name_jp": "国民的アイドル",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv25で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "次に使用するスキルカードの効果をもう1回発動（1回） スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "元気 +8 次に使用するスキルカードの効果をもう1回発動（1回） スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "元気 + 13 次に使用するスキルカードの効果をもう1回発動（1回） スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "元気 + 16 次に使用するスキルカードの効果をもう1回発動（1回） スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_M_0002",
+      "name_jp": "魅惑の視線",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv30で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "絶好調 4ターン 消費体力減少 2ターン スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "絶好調 5 ターン 消費体力減少 5 ターン スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "絶好調 6 ターン 消費体力減少 5ターン スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": 3,
+          "cost_raw": "集中消費3",
+          "effect_raw": "絶好調 7 ターン 消費体力減少 6 ターン スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_M_0003",
+      "name_jp": "鳴り止まない拍手",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv38で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "集中 +4 好調 2ターン 消費体力減少 2ターン"
+        },
+        "+": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "集中 + 5 好調 3 ターン 消費体力減少 3 ターン"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "集中 +5 好調 3ターン 消費体力減少 3ターン"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 +5 好調 3ターン 消費体力減少 3ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_M_0004",
+      "name_jp": "天真爛漫",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv45で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "集中 +1 以降、ターン終了時、 集中 が3以上の場合、 集中 +2"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 +1 以降、ターン終了時、 集中 が3以上の場合、 集中 +2"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "元気 +2 集中 +1 以降、ターン終了時、 集中 が3以上の場合、 集中 +2"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "元気 +2 集中 +1 以降、ターン終了時、 集中 が3以上の場合、 集中 +2"
+        }
+      }
+    },
+    {
+      "wiki_id": "com_S_SSR_M_0005",
+      "name_jp": "天賦の才",
+      "page_category": "sense",
+      "note_raw": "重複不可レッスン中1回PLv70で解放",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "体力消費5",
+          "effect_raw": "好調 3ターン 集中 +2 ランダムな山札か捨札にあるスキルカード（SSR）3枚を山札の一番上に移動 次のターン、 スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "好調 4 ターン 集中 + 3 ランダムな山札か捨札にあるスキルカード（SSR）3枚を山札の一番上に移動 次のターン、 スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "好調 4ターン 集中 +3 ランダムな山札か捨札にあるスキルカード（SSR）3枚を山札の一番上に移動 次のターン、 スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "体力消費2",
+          "effect_raw": "好調 4ターン 集中 +3 ランダムな山札か捨札にあるスキルカード（SSR）3枚を山札の一番上に移動 次のターン、 スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_902abe0af246",
+      "name_jp": "お姉ちゃんだもの！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「体当たりのラブコール」固有※使用条件について、試験等の場合は「スコア1000以下の場合、使用可」となっている",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "レッスンCLEAR率100%以下の場合、使用可 ・パラメータ+6 ・ 元気 +6 ・次のターン、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "レッスンCLEAR率100%以下の場合、使用可 ・パラメータ+ 10 ・ 元気 + 9 ・次のターン、スキルカードを引く"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "レッスンCLEARの100%以下の場合、使用可 ・パラメータ+ 11 ・ 元気 +9 ・次のターン、スキルカードを引く"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "レッスンCLEARの100%以下の場合、使用可 ・パラメータ+11 ・ 元気 +9 ・次のターン、スキルカードを引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_f209fcd4bf92",
+      "name_jp": "おアツイ視線",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「のらりくらりしっかり」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "元気 が0の場合、使用可 ・ 元気 +5 ・ 消費体力減少 2ターン ・次のターン、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "元気 が0の場合、使用可 ・ 元気 + 6 ・ 消費体力減少 3 ターン ・次のターン、スキルカードを引く"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "元気 が0の場合、使用可 ・ 元気 + 8 ・ 消費体力減少 3ターン ・次のターン、スキルカードを引く"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "元気 が0の場合、使用可 ・ 元気 + 10 ・ 消費体力減少 3ターン ・次のターン、スキルカードを引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_84364acf5e6d",
+      "name_jp": "ご指導ご鞭撻",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「てとりあしとり」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "体力が50%以上の場合、使用可 ・パラメータ+4 ・ 元気 +5 ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "体力が50%以上の場合、使用可 ・パラメータ+4 ・ 元気 +5 ・次のターン、手札をすべて レッスン中強化"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "体力が50%以上の場合、使用可 ・パラメータ+4 ・ 元気 +5 ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "体力が50%以上の場合、使用可 ・パラメータ+4 ・ 元気 +5 ・次のターン、手札をすべて レッスン中強化"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_c5e757806507",
+      "name_jp": "ストレッチ談議",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「魅惑の大腿四頭筋」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "３ターン目以降の場合、使用可 ・パラメータ+3 ・ 消費体力減少 2ターン ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "3ターン目以降の場合、使用可 ・パラメータ+3 ・ 消費体力減少 2ターン ・次のターン、手札をすべて レッスン中強化"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "3ターン目以降の場合、使用可 ・パラメータ+ 6 ・ 消費体力減少 2ターン ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "3ターン目以降の場合、使用可 ・パラメータ+ 9 ・ 消費体力減少 2ターン ・次のターン、手札をすべて レッスン中強化"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_e74c05169eb3",
+      "name_jp": "全力サポート",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「はじめてのお友達」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ スキルカード使用数追加 +1 ・次のターン、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ スキルカード使用数追加 +1 ・次のターン、スキルカードを 2枚 引く"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +1 ・ スキルカード使用数追加 +1 ・次のターン、スキルカードを2枚引く"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 + 2 ・ スキルカード使用数追加 +1 ・次のターン、スキルカードを2枚引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_b1c6c16fa6fe",
+      "name_jp": "旬の味わい",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「サンマ、パタパタ」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・パラメータ+4（2回） ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・パラメータ+ 6 （2回） ・次のターン、手札をすべて レッスン中強化"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・パラメータ+ 7 （2回） ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・パラメータ+ 9 （2回） ・次のターン、手札をすべて レッスン中強化"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_121aee9e63f0",
+      "name_jp": "花萌ゆ季節",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「次の桜の季節には。」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ランダムな強化済みスキルカードを、手札に 生成 ・ スキルカード使用数追加 +1 ・次のターン、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ランダムな強化済みスキルカードを、手札に 生成 ・ スキルカード使用数追加 +1 ・次のターン、スキルカードを引く"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ランダムな強化済みスキルカードを、手札に 生成 ・ スキルカード使用数追加 +1 ・次のターン、スキルカードを引く"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +1 ・ランダムな強化済みスキルカードを、手札に 生成 ・スキルカード使用数+1 ・次のターン、スキルカードを引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_1e6a867b7fa5",
+      "name_jp": "陽だまりの生徒会室",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「お疲れ様、千奈ちゃん。」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 体力回復3 ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 体力回復 5 ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ 体力回復5 ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 体力回復5 ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_bff8fcba0314",
+      "name_jp": "心のアルバム",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「おいしい顔、いただき〜！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・パラメータ+3 ・ 元気 +3 ・次のターン、スキルカードを引く ・2ターン後、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・パラメータ+ 6 ・ 元気 + 5 ・次のターン、スキルカードを引く ・2ターン後、スキルカードを引く"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・パラメータ+ 7 ・ 元気 + 7 ・次のターン、スキルカードを引く ・2ターン後、スキルカードを引く"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・パラメータ+ 8 ・ 元気 + 8 ・次のターン、スキルカードを引く ・2ターン後、スキルカードを引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_1ede6a7336e5",
+      "name_jp": "ティーパーティ",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「可愛いと可愛いで可愛い！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ スキルカード使用数追加 +1 ・手札をすべて レッスン中強化"
+        },
+        "+": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ スキルカード使用数追加 +1 ・スキルカードを引く ・手札をすべて レッスン中強化"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ スキルカード使用数追加 +1 ・スキルカードを引く ・手札をすべて レッスン中強化"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +1 ・ スキルカード使用数追加 +1 ・スキルカードを引く ・手札をすべて レッスン中強化"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_443f69902ba7",
+      "name_jp": "光のステージ",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「まじか。」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 消費体力削減 1 ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 消費体力削減 1 ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +1 ・ 消費体力削減 1 ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 + 2 ・ 消費体力削減 1 ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_cab018218d3a",
+      "name_jp": "新生徒会爆誕！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「仕事のつもりで臨みなさい」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "レッスン開始時手札に入る ・ 消費体力減少 2ターン ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "レッスン開始時手札に入る ・ 消費体力減少 4 ターン ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "レッスン開始時手札に入る ・ 消費体力減少 4ターン ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "レッスン開始時手札に入る ・ 消費体力減少 4ターン ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_cbdc05676aa8",
+      "name_jp": "薄れゆく壁",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「第2回教室パーティー！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・ 元気 +3 ・次のターン、手札をすべて レッスン中強化 ・2ターン後、手札をすべて レッスン中強化"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 元気 +3 ・次のターン、手札をすべて レッスン中強化 ・2ターン後、手札をすべて レッスン中強化"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ 元気 +3 ・次のターン、手札をすべて レッスン中強化 ・2ターン後、手札をすべて レッスン中強化"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +3 ・次のターン、手札をすべて レッスン中強化 ・2ターン後、手札をすべて レッスン中強化"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_8054867c7780",
+      "name_jp": "みずたまりスキップ",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「まだ上がりませんように！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 元気 +3 ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 元気 + 8 ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 元気 + 10 ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 元気 + 12 ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_ed49163754c1",
+      "name_jp": "紅葉ランニング",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「ぜったい追いついてやる！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ 低下状態無効 1回 ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 低下状態無効 1回 ・スキルカードを 2枚 引く ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +1 ・ 低下状態無効 1回 ・スキルカードを2枚引く ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 + 2 ・ 低下状態無効 1回 ・スキルカードを2枚引く ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_80dee90bde16",
+      "name_jp": "勝負はこれから！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「さあ、もう一戦！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・パラメータ+2 ・ 元気 +2 ・ 消費体力減少 3ターン ・次のターン、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・パラメータ+ 5 ・ 元気 + 5 ・ 消費体力減少 3ターン ・次のターン、スキルカードを引く"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・パラメータ+ 7 ・ 元気 + 7 ・ 消費体力減少 3ターン ・次のターン、スキルカードを引く"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・パラメータ+ 8 ・ 元気 + 8 ・ 消費体力減少 3ターン ・次のターン、スキルカードを引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_4e4c521ef99e",
+      "name_jp": "夏夜に咲く思い出",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「いつまでも続けばいいのに」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "・ランダムな山札か捨札の 眠気 を除外に移動 ・ スキルカード使用数追加 +1 ・以降、スキルカードを5回使用するごとに、パラメータ+4"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ランダムな山札か捨札の 眠気 を除外に移動 ・ スキルカード使用数追加 +1 ・以降、スキルカードを5回使用するごとに、パラメータ+4"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ランダムな山札か捨札の 眠気 を除外に移動 ・ スキルカード使用数追加 +1 ・以降、スキルカードを5回使用するごとに、パラメータ+4"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ランダムな山札か捨札の 眠気 を除外に移動 ・ スキルカード使用数追加 +1 ・以降、スキルカードを5回使用するごとに、パラメータ+4"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_0ce591a67545",
+      "name_jp": "月明かりに包まれて",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「仲直りしましょう」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "レッスン開始時手札に入る ・ 消費体力削減 1 ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "レッスン開始時手札に入る ・ 消費体力削減 1 ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "レッスン開始時手札に入る ・ 消費体力削減 1 ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "レッスン開始時手札に入る ・ 消費体力削減 1 ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_47afb15db6b3",
+      "name_jp": "勝利をつかめ！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「大運動会、開催っ！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・次に使用したスキルカードの消費体力を0にする（1回） ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・次に使用したスキルカードの消費体力を0にする（1回） ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ 元気 +2 ・次に使用したスキルカードの消費体力を0にする（1回） ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +2 ・次に使用したスキルカードの消費体力を0にする（1回） ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_4b8862d1ac79",
+      "name_jp": "執念キャッチャー",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「ぜったいに取るんだ！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 固定元気 +5 ・体力が50%以上の場合、 スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 固定元気 + 10 ・体力が50%以上の場合、 スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 固定元気 + 12 ・体力が50%以上の場合、 スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 固定元気 + 14 ・体力が50%以上の場合、 スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_a6e8a4fd8014",
+      "name_jp": "キメ顔で自撮り",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「パシャっとキメポ」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 好調 3ターン ・ 集中 +2 ・体力が50%以上の場合、次のターン、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 好調 4 ターン ・ 集中 + 3 ・体力が50%以上の場合、次のターン、スキルカードを引く"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 好調 4ターン ・ 集中 +3 ・体力が50%以上の場合、次のターン、スキルカードを引く"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 好調 4ターン ・ 集中 +3 ・体力が50%以上の場合、次のターン、スキルカードを引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_eca2b6202628",
+      "name_jp": "切れた鼻緒が結んだ絆",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「やさしさ、あったかい」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 好調 4ターン ・次のターン、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 好調 5 ターン ・次のターン、スキルカードを 2枚 引く"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 好調 6 ターン ・次のターン、スキルカードを2枚引く"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 好調 6ターン ・次のターン、スキルカードを2枚引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_799db0e8c1b4",
+      "name_jp": "気になる……",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「興味深い飲み物」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・ 集中 +4 ・ 集中 が3以上の場合、次のターン、手札をすべて レッスン中強化"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 集中 + 5 ・ 集中 が3以上の場合、次のターン、手札をすべて レッスン中強化"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 集中 +5 ・ 集中 が3以上の場合、次のターン、手札をすべて レッスン中強化"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 集中 +5 ・ 集中 が3以上の場合、次のターン、手札をすべて レッスン中強化"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_ba316f347f3a",
+      "name_jp": "喧嘩するほど仲がいい",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「こいつらめんどくさー」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・ 集中 +3 ・ 好調 2ターン ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・ 集中 + 4 ・ 好調 4 ターン ・次のターン、手札をすべて レッスン中強化"
+        },
+        "++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・ 集中 +4 ・ 好調 4ターン ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 集中 +4 ・ 好調 4ターン ・次のターン、手札をすべて レッスン中強化"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_9c2f9cd5335f",
+      "name_jp": "はじける水しぶき",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「一時休戦です」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "体力消費6",
+          "effect_raw": "・パラメータ+33 ・ 好調 が4ターン以上の場合、2ターン後、 体力回復4"
+        },
+        "+": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "体力消費6",
+          "effect_raw": "・パラメータ+ 45 ・ 好調 が4ターン以上の場合、2ターン後、 体力回復 6"
+        },
+        "++": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "体力消費6",
+          "effect_raw": "・パラメータ+ 50 ・ 好調 が4ターン以上の場合、2ターン後、 体力回復 8"
+        },
+        "+++": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "体力消費6",
+          "effect_raw": "・パラメータ+ 57 ・ 好調 が4ターン以上の場合、2ターン後、 体力回復8"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_aa3dcaadf3e1",
+      "name_jp": "交わる感情",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「花火、やりませんか……？」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・パラメータ+7( 集中 効果を1.5倍適用) ・ 集中 +4"
+        },
+        "+": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・パラメータ+ 13 ( 集中 効果を1.5倍適用) ・ 集中 + 5"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・パラメータ+13( 集中 効果を1.5倍適用) ・ 集中 +5"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・パラメータ+13( 集中 効果を1.5倍適用) ・ 集中 +5"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_e6959135f7ef",
+      "name_jp": "光の夜",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「キラキラして綺麗〜っ！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 絶好調 2ターン ・ 体力回復2"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 絶好調 3 ターン ・ 体力回復 4"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 絶好調 3ターン ・ 体力回復 5"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 絶好調 3ターン ・ 体力回復 6"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_79108e5da396",
+      "name_jp": "練習再開！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「もう一度、最初から！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 好調 1ターン ・手札をすべて入れ替える ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 好調 3 ターン ・手札をすべて入れ替える ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 好調 4 ターン ・手札をすべて入れ替える ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 好調 5 ターン ・手札をすべて入れ替える ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_8da00701101d",
+      "name_jp": "ほぐれるひととき",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「クールダウンが大切よ！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "3ターン目以降の場合、使用可 ・ 集中増加量増加 +50%（3ターン） ・ 好調 状態の場合、次のターン、 集中 +4"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "3ターン目以降の場合、使用可 ・ 集中増加量増加 +50%（3ターン） ・ 好調 状態の場合、次のターン、 集中 + 6"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "3ターン目以降の場合、使用可 ・ 集中増加量増加 +50%（3ターン） ・ 好調 状態の場合、次のターン、 集中 + 8"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "好調消費1ターン",
+          "effect_raw": "3ターン目以降の場合、使用可 ・ 集中増加量増加 +50%（3ターン） ・ 好調 状態の場合、次のターン、 集中 + 9"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_63a8a913394e",
+      "name_jp": "奥義、受け流し！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「レディ・セット、ゴー！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・パラメータ+4 ・ 集中 が15以上の場合、次のターン、パラメータ+4（ 好調 効果を2倍適用） ・ 好調 が12ターン以上の場合、2ターン後、パラメータ+4（ 集中 効果を2倍適用）"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・パラメータ+ 8 ・ 集中 が15以上の場合、次のターン、パラメータ+ 8 （ 好調 効果を2倍適用） ・ 好調 が12ターン以上の場合、2ターン後、パラメータ+ 8 （ 集中 効果を2倍適用）"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・パラメータ+ 9 ・ 集中 が15以上の場合、次のターン、パラメータ+ 9 （ 好調 効果を2倍適用） ・ 好調 が12ターン以上の場合、2ターン後、パラメータ+ 9 （ 集中 効果を2倍適用）"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・パラメータ+ 10 ・ 集中 が15以上の場合、次のターン、パラメータ+ 10 （ 好調 効果を2倍適用） ・ 好調 が12ターン以上の場合、2ターン後、パラメータ+ 10 （ 集中 効果を2倍適用）"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_f096fa25aa3c",
+      "name_jp": "なに聴いてるの？",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「イヤホンはんぶんこ」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +2 ・ 体力回復3"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +2 ・ 体力回復 5"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +2 ・ 体力回復 6"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 + 4 ・ 体力回復6"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_b7bb337493c1",
+      "name_jp": "こうかい……？",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「バズっちゃお！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 好印象 +3 ・ 好印象 の90%分のパラメータ上昇"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 好印象 + 4 ・ 好印象 の 100 %分のパラメータ上昇"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 好印象 +4 ・ 好印象 の100%分のパラメータ上昇"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 好印象 +4 ・ 好印象 の100%分のパラメータ上昇"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_56bbb982a293",
+      "name_jp": "ディテールが肝心",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「まごころを込めて」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "・ 元気 +4 ・ やる気 の270％分パラメータ上昇"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "・ 元気 + 7 ・ やる気 の 340 ％分パラメータ上昇"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "・ 元気 + 10 ・ やる気 の340％分パラメータ上昇"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "・ 元気 +10 ・ やる気 の 400 ％分パラメータ上昇"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_3a997a3d83b9",
+      "name_jp": "草笛ハーモニー",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「ピューとシューの二重奏」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 好印象 +2 ・ 体力回復1 ・ 好印象 が10以上の場合、 スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 好印象 +2 ・ 体力回復 3 ・ 好印象 が10以上の場合、 スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 好印象 +2 ・ 体力回復 4 ・ 好印象 が10以上の場合、 スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 好印象 +2 ・ 体力回復 5 ・ 好印象 が10以上の場合、 スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_06265d7119bc",
+      "name_jp": "味見はいかが",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「ぐつぐつ、いいにおい♪」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・ランダムな山札か手札の 眠気 を除外に移動 ・ 好印象 +4 ・ やる気 +3"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ランダムな山札か手札の 眠気 を除外に移動 ・ 好印象 +4 ・ やる気 +4"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ランダムな山札か手札の 眠気 を除外に移動 ・ 好印象 +4 ・ やる気 +3"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ランダムな山札か手札の 眠気 を除外に移動 ・ 好印象 +4 ・ やる気 +3"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_e37ca5733207",
+      "name_jp": "ダメダメクッキング",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「わたしたち、やればできる」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "-7",
+          "effect_raw": "・ 好印象 +4 ・ やる気 +3 ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・ 好印象 + 5 ・ やる気 + 4 ・次のターン、手札をすべて レッスン中強化"
+        },
+        "++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・ 好印象 +5 ・ やる気 +4 ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 好印象 +5 ・ やる気 +4 ・次のターン、手札をすべて レッスン中強化"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_618182b8b8f3",
+      "name_jp": "お泊り猛勉強",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「「ア」じゃなくて「エ」！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 好印象 +5"
+        },
+        "+": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 好印象 + 6 ・次のターン、スキルカードを引く"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・パラメータ+3 ・ 好印象 +6 ・次のターン、スキルカードを引く"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・パラメータ+ 7 ・ 好印象 +6 ・次のターン、スキルカードを引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_f06f614f88fa",
+      "name_jp": "その本、おもしろい？",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「ゆっくりと過ごしましょう」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "体力消費5",
+          "effect_raw": "・ 好印象 が3以上の場合、 好印象 の120％分パラメータ上昇 ・ やる気 が3以上の場合、 元気 の50％分パラメータ上昇 ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "・ 好印象 が3以上の場合、 好印象 の 150 ％分パラメータ上昇 ・ やる気 が3以上の場合、 元気 の 70 ％分パラメータ上昇 ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "・ 好印象 が3以上の場合、 好印象 の 180 ％分パラメータ上昇 ・ やる気 が3以上の場合、 元気 の 80 ％分パラメータ上昇 ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "・ 好印象 が3以上の場合、 好印象 の 190 ％分パラメータ上昇 ・ やる気 が3以上の場合、 元気 の 100 ％分パラメータ上昇 ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_f6edffa42a93",
+      "name_jp": "ほかほか焼き芋",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「そろそろ焼けたかな？」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 元気 +4 ・ やる気 +4 ・ 元気 が30以上の場合、 好印象 +3"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 元気 + 7 ・ やる気 + 5 ・ 元気 が30以上の場合、 好印象 + 4"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 元気 +7 ・ やる気 +5 ・ 元気 が30以上の場合、 好印象 +4"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_3ee1329df365",
+      "name_jp": "対象、ロックオン",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「月村手毬、興味深いわね」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 元気 +6 ・ 好印象強化 +100%（3ターン） ・ 好印象 が10以上の場合、以降の3ターンの間、ターン開始後、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 元気 +6 ・ 好印象強化 +100%（3ターン） ・ 好印象 が10以上の場合、以降の3ターンの間、ターン開始後、スキルカードを引く"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ 元気 +6 ・ 好印象強化 +100%（3ターン） ・ 好印象 が10以上の場合、以降の3ターンの間、ターン開始後、スキルカードを引く"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +6 ・ 好印象強化 +100%（3ターン） ・ 好印象 が10以上の場合、以降の3ターンの間、ターン開始後、スキルカードを引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_8bfd356367e6",
+      "name_jp": "あこがれ不良ムーブ",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「堂々とサボってる！？」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "やる気消費3",
+          "effect_raw": "・ 好印象 +3 ・ スキルカード使用数追加 +1 ・次のターン、スキルカードを引く ・ やる気 が6以上の場合、スキルカードを2枚引く"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "やる気消費2",
+          "effect_raw": "・ 好印象 + 4 ・ スキルカード使用数追加 +1 ・次のターン、スキルカードを引く ・ やる気 が6以上の場合、スキルカードを2枚引く"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "やる気消費2",
+          "effect_raw": "・ 好印象 + 5 ・ スキルカード使用数追加 +1 ・次のターン、スキルカードを引く ・ やる気 が6以上の場合、スキルカードを2枚引く"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "やる気消費2",
+          "effect_raw": "・ 好印象 + 6 ・ スキルカード使用数追加 +1 ・次のターン、スキルカードを引く ・ やる気 が6以上の場合、スキルカードを2枚引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_2494d4011ed4",
+      "name_jp": "ふれんどめもりーず",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「思い出の宝箱だ、ね」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "やる気消費2",
+          "effect_raw": "・4ターン後、 好印象 の120%分パラメータ上昇 ・ やる気 が3以上の場合、以降の3ターンの間、ターン終了時、 好印象 +2"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "やる気消費2",
+          "effect_raw": "・4ターン後、 好印象 の120%分パラメータ上昇 ・ やる気 が3以上の場合、以降の3ターンの間、ターン終了時、 好印象 + 3"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "やる気消費2",
+          "effect_raw": "・4ターン後、 好印象 の 180 %分パラメータ上昇 ・ やる気 が3以上の場合、以降の3ターンの間、ターン終了時、 好印象 +3"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "やる気消費2",
+          "effect_raw": "・4ターン後、 好印象 の 210 %分パラメータ上昇 ・ やる気 が3以上の場合、以降の3ターンの間、ターン終了時、 好印象 +3"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_163f9d9bc734",
+      "name_jp": "お姉ちゃん、参戦！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「かかってらっしゃい！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "やる気 が6以上の場合、使用可 ・ 元気 +3 ・ 元気 の100%分パラメータ上昇 ・次のターン、スキルカードを2枚引く"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "体力消費2",
+          "effect_raw": "やる気 が6以上の場合、使用可 ・ 元気 +3 ・ 元気 の 130 %分パラメータ上昇 ・次のターン、スキルカードを2枚引く"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "体力消費2",
+          "effect_raw": "やる気 が6以上の場合、使用可 ・ 元気 + 6 ・ 元気 の 140 %分パラメータ上昇 ・次のターン、スキルカードを2枚引く"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "体力消費2",
+          "effect_raw": "やる気 が6以上の場合、使用可 ・ 元気 + 8 ・ 元気 の 150 %分パラメータ上昇 ・次のターン、スキルカードを2枚引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_22a0ea5b676b",
+      "name_jp": "頭上に注意！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「上かッ！！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "3ターン目以降の場合、使用可 ・ やる気 +3 ・ やる気増加量増加 +50%（3ターン） ・ 消費体力削減 1"
+        },
+        "+": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "3ターン目以降の場合、使用可 ・ やる気 +3 ・ やる気増加量増加 +50%（3ターン） ・ 消費体力削減 1"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "3ターン目以降の場合、使用可 ・ やる気 + 4 ・ やる気増加量増加 +50%（3ターン） ・ 消費体力削減 1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "ﾇｹ",
+          "effect_raw": ""
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_7f3a57f47599",
+      "name_jp": "お手並み拝見",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「私を楽しませろ」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・ やる気 +4 ・手札を全て入れ替える ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ やる気 + 5 ・手札を全て入れ替える ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "ﾇｹ",
+          "effect_raw": ""
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "ﾇｹ",
+          "effect_raw": ""
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_afe30dfb1353",
+      "name_jp": "愛情レインボー",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「SSCの爆誕」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "温存 の場合、使用可 ・ 全力値 +2 ・ 体力回復2 ・山札にあるスキルカードを選択し、 保留 に移動"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "温存 の場合、使用可 ・ 全力値 + 3 ・ 体力回復 3 ・山札にあるスキルカードを選択し、 保留 に移動"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "温存 の場合、使用可 ・ 全力値 + 4 ・ 体力回復3 ・山札にあるスキルカードを選択し、 保留 に移動"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "温存 の場合、使用可 ・ 全力値 +4 ・ 体力回復 4 ・山札にあるスキルカードを選択し、 保留 に移動"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_e0bb30264c08",
+      "name_jp": "小さなお客さん",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「虫愛づる王子様」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・次のターン、 温存 に変更 ・次のターン、 全力値 +2 ・ 全力 の場合、パラメータ+24"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・次のターン、 温存 に変更 ・次のターン、 全力値 + 3 ・ 全力 の場合、パラメータ+24"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・パラメータ+24 ・次のターン、 温存 に変更 ・次のターン、 全力値 3 ・ 全力 の場合、パラメータ+24"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・パラメータ+24 ・次のターン、 温存 に変更 ・次のターン、 全力値 3 ・ 全力 の場合、パラメータ+24"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_15f18fab1ba0",
+      "name_jp": "雨宿りのバス停",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「さみだれ」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・ 温存 に変更 ・ 全力値 +3 ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・ 温存 2段階目 に変更 ・ 全力値 + 4 ・次のターン、手札をすべて レッスン中強化"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 温存 2段階目に変更 ・ 全力値 +4 ・次のターン、手札をすべて レッスン中強化"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 温存 2段階目に変更 ・ 全力値 +4 ・次のターン、手札をすべて レッスン中強化"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_e0b1f45b4531",
+      "name_jp": "バレンタイン大作戦！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「バレンタイン♡会議中ーっ！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "・ 元気 +4 ・ 温存 に変更 ・以降の2ターンの間、ターン開始時、 温存 に変更"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "体力消費2",
+          "effect_raw": "・ 元気 + 8 ・ 温存 に変更 ・以降の2ターンの間、ターン開始時、 温存 に変更"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 元気 +8 ・ 温存 に変更 ・以降の2ターンの間、ターン開始時、 温存 に変更"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "体力消費1",
+          "effect_raw": "・ 元気 + 10 ・ 温存 に変更 ・以降の2ターンの間、ターン開始時、 温存 に変更"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_be69fdb522f7",
+      "name_jp": "対戦お願いします！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「相手にとって不足なしよ！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・山札か捨札にあるスキルカードを選択し、 保留 に移動 ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・山札か捨札にあるスキルカードを選択し、 保留 に移動 ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 +2 ・山札か捨札にあるスキルカードを選択し、 保留 に移動 ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "・ 元気 + 5 ・山札か捨札にあるスキルカードを選択し、 保留 に移動 ・スキルカードを引く ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_9c8a31b93878",
+      "name_jp": "いたずらサンタさん",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「メリクリ、おねーちゃん♪」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・ 温存 2段階目に変更 ・ 熱意増加 +50%（3ターン） ・ スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 温存 2段階目に変更 ・ 熱意増加 +50%（3ターン） ・ スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 温存 2段階目に変更 ・ 熱意増加 +50%(3ターン) ・ スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ 温存 2段階目に変更 ・ 熱意増加 +50%（3ターン） ・ スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_63cd76d0378c",
+      "name_jp": "寒空リサイタル",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「手毬のリサイタル、だね」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・ 元気 +7 ・ 全力値 +1 ・以降3回まで、 メンタルスキルカード 使用時、非 全力 状態の場合、 全力値 +2"
+        },
+        "+": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "・ 元気 +7 ・ 全力値 + 2 ・以降3回まで、 メンタルスキルカード 使用時、非 全力 状態の場合、 全力値 +2"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 元気 + 8 ・ 全力値 +2 ・以降3回まで、 メンタルスキルカード 使用時、非 全力 状態の場合、 全力値 +2"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "・ 元気 + 9 ・ 全力値 +2 ・以降3回まで、 メンタルスキルカード 使用時、非 全力 状態の場合、 全力値 +2"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_4ab85529dc10",
+      "name_jp": "せーのでぱくっ！",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「あたしの勝ち、ですね〜！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・ 強気 に変更 ・ 全力値 +3 ・パラメータ+3（2回） ・ 温存 の場合、スキルカードを引く"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 強気 に変更 ・ 全力値 +3 ・パラメータ+3（2回） ・ 温存 の場合、スキルカードを 2枚 引く"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 強気 に変更 ・ 全力値 +3 ・パラメータ+ 5 （2回） ・ 温存 の場合、スキルカードを2枚引く"
+        },
+        "+++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "・ 強気 に変更 ・ 全力値 +3 ・パラメータ+ 7 （2回） ・ 温存 の場合、スキルカードを2枚引く"
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_3aa35f878636",
+      "name_jp": "ガタゴトすやすや",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「あなたとふたり、電車で」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "温存 の場合、使用可 ・ 強気 に変更 ・パラメータ+11 ・手札を全て入れ替える"
+        },
+        "+": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "温存 の場合、使用可 ・ 強気 に変更 ・パラメータ+ 16 ・手札を全て入れ替える"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "温存 の場合、使用可 ・ 強気 に変更 ・パラメータ+ 21 ・手札を全て入れ替える"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "",
+          "effect_raw": ""
+        }
+      }
+    },
+    {
+      "wiki_id": "SP_b5dadaae8a24",
+      "name_jp": "あつあつはふはふ",
+      "page_category": "support",
+      "note_raw": "重複不可レッスン中1回「おでん、通りま〜すッ！」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・ 全力値 +1 ・以降4回まで、ターン終了時、 全力 の場合、パラメータ+3（累積 全力値 の150%分、 パラメータ上昇量増加 ）"
+        },
+        "+": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "・ 全力値 +1 ・以降4回まで、ターン終了時、 全力 の場合、パラメータ+ 6 （累積 全力値 の 200 %分、 パラメータ上昇量増加 ）"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "ﾇｹ",
+          "effect_raw": ""
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "ﾇｹ",
+          "effect_raw": ""
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_R_0001",
+      "name_jp": "包容力",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【学園生活】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "パラメータ+2 元気 +1 体力回復2"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "パラメータ+ 3 元気 + 4 体力回復2"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "パラメータ+3 元気 + 6 体力回復2"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "パラメータ+ 4 元気 + 7 体力回復2"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_R_0002",
+      "name_jp": "初めてのお相手",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【初心】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "元気 +2（ やる気 効果を1.5倍適用） 元気 の40％分パラメータ上昇 消費体力削減 1"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 +2（ やる気 効果を1.5倍適用） 元気 の 50 ％分パラメータ上昇 消費体力削減 1"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 +2（ やる気 効果を1.5倍適用） 元気 の 70 ％分パラメータ上昇 消費体力削減 1"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "体力消費2",
+          "effect_raw": "元気 +2（ やる気 効果を1.5倍適用） 元気 の70％分パラメータ上昇 消費体力削減 1"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SR_0001",
+      "name_jp": "寄り添う気持ち",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【『私らしさ』のはじまり】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "元気 +10 集中 +4"
+        },
+        "+": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "元気 + 12 集中 + 5"
+        },
+        "++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "元気 + 16 集中 +5"
+        },
+        "+++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "元気 + 19 集中 +"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0001",
+      "name_jp": "距離感",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【clumsy trick】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "集中 +4 体力回復4"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "集中 + 5 体力回復 5"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "集中 +5 体力回復5"
+        },
+        "+++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "集中 +5 体力回復5"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0002",
+      "name_jp": "入道雲と、きみ",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【キミとセミブルー】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "次に使用する アクティブスキルカード の効果をもう1回発動（1回・1ターン） 好調 3ターン 消費体力減少 2ターン"
+        },
+        "+": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "次に使用する アクティブスキルカード の効果をもう1回発動（1回・1ターン） 好調 5 ターン 消費体力減少 2ターン"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "次に使用する アクティブスキルカード の効果をもう1回発動（1回・1ターン） 好調 5ターン 消費体力減少 2ターン"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "次に使用する アクティブスキルカード の効果をもう1回発動（1回・1ターン） 好調 5ターン 消費体力減少 2ターン"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0003",
+      "name_jp": "さっぱりひといき",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【ようこそ初星温泉】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "体力消費5",
+          "effect_raw": "元気 +2（ やる気 効果を2.3倍適用） 元気 の50％分パラメータ上昇 消費体力削減 1"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "元気 +2（ やる気 効果を2.3倍適用） 元気 の 90 ％分パラメータ上昇 消費体力削減 1"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "元気 +2（ やる気 効果を 2.4 倍適用） 元気 の 110 ％分パラメータ上昇 消費体力削減 1"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "元気 +2（ やる気 効果を2.4倍適用） 元気 の110％分パラメータ上昇 消費体力削減 1"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0004",
+      "name_jp": "また、明日",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【L.U.V】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "好印象 が1以上の場合、使用可 最大体力の10%分体力回復 好印象 +3 元気 +5 スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "-6",
+          "effect_raw": "好印象 が1以上の場合、使用可 最大体力の10%分体力回復 好印象 + 5 元気 + 10 スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "好印象 が1以上の場合、使用可 最大体力の10%分体力回復 好印象 +5 元気 +10 スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "-5",
+          "effect_raw": "好印象 が1以上の場合、使用可 最大体力の10%分体力回復 好印象 +5 元気 + 14 スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0005",
+      "name_jp": "アイドルにしてくれた",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【Campus mode!!】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "全力 になった回数が1回以上の場合、使用可 パラメータ+20 成長 ： 全力 になった時、自身の パラメータ上昇回数増加 +1（4回まで）"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "全力 になった回数が1回以上の場合、使用可 パラメータ+ 25 成長 ： 全力 になった時、自身の パラメータ上昇回数増加 +1（4回まで）"
+        },
+        "++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "全力 になった回数が1回以上の場合、使用可 パラメータ+ 29 成長 ： 全力 になった時、自身の パラメータ上昇回数増加 +1（4回まで）"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "全力 になった回数が1回以上の場合、使用可 パラメータ+ 33 成長 ： 全力 になった時、自身の パラメータ上昇回数増加 +1（4回まで）"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0006",
+      "name_jp": "受け取ってくれる？",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【ハッピーミルフィーユ】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "温存 に変更 以降、 強気 効果のスキルカード使用後、 強気 効果のスキルカードの パラメータ値増加 +2"
+        },
+        "+": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "温存 に変更 以降、 強気 効果のスキルカード使用後、 強気 効果のスキルカードの パラメータ値増加 + 3"
+        },
+        "++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "温存 2段階目 に変更 以降、 強気 効果のスキルカード使用後、 強気 効果のスキルカードの パラメータ値増加 +3"
+        },
+        "+++": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "温存 2段階目に変更 以降、 強気 効果のスキルカード使用後、 強気 効果のスキルカードの パラメータ値増加 +3"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0007",
+      "name_jp": "どんな世界でも",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【Howling over the World】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+7（ 集中 効果を2倍適用） スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 17 （ 集中 効果を2倍適用） スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "-4",
+          "effect_raw": "パラメータ+ 22 （ 集中 効果を2倍適用） スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "-3",
+          "effect_raw": "パラメータ+22（ 集中 効果を2倍適用） スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0008",
+      "name_jp": "微熱ノスタルジー",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【36℃ U･B･U】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 7,
+          "focus_cost": null,
+          "cost_raw": "体力消費7",
+          "effect_raw": "好印象 が10以上の場合、使用可 元気 +2 やる気 +2 山札か捨札にあるスキルカード1枚ごとに、 好印象 +2 スキルカード使用数追加 +1"
+        },
+        "+": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "体力消費5",
+          "effect_raw": "好印象 が10以上の場合、使用可 元気 + 6 やる気 + 4 山札か捨札にあるスキルカード1枚ごとに、 好印象 +2 スキルカード使用数追加 +1"
+        },
+        "++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "好印象 が10以上の場合、使用可 元気 + 6 やる気 + 4 山札か捨札にあるスキルカード1枚ごとに、 好印象 +2 スキルカード使用数追加 +1"
+        },
+        "+++": {
+          "stamina_cost": 3,
+          "focus_cost": null,
+          "cost_raw": "体力消費3",
+          "effect_raw": "好印象 が10以上の場合、使用可 元気 + 6 やる気 + 4 山札か捨札にあるスキルカード1枚ごとに、 好印象 +2 スキルカード使用数追加 +1"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0009",
+      "name_jp": "お姉さんの感覚",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【ガラクタロード】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "体力消費6",
+          "effect_raw": "好調 が4ターン以上の場合、使用可 好調 4ターン 最大体力の10%分体力回復 再演 ：スキルカード使用後、手札にある 自然体の魅力 が1枚以上の場合、自身を再使用（4回まで・ターン内1回まで）"
+        },
+        "+": {
+          "stamina_cost": 6,
+          "focus_cost": null,
+          "cost_raw": "体力消費6",
+          "effect_raw": "好調 が4ターン以上の場合、使用可 好調 6 ターン 最大体力の10%分体力回復 再演 ：スキルカード使用後、手札にある 自然体の魅力 が1枚以上の場合、自身を再使用（4回まで・ターン内1回まで）"
+        },
+        "++": {
+          "stamina_cost": 5,
+          "focus_cost": null,
+          "cost_raw": "体力消費5",
+          "effect_raw": "好調 が4ターン以上の場合、使用可 ・ 好調 6ターン ・ 最大体力の10%分体力回復 ・ 再演 ：スキルカード使用後、手札にある 自然体の魅力 が1枚以上の場合、自身を再使用（4回まで・ターン内1回まで）"
+        },
+        "+++": {
+          "stamina_cost": 4,
+          "focus_cost": null,
+          "cost_raw": "体力消費4",
+          "effect_raw": "好調 が4ターン以上の場合、使用可 ・ 好調 6ターン ・ 最大体力の10%分体力回復 ・ 再演 ：スキルカード使用後、手札にある 自然体の魅力 が1枚以上の場合、自身を再使用（4回まで・ターン内1回まで）"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0010",
+      "name_jp": "自然体の魅力",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【ガラクタロード】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": null,
+          "focus_cost": 5,
+          "cost_raw": "集中消費5",
+          "effect_raw": "好調 が12ターン以上の場合、使用可 最大体力の10%分体力回復 体力の800%分パラメータ上昇 パラメータ+2（レッスン中に使用したスキルカード1枚につき、パラメータ上昇量+9）"
+        },
+        "+": {
+          "stamina_cost": null,
+          "focus_cost": 5,
+          "cost_raw": "集中消費5",
+          "effect_raw": "好調 が12ターン以上の場合、使用可 最大体力の 20 %分体力回復 体力の 1000 %分パラメータ上昇 パラメータ+2（レッスン中に使用したスキルカード1枚につき、パラメータ上昇量+ 14 ）"
+        },
+        "++": {
+          "stamina_cost": null,
+          "focus_cost": 4,
+          "cost_raw": "集中消費4",
+          "effect_raw": "好調 が12ターン以上の場合、使用可 ・ 最大体力の20%分体力回復 ・体力の1000%分パラメータ上昇 ・パラメータ+2（レッスン中に使用したカード1枚につき、パラメータ上昇量+14）"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": 4,
+          "cost_raw": "集中消費4",
+          "effect_raw": "好調 が12ターン以上の場合、使用可 ・ 最大体力の20%分体力回復 ・体力の 1200 %分パラメータ上昇 ・パラメータ+2（レッスン中に使用したカード1枚につき、パラメータ上昇量+14）"
+        }
+      }
+    },
+    {
+      "wiki_id": "Rinami_SSR_0011",
+      "name_jp": "甘く溶ける心",
+      "page_category": "rinami",
+      "note_raw": "重複不可レッスン中1回「【SUGAR FLAVOR】姫崎莉波」固有",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 強気 に変更 ・スキルカードを引く ・以降3回まで、 アクティブスキルカード 使用後、 強気 2段階目の場合、 温存 に変更"
+        },
+        "+": {
+          "stamina_cost": 2,
+          "focus_cost": null,
+          "cost_raw": "-2",
+          "effect_raw": "・ 強気 に変更 ・スキルカードを引く ・以降3回まで、 アクティブスキルカード 使用後、 強気 2段階目の場合、 温存 2段階目 に変更"
+        },
+        "++": {
+          "stamina_cost": 1,
+          "focus_cost": null,
+          "cost_raw": "-1",
+          "effect_raw": "・ 強気 に変更 ・スキルカードを引く ・以降3回まで、 アクティブスキルカード 使用後、 強気 2段階目の場合、 温存 2段階目に変更"
+        },
+        "+++": {
+          "stamina_cost": null,
+          "focus_cost": null,
+          "cost_raw": "ﾇｹ",
+          "effect_raw": ""
+        }
+      }
+    }
+  ],
+  "notes": "seesaawiki 原始抓取数据，未归一化。归一化（词条+数值）由 normalize_effects.py 处理。"
+}

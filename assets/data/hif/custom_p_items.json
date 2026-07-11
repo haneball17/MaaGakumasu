@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-07-11T00:00:00+08:00",
+  "source": {
+    "name": "Game8 HIF カスタムPアイテム一覧",
+    "url": "https://game8.jp/gakuen-idolmaster/784515",
+    "updated_at": "2026-07-07T18:37:00+09:00",
+    "confidence": "guide"
+  },
+  "items": [
+    {
+      "name_jp": "もじゃ（黄）",
+      "plan": "sense",
+      "stage": 1,
+      "priority": 100,
+      "tags": ["custom_p_item", "consult_discount"],
+      "note": "好调路线优先通往花もじゃ（黄）。"
+    },
+    {
+      "name_jp": "ロボ（黄）",
+      "plan": "sense",
+      "stage": 1,
+      "priority": 90,
+      "tags": ["custom_p_item", "consult_discount"],
+      "note": "好调路线次选，可通往花ロボ（黄）或羽ロボ（黄）。"
+    },
+    {
+      "name_jp": "花もじゃ（黄）",
+      "plan": "sense",
+      "stage": 2,
+      "priority": 100,
+      "tags": ["custom_p_item", "consult_discount"],
+      "parents": ["もじゃ（黄）"],
+      "note": "公开攻略标注为最优先。"
+    },
+    {
+      "name_jp": "羽ロボ（黄）",
+      "plan": "sense",
+      "stage": 2,
+      "priority": 100,
+      "tags": ["custom_p_item", "consult_discount"],
+      "parents": ["ロボ（黄）"],
+      "note": "公开攻略标注为最优先。"
+    },
+    {
+      "name_jp": "花ロボ（黄）",
+      "plan": "sense",
+      "stage": 2,
+      "priority": 90,
+      "tags": ["custom_p_item", "consult_discount"],
+      "parents": ["ロボ（黄）"],
+      "note": "公开攻略标注为次点。"
+    }
+  ]
+}

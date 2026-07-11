@@ -1,0 +1,49 @@
+{
+    "scenario_key": "hif_honisen",
+    "name": "HIF 本戦 7 日固定骨架（姫崎莉波）",
+    "description": "本戦日程配置（配置模式）。命中且画面有该选项时按配置选，否则降级通用规则。每日画面实际选项待实机核实（见 mvp.md §6.5 WARNING）。",
+    "default_priority": [
+        "おでかけ",
+        "相談",
+        "公開レッスン",
+        "Vo",
+        "Da",
+        "Vi",
+        "授業",
+        "活動"
+    ],
+    "days": {
+        "1": {
+            "action": "授業",
+            "note": "普通课程，不挑属性"
+        },
+        "2": {
+            "action": "公開レッスン",
+            "note": "スター性重視：公开课选参时优先加スター性的参（关键数值锚点）"
+        },
+        "3": {
+            "action": "おでかけ",
+            "fallback": "差し入れ",
+            "note": "固定特殊节点，只能这俩；优先おでかけ，差し入れ兜底",
+            "constraint": "fixed_options"
+        },
+        "4": {
+            "action": "授業",
+            "note": "普通课程"
+        },
+        "5": {
+            "action": "公開レッスン",
+            "note": "通常公开课"
+        },
+        "6": {
+            "action": "相談",
+            "note": "商店/强化/拿卡"
+        }
+    },
+    "low_health_fallback": {
+        "threshold_ratio": 0.35,
+        "threshold_value": 10,
+        "action": "おでかけ",
+        "fallback_task": "ProduceChooseRest"
+    }
+}

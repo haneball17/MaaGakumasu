@@ -15,8 +15,8 @@
   4. OCR 读数值字段（好调/再演/集中/回合/流/山札，ROI 坐标 Step3 实机校准）
   5. 组装 ExamState → 喂给决策大脑
 
-注：数值字段的 ROI 坐标当前为占位常量（_NUMERIC_ROI），
-    需 Step3 实机截图校准后填入真实坐标。
+注：数值字段由 ``assets/data/hif/roi_calibration.json`` 管理；
+    未校准字段保留零 ROI，读取器会显式跳过。
 """
 
 from __future__ import annotations
@@ -24,6 +24,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Protocol
 from dataclasses import dataclass
 
+from agent.hif.calibration import load_hif_roi_calibration
 from agent.hif.decisions.state import (
     ParamSet,
     ExamRound,
@@ -40,7 +41,7 @@ if TYPE_CHECKING:
     from maa.context import Context
 
 # ---------------------------------------------------------------------------
-# 数值字段 ROI（占位，Step3 实机校准）
+# 数值字段 ROI（由版本化实机校准文件加载）
 # ---------------------------------------------------------------------------
 
 
@@ -52,17 +53,28 @@ class NumericROI:
     roi: tuple[int, int, int, int]
 
 
-# 数值字段 ROI 占位坐标。全部待 Step3 用 MuMu 截图校准后替换。
-# 坐标基于 1280×720 画面（MuMu12 标准），当前为预估占位，非实测。
-_NUMERIC_ROI: dict[str, NumericROI] = {
-    "good_condition": NumericROI("好调ターン数", (0, 0, 0, 0)),
-    "reprise": NumericROI("再演次数", (0, 0, 0, 0)),
-    "focus": NumericROI("集中值", (0, 0, 0, 0)),
-    "turn": NumericROI("回合计数", (0, 0, 0, 0)),
-    "flow": NumericROI("当前流 Vo/Da/Vi", (0, 0, 0, 0)),
-    "deck_size": NumericROI("山札张数", (0, 0, 0, 0)),
-    "p_drinks": NumericROI("持有Pドリンク", (0, 0, 0, 0)),
+_NUMERIC_LABELS = {
+    "good_condition": "好调ターン数",
+    "reprise": "再演次数",
+    "focus": "集中值",
+    "turn": "回合计数",
+    "flow": "当前流 Vo/Da/Vi",
+    "deck_size": "山札张数",
+    "p_drinks": "持有Pドリンク",
 }
+
+
+def _load_numeric_roi() -> dict[str, NumericROI]:
+    """仅加载实机已校准字段；其余使用零 ROI 并由读取器跳过。"""
+
+    calibration = load_hif_roi_calibration()
+    return {
+        key: NumericROI(label, calibration.roi_for_exam_numeric(key) or (0, 0, 0, 0))
+        for key, label in _NUMERIC_LABELS.items()
+    }
+
+
+_NUMERIC_ROI = _load_numeric_roi()
 
 
 # ---------------------------------------------------------------------------
@@ -97,6 +109,32 @@ class NumericRead:
     flow: str | None = None  # 仅 flow 字段使用
 
 
+@dataclass(slots=True)
+class ExamStateObservation:
+    """一次出牌画面的完整读取结果。
+
+    ``ExamState`` 为兼容既有策略仍会对缺失值给出零值兜底，但自动点击必须
+    检查 ``missing_fields``。这使影子模式可继续产出建议，而执行模式不会把
+    未校准的 ROI 当作真实数值。
+    """
+
+    state: ExamState
+    detections: list[CardDetection]
+    numerics: dict[str, NumericRead]
+    missing_fields: tuple[str, ...]
+    screen_confidence: float
+
+
+_CARD_EXECUTION_NUMERICS = (
+    "good_condition",
+    "reprise",
+    "focus",
+    "turn",
+    "flow",
+    "deck_size",
+)
+
+
 class OcrPort(Protocol):
     """maafw Context 的 OCR 能力抽象（纯逻辑层依赖此协议，不依赖 maa.Context）。
 
@@ -126,8 +164,6 @@ def build_hand_summary(detections: list[CardDetection]) -> HandSummary:
     - draw_available/swap_hand_available：当前未识别（留 False，待实机补按钮识别）
     """
     card_names = [normalize_card_name(d.card_name) for d in detections if d.card_name]
-    label_set = {d.label for d in detections}
-
     has_shizen = "自然体の魅力" in card_names
     has_oneesan = "お姉さんの感覚" in card_names
     has_kokuminteki = "国民的アイドル" in card_names
@@ -274,19 +310,23 @@ class ExamStateReader:
 
     def read_hand(self) -> HandSummary:
         """读手牌：YOLO 定位 + OCR 读名 → HandSummary。"""
-        detections = self.ocr.run_yolo_cards()
-        return build_hand_summary(detections)
+        return build_hand_summary(self._read_detections())
+
+    def _read_detections(self) -> list[CardDetection]:
+        """读取手牌检测；复制列表避免调用方修改适配器返回值。"""
+
+        return list(self.ocr.run_yolo_cards())
 
     def read_numerics(self) -> dict[str, NumericRead]:
         """读数值字段：对每个 ROI 跑 OCR，解析为 NumericRead。
 
-        ROI 坐标当前为占位（_NUMERIC_ROI 全 0），Step3 实机校准前读不到值，
-        build_exam_state 会回退默认值，保证降级运行。
+        未校准字段会保持零 ROI 并跳过 OCR；调用者必须通过
+        ``ExamStateObservation.missing_fields`` 阻止自动点击。
         """
         numerics: dict[str, NumericRead] = {}
         for key, roi_spec in _NUMERIC_ROI.items():
             if all(v == 0 for v in roi_spec.roi):
-                # 占位 ROI 跳过（Step3 校准前不调 OCR，避免误读）
+                # 未校准 ROI 跳过，避免把页面其他数字误读成状态。
                 continue
             raw = self.ocr.run_ocr(f"HIFNumeric_{key}", [], roi_spec.roi) or ""
             numerics[key] = _parse_numeric(key, raw)
@@ -299,9 +339,41 @@ class ExamStateReader:
         stamina: int,
     ) -> ExamState:
         """读完整出牌状态：手牌 + 数值 + 组装 ExamState。"""
-        hand = self.read_hand()
+        return self.read_exam_observation(round_, total_turns, stamina).state
+
+    def read_exam_observation(
+        self,
+        round_: ExamRound,
+        total_turns: int,
+        stamina: int | None,
+    ) -> ExamStateObservation:
+        """读取出牌状态及其完整度，供影子/单步执行器做安全门控。"""
+
+        detections = self._read_detections()
+        hand = build_hand_summary(detections)
         numerics = self.read_numerics()
-        return build_exam_state(hand, numerics, round_, total_turns, stamina)
+        missing = []
+        if not detections:
+            missing.append("hand")
+        for key in _CARD_EXECUTION_NUMERICS:
+            read = numerics.get(key)
+            if key == "flow":
+                if read is None or read.flow is None:
+                    missing.append(key)
+            elif read is None or read.value is None:
+                missing.append(key)
+        if stamina is None or stamina < 0:
+            missing.append("stamina")
+        state = build_exam_state(hand, numerics, round_, total_turns, stamina if stamina is not None else 0)
+        required_count = len(_CARD_EXECUTION_NUMERICS) + 2  # 手牌和体力
+        confidence = round(max(0, required_count - len(missing)) / required_count, 2)
+        return ExamStateObservation(
+            state=state,
+            detections=detections,
+            numerics=numerics,
+            missing_fields=tuple(missing),
+            screen_confidence=confidence,
+        )
 
 
 def _parse_numeric(key: str, raw: str) -> NumericRead:

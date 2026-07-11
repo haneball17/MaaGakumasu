@@ -257,20 +257,27 @@ def test_rinami_hif_preset_uses_daily_schedule_observed_in_finals_log():
     assert choose_schedule_priority(preset, None) is None
 
 
-def test_hif_pipeline_routes_round1_to_observe_stop_not_generic_card_action():
+def test_hif_pipeline_routes_rounds_to_the_dedicated_card_action_not_generic_card_action():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
-    assert payload["ProduceHIFRound1Flag"]["next"] == ["ProduceHIFRound1ObserveFlag"]
-    assert payload["ProduceHIFRound1ObserveFlag"]["action"]["param"]["custom_action"] == "ProduceHIFRound1Observe"
+    assert payload["ProduceHIFRound1Flag"]["next"] == ["ProduceHIFRound1ActionFlag"]
+    assert payload["ProduceHIFRound2Flag"]["next"] == ["ProduceHIFRound2ActionFlag"]
+    assert payload["ProduceHIFRound1ActionFlag"]["action"]["param"]["custom_action"] == "ProduceCardsHIF"
+    assert payload["ProduceHIFRound2ActionFlag"]["action"]["param"]["custom_action"] == "ProduceCardsHIF"
+    assert payload["ProduceHIFRound1ActionFlag"]["action"]["param"]["custom_action_param"]["execution_mode"] == "observe_and_stop"
     assert payload["ProduceHIFRound1ReachedStop"]["action"]["type"] == "StopTask"
     assert "ProduceCardsFlag" not in payload["ProduceHIFRound1Flag"]["next"]
 
 
-def test_hif_pipeline_sends_unsupported_pages_to_safe_stop():
+def test_hif_pipeline_keeps_unknown_overflow_safe_but_routes_supported_interval_and_memory_pages():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
-    assert payload["ProduceHIFDrinkOverflowFlag"]["next"] == ["ProduceHIFUnknownStop"]
-    assert payload["ProduceHIFIntervalFlag"]["next"] == ["ProduceHIFUnknownStop"]
+    assert payload["ProduceHIFDrinkOverflowFlag"]["next"] == ["ProduceHIFDrinkOverflowObserveFlag"]
+    assert payload["ProduceHIFDrinkOverflowObserveFlag"]["action"]["param"]["custom_action"] == "ProduceHIFDrinkOverflowObserve"
+    assert payload["ProduceHIFIntervalFlag"]["next"] == ["ProduceHIFIntervalActionFlag"]
+    assert payload["ProduceHIFIntervalActionFlag"]["action"]["param"]["custom_action"] == "ProduceHIFIntervalAuto"
+    assert payload["ProduceHIFScoreSettlementFlag"]["next"] == ["ProduceHIFSettlementContinueFlag"]
+    assert payload["ProduceHIFMemoryFlag"]["action"]["param"]["custom_action"] == "ProduceHIFMemoryGenerate"
 
 
 def test_hif_preset_option_injects_the_same_preset_into_round1_and_event_actions():
@@ -280,23 +287,26 @@ def test_hif_preset_option_injects_the_same_preset_into_round1_and_event_actions
 
     expected_actions = {
         "ProduceChooseHIFEventFlag",
+        "ProduceChooseHIFPItemFlag",
         "ProduceHIFClassOptionFlag",
         "ProduceHIFDrinkRewardFlag",
         "ProduceHIFSkillRewardFlag",
         "ProduceHIFSelectChangeTargetFlag",
         "ProduceHIFSelectChangeSourceFlag",
         "ProduceHIFConsultFlag",
-        "ProduceHIFRound1ObserveFlag",
+        "ProduceHIFRound1ActionFlag",
     }
     assert set(override) == expected_actions
     assert all(value["custom_action_param"]["preset_id"] == "rinami_good_condition_safe" for value in override.values())
-    assert override["ProduceHIFRound1ObserveFlag"]["custom_action_param"]["round1_mode"] == "observe_and_stop"
+    assert override["ProduceHIFRound1ActionFlag"]["custom_action_param"]["round1_mode"] == "observe_and_stop"
 
 
 def test_hif_selection_mode_does_not_fall_back_to_generic_button():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
     assert "ProduceHIFButton" not in payload["ProduceHIFSelectionModeFlag"]["next"]
+    assert payload["ProduceHIFSelectionModeFlag"]["next"] == ["ProduceHIFSelectionObserveFlag"]
+    assert payload["ProduceHIFSelectionObserveFlag"]["action"]["param"]["custom_action"] == "ProduceHIFSelectionObserve"
     button = payload["ProduceHIFSelectionModeContinueButton"]
     assert button["recognition"]["param"]["template"] == ["next.png", "produce/decide.png"]
     assert button["recognition"]["param"]["roi"] == [200, 1000, 320, 160]
@@ -312,6 +322,14 @@ def test_hif_pipeline_ocr_patterns_are_valid_regular_expressions():
                 re.compile(pattern)
 
 
+def test_hif_final_mode_does_not_match_the_remaining_days_banner():
+    payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    patterns = payload["ProduceHIFFinalModeFlag"]["recognition"]["param"]["expected"]
+
+    assert any(re.fullmatch(pattern, "H.I.F 本戦モード") for pattern in patterns)
+    assert not any(re.fullmatch(pattern, "H.I.F本戦まで 6日") for pattern in patterns)
+
+
 def test_hif_task_uses_the_preset_final_mode_action_instead_of_the_generic_difficulty_ocr():
     for task_path in (Path("assets/tasks/produce.json"), Path("assets/tasks/produce_cn.json")):
         task_payload = json.loads(task_path.read_text(encoding="utf-8"))
@@ -320,6 +338,76 @@ def test_hif_task_uses_the_preset_final_mode_action_instead_of_the_generic_diffi
 
         assert mode_override["recognition"]["type"] == "DirectHit"
         assert mode_override["action"]["param"]["custom_action"] == "ProduceHIFChooseFinalModeAuto"
+
+
+def test_hif_mode_owns_post_selection_route_and_skip_idol_only_overrides_generic_route():
+    for task_path in (Path("assets/tasks/produce.json"), Path("assets/tasks/produce_cn.json")):
+        task_payload = json.loads(task_path.read_text(encoding="utf-8"))
+        hif_case = next(case for case in task_payload["option"]["培育难度"]["cases"] if case["name"] == "HIF")
+        hif_override = hif_case["pipeline_override"]["ProduceChooseDifficulty"]
+
+        assert hif_override["next"] == ["ProduceHIFPreparationEntry"]
+
+    task_payload = json.loads(Path("assets/tasks/produce.json").read_text(encoding="utf-8"))
+    for case in task_payload["option"]["跳过选择偶像"]["cases"]:
+        override = case["pipeline_override"]
+        assert "ProduceChooseDifficulty" not in override
+        assert "ProduceAfterChooseDifficulty" in override
+
+
+def test_hif_execution_mode_defaults_to_observe_and_exposes_only_single_step_experiment():
+    for task_path in (Path("assets/tasks/produce.json"), Path("assets/tasks/produce_cn.json")):
+        task_payload = json.loads(task_path.read_text(encoding="utf-8"))
+        option = task_payload["option"]["HIF执行模式"]
+        single_step = next(case for case in option["cases"] if case["name"] == "单步执行（实验）")
+
+        assert option["default_case"] == "观测（默认）"
+        assert single_step["pipeline_override"]["ProduceHIFRound1ActionFlag"]["custom_action_param"]["preset_id"] == "rinami_good_condition_safe"
+        assert single_step["pipeline_override"]["ProduceHIFRound1ActionFlag"]["custom_action_param"]["execution_mode"] == "single_step"
+        assert single_step["pipeline_override"]["ProduceHIFRound2ActionFlag"]["custom_action_param"]["execution_mode"] == "single_step"
+
+
+def test_hif_pipeline_custom_actions_are_exported_by_the_agent_package():
+    payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    agent_path = str(Path("agent").resolve())
+    sys.path.insert(0, agent_path)
+    try:
+        action_package = import_module("agent.custom.action")
+    finally:
+        sys.path.remove(agent_path)
+
+    referenced = {
+        node["action"]["param"]["custom_action"]
+        for node in payload.values()
+        if node.get("action", {}).get("type") == "Custom"
+    }
+    assert referenced <= set(action_package.__all__)
+
+
+def test_hif_test_pipeline_hands_card_change_back_to_the_formal_router_without_placeholders():
+    payload = json.loads(Path("assets/resource/base/pipeline/test/TEST_HIF.json").read_text(encoding="utf-8"))
+    custom_actions = [
+        node.get("action", {}).get("param", {}).get("custom_action", "")
+        for node in payload.values()
+    ]
+
+    assert payload["produce_hif_cardchange_enter_flag"]["next"] == ["ProduceEntryHIF"]
+    assert not any("Placeholder" in action for action in custom_actions)
+
+
+def test_hif_preparation_pipeline_uses_existing_templates_before_entering_hif_router():
+    payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+
+    assert payload["ProduceHIFPreparationEntry"]["next"] == ["ProduceHIFMainEventButton", "ProduceHIFUnknownStop"]
+    assert payload["ProduceHIFMainEventButton"]["recognition"]["param"]["template"] == ["produce/HIF/button_hif_mainevent.png"]
+    assert payload["ProduceHIFProduceStartButton"]["recognition"]["param"]["template"] == ["produce/HIF/button_hif_producestart.png"]
+    assert payload["ProduceHIFMainEventEntranceFlag"]["next"] == ["ProduceEntryHIF"]
+
+
+def test_hif_router_runs_device_preflight_before_page_routing():
+    payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+
+    assert payload["ProduceEntryHIF"]["action"]["param"]["custom_action"] == "ProduceHIFValidateDevice"
 
 
 def test_hif_consult_stops_safely_when_the_recognized_finish_button_cannot_be_clicked(monkeypatch):
@@ -339,3 +427,92 @@ def test_hif_consult_stops_safely_when_the_recognized_finish_button_cannot_be_cl
 
     assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
     assert stop_reasons == [("consult_shop", "finish_button_click_failed")]
+
+
+def test_hif_cards_observe_mode_never_clicks_and_single_step_rejects_incomplete_state(monkeypatch):
+    """Round 出牌入口必须先影子记录；未校准数值时单步模式也不能点击。"""
+    agent_path = str(Path("agent").resolve())
+    sys.path.insert(0, agent_path)
+    try:
+        module = import_module("agent.custom.action.produce_hif")
+    finally:
+        sys.path.remove(agent_path)
+
+    from agent.hif.journal import HIFFrameEvidence
+    from agent.hif.decisions.state import ActionKind, CardAction
+
+    records = []
+
+    class _Journal:
+        def capture(self, image, label):
+            del image
+            return HIFFrameEvidence(label, 720, 1280, None, None, "test")
+
+        def record(self, *args, **kwargs):
+            records.append((args, kwargs))
+
+    observation = SimpleNamespace(
+        state=SimpleNamespace(oneesan_used=False, natural_finisher_used=False),
+        detections=[],
+        missing_fields=("hand", "turn", "flow"),
+        screen_confidence=0.0,
+    )
+    reader = SimpleNamespace(read_exam_observation=lambda *args: observation)
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _Journal())
+    monkeypatch.setattr(module.ExamStateReader, "from_context", classmethod(lambda cls, context: reader))
+    monkeypatch.setattr(
+        module,
+        "GarakutaRinamiStrategy",
+        lambda payload: SimpleNamespace(decide=lambda state: CardAction(ActionKind.PLAY_CARD, "自然体の魅力", "test")),
+    )
+
+    action = module.ProduceCardsHIF()
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: SimpleNamespace(size=(720, 1280)))
+    monkeypatch.setattr(action, "_get_health", lambda context, image: None)
+    tasks = []
+    context = SimpleNamespace(run_task=lambda task: tasks.append(task))
+
+    assert action.run(
+        context,
+        SimpleNamespace(custom_action_param='{"preset_id":"rinami_good_condition_safe","round":"round1","execution_mode":"observe_and_stop"}'),
+    )
+    assert tasks == ["ProduceHIFRound1ReachedStop"]
+    assert records[-1][0][2] == "observed"
+
+    tasks.clear()
+    assert action.run(
+        context,
+        SimpleNamespace(custom_action_param='{"preset_id":"rinami_good_condition_safe","round":"round1","execution_mode":"single_step"}'),
+    )
+    assert tasks == ["ProduceHIFUnknownStop"]
+    assert any(args[2] == "rejected" for args, _ in records)
+
+
+def test_hif_verified_deck_swipe_records_changed_frames(monkeypatch, tmp_path):
+    agent_path = str(Path("agent").resolve())
+    sys.path.insert(0, agent_path)
+    try:
+        module = import_module("agent.custom.action.produce_hif")
+    finally:
+        sys.path.remove(agent_path)
+
+    from agent.hif.journal import HIFJournal, audit_hif_journal, load_hif_journal
+
+    action = module.ProduceChooseHIFSelectChangeSourceAuto()
+    action.ACTION_DELAY = 0
+    journal = HIFJournal(root=tmp_path, session_id="swipe")
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: journal)
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: b"after")
+    controller = SimpleNamespace(post_swipe=lambda *args, **kwargs: SimpleNamespace(wait=lambda: None))
+    context = SimpleNamespace(tasker=SimpleNamespace(controller=controller), run_task=lambda task: None)
+
+    assert action._swipe_with_verification(
+        context,
+        b"before",
+        "select_change_source_deck",
+        "scroll_deck",
+        (360, 1040),
+        (360, 680),
+        duration=300,
+    )
+    assert audit_hif_journal(load_hif_journal(journal.path)).ok

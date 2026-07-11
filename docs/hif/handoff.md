@@ -1,120 +1,140 @@
-# HIF 开发工作交接（2026-06-29）
+# HIF 实测任务交接（2026-07-11）
 
-> 本文档为 feat/hif 分支当前进展与后续计划的交接记录，供新会话无缝接手。
+本文用于暂时搁置 HIF 实机验证。以当前工作区为准；不要按旧会话记录回退任何文件。
 
-## 一、当前状态（已核实）
+## 当前结论
 
-- **工作目录**：`F:\code\MaaGakumasu`（fork 仓库）
-- **分支**：`feat/hif`，工作区干净，本地与远程已同步
-- **测试**：全套 **47 个全过**（0 失败）
-- **远程**：`origin → haneball17/MaaGakumasu`，`upstream → SuperWaterGod/MaaGakumasu`
+- 分支：`feat/hif`。
+- 工作区存在大量未提交的 HIF 实现、资源和文档改动；**禁止**执行 `git reset --hard`、`git checkout --` 或覆盖现有修改。
+- HIF 的离线安全层、Pipeline 静态检查和单元测试已可用；最近一次全量测试结果为 `116 passed`。
+- MuMu 控制器已成功修复并实测可连接，但游戏仍停留在标题加载画面，尚未进入主页或 HIF 页面。
+- 尚未对游戏内 HIF 执行任何培育、选项、卡牌或资源消耗操作。
 
-## 二、整体架构（融合后）
+## 已验证的实机环境
 
-```
-F:\code\MaaGakumasu\agent\hif\
-├── decisions/          ← 出牌大脑（纯逻辑，零 maafw，已移植完成）
-│   ├── state.py        #   ExamState/HandSummary/CardAction 数据结构
-│   ├── config.py       #   ProfilePayload 角色配置（已瘦身去 pydantic）
-│   ├── hand_meta.py    #   卡名→消耗查表
-│   └── play.py         # ★ GarakutaRinamiStrategy 再演压缩流（7条分支）
-├── adapters/           ← 适配层（YOLO+OCR→ExamState，已建完成）
-│   ├── card_dict.py    #   OCR 卡名词典 + 好调卡判定
-│   └── exam_reader.py  # ★ ExamStateReader（纯逻辑可单测 + maafw 适配器分离）
-└── simulator.py        ← 日程决策模拟器（已有工作，BeamPlanner）
+| 项目 | 值 |
+| --- | --- |
+| MuMu 安装目录 | `D:\game\MuMuPlayer-12.0` |
+| 实例 | `1` / `MuMu安卓设备-1` |
+| ADB 地址 | `127.0.0.1:16416` |
+| ADB 可执行文件 | `D:\game\MuMuPlayer-12.0\nx_main\adb.exe` |
+| 截图尺寸 | `720x1280` |
+| HIF 帧契约 | 已通过 |
 
-F:\code\Maa-gakumas-bot\（老仓库）→ 归档保留，出牌大脑已掏空移植过来
-```
+复测命令（只读，不发送点击）：
 
-### 关键设计原则（务必遵守）
-
-- `decisions/` 层**零 maafw 依赖**，只吃 dataclass 吐 `CardAction`
-- `adapters/` 是**唯一**接触 maafw 的层，通过 `OcrPort` 协议抽象
-  （实机用 `_MaafwOcrAdapter`，单测用 mock）
-- 纯逻辑组装函数（`build_hand_summary`/`build_exam_state`）与 maafw 调用分离
-
-## 三、已完成的工作（10 个 commit，全在 feat/hif）
-
-| commit | 内容 | 阶段 |
-|---|---|---|
-| `4ae19f1` | 决策模拟器（1457行） | 收拢已有 |
-| `8541c6b` | 13篇HIF设计文档+单测 | 收拢已有 |
-| `635cb05` | master数据+生成流水线 | 收拢已有 |
-| `f1fe330` | pipeline状态机+实机action | 收拢已有 |
-| `d30d21a` | 集成进pipeline/lang/CI | 收拢已有 |
-| `985d4f4` | **出牌决策大脑移植**（206行） | **Step 1** |
-| `0dea8ca` | **22个出牌测试** | **Step 1** |
-| `532fbf0` | **ExamStateReader适配层** | **Step 2** |
-| `57b50a7` | **19个适配层测试** | **Step 2** |
-| `c28c27d` | isort格式统一 | 清理 |
-
-## 四、剩余工作计划
-
-### Step 3：实机 ROI 校准（⚠️ 需 MuMu 真机）
-
-适配层里 7 个数值字段的 ROI 坐标现在是**占位 `(0,0,0,0)`**
-（代码已做安全处理：全 0 跳过 OCR），需要实机截图定位真实坐标。
-
-**待校准的字段**（在 `exam_reader.py` 的 `_NUMERIC_ROI`）：
-
-```python
-_NUMERIC_ROI = {
-    "good_condition": NumericROI("好调ターン数", (0,0,0,0)),  # ← 待校准
-    "reprise":       NumericROI("再演次数",     (0,0,0,0)),  # ← 待校准
-    "focus":         NumericROI("集中值",       (0,0,0,0)),  # ← 待校准
-    "turn":          NumericROI("回合计数",     (0,0,0,0)),  # ← 待校准
-    "flow":          NumericROI("当前流",        (0,0,0,0)),  # ← 待校准
-    "deck_size":     NumericROI("山札张数",     (0,0,0,0)),  # ← 待校准
-    "p_drinks":      NumericROI("持有Pドリンク",(0,0,0,0)),  # ← 待校准
-}
+```powershell
+python tools/hif_controller_probe.py --adb 127.0.0.1:16416 --adb-path "D:\game\MuMuPlayer-12.0\nx_main\adb.exe"
 ```
 
-**操作方式**：连 MuMu → 进 HIF 本戦出牌画面 → 截图 → 定位坐标
-（可参考老仓库 `F:\code\Maa-gakumas-bot\backend\scripts\` 下的
-`sample_from_video.py` / `_probe_template_match.py` 抽帧校准方法）。
+若 MuMu 实例未启动，可先只读确认状态：
 
-### Step 4：写 ProduceCardsHIF action + 接 ProduceHIF.json（部分需真机）
-
-**现状**：`ProduceHIF.json` 的 Round1/Round2 现在调用的是**通用**
-`ProduceCardsFlag → ProduceCardsAuto`（用 YOLO 数卡数，无策略），
-需要改成调用**新的** `ProduceHIFCardsFlag → ProduceCardsHIF`
-（用我们的ガラクタロード策略）。
-
-**需在 `agent/custom/action/produce_hif.py` 追加**：
-
-```python
-@AgentServer.custom_action("ProduceCardsHIF")
-class ProduceCardsHIF(CustomAction):
-    def run(self, context, argv):
-        reader = ExamStateReader.from_context(context)
-        state = reader.read_exam_state(round_, total_turns, stamina)
-        action = GarakutaRinamiStrategy(ProfilePayload.default()).decide(state)
-        # 翻译 action → 点击执行
+```powershell
+& "D:\game\MuMuPlayer-12.0\nx_main\MuMuManager.exe" info --vmindex 1
 ```
 
-**出牌动作的点击执行**（打出哪张卡怎么点）依赖实机 ROI 校准。
+实例启动是正常实测前置条件；不要依据旧 HWND 连接。`MuMuManager.exe info --vmindex 1` 会给出当前 `adb_host_ip`、`adb_port`、`main_wnd` 和 `render_wnd`。
 
-**建议先做 Step 4 的 action 骨架**（不依赖 ROI 的部分：出牌循环、决策调用、
-接 pipeline），真机调试时只填坐标——这样无需真机也能推进大半。
+## 当前实机画面与阻塞
 
-### Step 5：实机验证 + 调优（需 MuMu 真机）
+最近保存的证据位于 `debug/hif-live/`（调试文件，不提交）：
 
-- 连真机跑 Round1/Round2 出牌循环
-- OCR 误识变体补充（`card_dict.py` 的 `OCR_VARIANTS`，实机根据误识样本填）
-- 打磨到稳定拿 S4
+- `current-screen.png`：Android 游戏中心页。
+- `after-game-load.png`、`after-second-title-tap.png`：游戏标题加载页。
 
-## 五、给新会话的接手指引
+已确认游戏包 `com.bandainamcoent.idolmaster_gakuen` 已安装并处于运行状态，但画面持续显示标题加载。继续盲点无法可靠到达主页，更不能作为 HIF Pipeline 的实机证据。
 
-我在 `F:\code\MaaGakumasu`（fork 仓库）的 `feat/hif` 分支上做 HIF 出牌开发。
+恢复时先让游戏自然进入主页；若需要用户登录、网络确认、维护提示或任何账户相关操作，应由用户处理后再继续。不要绕过这些状态，也不要在标题加载页反复发送触控。
 
-1. 出牌决策大脑（Step 1）+ 适配层 ExamStateReader（Step 2）已完成，47 测试全过。
-2. 请先读 `agent/hif/decisions/play.py`（出牌大脑）和
-   `agent/hif/adapters/exam_reader.py`（适配层）了解现状。
-3. 下一步是 **Step 4：写 ProduceCardsHIF action 骨架**
-   （`agent/custom/action/produce_hif.py` 追加出牌 CustomAction，调用
-   ExamStateReader + GarakutaRinamiStrategy，接进 ProduceHIF.json），
-   先写不依赖真机 ROI 的部分。
-4. 关键约束：`decisions/` 层零 maafw 依赖；`adapters/` 是唯一接触 maafw 的层。
-5. 数值字段 ROI 坐标（`_NUMERIC_ROI`）现在是占位，Step 3 实机校准。
+## 当前实现与安全约束
 
-**老仓库 `F:\code\Maa-gakumas-bot`**：出牌大脑已掏空移植，作为归档保留，不用管它。
+### 核心模块
+
+- `agent/hif/runtime.py`：标准帧验证与明确的裁剪坐标变换；外框截图只列候选裁剪，不自动猜测顶栏/底栏。
+- `agent/hif/calibration.py`：版本化 ROI 校准读取；执行级校准必须带设备、游戏版本、语言和截图 SHA-256 证据。
+- `agent/hif/image_io.py`：无需 Pillow/OpenCV 的 PNG 写入器，支持 Maa 返回的 `numpy.ndarray`。
+- `agent/hif/journal.py`：HIF Journal、前后帧证据和离线审计。
+- `agent/hif/pipeline_validation.py`：JSONC Pipeline 引用与 Custom Action 注册检查。
+- `agent/custom/action/produce_hif.py`：HIF 页面操作统一走前后帧验证；Round 出牌默认观测，单步执行有完整状态与校准门。
+
+### 必须保留的安全行为
+
+1. `assets/data/hif/roi_calibration.json` 当前所有 `exam_numeric` 字段仍为 `null`，不能填入猜测坐标。
+2. 默认只允许 `observe_and_stop`；`single_step` 需要完整且可追溯的校准；`continuous` 尚未开放。
+3. 任意点击或滑动必须有唯一目标、前后截图和帧变化验证；失败后进入 `ProduceHIFUnknownStop`。
+4. 不要把 MuMu 窗口外框偏移写入正式 Pipeline ROI 或点击坐标。
+5. `debug/` 下截图和 Journal 只用于证据，不应提交。
+
+## 恢复实测的步骤
+
+### 1. 先验证设备和主页
+
+```powershell
+python tools/hif_controller_probe.py --adb 127.0.0.1:16416 --adb-path "D:\game\MuMuPlayer-12.0\nx_main\adb.exe" --save "debug\hif-live\home.png"
+```
+
+仅当输出中 `hif_frame_valid=true` 且截图已是游戏主页时继续。不要因为探测成功就假定 HIF 页面识别也正确。
+
+### 2. 采集 HIF 页面样本
+
+先在不消耗资源或经用户确认的前提下进入 HIF。本阶段优先收集：
+
+1. HIF 本战准备页；
+2. Round1 和 Round2 的出牌页；
+3. Interval、饮料满仓、变卡、奖励、Live、结算和 Memory 页。
+
+每个页面保存原始 `720x1280` PNG，并记录游戏版本、语言、DMM/汉化状态和控制器类型。
+
+### 3. 校准 Round 数值 ROI
+
+使用真实 HIF Round 截图校准以下字段：
+
+- `good_condition`
+- `reprise`
+- `focus`
+- `turn`
+- `flow`
+- `deck_size`
+- `p_drinks`
+
+命令示例：
+
+```powershell
+python tools/hif_roi_calibration.py --image <round.png> --field focus --roi x,y,width,height --device-id mumu12-device-1 --controller-kind adb --game-version <版本> --locale ja-JP --write
+```
+
+先省略 `--write` 进行 dry run。所有字段、设备标识和截图 SHA-256 齐全前，不要打开单步执行。
+
+### 4. 分阶段运行
+
+1. 先跑 `观测（默认）`，只检查 Journal、截图、候选和决策。
+2. 对单个已校准 Round 开启 `单步执行（实验）`，每次只验证一张唯一目标卡。
+3. 每次运行后审计：
+
+```powershell
+python tools/hif_journal_audit.py debug/hif-journal/<session>.jsonl
+```
+
+审计必须无失败项，才能扩大样本范围。连续模式需要完整实机闭环后另行评审，当前不开放。
+
+## 本地验证命令
+
+```powershell
+python -m pytest -q
+python tools/hif_pipeline_check.py
+python -m py_compile agent/hif/*.py agent/hif/adapters/*.py agent/custom/action/produce_hif.py tools/hif_*.py
+```
+
+在当前环境中 `npx maa-tools check` 无法运行：npm registry 中没有可获取的 `maa-tools` 包。不要通过临时安装不明包伪造该检查结果。
+
+## 交接前检查清单
+
+- [x] MuMu ADB 连接及 `720x1280` 截图验证。
+- [x] HIF 控制器探测支持显式 `--adb-path`。
+- [x] 无 Pillow 环境下的 PNG 证据保存。
+- [x] Journal 审计、Pipeline 静态检查和单元测试。
+- [ ] 游戏主页稳定可达。
+- [ ] HIF 页面实机截图样本。
+- [ ] 全量 Round ROI 校准。
+- [ ] Round1/2 单步实机验证。
+- [ ] 完整 HIF 培育闭环和连续模式评审。

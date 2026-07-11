@@ -1,0 +1,23 @@
+{
+	"schema_version": 1,
+  "frame_size": [
+		720,
+		1280
+  ],
+  "updated_at": "",
+  "device_id": "",
+  "controller_kind": "",
+  "game_version": "",
+  "locale": "",
+  "evidence_sha256": "",
+	"source": "待使用 MuMu 12 设备截图校准；null 表示禁止自动读取/点击依赖该字段。",
+	"exam_numeric": {
+		"good_condition": null,
+		"reprise": null,
+		"focus": null,
+		"turn": null,
+		"flow": null,
+		"deck_size": null,
+		"p_drinks": null
+	}
+}

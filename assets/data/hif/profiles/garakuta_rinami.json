@@ -1,0 +1,22 @@
+{
+    "role_key": "garakuta_rinami",
+    "name": "姫崎莉波（ガラクタロード）",
+    "plan": "sense",
+    "recommend_effect": "集中",
+    "flows": ["Vi", "Da", "Vo"],
+    "honisen": {
+        "deck_target": 22,
+        "star_threshold_r1": 8,
+        "star_threshold_r2": 9,
+        "stamina_critical": 20
+    },
+    "reprise": {
+        "max": 4,
+        "good_cond_gate": 4,
+        "finisher_gate": 12,
+        "finisher_window": 0
+    },
+    "p_drink_priority": ["初星黒酢", "パワフル漢方ドリンク"],
+    "priority_swap_cards": [],
+    "focus_r1": true
+}
