@@ -527,7 +527,7 @@
       "type": "OCR",
       "param": {"expected": [".*受け取る.*"], "roi": [200, 1000, 320, 150]}
     },
-    "action": {"type": "Click", "param": {}},
+    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFRewardConfirmAuto"}},
     "post_delay": 500
   },
   "ProduceHIFSelectChangeTargetFlag": {
@@ -564,7 +564,7 @@
       "type": "TemplateMatch",
       "param": {"template": ["next.png", "produce/continue.png"], "roi": [180, 1000, 360, 180], "threshold": 0.8}
     },
-    "action": {"type": "Click", "param": {}},
+    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFKnownNextAuto"}},
     "post_delay": 500
   },
   "ProduceHIFDrinkOverflowFlag": {

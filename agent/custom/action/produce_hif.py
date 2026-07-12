@@ -13,12 +13,13 @@ from agent.hif.ui_map import load_hif_ui_map
 from agent.hif.journal import HIFFrameEvidence, frame_changed, get_runtime_hif_journal
 from agent.hif.presets import HIFPreset, parse_hif_preset
 from agent.hif.runtime import validate_hif_frame
-from agent.hif.calibration import load_hif_roi_calibration
 from agent.hif.session import get_runtime_hif_session, reset_runtime_hif_session
 from agent.hif.execution import HIFExecutionMode, parse_execution_mode, approve_card_execution
+from agent.hif.calibration import load_hif_roi_calibration
 from agent.hif.route_planner import HIFRoutePlanner
 from agent.hif.decisions.play import GarakutaRinamiStrategy
 from agent.hif.decisions.state import ExamRound, ActionKind, CardAction
+from agent.hif.screen_profiles import load_hif_screen_profiles
 from agent.hif.decisions.config import ProfilePayload
 from agent.hif.adapters.card_dict import normalize_card_name, is_good_condition_card
 from agent.hif.adapters.exam_reader import CardDetection, ExamStateReader
@@ -34,6 +35,14 @@ class _ProduceHIFActionBase(CustomAction):
         """优先使用已观察案例记录的 ROI；缺少证据时保留调用方显式回退。"""
 
         roi = load_hif_ui_map().button_roi(screen_state, button_id)
+        return list(roi) if roi is not None else fallback
+
+    @staticmethod
+    def _profile_region(screen_state: str, region_id: str, fallback: List[int]) -> List[int]:
+        """优先使用已审阅页面配置中的区域，缺少时保留显式回退。"""
+
+        profile = load_hif_screen_profiles().get(screen_state)
+        roi = profile.regions.get(region_id) if profile else None
         return list(roi) if roi is not None else fallback
 
     @staticmethod
@@ -84,8 +93,15 @@ class _ProduceHIFActionBase(CustomAction):
         context.run_task("ProduceHIFUnknownStop")
         return True
 
-    @staticmethod
-    def _get_preset(argv: CustomAction.RunArg) -> HIFPreset:
+    def _configure_page_execution(self, argv: CustomAction.RunArg) -> HIFExecutionMode:
+        """页面动作默认观察；只有显式 single_step 才能触发验证型点击。"""
+
+        mode = parse_execution_mode(self._get_action_params(argv).get("execution_mode"))
+        self._page_execution_mode = mode
+        return mode
+
+    def _get_preset(self, argv: CustomAction.RunArg) -> HIFPreset:
+        self._configure_page_execution(argv)
         return parse_hif_preset(argv.custom_action_param)
 
     @staticmethod
@@ -154,6 +170,16 @@ class _ProduceHIFActionBase(CustomAction):
         """点击唯一 OCR 文案，并以新截图指纹验证页面已变化。"""
 
         before = self._capture_evidence(image, f"{screen_state}_{event}_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                screen_state,
+                event,
+                "observed",
+                details={"reason": "page_execution_mode_not_single_step", "mode": mode.value, "phrases": phrases},
+                before=before,
+            )
+            return self._stop_unsupported(context, screen_state, "page_execution_mode_not_single_step")
         reco_detail = self._find_text_option(context, image, phrases, roi)
         if not reco_detail:
             self._record_journal(
@@ -223,6 +249,17 @@ class _ProduceHIFActionBase(CustomAction):
         """点击已由上层唯一识别的候选框，并记录点击前后的页面证据。"""
 
         before = self._capture_evidence(image, f"{screen_state}_{event}_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                screen_state,
+                event,
+                "observed",
+                details={**(details or {}), "reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                before=before,
+            )
+            self._stop_unsupported(context, screen_state, "page_execution_mode_not_single_step")
+            return False
         if not self._click_box_center(context, box, double=False, y_offset=y_offset):
             self._record_journal(
                 screen_state,
@@ -276,6 +313,17 @@ class _ProduceHIFActionBase(CustomAction):
         """执行一次已校准的滑动，并以帧变化证明页面确实响应。"""
 
         before = self._capture_evidence(image, f"{screen_state}_{event}_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                screen_state,
+                event,
+                "observed",
+                details={**(details or {}), "reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                before=before,
+            )
+            self._stop_unsupported(context, screen_state, "page_execution_mode_not_single_step")
+            return False
         try:
             context.tasker.controller.post_swipe(*start, *end, duration=duration).wait()
         except Exception as error:
@@ -447,6 +495,9 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         logger.success("事件: HIF 选择日程")
         image = self._get_screenshot(context)
         reading = HIFStateReader.from_context(context, image).read_finals_prepare_state()
+        page = reading.page_observation
+        if page is None or not page.is_unique or page.screen_id != "finals_prepare":
+            return self._stop_unsupported(context, "finals_action_select", "finals_prepare_page_not_confirmed")
         if reading.missing_fields:
             return self._stop_unsupported(context, "finals_action_select", f"state_unreadable:{','.join(reading.missing_fields)}")
         events = self._get_available_events(context, image)
@@ -471,7 +522,13 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
             "finals_action_select",
             "choose_schedule",
             "selected",
-            details={"candidate": best_event["name"], "reasons": decision.reasons, "confidence": decision.confidence},
+            details={
+                "candidate": best_event["name"],
+                "reasons": decision.reasons,
+                "confidence": decision.confidence,
+                "page": page.screen_id,
+                "page_confidence": page.confidence,
+            },
         )
         return self._execute_event(context, image, best_event)
 
@@ -624,7 +681,12 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
         image = self._get_screenshot_or_stop(context, "hif_class_options")
         if image is None:
             return True
-        reco_detail = self._find_text_option(context, image, self.GOOD_CONDITION_OPTIONS, self.OPTION_ROI)
+        reco_detail = self._find_text_option(
+            context,
+            image,
+            self.GOOD_CONDITION_OPTIONS,
+            self._profile_region("class_options", "options", self.OPTION_ROI),
+        )
         if not reco_detail:
             return self._stop_unsupported(context, "hif_class_options", "good_condition_option_not_found")
         return self._click_box_with_verification(
@@ -648,9 +710,17 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
         reroll_limit: int,
         screen_state: str,
     ) -> bool:
+        profile_screen = {
+            "hif_drink_reward": "drink_reward",
+            "hif_skill_reward": "skill_reward",
+            "select_change_target": "select_change_target",
+        }.get(screen_state)
+        profile = load_hif_screen_profiles().get(profile_screen) if profile_screen else None
+        option_roi = list(profile.regions["candidates"]) if profile and "candidates" in profile.regions else self.OPTION_ROI
+        reroll_roi = list(profile.buttons["reroll"].roi) if profile and "reroll" in profile.buttons else self.REROLL_ROI
         for _ in range(reroll_limit + 1):
             image = self._get_screenshot(context)
-            reco_detail = self._find_text_option(context, image, names, self.OPTION_ROI)
+            reco_detail = self._find_text_option(context, image, names, option_roi)
             if reco_detail:
                 return self._click_box_with_verification(
                     context,
@@ -661,7 +731,7 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
                     details={"reward": reco_detail.best_result.text},
                 )
 
-            reroll = self._find_text_option(context, image, ("再抽選",), self.REROLL_ROI)
+            reroll = self._find_text_option(context, image, ("再抽選",), reroll_roi)
             if not reroll:
                 break
             if not self._click_box_with_verification(
@@ -732,7 +802,12 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
         image = self._get_screenshot_or_stop(context, "select_change_target")
         if image is None:
             return True
-        next_button = self._find_text_option(context, image, ("次へ",), self.NEXT_ROI)
+        next_button = self._find_text_option(
+            context,
+            image,
+            ("次へ",),
+            self._observed_button_roi("select_change_target", "next", self.NEXT_ROI),
+        )
         if not next_button:
             return self._stop_unsupported(context, "select_change_target", "next_button_not_found")
         return self._click_box_with_verification(
@@ -760,7 +835,12 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             image = self._get_screenshot_or_stop(context, "select_change_source_deck")
             if image is None:
                 return True
-            source = self._find_text_option(context, image, preset.select_change_source_names, self.DECK_ROI)
+            source = self._find_text_option(
+                context,
+                image,
+                preset.select_change_source_names,
+                self._profile_region("select_change_source_deck", "deck_grid", self.DECK_ROI),
+            )
             if source:
                 source_image = image
                 break
@@ -792,7 +872,12 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         image = self._get_screenshot_or_stop(context, "select_change_source_deck")
         if image is None:
             return True
-        change_button = self._find_text_option(context, image, ("チェンジ",), self.CHANGE_ROI)
+        change_button = self._find_text_option(
+            context,
+            image,
+            ("チェンジ",),
+            self._observed_button_roi("select_change_source_deck", "change", self.CHANGE_ROI),
+        )
         if not change_button:
             return self._stop_unsupported(context, "select_change_source_deck", "change_button_not_found")
         return self._click_box_with_verification(
@@ -817,7 +902,12 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
         image = self._get_screenshot_or_stop(context, "consult_shop")
         if image is None:
             return True
-        finish_button = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
+        finish_button = self._find_text_option(
+            context,
+            image,
+            ("終了",),
+            self._observed_button_roi("consult_shop", "finish", self.FINISH_ROI),
+        )
         if not finish_button:
             return self._stop_unsupported(context, "consult_shop", "finish_button_not_found")
         self._click_box_with_verification(
@@ -831,6 +921,44 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
         # _click_box_with_verification 已在失败时触发安全停止；对 Maa Custom
         # Action 返回成功，避免框架将安全停止误报为动作异常。
         return True
+
+
+@AgentServer.custom_action("ProduceHIFRewardConfirmAuto")
+class ProduceHIFRewardConfirmAuto(_ProduceHIFActionBase):
+    """确认已由奖励选择 Action 唯一选中的领取项。"""
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._configure_page_execution(argv)
+        image = self._get_screenshot_or_stop(context, "hif_reward_confirm")
+        if image is None:
+            return True
+        return self._click_text_with_verification(
+            context,
+            image,
+            "hif_reward_confirm",
+            "confirm_reward",
+            ("受け取る",),
+            self._observed_button_roi("drink_reward", "receive", [230, 1052, 260, 84]),
+        )
+
+
+@AgentServer.custom_action("ProduceHIFKnownNextAuto")
+class ProduceHIFKnownNextAuto(_ProduceHIFActionBase):
+    """仅在已识别的无资源结果页点击唯一的“次へ”。"""
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._configure_page_execution(argv)
+        image = self._get_screenshot_or_stop(context, "hif_known_result")
+        if image is None:
+            return True
+        return self._click_text_with_verification(
+            context,
+            image,
+            "hif_known_result",
+            "continue_result",
+            ("次へ",),
+            self._observed_button_roi("public_lesson_result", "next", [180, 1000, 360, 180]),
+        )
 
 
 @AgentServer.custom_action("ProduceHIFChooseFinalModeAuto")
@@ -1077,6 +1205,16 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
             self._record_journal(screen_state, "interval", "rejected", details={"reason": validation.reason}, before=before)
             return self._stop_unsupported(context, screen_state, validation.reason)
         reading = HIFStateReader.from_context(context, image).read_interval_state()
+        page = reading.page_observation
+        if page is None or not page.is_unique or page.screen_id != "interval_shop":
+            self._record_journal(
+                screen_state,
+                "interval",
+                "rejected",
+                details={"reason": "interval_page_not_confirmed", "matched": page.matched_screen_ids if page else ()},
+                before=before,
+            )
+            return self._stop_unsupported(context, screen_state, "interval_page_not_confirmed")
         if reading.missing_fields:
             self._record_journal(
                 screen_state,
@@ -1087,12 +1225,15 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
             )
             return self._stop_unsupported(context, screen_state, f"state_unreadable:{','.join(reading.missing_fields)}")
 
+        self._configure_page_execution(argv)
         mode = str(self._get_action_params(argv).get("interval_mode", "observe_and_stop"))
         details = {
             "mode": mode,
             "stamina": reading.state.stamina,
             "max_stamina": reading.state.max_stamina,
             "p_points": reading.state.p_points,
+            "page": page.screen_id,
+            "page_confidence": page.confidence,
         }
         if mode == "observe_and_stop":
             self._record_journal(screen_state, "interval", "observed", details=details, before=before)
@@ -1118,7 +1259,7 @@ class ProduceHIFSettlementContinueAuto(_ProduceHIFActionBase):
     NEXT_ROI = [230, 1094, 258, 82]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        del argv
+        self._configure_page_execution(argv)
         image = self._get_screenshot_or_stop(context, "settlement")
         if image is None:
             return True
@@ -1139,6 +1280,7 @@ class ProduceHIFLiveObserve(_ProduceHIFActionBase):
     SKIP_ROI = [535, 468, 155, 38]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._configure_page_execution(argv)
         image = self._get_screenshot_or_stop(context, "live")
         if image is None:
             return True
@@ -1150,7 +1292,7 @@ class ProduceHIFLiveObserve(_ProduceHIFActionBase):
                 image,
                 "live",
                 "skip_live",
-                self.SKIP_ROI,
+                self._profile_region("live", "skip", self.SKIP_ROI),
                 details={"mode": mode, "source": "finals-daily-log"},
             )
         self._record_journal(
@@ -1183,28 +1325,46 @@ class _ProduceHIFMemoryAction(_ProduceHIFActionBase):
 @AgentServer.custom_action("ProduceHIFMemoryPhotoNext")
 class ProduceHIFMemoryPhotoNext(_ProduceHIFMemoryAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        del argv
-        return self._click_memory_button(context, "memory_photo_select", "photo_next", ("次へ",), [240, 1120, 242, 82])
+        self._configure_page_execution(argv)
+        return self._click_memory_button(
+            context,
+            "memory_photo_select",
+            "photo_next",
+            ("次へ",),
+            self._observed_button_roi("memory_photo_select", "next", [240, 1120, 242, 82]),
+        )
 
 
 @AgentServer.custom_action("ProduceHIFMemoryPhotoConfirm")
 class ProduceHIFMemoryPhotoConfirm(_ProduceHIFMemoryAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        del argv
-        return self._click_memory_button(context, "memory_photo_confirm", "photo_confirm", ("決定",), [373, 1137, 255, 70])
+        self._configure_page_execution(argv)
+        return self._click_memory_button(
+            context,
+            "memory_photo_confirm",
+            "photo_confirm",
+            ("決定",),
+            self._observed_button_roi("memory_photo_confirm", "confirm", [373, 1137, 255, 70]),
+        )
 
 
 @AgentServer.custom_action("ProduceHIFMemoryGenerate")
 class ProduceHIFMemoryGenerate(_ProduceHIFMemoryAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        del argv
-        return self._click_memory_button(context, "memory_generate", "generate_memory", ("生成",), [275, 900, 170, 170])
+        self._configure_page_execution(argv)
+        return self._click_memory_button(
+            context,
+            "memory_generate",
+            "generate_memory",
+            ("生成",),
+            self._observed_button_roi("memory_generate", "generate", [275, 900, 170, 170]),
+        )
 
 
 @AgentServer.custom_action("ProduceHIFMemoryPreviewNext")
 class ProduceHIFMemoryPreviewNext(_ProduceHIFMemoryAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        del argv
+        self._configure_page_execution(argv)
         return self._click_memory_button(
             context,
             "memory_preview",

@@ -12,16 +12,18 @@ from typing import TYPE_CHECKING, Protocol
 from dataclasses import field, dataclass
 
 from agent.hif.domain import HIFPhase, HIFRuntimeState
+from agent.hif.observation import HIFPageObservation, observe_hif_page
+from agent.hif.screen_profiles import load_hif_screen_profiles
 
 if TYPE_CHECKING:
     from maa.context import Context
 
 
-_FINALS_ROI = {
-    "remaining_day": (32, 25, 160, 145),
-    "health": (285, 16, 150, 85),
-    "p_points": (280, 99, 158, 48),
-    "attributes": (18, 568, 560, 215),
+_FINALS_REGION_NAMES = {
+    "remaining_day": "day",
+    "health": "health",
+    "p_points": "p_points",
+    "attributes": "attributes",
 }
 
 
@@ -35,6 +37,7 @@ class HIFStateReading:
     state: HIFRuntimeState
     raw: dict[str, str] = field(default_factory=dict)
     missing_fields: tuple[str, ...] = ()
+    page_observation: HIFPageObservation | None = None
 
 
 def parse_health(text: str | None) -> tuple[int, int] | None:
@@ -99,7 +102,24 @@ class HIFStateReader:
         return self._read_state(HIFPhase.INTERVAL)
 
     def _read_state(self, phase: HIFPhase) -> HIFStateReading:
-        raw = {key: self.ocr.read_ocr(f"HIFState_{key}", roi) or "" for key, roi in _FINALS_ROI.items()}
+        profiles = load_hif_screen_profiles()
+        profile = profiles.get("finals_prepare")
+        if profile is None:
+            raise RuntimeError("HIF 页面配置缺少 finals_prepare")
+        roi_by_key = {
+            key: next(anchor.roi for anchor in profile.anchors if anchor.anchor_id == region_name)
+            if key == "remaining_day"
+            else profile.regions[region_name]
+            for key, region_name in _FINALS_REGION_NAMES.items()
+        }
+        raw = {key: self.ocr.read_ocr(f"HIFState_{key}", roi) or "" for key, roi in roi_by_key.items()}
+        screen_profile = profiles.get("finals_prepare" if phase is HIFPhase.FINALS_PREPARE else "interval_shop")
+        if screen_profile is None:
+            raise RuntimeError(f"HIF 页面配置缺少阶段页面: {phase.value}")
+        anchor_texts = [
+            self.ocr.read_ocr(f"HIFPageAnchor_{phase.value}_{anchor.anchor_id}", anchor.roi) or ""
+            for anchor in screen_profile.anchors
+        ]
         health = parse_health(raw["health"])
         day_remaining = parse_remaining_day(raw["remaining_day"])
         p_points = parse_p_points(raw["p_points"])
@@ -121,7 +141,12 @@ class HIFStateReader:
             attributes=parse_attributes(raw["attributes"]),
             screen_confidence=round((len(required_fields) - len(missing)) / len(required_fields), 2),
         )
-        return HIFStateReading(state=state, raw=raw, missing_fields=tuple(missing))
+        return HIFStateReading(
+            state=state,
+            raw=raw,
+            missing_fields=tuple(missing),
+            page_observation=observe_hif_page([*raw.values(), *anchor_texts], profiles),
+        )
 
 
 class _MaafwHIFStateOcrAdapter:

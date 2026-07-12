@@ -47,3 +47,17 @@ def test_hif_state_reader_reuses_the_same_trusted_fields_for_interval():
     assert reading.state.stamina == 34
     assert reading.state.p_points == 580
     assert reading.missing_fields == ()
+
+
+def test_hif_state_reader_records_a_unique_profile_observation_when_anchor_is_readable():
+    class _AnchorOcr(_MockStateOcr):
+        def read_ocr(self, name: str, roi: tuple[int, int, int, int]) -> str | None:
+            if name.startswith("HIFPageAnchor_finals_prepare"):
+                return "H.I.F本戦まで 4日"
+            return super().read_ocr(name, roi)
+
+    reading = HIFStateReader(_AnchorOcr({"remaining_day": "H.I.F本戦まで 4日", "health": "22/35", "p_points": "330"})).read_finals_prepare_state()
+
+    assert reading.page_observation is not None
+    assert reading.page_observation.screen_id == "finals_prepare"
+    assert reading.page_observation.is_unique

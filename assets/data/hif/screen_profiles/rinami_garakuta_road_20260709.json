@@ -1,0 +1,813 @@
+{
+	"schema_version": 1,
+	"profile_id": "rinami_garakuta_road_20260709",
+	"frame_size": [
+		720,
+		1280
+	],
+	"source_doc": "docs/hif/finals-daily-log.md",
+	"review_sections": [
+		"セレクトチェンジ 第一阶段：选择目标卡 A",
+		"セレクトチェンジ 第二阶段：牌库选择卡 B",
+		"セレクトチェンジ 完成提示",
+		"第二天初始候选界面",
+		"公开 lesson 预览界面",
+		"公开 lesson 结果界面",
+		"第三天初始候选界面",
+		"P 饮料领取界面",
+		"技能卡领取界面",
+		"P 饮料持有上限界面",
+		"P item 技能卡变换界面",
+		"第四天初始候选界面",
+		"Vi 授業选项界面",
+		"Vi 授業选项预览",
+		"第四天 セレクトチェンジ 目标卡选择界面",
+		"第四天牌库选择 B 界面",
+		"第四天变更成功提示",
+		"第五天初始候选界面",
+		"第五天 P 饮料持有上限界面",
+		"第六天初始候选界面",
+		"第六天 相談 商店界面",
+		"本战 Round1 / 初始状态",
+		"Interval 商店初始界面",
+		"持有技能卡检查界面",
+		"强化界面",
+		"特别指导 / カスタマイズ界面",
+		"特别指导选项执行界面",
+		"回复确认界面",
+		"分数结算界面",
+		"Live 页面",
+		"回忆照片选择界面",
+		"回忆照片确认界面",
+		"回忆生成界面",
+		"回忆卡预览界面"
+	],
+	"profiles": [
+		{
+			"screen_id": "finals_prepare",
+			"risk": "stateful_choice",
+			"anchors": [{"id": "day", "pattern": "H\\.?I\\.?F本戦まで.*[1-6]日", "roi": [
+						32,
+						25,
+						160,
+						145
+					]}],
+			"regions": {
+				"health": [
+					285,
+					16,
+					150,
+					85
+				],
+				"p_points": [
+					280,
+					99,
+					158,
+					48
+				],
+				"attributes": [
+					18,
+					568,
+					560,
+					215
+				],
+				"schedule_candidates": [
+					84,
+					920,
+					552,
+					196
+				],
+				"rest": [
+					600,
+					805,
+					92,
+					98
+				],
+				"drinks": [
+					24,
+					1178,
+					360,
+					78
+				]
+			}
+		},
+		{
+			"screen_id": "class_options",
+			"risk": "stateful_choice",
+			"anchors": [{"id": "option", "pattern": "余裕です！|長い道のりでした", "roi": [
+						40,
+						620,
+						640,
+						360
+					]}],
+			"regions": {"options": [
+					52,
+					658,
+					616,
+					295
+				], "dialogue": [
+					39,
+					951,
+					641,
+					179
+				]}
+		},
+		{
+			"screen_id": "public_lesson_preview",
+			"risk": "stateful_choice",
+			"anchors": [{"id": "selected", "pattern": "SELECT", "roi": [
+						272,
+						906,
+						176,
+						214
+					]}],
+			"regions": {"stamina_cost": [
+					184,
+					48,
+					103,
+					40
+				], "preview_delta": [
+					14,
+					512,
+					565,
+					70
+				], "description": [
+					140,
+					798,
+					440,
+					78
+				]}
+		},
+		{
+			"screen_id": "public_lesson_result",
+			"risk": "safe_continue",
+			"anchors": [{"id": "title", "pattern": "公開レッスン", "roi": [
+						32,
+						36,
+						160,
+						105
+					]}],
+			"regions": {"result_attributes": [
+					35,
+					612,
+					650,
+					300
+				], "result_text": [
+					140,
+					986,
+					450,
+					90
+				]},
+			"buttons": [{"id": "next", "text": "次へ", "roi": [
+						180,
+						1000,
+						360,
+						180
+					]}]
+		},
+		{
+			"screen_id": "drink_reward",
+			"risk": "resource_choice",
+			"anchors": [{"id": "prompt", "pattern": "受け取るPドリンクを選んでください", "roi": [
+						145,
+						620,
+						430,
+						45
+					]}],
+			"regions": {"candidates": [
+					158,
+					822,
+					405,
+					127
+				], "details": [
+					118,
+					506,
+					500,
+					230
+				]},
+			"buttons": [{"id": "receive", "text": "受け取る", "roi": [
+						230,
+						1052,
+						260,
+						84
+					]}]
+		},
+		{
+			"screen_id": "skill_reward",
+			"risk": "resource_choice",
+			"anchors": [{"id": "prompt", "pattern": "受け取るスキルカードを選んでください", "roi": [
+						132,
+						588,
+						456,
+						44
+					]}],
+			"regions": {"candidates": [
+					156,
+					821,
+					408,
+					128
+				], "details": [
+					118,
+					555,
+					490,
+					185
+				], "reroll_count": [
+					559,
+					1042,
+					102,
+					40
+				]},
+			"buttons": [
+				{"id": "receive", "text": "受け取る", "roi": [
+						230,
+						1052,
+						260,
+						84
+					]},
+				{"id": "reroll", "text": "再抽選", "roi": [
+						555,
+						1072,
+						112,
+						58
+					]}
+			]
+		},
+		{
+			"screen_id": "drink_overflow",
+			"risk": "resource_choice",
+			"anchors": [{"id": "title", "pattern": "Pドリンク所持上限", "roi": [
+						58,
+						96,
+						330,
+						50
+					]}],
+			"regions": {"new_drinks": [
+					54,
+					367,
+					612,
+					410
+				], "held_drinks": [
+					54,
+					713,
+					612,
+					350
+				], "remaining_prompt": [
+					290,
+					1196,
+					145,
+					34
+				]},
+			"buttons": [{"id": "keep", "text": "残す", "roi": [
+						230,
+						1116,
+						260,
+						84
+					]}]
+		},
+		{
+			"screen_id": "select_change_target",
+			"risk": "resource_choice",
+			"anchors": [{"id": "prompt", "pattern": "チェンジで獲得するスキルカードを選んでください", "roi": [
+						84,
+						292,
+						545,
+						42
+					]}],
+			"regions": {"target_preview": [
+					407,
+					344,
+					144,
+					144
+				], "candidates": [
+					156,
+					837,
+					408,
+					128
+				], "details": [
+					118,
+					555,
+					490,
+					185
+				], "reroll_count": [
+					559,
+					1042,
+					102,
+					40
+				]},
+			"buttons": [
+				{"id": "next", "text": "次へ", "roi": [
+						230,
+						1052,
+						260,
+						84
+					]},
+				{"id": "reroll", "text": "再抽選", "roi": [
+						555,
+						1072,
+						112,
+						58
+					]}
+			]
+		},
+		{
+			"screen_id": "select_change_source_deck",
+			"risk": "resource_choice",
+			"anchors": [{"id": "prompt", "pattern": "チェンジするスキルカードを選択してください", "roi": [
+						100,
+						579,
+						520,
+						42
+					]}],
+			"regions": {"source_preview": [
+					168,
+					96,
+					144,
+					144
+				], "target_preview": [
+					407,
+					96,
+					144,
+					144
+				], "deck_grid": [
+					80,
+					623,
+					560,
+					485
+				], "scrollbar": [
+					678,
+					634,
+					8,
+					460
+				]},
+			"buttons": [
+				{"id": "cancel", "text": "キャンセル", "roi": [
+						90,
+						1119,
+						255,
+						82
+					]},
+				{"id": "change", "text": "チェンジ", "roi": [
+						373,
+						1119,
+						255,
+						82
+					]}
+			]
+		},
+		{
+			"screen_id": "consult_shop",
+			"risk": "resource_choice",
+			"anchors": [{"id": "prompt", "pattern": "Pポイントと交換するものを選んでください", "roi": [
+						124,
+						299,
+						470,
+						40
+					]}],
+			"regions": {"products": [
+					50,
+					481,
+					620,
+					345
+				], "prices": [
+					58,
+					625,
+					598,
+					210
+				]},
+			"buttons": [{"id": "finish", "text": "終了", "roi": [
+						563,
+						1047,
+						157,
+						84
+					]}]
+		},
+		{
+			"screen_id": "round1",
+			"risk": "battle",
+			"anchors": [{"id": "turn", "pattern": "残りターン", "roi": [
+						13,
+						43,
+						120,
+						128
+					]}],
+			"regions": {"ranking": [
+					223,
+					0,
+					262,
+					132
+				], "status": [
+					14,
+					237,
+					88,
+					360
+				], "hand": [
+					49,
+					884,
+					622,
+					248
+				], "drinks": [
+					24,
+					1178,
+					360,
+					78
+				]}
+		},
+		{
+			"screen_id": "interval_shop",
+			"risk": "resource_choice",
+			"anchors": [{"id": "title", "pattern": "インターバル", "roi": [
+						32,
+						25,
+						160,
+						145
+					]}],
+			"regions": {"products": [
+					50,
+					499,
+					620,
+					330
+				], "prices": [
+					48,
+					624,
+					622,
+					232
+				]},
+			"buttons": [
+				{"id": "refresh", "text": "リフレッシュ", "roi": [
+						19,
+						1048,
+						180,
+						47
+					]},
+				{"id": "finish", "text": "終了", "roi": [
+						565,
+						1045,
+						155,
+						84
+					]}
+			]
+		},
+		{
+			"screen_id": "skill_deck_view",
+			"risk": "read_only",
+			"anchors": [{"id": "title", "pattern": "所持スキルカード", "roi": [
+						0,
+						28,
+						286,
+						56
+					]}],
+			"regions": {"details": [
+					21,
+					102,
+					678,
+					286
+				], "deck_grid": [
+					48,
+					390,
+					624,
+					610
+				], "tab": [
+					27,
+					1010,
+					666,
+					74
+				]},
+			"buttons": [{"id": "close", "text": "閉じる", "roi": [
+						232,
+						1119,
+						256,
+						82
+					]}]
+		},
+		{
+			"screen_id": "skill_enhance",
+			"risk": "resource_choice",
+			"anchors": [{"id": "title", "pattern": "強化", "roi": [
+						0,
+						28,
+						286,
+						56
+					]}],
+			"regions": {"before": [
+					20,
+					97,
+					680,
+					284
+				], "after": [
+					20,
+					396,
+					680,
+					286
+				], "deck_grid": [
+					80,
+					697,
+					560,
+					398
+				]},
+			"buttons": [
+				{"id": "cancel", "text": "キャンセル", "roi": [
+						90,
+						1119,
+						255,
+						82
+					]},
+				{"id": "enhance", "text": "強化", "roi": [
+						373,
+						1119,
+						255,
+						82
+					]}
+			]
+		},
+		{
+			"screen_id": "skill_customize",
+			"risk": "resource_choice",
+			"anchors": [{"id": "title", "pattern": "カスタマイズ", "roi": [
+						0,
+						28,
+						286,
+						56
+					]}],
+			"regions": {"details": [
+					20,
+					97,
+					680,
+					442
+				], "deck_grid": [
+					80,
+					566,
+					560,
+					485
+				], "remaining_count": [
+					170,
+					1073,
+					380,
+					40
+				]},
+			"buttons": [
+				{"id": "back", "text": "もどる", "roi": [
+						90,
+						1119,
+						255,
+						82
+					]},
+				{"id": "customize", "text": "カスタマイズ", "roi": [
+						373,
+						1119,
+						255,
+						82
+					]}
+			]
+		},
+		{
+			"screen_id": "customize_option",
+			"risk": "resource_choice",
+			"anchors": [{"id": "option", "pattern": "集中コスト値-|スキルカード強化追加", "roi": [
+						36,
+						886,
+						462,
+						109
+					]}],
+			"regions": {"before": [
+					20,
+					148,
+					680,
+					289
+				], "after": [
+					20,
+					446,
+					680,
+					286
+				], "options": [
+					36,
+					886,
+					462,
+					109
+				]},
+			"buttons": [
+				{"id": "back", "text": "一覧に戻る", "roi": [
+						90,
+						1119,
+						255,
+						82
+					]},
+				{"id": "execute", "text": "実行する", "roi": [
+						373,
+						1119,
+						255,
+						82
+					]}
+			]
+		},
+		{
+			"screen_id": "recovery_confirm",
+			"risk": "resource_choice",
+			"anchors": [{"id": "title", "pattern": "体力回復確認", "roi": [
+						58,
+						705,
+						330,
+						50
+					]}],
+			"regions": {"description": [
+					88,
+					790,
+					548,
+					44
+				], "p_point_change": [
+					282,
+					1023,
+					276,
+					50
+				]},
+			"buttons": [
+				{"id": "cancel", "text": "キャンセル", "roi": [
+						90,
+						1119,
+						255,
+						82
+					]},
+				{"id": "recover", "text": "回復する", "roi": [
+						373,
+						1119,
+						255,
+						82
+					]}
+			]
+		},
+		{
+			"screen_id": "score_settlement",
+			"risk": "safe_continue",
+			"anchors": [{"id": "title", "pattern": "優勝", "roi": [
+						30,
+						30,
+						150,
+						85
+					]}],
+			"regions": {"ranking": [
+					24,
+					224,
+					672,
+					522
+				]},
+			"buttons": [
+				{"id": "retry", "text": "再挑戦", "roi": [
+						18,
+						1093,
+						190,
+						70
+					]},
+				{"id": "next", "text": "次へ", "roi": [
+						230,
+						1094,
+						258,
+						82
+					]}
+			]
+		},
+		{
+			"screen_id": "live",
+			"risk": "safe_continue",
+			"anchors": [{"id": "lyrics", "pattern": "歌詞OFF", "roi": [
+						29,
+						789,
+						120,
+						28
+					]}],
+			"regions": {"stage": [
+					0,
+					500,
+					720,
+					292
+				], "song_progress": [
+					20,
+					458,
+					145,
+					38
+				], "skip": [
+					535,
+					468,
+					155,
+					38
+				]}
+		},
+		{
+			"screen_id": "memory_photo_select",
+			"risk": "safe_continue",
+			"anchors": [{"id": "prompt", "pattern": "メモリーにするフォトを選んでください", "roi": [
+						180,
+						437,
+						360,
+						44
+					]}],
+			"regions": {"preview": [
+					0,
+					0,
+					720,
+					405
+				], "photos": [
+					47,
+					490,
+					625,
+					488
+				]},
+			"buttons": [{"id": "next", "text": "次へ", "roi": [
+						240,
+						1120,
+						242,
+						82
+					]}]
+		},
+		{
+			"screen_id": "memory_photo_confirm",
+			"risk": "safe_continue",
+			"anchors": [{"id": "prompt", "pattern": "選択したフォトをメモリーとして保存しますか", "roi": [
+						96,
+						1006,
+						540,
+						88
+					]}],
+			"regions": {"preview": [
+					29,
+					554,
+					662,
+					398
+				]},
+			"buttons": [
+				{"id": "cancel", "text": "キャンセル", "roi": [
+						90,
+						1137,
+						255,
+						70
+					]},
+				{"id": "confirm", "text": "決定", "roi": [
+						373,
+						1137,
+						255,
+						70
+					]}
+			]
+		},
+		{
+			"screen_id": "memory_generate",
+			"risk": "safe_continue",
+			"anchors": [{"id": "title", "pattern": "MEMORY", "roi": [
+						320,
+						178,
+						80,
+						30
+					]}],
+			"regions": {"preview": [
+					40,
+					234,
+					640,
+					350
+				]},
+			"buttons": [{"id": "generate", "text": "生成", "roi": [
+						275,
+						900,
+						170,
+						170
+					]}]
+		},
+		{
+			"screen_id": "memory_preview",
+			"risk": "safe_continue",
+			"anchors": [{"id": "ability", "pattern": "H\\.?I\\.?F専用", "roi": [
+						68,
+						956,
+						590,
+						126
+					]}],
+			"regions": {"rank": [
+					10,
+					8,
+					90,
+					70
+				], "skill": [
+					45,
+					690,
+					610,
+					230
+				], "abilities": [
+					85,
+					770,
+					570,
+					330
+				]},
+			"buttons": [
+				{"id": "regenerate", "text": "再生成", "roi": [
+						27,
+						1118,
+						180,
+						64
+					]},
+				{"id": "next", "text": "次へ", "roi": [
+						240,
+						1118,
+						242,
+						82
+					]}
+			]
+		}
+	]
+}

@@ -1,5 +1,7 @@
 from .domain import HIFPhase, HIFDecision, HIFCandidate, HIFRuntimeState
 from .ui_map import HIFUiMap, HIFUiButton, load_hif_ui_map
+from .screen_profiles import HIFScreenAnchor, HIFScreenButton, HIFScreenProfile, HIFScreenProfiles, load_hif_screen_profiles
+from .observation import HIFPageObservation, observe_hif_page
 from .catalog import HIFDrink, HIFCatalog, HIFSkillCard, HIFCustomPItem, HIFScheduleDay, load_hif_catalog
 from .runtime import HIF_FRAME_SIZE, HIFFrameTransform, HIFFrameValidation, get_image_size, propose_hif_frame_transforms, validate_hif_frame
 from .screens import HIFScreenState, HIFScreenObservation, classify_hif_screen
@@ -92,6 +94,13 @@ __all__ = [
     "HIFUiButton",
     "HIFUiMap",
     "load_hif_ui_map",
+    "HIFScreenAnchor",
+    "HIFScreenButton",
+    "HIFScreenProfile",
+    "HIFScreenProfiles",
+    "load_hif_screen_profiles",
+    "HIFPageObservation",
+    "observe_hif_page",
     "HIFIntervalPlanner",
     "HIFIntervalPolicy",
 ]

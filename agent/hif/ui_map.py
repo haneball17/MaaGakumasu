@@ -8,6 +8,7 @@ from functools import lru_cache
 from dataclasses import dataclass
 
 from agent.hif.runtime import HIF_FRAME_SIZE
+from agent.hif.screen_profiles import load_hif_screen_profiles
 
 ROI = tuple[int, int, int, int]
 
@@ -36,13 +37,23 @@ def default_observed_case_path() -> Path:
 
 @lru_cache(maxsize=4)
 def load_hif_ui_map(path: str | Path | None = None) -> HIFUiMap:
-    """加载已观察案例中的按钮，不从文档文本推断坐标。"""
+    """合并已观察案例与已审阅页面配置中的按钮证据。"""
 
     resolved = Path(path) if path is not None else default_observed_case_path()
     payload = json.loads(resolved.read_text(encoding="utf-8"))
     if not isinstance(payload, dict) or not isinstance(payload.get("case_id"), str):
         raise ValueError(f"无效 HIF 已观察案例: {resolved}")
     buttons: dict[tuple[str, str], HIFUiButton] = {}
+    profiles = load_hif_screen_profiles()
+    for profile in profiles.profiles.values():
+        for button in profile.buttons.values():
+            key = (profile.screen_id, button.button_id)
+            buttons[key] = HIFUiButton(
+                screen_state=profile.screen_id,
+                button_id=button.button_id,
+                text=button.text,
+                roi=button.roi,
+            )
     for hint in payload.get("recognition_hints", []):
         if not isinstance(hint, dict):
             continue
@@ -54,8 +65,9 @@ def load_hif_ui_map(path: str | Path | None = None) -> HIFUiMap:
             if button is None:
                 continue
             key = (button.screen_state, button.button_id)
-            if key in buttons:
-                raise ValueError(f"HIF 已观察案例存在重复按钮: {key}")
+            existing = buttons.get(key)
+            if existing is not None and (existing.text != button.text or existing.roi != button.roi):
+                raise ValueError(f"HIF 按钮证据冲突: {key}")
             buttons[key] = button
     return HIFUiMap(buttons=buttons, source_case_id=payload["case_id"])
 

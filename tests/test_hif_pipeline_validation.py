@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from agent.hif.pipeline_validation import _remove_jsonc_trivia, load_pipeline_nodes, load_registered_custom_actions, validate_hif_pipeline
+from agent.hif.pipeline_validation import load_pipeline_nodes, _remove_jsonc_trivia, validate_hif_pipeline, load_registered_custom_actions
 
 
 def test_hif_pipeline_references_existing_nodes_and_registered_actions():
@@ -16,6 +16,13 @@ def test_hif_pipeline_references_existing_nodes_and_registered_actions():
     )
 
     assert issues == ()
+
+
+def test_hif_result_page_clicks_are_routed_through_verified_custom_actions():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+
+    assert pipeline["ProduceHIFRewardConfirmFlag"]["action"]["param"]["custom_action"] == "ProduceHIFRewardConfirmAuto"
+    assert pipeline["ProduceHIFKnownNextButton"]["action"]["param"]["custom_action"] == "ProduceHIFKnownNextAuto"
 
 
 def test_hif_pipeline_validation_reports_missing_action_and_target():

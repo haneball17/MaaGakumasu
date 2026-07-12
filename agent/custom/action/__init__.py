@@ -20,6 +20,8 @@ __all__ = [
     "ProduceChooseHIFSelectChangeTargetAuto",
     "ProduceChooseHIFSelectChangeSourceAuto",
     "ProduceHIFConsultAuto",
+    "ProduceHIFRewardConfirmAuto",
+    "ProduceHIFKnownNextAuto",
     "ProduceHIFChooseFinalModeAuto",
     "ProduceHIFValidateDevice",
     "ProduceHIFSelectionObserve",

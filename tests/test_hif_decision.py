@@ -425,8 +425,27 @@ def test_hif_consult_stops_safely_when_the_recognized_finish_button_cannot_be_cl
     monkeypatch.setattr(action, "_click_box_center", lambda *args, **kwargs: False)
     monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen_state, reason: stop_reasons.append((screen_state, reason)) or True)
 
-    assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default","execution_mode":"single_step"}'))
     assert stop_reasons == [("consult_shop", "finish_button_click_failed")]
+
+
+def test_hif_page_action_defaults_to_observe_and_never_clicks(monkeypatch):
+    agent_path = str(Path("agent").resolve())
+    sys.path.insert(0, agent_path)
+    try:
+        action = import_module("agent.custom.action.produce_hif").ProduceHIFConsultAuto()
+    finally:
+        sys.path.remove(agent_path)
+    stop_reasons = []
+    button = SimpleNamespace(best_result=SimpleNamespace(box=[560, 1045, 155, 84]))
+
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: object())
+    monkeypatch.setattr(action, "_find_text_option", lambda *args: button)
+    monkeypatch.setattr(action, "_click_box_center", lambda *args, **kwargs: pytest.fail("默认观察模式不应点击"))
+    monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen_state, reason: stop_reasons.append((screen_state, reason)) or True)
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
+    assert stop_reasons == [("consult_shop", "page_execution_mode_not_single_step")]
 
 
 def test_hif_cards_observe_mode_never_clicks_and_single_step_rejects_incomplete_state(monkeypatch):
@@ -496,9 +515,10 @@ def test_hif_verified_deck_swipe_records_changed_frames(monkeypatch, tmp_path):
     finally:
         sys.path.remove(agent_path)
 
-    from agent.hif.journal import HIFJournal, audit_hif_journal, load_hif_journal
+    from agent.hif.journal import HIFJournal, load_hif_journal, audit_hif_journal
 
     action = module.ProduceChooseHIFSelectChangeSourceAuto()
+    action._configure_page_execution(SimpleNamespace(custom_action_param='{"execution_mode":"single_step"}'))
     action.ACTION_DELAY = 0
     journal = HIFJournal(root=tmp_path, session_id="swipe")
     monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: journal)
