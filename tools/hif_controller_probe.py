@@ -128,7 +128,7 @@ def main() -> int:
 def list_candidates() -> dict[str, list[dict[str, object]]]:
     return {
         "adb": [
-            {"address": device.address, "name": device.name, "adb_path": device.adb_path}
+            {"address": device.address, "name": device.name, "adb_path": str(device.adb_path)}
             for device in Toolkit.find_adb_devices()
         ],
         "windows": [

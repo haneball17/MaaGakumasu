@@ -2,15 +2,23 @@
 
 from __future__ import annotations
 
-import json
 import sys
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from agent.hif.pipeline_validation import load_pipeline_nodes, load_registered_custom_actions, validate_hif_pipeline
+from agent.hif.pipeline_validation import (
+    load_pipeline_nodes,
+    validate_hif_pipeline,
+    load_hif_coverage_manifest,
+    load_registered_custom_actions,
+    validate_hif_coverage_manifest,
+    validate_hif_recognition_contracts,
+    load_registered_custom_recognitions,
+)
 
 
 def main() -> int:
@@ -22,6 +30,16 @@ def main() -> int:
         hif_nodes,
         known_nodes=all_nodes,
         registered_custom_actions=load_registered_custom_actions(ROOT / "agent" / "custom" / "action"),
+        registered_custom_recognitions=load_registered_custom_recognitions(ROOT / "agent" / "custom" / "reco"),
+    )
+    coverage_issues = validate_hif_coverage_manifest(
+        hif_nodes,
+        load_hif_coverage_manifest(ROOT / "assets" / "data" / "hif" / "pipeline_coverage.json"),
+    )
+    issues += coverage_issues
+    issues += validate_hif_recognition_contracts(
+        hif_nodes,
+        image_root=ROOT / "assets" / "resource" / "base" / "image",
     )
     print(json.dumps({"ok": not issues, "issue_count": len(issues), "issues": issues}, ensure_ascii=False, indent=2))
     return 0 if not issues else 1

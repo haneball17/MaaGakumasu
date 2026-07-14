@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import struct
 import zlib
-from pathlib import Path
+import struct
 from typing import Any
+from pathlib import Path
 
 
 def save_hif_image(image: Any, path: str | Path) -> None:

@@ -27,6 +27,20 @@ def test_catalog_exposes_key_card_costs_and_effect_tags():
     assert "score" in shizen.tags
 
 
+def test_catalog_distinguishes_granted_good_condition_from_a_good_condition_requirement():
+    catalog = load_hif_catalog()
+
+    blessing = catalog.skill_cards["祝福"]
+    talk_time = catalog.skill_cards["トークタイム"]
+
+    assert "good_condition" in blessing.tags
+    assert "good_condition_grant" in blessing.tags
+    assert "good_condition_requirement" not in blessing.tags
+    assert "good_condition" in talk_time.tags
+    assert "good_condition_requirement" in talk_time.tags
+    assert "good_condition_grant" not in talk_time.tags
+
+
 def test_catalog_schedule_maps_remaining_day_to_fixed_honisen_day():
     catalog = load_hif_catalog()
 

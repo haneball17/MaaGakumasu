@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from agent.hif.runtime import HIF_FRAME_SIZE, HIFFrameTransform, get_image_size, propose_hif_frame_transforms, validate_hif_frame
+from agent.hif.runtime import HIF_FRAME_SIZE, HIFFrameTransform, get_image_size, validate_hif_frame, propose_hif_frame_transforms
 
 
 def test_hif_frame_accepts_pillow_style_size():

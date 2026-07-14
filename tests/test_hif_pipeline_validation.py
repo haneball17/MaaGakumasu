@@ -1,7 +1,17 @@
 import json
 from pathlib import Path
 
-from agent.hif.pipeline_validation import load_pipeline_nodes, _remove_jsonc_trivia, validate_hif_pipeline, load_registered_custom_actions
+from agent.hif.pipeline_validation import (
+    load_pipeline_nodes,
+    _remove_jsonc_trivia,
+    validate_hif_pipeline,
+    find_unreachable_hif_nodes,
+    load_hif_coverage_manifest,
+    load_registered_custom_actions,
+    validate_hif_coverage_manifest,
+    validate_hif_recognition_contracts,
+    load_registered_custom_recognitions,
+)
 
 
 def test_hif_pipeline_references_existing_nodes_and_registered_actions():
@@ -13,9 +23,83 @@ def test_hif_pipeline_references_existing_nodes_and_registered_actions():
         hif_nodes,
         known_nodes=all_nodes,
         registered_custom_actions=load_registered_custom_actions("agent/custom/action"),
+        registered_custom_recognitions=load_registered_custom_recognitions("agent/custom/reco"),
     )
 
     assert issues == ()
+
+
+def test_hif_coverage_matrix_covers_every_current_pipeline_node_and_declares_all_scenarios():
+    pipeline_path = Path("assets/resource/base/pipeline/ProduceHIF.json")
+    pipeline = json.loads(pipeline_path.read_text(encoding="utf-8"))
+    manifest = load_hif_coverage_manifest("assets/data/hif/pipeline_coverage.json")
+
+    assert validate_hif_coverage_manifest(pipeline, manifest) == ()
+
+
+def test_hif_recognition_contracts_reference_existing_templates_and_valid_rois():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+
+    assert validate_hif_recognition_contracts(
+        pipeline,
+        image_root="assets/resource/base/image",
+    ) == ()
+
+
+def test_hif_task_overrides_match_between_locales_reference_existing_nodes_and_default_to_observe():
+    produce = json.loads(Path("assets/tasks/produce.json").read_text(encoding="utf-8"))
+    produce_cn = json.loads(Path("assets/tasks/produce_cn.json").read_text(encoding="utf-8"))
+    all_nodes = load_pipeline_nodes("assets/resource/base/pipeline")
+
+    def option_case(payload, option_name, case_name):
+        option = payload["option"][option_name]
+        return next(case for case in option["cases"] if case["name"] == case_name)
+
+    hif = option_case(produce, "培育难度", "HIF")
+    hif_cn = option_case(produce_cn, "培育难度", "HIF")
+    assert hif["pipeline_override"] == hif_cn["pipeline_override"]
+    assert hif["pipeline_override"]["ProduceEntryFlag"]["next"] == "ProduceEntryHIF"
+    assert "ProduceHIFStartConfirmFlag" in hif["pipeline_override"]["ProduceChooseIdolNext"]["next"]
+
+    for node_name in hif["pipeline_override"]:
+        assert node_name in all_nodes
+
+    for payload in (produce, produce_cn):
+        execution = payload["option"]["HIF执行模式"]
+        assert execution["default_case"] == "观测（默认）"
+        observe_case = option_case(payload, "HIF执行模式", "观测（默认）")
+        assert "pipeline_override" not in observe_case
+        single_step = option_case(payload, "HIF执行模式", "单步执行（实验）")
+        for node_name, override in single_step["pipeline_override"].items():
+            assert node_name in all_nodes
+            params = override.get("action", {}).get("param", {}).get("custom_action_param")
+            if params is not None:
+                assert params["execution_mode"] == "single_step"
+
+
+def test_hif_formal_router_reachability_keeps_only_declared_legacy_or_dynamic_nodes_outside_the_root_graph():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    unreachable = find_unreachable_hif_nodes(
+        pipeline,
+        entry_nodes=("ProduceEntryHIF", "ProduceHIFStartConfirmFlag"),
+        dynamic_targets=("ProduceHIFRound1ReachedStop", "ProduceHIFRound2ReachedStop", "ProduceHIFIntervalReachedStop"),
+    )
+
+    manifest = load_hif_coverage_manifest("assets/data/hif/pipeline_coverage.json")
+    legacy_nodes = {
+        node_name
+        for group in manifest["coverage_matrix"]
+        if group["category"] == "legacy_entry"
+        for node_name in group["nodes"]
+    }
+    assert legacy_nodes <= unreachable
+    assert unreachable - legacy_nodes == {
+        "ProduceHIFButton",
+        "ProduceHIFGenerationFlag",
+        "ProduceHIFKnownNextButton",
+        "ProduceHIFRound1ObserveFlag",
+        "ProduceHIFSelectionModeContinueButton",
+    }
 
 
 def test_hif_result_page_clicks_are_routed_through_verified_custom_actions():
@@ -23,6 +107,103 @@ def test_hif_result_page_clicks_are_routed_through_verified_custom_actions():
 
     assert pipeline["ProduceHIFRewardConfirmFlag"]["action"]["param"]["custom_action"] == "ProduceHIFRewardConfirmAuto"
     assert pipeline["ProduceHIFKnownNextButton"]["action"]["param"]["custom_action"] == "ProduceHIFKnownNextAuto"
+    assert pipeline["ProduceHIFPublicLessonResultFlag"]["action"]["param"]["custom_action"] == "ProduceHIFPublicLessonResultAuto"
+
+
+def test_hif_drink_reward_flags_route_selected_and_revealed_states_via_registered_custom_recognitions():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    recognition = pipeline["ProduceHIFDrinkRewardFlag"]["recognition"]
+    reveal = pipeline["ProduceHIFDrinkRewardRevealFlag"]
+
+    assert recognition == {
+        "type": "Custom",
+        "param": {"custom_recognition": "ProduceHIFDrinkRewardPage"},
+    }
+    assert reveal["recognition"] == {
+        "type": "Custom",
+        "param": {"custom_recognition": "ProduceHIFDrinkRewardRevealPage"},
+    }
+    assert reveal["action"]["param"]["custom_action"] == "ProduceHIFDrinkRewardRevealAuto"
+    assert "ProduceHIFDrinkRewardPage" in load_registered_custom_recognitions("agent/custom/reco")
+    assert "ProduceHIFDrinkRewardRevealPage" in load_registered_custom_recognitions("agent/custom/reco")
+    route = pipeline["ProduceEntryHIF"]["next"]
+    assert route.index("[JumpBack]ProduceHIFDrinkRewardRevealFlag") < route.index("[JumpBack]ProduceHIFDrinkRewardFlag")
+
+
+def test_hif_skill_reward_prompt_tolerates_the_observed_single_character_ocr_confusion():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    recognition = pipeline["ProduceHIFSkillRewardFlag"]["recognition"]
+
+    assert recognition["param"]["expected"] == [".*受[けは]取るスキルカードを選んでください.*"]
+    assert recognition["param"]["roi"] == [100, 570, 540, 100]
+
+
+def test_hif_skill_reward_selected_detail_routes_before_the_safe_advance_fallback():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    selected = pipeline["ProduceHIFSkillRewardSelectedFlag"]
+    route = pipeline["ProduceEntryHIF"]["next"]
+
+    assert selected["recognition"] == {
+        "type": "Custom",
+        "param": {"custom_recognition": "ProduceHIFSkillRewardSelectedPage"},
+    }
+    assert selected["action"]["param"]["custom_action"] == "ProduceChooseHIFSkillRewardAuto"
+    assert "ProduceHIFSkillRewardSelectedPage" in load_registered_custom_recognitions("agent/custom/reco")
+    assert route.index("[JumpBack]ProduceHIFSkillRewardSelectedFlag") < route.index("ProduceHIFSafeAdvanceFlag")
+
+
+def test_hif_incremental_pipeline_routes_actions_back_and_limits_safe_advance():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+
+    assert pipeline["ProduceHIFSafeAdvanceFlag"]["action"]["param"]["custom_action"] == "ProduceHIFSafeAdvanceAuto"
+    assert pipeline["ProduceHIFStartConfirmFlag"]["action"]["param"]["custom_action"] == "ProduceHIFStartProduceAuto"
+    assert pipeline["ProduceHIFSafeAdvanceFlag"]["max_hit"] == 4
+    assert pipeline["ProduceHIFGiftBagsFlag"]["action"]["param"]["custom_action"] == "ProduceHIFSafeAdvanceAuto"
+    for node_name in (
+        "ProduceChooseHIFEventFlag",
+        "ProduceHIFStartConfirmFlag",
+        "ProduceChooseHIFPItemFlag",
+        "ProduceHIFSkillEnhancedResultFlag",
+        "ProduceHIFClassOptionFlag",
+        "ProduceHIFDrinkRewardRevealFlag",
+        "ProduceHIFRewardConfirmFlag",
+        "ProduceHIFSelectChangeTargetFlag",
+        "ProduceHIFSelectChangeSourceFlag",
+        "ProduceHIFConsultFlag",
+        "ProduceHIFPublicLessonResultFlag",
+        "ProduceHIFKnownNextButton",
+    ):
+        assert pipeline[node_name]["next"] == ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
+
+
+def test_hif_schedule_route_uses_visible_text_before_the_safe_advance_fallback():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    schedule = pipeline["ProduceChooseHIFEventFlag"]["recognition"]
+
+    assert schedule["type"] == "OCR"
+    assert ".*授業.*" in schedule["param"]["expected"]
+    assert schedule["param"]["roi"] == [84, 920, 552, 196]
+
+
+def test_hif_unknown_lesson_options_are_guarded_before_safe_advance():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    class_options = pipeline["ProduceHIFClassOptionFlag"]["recognition"]
+
+    assert class_options["type"] == "OCR"
+    assert class_options["param"]["expected"] == [".*授業.*"]
+    assert class_options["param"]["roi"] == [32, 36, 160, 105]
+    assert pipeline["ProduceEntryHIF"]["next"].index("[JumpBack]ProduceHIFClassOptionFlag") < pipeline["ProduceEntryHIF"]["next"].index(
+        "ProduceHIFSafeAdvanceFlag"
+    )
+
+
+def test_hif_source_deck_flag_uses_the_stable_page_title_before_action_level_dual_anchor_validation():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    source_flag = pipeline["ProduceHIFSelectChangeSourceFlag"]["recognition"]
+
+    assert source_flag["type"] == "OCR"
+    assert source_flag["param"]["expected"] == [".*チェンジ.*"]
+    assert source_flag["param"]["roi"] == [0, 28, 285, 58]
 
 
 def test_hif_pipeline_validation_reports_missing_action_and_target():
@@ -31,15 +212,40 @@ def test_hif_pipeline_validation_reports_missing_action_and_target():
             "Node": {
                 "action": {"type": "Custom", "param": {"custom_action": "MissingAction"}},
                 "next": ["[JumpBack]MissingNode"],
-            }
+            },
+            "RecognitionNode": {
+                "recognition": {"type": "Custom", "param": {"custom_recognition": "MissingRecognition"}},
+            },
         },
         known_nodes={"Node"},
         registered_custom_actions=(),
+        registered_custom_recognitions=(),
     )
 
     assert issues == (
         "Node:unregistered_custom_action:MissingAction",
         "Node:missing_next_target:[JumpBack]MissingNode",
+        "RecognitionNode:unregistered_custom_recognition:MissingRecognition",
+    )
+
+
+def test_hif_recognition_contract_validation_reports_bad_regex_roi_and_missing_template(tmp_path):
+    issues = validate_hif_recognition_contracts(
+        {
+            "BadOCR": {
+                "recognition": {"type": "OCR", "param": {"expected": ["["], "roi": [0, 0, 721, 1]}},
+            },
+            "BadTemplate": {
+                "recognition": {"type": "TemplateMatch", "param": {"template": ["missing.png"], "roi": [0, 0, 1, 1]}},
+            },
+        },
+        image_root=tmp_path,
+    )
+
+    assert issues == (
+        "BadOCR:invalid_roi",
+        "BadOCR:invalid_ocr_pattern:[",
+        "BadTemplate:missing_template:missing.png",
     )
 
 

@@ -34,6 +34,12 @@ COMMON_GOOD_CONDITION_CARDS = [
     "好調",
 ]
 
+# 已在实机源卡牌库中观察到、但主卡表尚未收录的基础卡。
+# 仅用于约束 OCR 识别，不能作为自动出牌或奖励决策依据。
+OBSERVED_SOURCE_DECK_CARD_NAMES = [
+    "タイミングの基本",
+]
+
 # OCR 常见误识变体：日文片假名/汉字相近字符的容错映射。
 # OCR 把「自然体の魅力」认成「自然体の鹿力」之类的，回退到正解。
 # 注意：此映射仅用于 OCR 后的卡名修正，不改变决策逻辑。
@@ -70,6 +76,10 @@ def build_card_name_dict() -> list[str]:
 
     # 3. 常见好调卡
     for card in COMMON_GOOD_CONDITION_CARDS:
+        add(card)
+
+    # 4. 实机源卡牌库的已观察基础卡
+    for card in OBSERVED_SOURCE_DECK_CARD_NAMES:
         add(card)
 
     return names

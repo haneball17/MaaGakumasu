@@ -1,0 +1,371 @@
+{
+	"schema_version": 1,
+	"profile_id": "rinami_garakuta_road_20260709",
+	"route": "rinami_garakuta_road",
+	"entry_nodes": [
+		"ProduceEntryHIF",
+		"ProduceHIFStartConfirmFlag"
+	],
+	"dynamic_targets": [
+		"ProduceHIFRound1ReachedStop",
+		"ProduceHIFRound2ReachedStop",
+		"ProduceHIFIntervalReachedStop"
+	],
+	"declared_unreachable": [
+		"ProduceHIFPreparationEntry",
+		"ProduceHIFMainEventButton",
+		"ProduceHIFMainEventNextButton",
+		"ProduceHIFProduceStartButton",
+		"ProduceHIFTransitionClick",
+		"ProduceHIFMainEventEntranceFlag",
+		"ProduceHIFGenerationFlag",
+		"ProduceHIFButton",
+		"ProduceHIFSelectionModeContinueButton",
+		"ProduceHIFRound1ObserveFlag",
+		"ProduceHIFKnownNextButton"
+	],
+	"action_internal_stop_nodes": [
+		"ProduceHIFSelectionObserveFlag",
+		"ProduceHIFButton",
+		"ProduceHIFSelectionModeContinueButton",
+		"ProduceHIFDrinkOverflowObserveFlag",
+		"ProduceHIFLiveFlag"
+	],
+	"priority_before_safe_advance": [
+		"[JumpBack]ProduceHIFDrinkRewardRevealFlag",
+		"[JumpBack]ProduceHIFSkillRewardRevealFlag",
+		"[JumpBack]ProduceHIFSkillRewardSelectedFlag",
+		"[JumpBack]ProduceHIFClassOptionFlag",
+		"[JumpBack]ProduceHIFDrinkRewardFlag",
+		"[JumpBack]ProduceHIFSkillRewardFlag",
+		"[JumpBack]ProduceHIFSelectChangeTargetFlag",
+		"[JumpBack]ProduceHIFSelectChangeSourceFlag",
+		"[JumpBack]ProduceHIFConsultFlag",
+		"[JumpBack]ProduceHIFPublicLessonResultFlag"
+	],
+	"fixture_policy": {
+		"frame_size": [
+			720,
+			1280
+		],
+		"real_frame_scope": "已采证页面的离线 ROI/适配器回放；不代表 Maa OCR 或控制器端到端实测",
+		"forbidden_sources": [
+			"debug 日志",
+			"Journal",
+			"视频",
+			"压缩包",
+			"损坏截图"
+		]
+	},
+	"coverage_matrix": [
+		{
+			"category": "legacy_entry",
+			"evidence": "unobserved",
+			"nodes": [
+				"ProduceHIFPreparationEntry",
+				"ProduceHIFMainEventButton",
+				"ProduceHIFMainEventNextButton",
+				"ProduceHIFProduceStartButton",
+				"ProduceHIFTransitionClick",
+				"ProduceHIFMainEventEntranceFlag"
+			],
+			"scenarios": {
+				"success": "结构与模板引用可解析",
+				"refusal": {"na": "当前 HIF 任务入口不引用该历史准备链"},
+				"postcondition_failure": {"na": "未获得该链路的独立实机后验"}
+			},
+			"termination": "safe_stop",
+			"test_modules": ["tests/test_hif_pipeline_validation.py"]
+		},
+		{
+			"category": "router",
+			"evidence": "observed",
+			"nodes": [
+				"ProduceEntryHIF",
+				"ProduceHIFStartConfirmFlag",
+				"ProduceHIFSelectionModeFlag",
+				"ProduceHIFFinalModeFlag",
+				"ProduceHIFRound1Flag",
+				"ProduceHIFRound2Flag",
+				"ProduceHIFGenerationFlag",
+				"ProduceHIFFinishedFlag",
+				"ProduceHIFSelectionModeContinueButton",
+				"ProduceHIFButton",
+				"ProduceHIFFailedFlag"
+			],
+			"scenarios": {
+				"success": "入口、节点注册和正式路由顺序",
+				"refusal": "未知页面或不支持模式进入安全停止",
+				"postcondition_failure": "开始/模式确认后的未知目标页进入安全停止"
+			},
+			"termination": "return_router_or_safe_stop",
+			"test_modules": [
+				"tests/test_hif_pipeline_validation.py",
+				"tests/test_hif_decision.py",
+				"tests/test_hif_action_safety.py"
+			]
+		},
+		{
+			"category": "observation",
+			"evidence": "observed",
+			"nodes": [
+				"ProduceHIFSelectionObserveFlag",
+				"ProduceHIFRound1ObserveFlag",
+				"ProduceHIFRound1ActionFlag",
+				"ProduceHIFRound1ReachedStop",
+				"ProduceHIFRound2ActionFlag",
+				"ProduceHIFRound2ReachedStop",
+				"ProduceHIFDrinkOverflowObserveFlag",
+				"ProduceHIFIntervalReachedStop",
+				"ProduceHIFLiveFlag"
+			],
+			"scenarios": {
+				"success": "只读记录后到达显式停止节点",
+				"refusal": "非观察或未校准模式不得发送危险输入",
+				"postcondition_failure": {"na": "观察节点不以页面点击作为成功条件"}
+			},
+			"termination": "action_internal_stop",
+			"test_modules": [
+				"tests/test_hif_decision.py",
+				"tests/test_hif_live_runner.py"
+			]
+		},
+		{
+			"category": "transition",
+			"evidence": "observed",
+			"nodes": [
+				"ProduceHIFGiftBagsFlag",
+				"ProduceHIFGiftRewardResultFlag",
+				"ProduceHIFSkillEnhancedResultFlag",
+				"ProduceHIFSafeAdvanceFlag",
+				"ProduceHIFPublicLessonResultFlag",
+				"ProduceHIFKnownNextButton",
+				"ProduceHIFScoreSettlementFlag",
+				"ProduceHIFSettlementContinueFlag",
+				"ProduceHIFMemoryPhotoSelectFlag",
+				"ProduceHIFMemoryPhotoConfirmFlag",
+				"ProduceHIFMemoryFlag",
+				"ProduceHIFMemoryPreviewFlag"
+			],
+			"scenarios": {
+				"success": "唯一已知目标页或已验证文本后验",
+				"refusal": "默认观察、未知交互页或按钮不唯一时安全停止",
+				"postcondition_failure": "帧变化但下一页面未确认时安全停止"
+			},
+			"termination": "return_router_or_safe_stop",
+			"test_modules": [
+				"tests/test_hif_action_safety.py",
+				"tests/test_hif_decision.py"
+			]
+		},
+		{
+			"category": "stateful_choice",
+			"evidence": "observed",
+			"nodes": [
+				"ProduceChooseHIFEventFlag",
+				"ProduceChooseHIFPItemFlag",
+				"ProduceHIFClassOptionFlag",
+				"ProduceHIFDrinkRewardFlag",
+				"ProduceHIFDrinkRewardRevealFlag",
+				"ProduceHIFSkillRewardFlag",
+				"ProduceHIFSkillRewardRevealFlag",
+				"ProduceHIFSkillRewardSelectedFlag",
+				"ProduceHIFRewardConfirmFlag",
+				"ProduceHIFSelectChangeTargetFlag",
+				"ProduceHIFSelectChangeSourceFlag",
+				"ProduceHIFConsultFlag",
+				"ProduceHIFDrinkOverflowFlag",
+				"ProduceHIFIntervalFlag",
+				"ProduceHIFIntervalActionFlag"
+			],
+			"scenarios": {
+				"success": "单步授权、唯一候选和已知目标页/结果后验同时满足",
+				"refusal": "默认观察、候选不唯一、状态丢失、OCR 为空或权限缺失时安全停止",
+				"postcondition_failure": "点击后帧未变、仍在原页或下一页未知时安全停止"
+			},
+			"termination": "return_router_or_safe_stop",
+			"test_modules": [
+				"tests/test_hif_action_safety.py",
+				"tests/test_hif_decision.py",
+				"tests/test_hif_reward_pages.py",
+				"tests/test_hif_live_runner.py"
+			]
+		},
+		{
+			"category": "terminal",
+			"evidence": "derived",
+			"nodes": ["ProduceHIFUnknownStop"],
+			"scenarios": {
+				"success": "所有拒绝路径可到达该终止节点",
+				"refusal": {"na": "StopTask 无动作输入"},
+				"postcondition_failure": {"na": "StopTask 无动作后验"}
+			},
+			"termination": "terminal_stop",
+			"test_modules": [
+				"tests/test_hif_pipeline_validation.py",
+				"tests/test_hif_action_safety.py"
+			]
+		}
+	],
+	"fixtures": [
+		{
+			"id": "class-options-preview",
+			"file": "tests/fixtures/hif/frames/class-options-preview.png",
+			"sha256": "19c2804000081655b9b6a97e29c0ed59c555cc08ae759d155a48a5659fbf2e60",
+			"source": "MuMu 12 ADB 本地采证帧 adb-after-class-preview-57.png",
+			"captured_at": "2026-07-13",
+			"screen_id": "class_options",
+			"adapter_texts": [
+				"授業",
+				"トラブル追加"
+			],
+			"regions": [
+				"preview",
+				"option_top"
+			],
+			"rejects": ["select_change_target"],
+			"detector": null,
+			"game_state_data": true
+		},
+		{
+			"id": "select-change-target",
+			"file": "tests/fixtures/hif/frames/select-change-target.png",
+			"sha256": "d118391831959c05829942e76b2057693e11a18ca5f2c5eec56702b1f28ecd70",
+			"source": "MuMu 12 ADB 本地采证帧 adb-after-class-confirm-58.png",
+			"captured_at": "2026-07-13",
+			"screen_id": "select_change_target",
+			"adapter_texts": ["チェンジで獲得するスキルカードを選んでください"],
+			"regions": [
+				"candidate_left",
+				"detail_name"
+			],
+			"rejects": ["select_change_source_deck"],
+			"detector": null,
+			"game_state_data": true
+		},
+		{
+			"id": "select-change-source-deck",
+			"file": "tests/fixtures/hif/frames/select-change-source-deck.png",
+			"sha256": "5b0d5d067af607dcbc734695e600ee2015eed4ac72ef80417b05b5dccbf5f00b",
+			"source": "MuMu 12 ADB 本地采证帧 adb-after-class-change-target-59.png",
+			"captured_at": "2026-07-13",
+			"screen_id": "select_change_source_deck",
+			"adapter_texts": [
+				"チェンジする",
+				"てください"
+			],
+			"regions": [
+				"source_preview",
+				"visible_slot_r1c1"
+			],
+			"rejects": ["select_change_target"],
+			"detector": null,
+			"game_state_data": true
+		},
+		{
+			"id": "drink-reward-selected",
+			"file": "tests/fixtures/hif/frames/drink-reward-selected.png",
+			"sha256": "f3aea3d41549f4caa8c4560c528c821040796766dd38844957faec557d2686c3",
+			"source": "MuMu 12 ADB 本地采证帧 day4-drink-left-preview.png",
+			"captured_at": "2026-07-13",
+			"screen_id": "drink_reward",
+			"adapter_texts": [
+				"初星黒酢",
+				"受け取る"
+			],
+			"regions": [
+				"candidate_left",
+				"details"
+			],
+			"rejects": ["drink_overflow"],
+			"detector": "drink_reward_selected",
+			"expected_name": "初星黒酢",
+			"game_state_data": true
+		},
+		{
+			"id": "skill-reward-selected",
+			"file": "tests/fixtures/hif/frames/skill-reward-selected.png",
+			"sha256": "8cfaa28acafc3dcb898010761e96c479f8f56fa6935f2cdd3f6a24a9ad6cad75",
+			"source": "MuMu 12 ADB 本地采证帧 skill-reward-before-decide-41.png",
+			"captured_at": "2026-07-13",
+			"screen_id": "skill_reward",
+			"adapter_texts": [
+				"トークタイム",
+				"受け取る"
+			],
+			"regions": [
+				"candidate_center",
+				"detail_name"
+			],
+			"rejects": ["drink_reward"],
+			"detector": "skill_reward_selected",
+			"expected_name": "トークタイム",
+			"game_state_data": true
+		},
+		{
+			"id": "skill-reward-reveal",
+			"file": "tests/fixtures/hif/frames/skill-reward-reveal.png",
+			"sha256": "806c62732da75bc91a5c57ac98a52660d3b1e9e40158884772143e6a92020b1f",
+			"source": "MuMu 12 ADB 本地采证帧 skill-reward-after-reveal-43.png",
+			"captured_at": "2026-07-13",
+			"screen_id": "skill_reward",
+			"adapter_texts": [
+				"祝福",
+				"受け取る"
+			],
+			"regions": ["reveal_name"],
+			"rejects": ["drink_reward"],
+			"detector": "skill_reward_reveal",
+			"expected_name": "祝福",
+			"game_state_data": true
+		},
+		{
+			"id": "drink-overflow",
+			"file": "tests/fixtures/hif/frames/drink-overflow.png",
+			"sha256": "c58e1b6dfe111473c1416d8dd976c1aebe5395f94c88496d8bc4fa30d187d09f",
+			"source": "MuMu 12 ADB 本地采证帧 overflow-after-45-current.png",
+			"captured_at": "2026-07-13",
+			"screen_id": "drink_overflow",
+			"adapter_texts": ["Pドリンク所持上限"],
+			"regions": [
+				"new_drinks",
+				"remaining_prompt"
+			],
+			"rejects": [
+				"drink_reward",
+				"skill_reward"
+			],
+			"detector": null,
+			"game_state_data": true
+		},
+		{
+			"id": "memory-photo-select",
+			"file": "tests/fixtures/hif/frames/memory-photo-select.jpg",
+			"sha256": "7248566e4fd1eadb612f1de0cea157cb76664a0e8490d7d70311d675fda3d43c",
+			"source": "MuMu 12 本地视频抽帧 学マス(2).mp4_20260709_221510.780.jpg",
+			"captured_at": "2026-07-09",
+			"screen_id": "memory_photo_select",
+			"adapter_texts": ["メモリーにするフォトを選んでください"],
+			"regions": [
+				"preview",
+				"photos"
+			],
+			"rejects": ["memory_photo_confirm"],
+			"detector": null,
+			"game_state_data": true
+		},
+		{
+			"id": "memory-photo-confirm",
+			"file": "tests/fixtures/hif/frames/memory-photo-confirm.jpg",
+			"sha256": "c5dd8c3d62026cb7313b0222e985daf122fcb2a1416d9b34b7b19f3ae9000f0f",
+			"source": "MuMu 12 本地视频抽帧 学マス(2).mp4_20260709_221525.665.jpg",
+			"captured_at": "2026-07-09",
+			"screen_id": "memory_photo_confirm",
+			"adapter_texts": ["選択したフォトをメモリーとして保存しますか"],
+			"regions": ["preview"],
+			"rejects": ["memory_photo_select"],
+			"detector": null,
+			"game_state_data": true
+		}
+	]
+}

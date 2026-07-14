@@ -71,7 +71,13 @@
                   "custom_action": "ProduceHIFChooseFinalModeAuto"
                 }
               },
-              "next": ["ProduceHIFPreparationEntry"]
+              "next": ["ProduceAfterChooseDifficulty"]
+            },
+            "ProduceAfterChooseDifficulty": {
+              "next": ["ProduceLackAP", "ProduceChooseIdolNext"]
+            },
+            "ProduceChooseIdolNext": {
+              "next": ["ProduceHIFStartConfirmFlag", "ProduceChooseSupport"]
             }
           }
         }
@@ -89,58 +95,49 @@
           "name": "莉波好调（实验）",
           "pipeline_override": {
             "ProduceChooseHIFEventFlag": {
-              "custom_action_param": {
-                "preset_id": "rinami_good_condition_safe",
-                "round1_mode": "observe_and_stop"
-              }
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe", "round1_mode": "observe_and_stop"
+              }}}
             },
             "ProduceChooseHIFPItemFlag": {
-              "custom_action_param": {
-                "preset_id": "rinami_good_condition_safe",
-                "round1_mode": "observe_and_stop"
-              }
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe", "round1_mode": "observe_and_stop"
+              }}}
             },
             "ProduceHIFClassOptionFlag": {
-              "custom_action_param": {
-                "preset_id": "rinami_good_condition_safe",
-                "round1_mode": "observe_and_stop"
-              }
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe", "round1_mode": "observe_and_stop"
+              }}}
             },
             "ProduceHIFDrinkRewardFlag": {
-              "custom_action_param": {
-                "preset_id": "rinami_good_condition_safe",
-                "round1_mode": "observe_and_stop"
-              }
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe", "round1_mode": "observe_and_stop"
+              }}}
             },
             "ProduceHIFSkillRewardFlag": {
-              "custom_action_param": {
-                "preset_id": "rinami_good_condition_safe",
-                "round1_mode": "observe_and_stop"
-              }
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe", "round1_mode": "observe_and_stop"
+              }}}
             },
             "ProduceHIFSelectChangeTargetFlag": {
-              "custom_action_param": {
-                "preset_id": "rinami_good_condition_safe",
-                "round1_mode": "observe_and_stop"
-              }
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe", "round1_mode": "observe_and_stop"
+              }}}
             },
             "ProduceHIFSelectChangeSourceFlag": {
-              "custom_action_param": {
-                "preset_id": "rinami_good_condition_safe",
-                "round1_mode": "observe_and_stop"
-              }
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe", "round1_mode": "observe_and_stop"
+              }}}
             },
             "ProduceHIFConsultFlag": {
-              "custom_action_param": {
-                "preset_id": "rinami_good_condition_safe",
-                "round1_mode": "observe_and_stop"
-              }
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe", "round1_mode": "observe_and_stop"
+              }}}
             },
             "ProduceHIFRound1ActionFlag": {
-              "custom_action_param": {
-                "preset_id": "rinami_good_condition_safe",
-                "round1_mode": "observe_and_stop"
-              }
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe", "round1_mode": "observe_and_stop"
+              }}}
             }
           }
         }
@@ -160,19 +157,77 @@
           "name": "单步执行（实验）",
           "label": "$HIF单步执行模式",
           "pipeline_override": {
-            "ProduceHIFRound1ActionFlag": {
-              "custom_action_param": {
+            "ProduceChooseDifficulty": {
+              "action": {"param": {"custom_action_param": {
                 "preset_id": "rinami_good_condition_safe",
-                "round": "round1",
                 "execution_mode": "single_step"
-              }
+              }}}
             },
-            "ProduceHIFRound2ActionFlag": {
-              "custom_action_param": {
+            "ProduceHIFStartConfirmFlag": {
+              "action": {"param": {"custom_action_param": {
                 "preset_id": "rinami_good_condition_safe",
-                "round": "round2",
                 "execution_mode": "single_step"
-              }
+              }}}
+            },
+            "ProduceChooseHIFEventFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
+            },
+            "ProduceHIFClassOptionFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
+            },
+            "ProduceHIFPublicLessonResultFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
+            },
+            "ProduceHIFSelectChangeTargetFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
+            },
+            "ProduceHIFGiftBagsFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
+            },
+            "ProduceHIFGiftRewardResultFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
+            },
+            "ProduceHIFSafeAdvanceFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
+            },
+            "ProduceHIFDrinkRewardFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
+            },
+            "ProduceHIFDrinkRewardRevealFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
+            },
+            "ProduceHIFRewardConfirmFlag": {
+              "action": {"param": {"custom_action_param": {
+                "preset_id": "rinami_good_condition_safe",
+                "execution_mode": "single_step"
+              }}}
             }
           }
         }

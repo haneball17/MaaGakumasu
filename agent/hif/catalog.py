@@ -284,6 +284,7 @@ def _parse_schedule_day(day_index: Any, raw: Any) -> HIFScheduleDay | None:
 
 def _derive_tags(effect_text: str, name: str) -> set[str]:
     text = f"{name} {effect_text}"
+    normalized_text = "".join(text.split())
     tags: set[str] = set()
     tag_rules = {
         "好調": "good_condition",
@@ -301,6 +302,8 @@ def _derive_tags(effect_text: str, name: str) -> set[str]:
     for marker, tag in tag_rules.items():
         if marker in text:
             tags.add(tag)
+    if "好調" in normalized_text:
+        tags.add("good_condition_grant" if "好調状態の場合、使用可" not in normalized_text else "good_condition_requirement")
     return tags
 
 

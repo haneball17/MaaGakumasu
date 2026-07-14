@@ -3,6 +3,7 @@ from agent.hif.screens import HIFScreenState, classify_hif_screen
 
 def test_screen_classifier_distinguishes_finals_mode_from_remaining_days_banner():
     assert classify_hif_screen(["H.I.F本戦まで 6日"]).state is HIFScreenState.FINALS_PREPARE
+    assert classify_hif_screen(["H.I.F本戦まで", "6日"]).state is HIFScreenState.FINALS_PREPARE
     assert classify_hif_screen(["H.I.F 本戦モード"]).state is HIFScreenState.FINALS_MODE
 
 

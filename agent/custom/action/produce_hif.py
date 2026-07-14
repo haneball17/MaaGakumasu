@@ -10,18 +10,25 @@ from maa.agent.agent_server import AgentServer
 
 from agent.hif.domain import HIFCandidate
 from agent.hif.ui_map import load_hif_ui_map
+from agent.hif.catalog import load_hif_catalog
 from agent.hif.journal import HIFFrameEvidence, frame_changed, get_runtime_hif_journal
 from agent.hif.presets import HIFPreset, parse_hif_preset
 from agent.hif.runtime import validate_hif_frame
 from agent.hif.session import get_runtime_hif_session, reset_runtime_hif_session
 from agent.hif.execution import HIFExecutionMode, parse_execution_mode, approve_card_execution
 from agent.hif.calibration import load_hif_roi_calibration
+from agent.hif.reward_pages import (
+    detect_drink_reward_page,
+    detect_drink_reward_reveal_page,
+    detect_skill_reward_reveal_page,
+    detect_skill_reward_selected_page,
+)
 from agent.hif.route_planner import HIFRoutePlanner
 from agent.hif.decisions.play import GarakutaRinamiStrategy
 from agent.hif.decisions.state import ExamRound, ActionKind, CardAction
 from agent.hif.screen_profiles import load_hif_screen_profiles
 from agent.hif.decisions.config import ProfilePayload
-from agent.hif.adapters.card_dict import normalize_card_name, is_good_condition_card
+from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict, is_good_condition_card
 from agent.hif.adapters.exam_reader import CardDetection, ExamStateReader
 from agent.hif.adapters.hif_state_reader import HIFStateReader
 
@@ -29,6 +36,16 @@ from agent.hif.adapters.hif_state_reader import HIFStateReader
 class _ProduceHIFActionBase(CustomAction):
     CLICK_DELAY = 0.4
     ACTION_DELAY = 2.0
+    # 这些页面已有正式 Pipeline 识别节点，但尚未形成 OCR screen profile。动作后
+    # 只能把它们当作已知过渡目标，绝不能仅因画面变化而继续。
+    _KNOWN_TRANSITION_RECOGNITIONS = {
+        "gift_bags": "ProduceHIFGiftBagsFlag",
+        "gift_reward_result": "ProduceHIFGiftRewardResultFlag",
+        "skill_enhanced_result": "ProduceHIFSkillEnhancedResultFlag",
+        "selection_mode": "ProduceHIFSelectionModeFlag",
+        "final_mode": "ProduceHIFFinalModeFlag",
+        "finished": "ProduceHIFFinishedFlag",
+    }
 
     @staticmethod
     def _observed_button_roi(screen_state: str, button_id: str, fallback: List[int]) -> List[int]:
@@ -156,6 +173,108 @@ class _ProduceHIFActionBase(CustomAction):
                 return reco_detail
         return None
 
+    @staticmethod
+    def _ocr_text_entries(reco_detail) -> tuple[dict[str, Any], ...]:
+        """提取 OCR 的去重文本、框和置信度，按阅读顺序稳定排序。"""
+
+        entries: list[dict[str, Any]] = []
+        seen: set[tuple[str, tuple[int, int, int, int]]] = set()
+        for result in tuple(getattr(reco_detail, "filtered_results", ()) or ()) + tuple(getattr(reco_detail, "all_results", ()) or ()):
+            text = str(getattr(result, "text", "")).strip()
+            try:
+                box = tuple(int(value) for value in result.box)
+            except (AttributeError, TypeError, ValueError):
+                continue
+            if not text or len(box) != 4 or box[2] <= 0 or box[3] <= 0:
+                continue
+            key = (text, box)
+            if key in seen:
+                continue
+            seen.add(key)
+            raw_score = getattr(result, "score", 0.0)
+            score = float(raw_score) if isinstance(raw_score, (int, float)) else 0.0
+            entries.append({"text": text, "box": box, "score": score})
+        return tuple(sorted(entries, key=lambda entry: (entry["box"][1], entry["box"][0])))
+
+    def _matches_profile_anchors(self, context: Context, image, screen_id: str) -> bool:
+        """以页面配置中的所有 OCR 锚点确认当前页面。"""
+
+        profile = load_hif_screen_profiles().get(screen_id)
+        if profile is None:
+            return False
+        for anchor in profile.anchors:
+            reco_detail = self._run_ocr(
+                context,
+                image,
+                f"ProduceRecognitionHIFScreen_{screen_id}_{anchor.anchor_id}",
+                [anchor.pattern],
+                list(anchor.roi),
+            )
+            if not (reco_detail and reco_detail.hit):
+                return False
+        return True
+
+    def _matches_screen_profile(self, context: Context, image, screen_id: str) -> bool:
+        """确认配置页；P 饮料额外接受经双锚点验证的已选中详情态。"""
+
+        if self._matches_profile_anchors(context, image, screen_id):
+            return True
+        if screen_id == "drink_reward":
+            return detect_drink_reward_page(context, image) is not None
+        return screen_id == "skill_reward" and detect_skill_reward_selected_page(context, image) is not None
+
+    def _wait_for_screen_profile(self, context: Context, image, screen_id: str, attempts: int = 2):
+        """弹窗刚出现时有限重取截图；不能确认页面就返回 None，绝不猜测。"""
+
+        candidate = image
+        for attempt in range(max(1, attempts + 1)):
+            if self._matches_screen_profile(context, candidate, screen_id):
+                return candidate
+            if attempt >= attempts:
+                break
+            time.sleep(self.CLICK_DELAY)
+            candidate = self._get_screenshot_or_stop(context, screen_id)
+            if candidate is None:
+                return None
+        return None
+
+    def _detect_screen_profile(
+        self,
+        context: Context,
+        image,
+        screen_ids: tuple[str, ...] | None = None,
+        *,
+        exclude: tuple[str, ...] = (),
+    ) -> str | None:
+        """只返回唯一命中的已知页面，歧义时交给上层安全停止。"""
+
+        profiles = load_hif_screen_profiles()
+        candidates = screen_ids or tuple(profiles.profiles)
+        matched = tuple(
+            screen_id
+            for screen_id in candidates
+            if screen_id not in exclude and self._matches_screen_profile(context, image, screen_id)
+        )
+        return matched[0] if len(matched) == 1 else None
+
+    def _detect_confirmed_hif_transition(self, context: Context, image) -> str | None:
+        """返回已知页面配置或已注册过渡节点，未知帧一律不视为成功。"""
+
+        screen_id = self._detect_screen_profile(context, image)
+        if screen_id is not None:
+            return screen_id
+        run_recognition = getattr(context, "run_recognition", None)
+        if not callable(run_recognition):
+            return None
+        for transition_id, recognition_name in self._KNOWN_TRANSITION_RECOGNITIONS.items():
+            try:
+                recognition = run_recognition(recognition_name, image)
+            except Exception:
+                continue
+            if recognition and recognition.hit:
+                return transition_id
+        return None
+
     def _click_text_with_verification(
         self,
         context: Context,
@@ -166,6 +285,8 @@ class _ProduceHIFActionBase(CustomAction):
         roi: list[int],
         *,
         y_offset: int = 0,
+        allowed_next_screens: tuple[str, ...] | None = None,
+        postcondition_failure_reason: str | None = None,
     ) -> bool:
         """点击唯一 OCR 文案，并以新截图指纹验证页面已变化。"""
 
@@ -224,11 +345,26 @@ class _ProduceHIFActionBase(CustomAction):
             )
             return self._stop_unsupported(context, screen_state, "post_click_frame_unchanged")
 
+        next_screen = None
+        if allowed_next_screens is not None:
+            next_screen = self._detect_confirmed_hif_transition(context, after_image)
+            if next_screen not in allowed_next_screens:
+                reason = postcondition_failure_reason or f"{event}_next_page_not_confirmed"
+                self._record_journal(
+                    screen_state,
+                    event,
+                    "unverified",
+                    details={"reason": reason, "text": reco_detail.best_result.text, "next_screen": next_screen},
+                    before=before,
+                    after=after,
+                )
+                return self._stop_unsupported(context, screen_state, reason)
+
         self._record_journal(
             screen_state,
             event,
             "verified",
-            details={"text": reco_detail.best_result.text},
+            details={"text": reco_detail.best_result.text, **({"next_screen": next_screen} if next_screen else {})},
             before=before,
             after=after,
         )
@@ -452,14 +588,32 @@ class ProduceHIFSelectionObserve(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceHIFDrinkOverflowObserve")
 class ProduceHIFDrinkOverflowObserve(_ProduceHIFActionBase):
-    """饮料满仓候选格尚未校准时记录现场，不盲选或丢弃饮料。"""
+    """饮料满仓默认只读；已校准的单项恢复必须逐步验证。"""
+
+    _REMAINING_ONE = ("あと\\s*1個選択",)
+    _REMAINING_TWO = ("あと\\s*2個選択",)
+    _REMAINING_ZERO = ("あと\\s*0個選択",)
+    _ULONG_EFFECT = ("元気\\s*\\+\\s*7",)
+    _BLACK_VINEGAR_EFFECT = ("次に使用したスキルカードの消費体力",)
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        del argv
+        mode = self._configure_page_execution(argv)
         image = self._get_screenshot_or_stop(context, "drink_overflow")
         if image is None:
             return True
         before = self._capture_evidence(image, "drink_overflow_before")
+        params = self._get_action_params(argv)
+        if params.get("drink_overflow_keep") == "初星黒酢":
+            if mode is not HIFExecutionMode.SINGLE_STEP:
+                self._record_journal(
+                    "drink_overflow",
+                    "resolve_drink_overflow",
+                    "observed",
+                    details={"reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                    before=before,
+                )
+                return self._stop_unsupported(context, "drink_overflow", "page_execution_mode_not_single_step")
+            return self._keep_black_vinegar(context, image, before)
         self._record_journal(
             "drink_overflow",
             "resolve_drink_overflow",
@@ -468,6 +622,215 @@ class ProduceHIFDrinkOverflowObserve(_ProduceHIFActionBase):
             before=before,
         )
         return self._stop_unsupported(context, "drink_overflow", "drink_overflow_candidate_grid_not_calibrated")
+
+    def _remaining_prompt(self, context: Context, image, expected: tuple[str, ...]):
+        return self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFDrinkOverflowRemaining",
+            list(expected),
+            self._profile_region("drink_overflow", "remaining_prompt", [290, 1196, 145, 34]),
+        )
+
+    def _keep_black_vinegar(self, context: Context, image, before: HIFFrameEvidence) -> bool:
+        """只处理已采样的“保留初星黒酢”状态，并能恢复一次误取消烏龍茶。"""
+
+        if not self._matches_screen_profile(context, image, "drink_overflow"):
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_page_not_confirmed")
+        current_image = image
+        current = before
+        if (remaining := self._remaining_prompt(context, current_image, self._REMAINING_ZERO)) and remaining.hit:
+            return self._commit_preselected_drinks(context, current_image, current)
+        if (remaining := self._remaining_prompt(context, current_image, self._REMAINING_TWO)) and remaining.hit:
+            ulong = self._run_ocr(
+                context, current_image, "ProduceRecognitionHIFDrinkOverflowUlong", list(self._ULONG_EFFECT),
+                self._profile_region("drink_overflow", "held_drinks", [54, 713, 612, 350]),
+            )
+            if not (ulong and ulong.hit and getattr(ulong, "best_result", None)) or not self._click_box_center(context, list(ulong.best_result.box), double=False):
+                return self._stop_unsupported(context, "drink_overflow", "drink_overflow_ulong_restore_failed")
+            time.sleep(self.ACTION_DELAY)
+            current_image = self._get_screenshot_or_stop(context, "drink_overflow")
+            if current_image is None:
+                return True
+            current = self._capture_evidence(current_image, "drink_overflow_ulong_restored")
+            if not self._remaining_prompt(context, current_image, self._REMAINING_ONE).hit:
+                return self._stop_unsupported(context, "drink_overflow", "drink_overflow_ulong_restore_unverified")
+        elif not ((remaining := self._remaining_prompt(context, current_image, self._REMAINING_ONE)) and remaining.hit):
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_remaining_count_unsupported")
+        black_vinegar = self._run_ocr(
+            context, current_image, "ProduceRecognitionHIFDrinkOverflowBlackVinegar", list(self._BLACK_VINEGAR_EFFECT),
+            self._profile_region("drink_overflow", "new_drinks", [54, 367, 612, 410]),
+        )
+        if not (black_vinegar and black_vinegar.hit and getattr(black_vinegar, "best_result", None)):
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_black_vinegar_effect_not_found")
+        black_vinegar_box = list(black_vinegar.best_result.box)
+        # 奖励项的文字区域本身不可点，右侧复选框与识别文本共享纵向中心。
+        checkbox = [600, max(367, black_vinegar_box[1] - 20), 60, black_vinegar_box[3] + 40]
+        if not self._click_box_center(context, checkbox, double=False):
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_black_vinegar_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        selected_image = self._get_screenshot_or_stop(context, "drink_overflow")
+        if selected_image is None:
+            return True
+        selected = self._capture_evidence(selected_image, "drink_overflow_black_vinegar_selected")
+        if not frame_changed(current, selected) or not self._remaining_prompt(context, selected_image, self._REMAINING_ZERO).hit:
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_black_vinegar_selection_unverified")
+        keep = self._find_text_option(
+            context,
+            selected_image,
+            ("残す",),
+            self._observed_button_roi("drink_overflow", "keep", [230, 1116, 260, 84]),
+        )
+        if not keep:
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_keep_button_not_found")
+        if not self._click_box_center(context, list(keep.best_result.box), double=False):
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_keep_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "drink_overflow")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "drink_overflow_after_keep")
+        next_screen = self._post_overflow_screen(context, after_image)
+        if not frame_changed(selected, after) or next_screen is None:
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_post_keep_not_routable")
+        self._record_journal(
+            "drink_overflow",
+            "resolve_drink_overflow",
+            "verified",
+            details={"kept": "初星黒酢", "matched_effect": "消費体力を0にする", "next_screen": next_screen},
+            before=before,
+            after=after,
+        )
+        return True
+
+    def _commit_preselected_drinks(self, context: Context, image, before: HIFFrameEvidence) -> bool:
+        """仅提交已完成的保留集合，要求可见初星黒酢的已校准效果作为双锚点。"""
+
+        ulong = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFDrinkOverflowUlong",
+            list(self._ULONG_EFFECT),
+            self._profile_region("drink_overflow", "held_drinks", [54, 713, 612, 350]),
+        )
+        if not (ulong and ulong.hit and getattr(ulong, "best_result", None)):
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_preselected_black_vinegar_not_found")
+        keep = self._find_text_option(
+            context,
+            image,
+            ("残す",),
+            self._observed_button_roi("drink_overflow", "keep", [230, 1116, 260, 84]),
+        )
+        if not keep:
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_keep_button_not_found")
+        if not self._click_box_center(context, list(keep.best_result.box), double=False):
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_keep_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "drink_overflow")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "drink_overflow_after_preselected_keep")
+        next_screen = self._post_overflow_screen(context, after_image)
+        if not frame_changed(before, after) or next_screen is None:
+            return self._stop_unsupported(context, "drink_overflow", "drink_overflow_post_keep_not_routable")
+        self._record_journal(
+            "drink_overflow",
+            "resolve_drink_overflow",
+            "verified",
+            details={"kept": "初星黒酢", "selection_state": "already_complete", "next_screen": next_screen},
+            before=before,
+            after=after,
+        )
+        return True
+
+    def _post_overflow_screen(self, context: Context, image) -> str | None:
+        """饮料提交后可直接进入 Round，也可回到距离本战 1 日的正式行动页。"""
+
+        for screen_id in ("round1", "finals_prepare"):
+            if self._matches_screen_profile(context, image, screen_id):
+                return screen_id
+        return None
+
+
+@AgentServer.custom_action("ProduceHIFSafeAdvanceAuto")
+class ProduceHIFSafeAdvanceAuto(_ProduceHIFActionBase):
+    """受限地点击已实测的育成页空白区域，推进无按钮的过渡画面。"""
+
+    SAFE_TARGET = [341, 204, 0, 3]
+    MAX_ADVANCES = 4
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._configure_page_execution(argv)
+        screen_state = str(self._get_action_params(argv).get("source", "unknown_hif_transition"))
+        image = self._get_screenshot_or_stop(context, screen_state)
+        if image is None:
+            return True
+        before = self._capture_evidence(image, f"{screen_state}_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                screen_state,
+                "safe_advance",
+                "observed",
+                details={"reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                before=before,
+            )
+            return self._stop_unsupported(context, screen_state, "page_execution_mode_not_single_step")
+
+        session = get_runtime_hif_session()
+        if session.safe_advance_count >= self.MAX_ADVANCES:
+            return self._stop_unsupported(context, screen_state, "safe_advance_limit_reached")
+        known_screen = self._detect_screen_profile(context, image)
+        if known_screen is not None:
+            self._record_journal(
+                screen_state,
+                "safe_advance",
+                "rejected",
+                details={"reason": "known_interactive_page", "screen": known_screen},
+                before=before,
+            )
+            return self._stop_unsupported(context, screen_state, f"safe_advance_blocked_by_known_page:{known_screen}")
+        if not self._click_box_center(context, self.SAFE_TARGET, double=False):
+            return self._stop_unsupported(context, screen_state, "safe_advance_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, screen_state)
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, f"{screen_state}_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                screen_state,
+                "safe_advance",
+                "unverified",
+                details={"reason": "post_click_frame_unchanged"},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, screen_state, "post_click_frame_unchanged")
+        next_screen = self._detect_confirmed_hif_transition(context, after_image)
+        if next_screen is None:
+            self._record_journal(
+                screen_state,
+                "safe_advance",
+                "unverified",
+                details={"reason": "safe_advance_next_page_not_confirmed"},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, screen_state, "safe_advance_next_page_not_confirmed")
+        if not session.record_safe_advance(after.fingerprint):
+            return self._stop_unsupported(context, screen_state, "safe_advance_frame_cycle")
+
+        self._record_journal(
+            screen_state,
+            "safe_advance",
+            "verified",
+            details={"attempt": session.safe_advance_count, "next_screen": next_screen},
+            before=before,
+            after=after,
+        )
+        session.reset_safe_advance()
+        return True
 
 
 @AgentServer.custom_action("ProduceChooseHIFEventAuto")
@@ -489,6 +852,13 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         "Vo": "Vo",
         "Da": "Da",
         "Vi": "Vi",
+    }
+    SCHEDULE_OCR_PATTERNS = ("授業", "公開レッスン", "おでかけ", "差し入れ", "相談")
+    LESSON_SLOT_IDS = ("left", "center", "right")
+    LESSON_ACCENT_REGION_IDS = {
+        "left": "lesson_accent_left",
+        "center": "lesson_accent_center",
+        "right": "lesson_accent_right",
     }
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
@@ -533,16 +903,126 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         return self._execute_event(context, image, best_event)
 
     def _execute_event(self, context: Context, image, event: dict) -> bool:
-        return self._click_box_with_verification(
-            context,
-            image,
-            "finals_action_select",
+        screen_state = "finals_action_select"
+        candidate = event.get("name", "unknown")
+        before = self._capture_evidence(image, f"{screen_state}_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                screen_state,
+                "select_schedule",
+                "observed",
+                details={"candidate": candidate, "reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                before=before,
+            )
+            return self._stop_unsupported(context, screen_state, "page_execution_mode_not_single_step")
+        if not self._click_box_center(context, event["box"], double=False):
+            return self._stop_unsupported(context, screen_state, "schedule_first_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_first_image = self._get_screenshot_or_stop(context, screen_state)
+        if after_first_image is None:
+            return True
+        after_first = self._capture_evidence(after_first_image, f"{screen_state}_selected")
+        if not frame_changed(before, after_first):
+            self._record_journal(
+                screen_state,
+                "select_schedule",
+                "unverified",
+                details={"candidate": candidate, "reason": "first_click_frame_unchanged"},
+                before=before,
+                after=after_first,
+            )
+            return self._stop_unsupported(context, screen_state, "schedule_first_click_unverified")
+        if not self._matches_screen_profile(context, after_first_image, "finals_prepare"):
+            next_screen = self._detect_confirmed_hif_transition(context, after_first_image)
+            if next_screen is None:
+                self._record_journal(
+                    screen_state,
+                    "select_schedule",
+                    "unverified",
+                    details={"candidate": candidate, "reason": "schedule_first_click_next_page_not_confirmed"},
+                    before=before,
+                    after=after_first,
+                )
+                return self._stop_unsupported(context, screen_state, "schedule_first_click_next_page_not_confirmed")
+            self._record_journal(
+                screen_state,
+                "select_schedule",
+                "verified",
+                details={"candidate": candidate, "click_count": 1, "transition": "direct", "next_screen": next_screen},
+                before=before,
+                after=after_first,
+            )
+            return True
+
+        self._record_journal(
+            screen_state,
             "select_schedule",
-            event["box"],
-            details={"candidate": event.get("name", "unknown")},
+            "verified",
+            details={"candidate": candidate, "click_count": 1, "transition": "selected_on_schedule_page"},
+            before=before,
+            after=after_first,
         )
+        if not self._click_box_center(context, event["box"], double=False):
+            return self._stop_unsupported(context, screen_state, "schedule_confirm_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_second_image = self._get_screenshot_or_stop(context, screen_state)
+        if after_second_image is None:
+            return True
+        after_second = self._capture_evidence(after_second_image, f"{screen_state}_confirmed")
+        if not frame_changed(after_first, after_second):
+            self._record_journal(
+                screen_state,
+                "confirm_schedule",
+                "unverified",
+                details={"candidate": candidate, "reason": "second_click_frame_unchanged"},
+                before=after_first,
+                after=after_second,
+            )
+            return self._stop_unsupported(context, screen_state, "schedule_confirm_unverified")
+        if self._matches_screen_profile(context, after_second_image, "finals_prepare"):
+            return self._stop_unsupported(context, screen_state, "schedule_confirm_still_on_schedule_page")
+
+        next_screen = self._detect_confirmed_hif_transition(context, after_second_image)
+        if next_screen is None:
+            self._record_journal(
+                screen_state,
+                "confirm_schedule",
+                "unverified",
+                details={"candidate": candidate, "reason": "schedule_confirm_next_page_not_confirmed"},
+                before=after_first,
+                after=after_second,
+            )
+            return self._stop_unsupported(context, screen_state, "schedule_confirm_next_page_not_confirmed")
+        self._record_journal(
+            screen_state,
+            "confirm_schedule",
+            "verified",
+            details={"candidate": candidate, "click_count": 2, "next_screen": next_screen},
+            before=after_first,
+            after=after_second,
+        )
+        return True
 
     def _get_available_events(self, context: Context, image) -> List[Dict[str, Any]]:
+        """读取日程文字；同为“授業”时以已校准的彩色角标区分属性。"""
+
+        profile = load_hif_screen_profiles().get("finals_prepare")
+        schedule_roi = list(profile.regions["schedule_candidates"]) if profile else [84, 920, 552, 196]
+        ocr_detail = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFScheduleLabels",
+            [f".*{re.escape(token)}.*" for token in self.SCHEDULE_OCR_PATTERNS],
+            schedule_roi,
+        )
+        if ocr_detail and ocr_detail.hit:
+            text_events = self._events_from_schedule_ocr(ocr_detail, image, schedule_roi)
+            if text_events:
+                logger.info(f"HIF 可用日程（OCR）: {', '.join(event['name'] for event in text_events)}")
+                return text_events
+
+        # 兼容旧截图：只有 OCR 没有可靠候选时才回退旧模板，绝不降低模板阈值猜测。
         events: List[Dict[str, Any]] = []
         log_names: List[str] = []
         roi = [0, 840, 720, 280]
@@ -561,6 +1041,103 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         if log_names:
             logger.info(f"HIF 可用日程: {', '.join(log_names)}")
         return events
+
+    def _events_from_schedule_ocr(self, reco_detail, image, schedule_roi: list[int]) -> List[Dict[str, Any]]:
+        """把 Maa OCR 的全部候选转换为唯一、可点击的日程条目。"""
+
+        seen: set[tuple[str, tuple[int, int, int, int]]] = set()
+        events: List[Dict[str, Any]] = []
+        for result in tuple(getattr(reco_detail, "filtered_results", ()) or ()) + tuple(getattr(reco_detail, "all_results", ()) or ()):
+            text = str(getattr(result, "text", "")).replace(" ", "")
+            try:
+                box = tuple(int(value) for value in result.box)
+            except (AttributeError, TypeError, ValueError):
+                continue
+            if len(box) != 4 or box[2] <= 0 or box[3] <= 0:
+                continue
+            key = (text, box)
+            if key in seen:
+                continue
+            seen.add(key)
+            if "公開レッスン" in text:
+                category = self._public_lesson_category_from_text(text)
+                if category is None:
+                    return []
+                events.append({"name": category, "category": category, "box": list(box), "source": "ocr_public_lesson"})
+            elif "おでかけ" in text:
+                events.append({"name": "おでかけ", "category": "go_out", "box": list(box), "source": "ocr"})
+            elif "差し入れ" in text:
+                events.append({"name": "活动", "category": "gift", "box": list(box), "source": "ocr"})
+            elif "相談" in text:
+                events.append({"name": "相談", "category": "consult", "box": list(box), "source": "ocr"})
+            elif "授業" in text:
+                category = self._lesson_category_from_accent(image, box, schedule_roi)
+                if category is None:
+                    return []
+                events.append({"name": category, "category": category, "box": list(box), "source": "ocr_accent"})
+
+        categories = [str(event["category"]) for event in events]
+        if not events or len(categories) != len(set(categories)):
+            return []
+        return events
+
+    @staticmethod
+    def _public_lesson_category_from_text(text: str) -> str | None:
+        """公开课卡面已含属性前缀，必须精确读出 Vo/Da/Vi 后才允许路由。"""
+
+        normalized = text.replace(" ", "")
+        for category in ("Vo", "Da", "Vi"):
+            if re.search(rf"(?:^|[^A-Za-z]){category}(?:\.|[^A-Za-z]|$)", normalized):
+                return category
+        return None
+
+    def _lesson_category_from_accent(self, image, box: tuple[int, int, int, int], schedule_roi: list[int]) -> str | None:
+        """按 OCR 标签所在列读取彩色角标；颜色不唯一或截图不合约时拒绝选择。"""
+
+        shape = getattr(image, "shape", None)
+        if not isinstance(shape, tuple) or len(shape) < 3 or shape[2] < 3:
+            return None
+        center_x = box[0] + box[2] // 2
+        schedule_x, _, schedule_width, _ = schedule_roi
+        if not (schedule_x <= center_x < schedule_x + schedule_width):
+            return None
+        slot_index = min(len(self.LESSON_SLOT_IDS) - 1, (center_x - schedule_x) * len(self.LESSON_SLOT_IDS) // schedule_width)
+        slot_id = self.LESSON_SLOT_IDS[slot_index]
+        profile = load_hif_screen_profiles().get("finals_prepare")
+        accent_id = self.LESSON_ACCENT_REGION_IDS[slot_id]
+        accent_roi = profile.regions.get(accent_id) if profile else None
+        if accent_roi is None:
+            return None
+        x, y, width, height = accent_roi
+        if x < 0 or y < 0 or x + width > shape[1] or y + height > shape[0]:
+            return None
+
+        counts = {"Vo": 0, "Da": 0, "Vi": 0}
+        pixels = image[y : y + height, x : x + width]
+        try:
+            flat_pixels = pixels.reshape(-1, pixels.shape[-1])
+        except (AttributeError, TypeError, ValueError):
+            return None
+        for pixel in flat_pixels:
+            try:
+                blue, green, red = (int(pixel[index]) for index in range(3))
+            except (IndexError, TypeError, ValueError):
+                return None
+            if red > 180 and green < 150 and red - green > 70 and red - blue > 40:
+                counts["Vo"] += 1
+            if blue > 160 and red < 100 and blue - green > 50:
+                counts["Da"] += 1
+            if red > 180 and green > 100 and blue < 120 and green - blue > 70:
+                counts["Vi"] += 1
+
+        total = len(flat_pixels)
+        if total <= 0:
+            return None
+        ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+        best, next_best = ranked[0], ranked[1]
+        if best[1] < total * 0.25 or best[1] == next_best[1]:
+            return None
+        return best[0]
 
 
 @AgentServer.custom_action("ProduceChooseHIFPItemAuto")
@@ -668,10 +1245,15 @@ class ProduceChooseHIFPItemAuto(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceChooseHIFClassOptionAuto")
 class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
-    """选择已在实机记录中确认的好调授業选项。"""
+    """先预览授業候选，只有完整命中好调变卡效果才二次确认。"""
 
     OPTION_ROI = [40, 620, 640, 360]
+    PREVIEW_ROI = [52, 434, 616, 205]
     GOOD_CONDITION_OPTIONS = ("余裕です！", "長い道のりでした")
+    PREVIEW_ATTRIBUTE_TOKENS = ("ボーカル上昇", "ダンス上昇", "ビジュアル上昇")
+    PREVIEW_REQUIRED_TOKENS = ("180", "トラブルカード以外", "好調関係", "セレクトチェンジ")
+    GENERIC_ROW_REGION_IDS = ("option_top", "option_middle", "option_bottom")
+    RESULT_ADVANCE_TARGET = [341, 204, 0, 3]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
@@ -681,22 +1263,235 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
         image = self._get_screenshot_or_stop(context, "hif_class_options")
         if image is None:
             return True
-        reco_detail = self._find_text_option(
-            context,
-            image,
-            self.GOOD_CONDITION_OPTIONS,
-            self._profile_region("class_options", "options", self.OPTION_ROI),
-        )
-        if not reco_detail:
+        before = self._capture_evidence(image, "hif_class_options_before")
+        if not self._matches_screen_profile(context, image, "class_options"):
+            if self._is_class_result_transition(context, image):
+                return self._click_box_with_verification(
+                    context,
+                    image,
+                    "hif_class_result",
+                    "advance_class_result",
+                    self.RESULT_ADVANCE_TARGET,
+                    click_failure_reason="class_result_advance_failed",
+                )
+            return self._stop_unsupported(context, "hif_class_options", "class_options_page_not_confirmed")
+
+        candidate, visible_options = self._find_class_option_candidate(context, image)
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                "hif_class_options",
+                "observe_class_options",
+                "observed",
+                details={"mode": mode.value, "visible_options": visible_options},
+                before=before,
+            )
+            return self._stop_unsupported(context, "hif_class_options", "page_execution_mode_not_single_step")
+        if candidate is None:
+            self._record_journal(
+                "hif_class_options",
+                "observe_unrecognized_class_options",
+                "rejected",
+                details={"reason": "good_condition_option_not_found", "visible_options": visible_options},
+                before=before,
+            )
             return self._stop_unsupported(context, "hif_class_options", "good_condition_option_not_found")
-        return self._click_box_with_verification(
+
+        # 任务可能在首击预览后中断。此时不能再把确认点击误当成一次新的预览；
+        # 先验证现有详情，再只点击一次并要求进入变卡目标页。
+        existing_preview_texts = self._read_class_preview_texts(context, image)
+        if self._is_good_condition_change_preview(existing_preview_texts):
+            self._record_journal(
+                "hif_class_options",
+                "resume_class_option_preview",
+                "verified",
+                details={"candidate": candidate, "preview_texts": existing_preview_texts},
+                before=before,
+            )
+            return self._confirm_class_option(context, image, before, candidate)
+
+        if not self._click_box_center(context, candidate["box"], double=False):
+            return self._stop_unsupported(context, "hif_class_options", "class_option_preview_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        preview_image = self._get_screenshot_or_stop(context, "hif_class_options")
+        if preview_image is None:
+            return True
+        preview = self._capture_evidence(preview_image, "hif_class_options_preview")
+        if not frame_changed(before, preview):
+            self._record_journal(
+                "hif_class_options",
+                "preview_class_option",
+                "unverified",
+                details={"candidate": candidate, "reason": "preview_frame_unchanged"},
+                before=before,
+                after=preview,
+            )
+            return self._stop_unsupported(context, "hif_class_options", "class_option_preview_frame_unchanged")
+        if not self._matches_screen_profile(context, preview_image, "class_options"):
+            return self._stop_unsupported(context, "hif_class_options", "class_option_preview_page_lost")
+
+        preview_texts = self._read_class_preview_texts(context, preview_image)
+        if not self._is_good_condition_change_preview(preview_texts):
+            self._record_journal(
+                "hif_class_options",
+                "preview_class_option",
+                "rejected",
+                details={
+                    "candidate": candidate,
+                    "reason": "good_condition_preview_not_confirmed",
+                    "preview_texts": preview_texts,
+                    "required_tokens": self.PREVIEW_REQUIRED_TOKENS,
+                },
+                before=before,
+                after=preview,
+            )
+            return self._stop_unsupported(context, "hif_class_options", "good_condition_preview_not_confirmed")
+        self._record_journal(
+            "hif_class_options",
+            "preview_class_option",
+            "verified",
+            details={"candidate": candidate, "preview_texts": preview_texts},
+            before=before,
+            after=preview,
+        )
+
+        return self._confirm_class_option(context, preview_image, preview, candidate)
+
+    def _confirm_class_option(self, context: Context, image, before: HIFFrameEvidence, candidate: dict[str, Any]) -> bool:
+        """确认已验证的课程预览，并以变卡目标页作为唯一后验。"""
+
+        if not self._click_box_center(context, candidate["box"], double=False):
+            return self._stop_unsupported(context, "hif_class_options", "class_option_confirm_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        confirmed_image = self._get_screenshot_or_stop(context, "hif_class_options")
+        if confirmed_image is None:
+            return True
+        confirmed = self._capture_evidence(confirmed_image, "hif_class_options_confirmed")
+        if not frame_changed(before, confirmed):
+            self._record_journal(
+                "hif_class_options",
+                "confirm_class_option",
+                "unverified",
+                details={"candidate": candidate, "reason": "confirm_frame_unchanged"},
+                before=before,
+                after=confirmed,
+            )
+            return self._stop_unsupported(context, "hif_class_options", "class_option_confirm_frame_unchanged")
+        if self._matches_screen_profile(context, confirmed_image, "class_options"):
+            return self._stop_unsupported(context, "hif_class_options", "class_option_confirm_still_visible")
+        if self._matches_screen_profile(context, confirmed_image, "select_change_target"):
+            self._record_journal(
+                "hif_class_options",
+                "confirm_class_option",
+                "verified",
+                details={"candidate": candidate, "next_screen": "select_change_target"},
+                before=before,
+                after=confirmed,
+            )
+            return True
+        if self._is_class_result_transition(context, confirmed_image):
+            self._record_journal(
+                "hif_class_options",
+                "confirm_class_option",
+                "verified",
+                details={"candidate": candidate, "next_screen": "class_result_transition"},
+                before=before,
+                after=confirmed,
+            )
+            return True
+        return self._stop_unsupported(context, "hif_class_options", "class_option_confirm_target_page_not_confirmed")
+
+    def _is_class_result_transition(self, context: Context, image) -> bool:
+        """课程确认后会先显示结算对白；此页仍有“授業”标题但已无选项区。"""
+
+        title = self._find_text_option(
             context,
             image,
-            "hif_class_options",
-            "select_good_condition_option",
-            reco_detail.best_result.box,
-            details={"options": self.GOOD_CONDITION_OPTIONS},
+            ("授業",),
+            self._profile_region("class_options", "title", [32, 36, 160, 105]),
         )
+        return bool(title) and not self._matches_screen_profile(context, image, "class_options")
+
+    def _find_class_option_candidate(self, context: Context, image) -> tuple[dict[str, Any] | None, tuple[str, ...]]:
+        """优先保留旧文案兼容；否则只允许预览结构完整的顶部候选。"""
+
+        options_roi = self._profile_region("class_options", "options", self.OPTION_ROI)
+        reco_detail = self._find_text_option(context, image, self.GOOD_CONDITION_OPTIONS, options_roi)
+        if reco_detail and reco_detail.hit:
+            text = str(reco_detail.best_result.text)
+            return {"name": text, "box": list(reco_detail.best_result.box), "source": "known_text"}, (text,)
+
+        evidence = self._run_ocr(context, image, "ProduceRecognitionHIFClassOptionEvidence", [], options_roi)
+        entries = self._ocr_entries(evidence)
+        visible_options = tuple(entry["text"] for entry in entries)
+        if not any("トラブル追加" in entry["text"] for entry in entries):
+            return None, visible_options
+
+        profile = load_hif_screen_profiles().get("class_options")
+        if profile is None:
+            return None, visible_options
+        rows: dict[str, dict[str, Any]] = {}
+        for entry in entries:
+            if entry["score"] < 0.8 or len(entry["text"]) < 4 or "トラブル追加" in entry["text"]:
+                continue
+            x, y, width, height = entry["box"]
+            center_x = x + width // 2
+            center_y = y + height // 2
+            for index, region_id in enumerate(self.GENERIC_ROW_REGION_IDS):
+                row = profile.regions.get(region_id)
+                if row is None:
+                    return None, visible_options
+                row_x, row_y, row_width, row_height = row
+                if row_x <= center_x < row_x + row_width and row_y <= center_y < row_y + row_height:
+                    previous = rows.get(region_id)
+                    if previous is None or (entry["score"], len(entry["text"])) > (previous["score"], len(previous["text"])):
+                        rows[region_id] = entry
+                    break
+        if set(rows) != set(self.GENERIC_ROW_REGION_IDS):
+            return None, visible_options
+        top = rows["option_top"]
+        return {"name": top["text"], "box": list(top["box"]), "source": "top_option_preview"}, visible_options
+
+    def _read_class_preview_texts(self, context: Context, image) -> tuple[str, ...]:
+        detail = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFClassPreviewEvidence",
+            [],
+            self._profile_region("class_options", "preview", self.PREVIEW_ROI),
+        )
+        entries = self._ocr_entries(detail)
+        return tuple(entry["text"] for entry in entries)
+
+    @staticmethod
+    def _is_good_condition_change_preview(texts: tuple[str, ...]) -> bool:
+        normalized = "".join(text.replace(" ", "") for text in texts)
+        return any(token in normalized for token in ProduceChooseHIFClassOptionAuto.PREVIEW_ATTRIBUTE_TOKENS) and all(
+            token in normalized for token in ProduceChooseHIFClassOptionAuto.PREVIEW_REQUIRED_TOKENS
+        )
+
+    @staticmethod
+    def _ocr_entries(reco_detail) -> tuple[dict[str, Any], ...]:
+        """保留 OCR 的文本、置信度和位置，并稳定排序以重建多行预览。"""
+
+        entries: list[dict[str, Any]] = []
+        seen: set[tuple[str, tuple[int, int, int, int]]] = set()
+        for result in tuple(getattr(reco_detail, "filtered_results", ()) or ()) + tuple(getattr(reco_detail, "all_results", ()) or ()):
+            text = str(getattr(result, "text", "")).strip()
+            try:
+                box = tuple(int(value) for value in result.box)
+            except (AttributeError, TypeError, ValueError):
+                continue
+            if not text or len(box) != 4 or box[2] <= 0 or box[3] <= 0:
+                continue
+            key = (text, box)
+            if key in seen:
+                continue
+            seen.add(key)
+            raw_score = getattr(result, "score", 0.0)
+            score = float(raw_score) if isinstance(raw_score, (int, float)) else 0.0
+            entries.append({"text": text, "box": box, "score": score})
+        return tuple(sorted(entries, key=lambda entry: (entry["box"][1], entry["box"][0])))
 
 
 class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
@@ -755,53 +1550,683 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceChooseHIFDrinkRewardAuto")
 class ProduceChooseHIFDrinkRewardAuto(_ProduceHIFRewardChoiceAction):
-    """按预设领取已识别的 P 饮料。"""
+    """逐槽读取 P 饮料详情，只领取唯一评分最高的已知候选。"""
+
+    SLOT_REGION_IDS = ("candidate_left", "candidate_center", "candidate_right")
+    SLOT_FALLBACKS = ([158, 822, 127, 127], [297, 822, 127, 127], [436, 822, 127, 127])
+    DETAILS_FALLBACK = [118, 506, 500, 230]
+    RECEIVE_FALLBACK = [230, 1052, 260, 84]
+
+    def _slot_boxes(self) -> tuple[tuple[str, list[int]], ...]:
+        profile = load_hif_screen_profiles().get("drink_reward")
+        return tuple(
+            (
+                region_id,
+                list(profile.regions[region_id]) if profile and region_id in profile.regions else list(fallback),
+            )
+            for region_id, fallback in zip(self.SLOT_REGION_IDS, self.SLOT_FALLBACKS)
+        )
+
+    def _read_drink_details(self, context: Context, image) -> dict[str, Any] | None:
+        planner = HIFRoutePlanner()
+        profile = load_hif_screen_profiles().get("drink_reward")
+        details_roi = list(profile.regions["details"]) if profile and "details" in profile.regions else self.DETAILS_FALLBACK
+        reco_detail = self._find_text_option(context, image, planner.catalog.drink_names, details_roi)
+        if not reco_detail:
+            return None
+        recognized_text = reco_detail.best_result.text
+        name = next((candidate for candidate in planner.catalog.drink_names if candidate in recognized_text), None)
+        if name is None:
+            return None
+        raw_confidence = getattr(reco_detail.best_result, "score", 1.0)
+        confidence = float(raw_confidence) if isinstance(raw_confidence, (int, float)) else 1.0
+        return {
+            "name": name,
+            "effect": planner.catalog.drinks[name].effect_text,
+            "confidence": confidence,
+            "ocr_text": recognized_text,
+        }
+
+    def _has_receive_button(self, context: Context, image) -> bool:
+        return bool(
+            self._find_text_option(
+                context,
+                image,
+                ("受け取る",),
+                self._observed_button_roi("drink_reward", "receive", self.RECEIVE_FALLBACK),
+            )
+        )
+
+    def _is_drink_reward_page(self, context: Context, image, candidate: dict[str, Any] | None = None) -> bool:
+        """未选中态用提示确认；已选中态用已知详情与领取按钮确认。"""
+
+        if self._matches_profile_anchors(context, image, "drink_reward"):
+            return True
+        return candidate is not None and self._has_receive_button(context, image)
+
+    def _select_and_read_slot(self, context: Context, image, slot: str, box: list[int], event: str):
+        before = self._capture_evidence(image, f"hif_drink_reward_{slot}_before")
+        if not self._click_box_center(context, box, double=False):
+            self._stop_unsupported(context, "hif_drink_reward", "drink_slot_click_failed")
+            return None
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "hif_drink_reward")
+        if after_image is None:
+            return None
+        after = self._capture_evidence(after_image, f"hif_drink_reward_{slot}_after")
+        if not frame_changed(before, after):
+            candidate = self._read_drink_details(context, image)
+            if candidate is not None and self._is_drink_reward_page(context, image, candidate):
+                candidate["slot"] = slot
+                self._record_journal(
+                    "hif_drink_reward",
+                    event,
+                    "observed",
+                    details={**candidate, "selection_already_active": True},
+                    before=before,
+                )
+                return candidate, image
+            self._record_journal(
+                "hif_drink_reward",
+                event,
+                "unverified",
+                details={"slot": slot, "reason": "slot_selection_frame_unchanged"},
+                before=before,
+                after=after,
+            )
+            self._stop_unsupported(context, "hif_drink_reward", "drink_slot_selection_unverified")
+            return None
+        candidate = self._read_drink_details(context, after_image)
+        if candidate is None:
+            self._stop_unsupported(context, "hif_drink_reward", "drink_detail_name_unreadable")
+            return None
+        if not self._is_drink_reward_page(context, after_image, candidate):
+            self._stop_unsupported(context, "hif_drink_reward", "drink_reward_page_lost_after_slot_selection")
+            return None
+        candidate["slot"] = slot
+        self._record_journal(
+            "hif_drink_reward",
+            event,
+            "verified",
+            details=candidate,
+            before=before,
+            after=after,
+        )
+        return candidate, after_image
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
-        chosen = self._choose_named_reward(
-            context,
-            self._reward_search_names("drink", preset),
-            reroll_limit=0,
-            screen_state="hif_drink_reward",
+        image = self._get_screenshot_or_stop(context, "hif_drink_reward")
+        if image is None:
+            return True
+        before = self._capture_evidence(image, "hif_drink_reward_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                "hif_drink_reward",
+                "enumerate_drink_candidates",
+                "observed",
+                details={"reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                before=before,
+            )
+            return self._stop_unsupported(context, "hif_drink_reward", "page_execution_mode_not_single_step")
+        initial_candidate = self._read_drink_details(context, image)
+        if not self._is_drink_reward_page(context, image, initial_candidate):
+            return self._stop_unsupported(context, "hif_drink_reward", "drink_reward_page_not_confirmed")
+
+        observed: list[dict[str, Any]] = []
+        current_image = image
+        for slot, box in self._slot_boxes():
+            selected = self._select_and_read_slot(context, current_image, slot, box, "enumerate_drink_candidate")
+            if selected is None:
+                return True
+            candidate, current_image = selected
+            observed.append(candidate)
+
+        planner = HIFRoutePlanner()
+        decision = planner.choose_observed_reward("drink", (item["name"] for item in observed), preset)
+        if decision.should_stop:
+            self._record_journal(
+                "hif_drink_reward",
+                "choose_drink_reward",
+                "rejected",
+                details={"reason": decision.stop_reason, "candidates": observed, "unknown_factors": decision.unknown_factors},
+            )
+            return self._stop_unsupported(context, "hif_drink_reward", decision.stop_reason or "drink_decision_unavailable")
+        target = next((item for item in observed if item["name"] == decision.candidate_id), None)
+        if target is None:
+            return self._stop_unsupported(context, "hif_drink_reward", "chosen_drink_not_in_observed_candidates")
+
+        last_slot = observed[-1]["slot"]
+        if target["slot"] != last_slot:
+            target_box = next(box for slot, box in self._slot_boxes() if slot == target["slot"])
+            selected = self._select_and_read_slot(context, current_image, target["slot"], target_box, "select_drink_reward")
+            if selected is None:
+                return True
+            confirmed_target, _ = selected
+            if confirmed_target["name"] != target["name"]:
+                return self._stop_unsupported(context, "hif_drink_reward", "selected_drink_name_changed")
+
+        get_runtime_hif_session().set_pending_reward("drink", target["name"], target["slot"])
+        self._record_journal(
+            "hif_drink_reward",
+            "choose_drink_reward",
+            "selected",
+            details={"target": target, "reasons": decision.reasons, "confidence": decision.confidence, "candidates": observed},
         )
-        return chosen or self._stop_unsupported(context, "hif_drink_reward", "preset_drink_not_found")
+        return True
+
+
+@AgentServer.custom_action("ProduceHIFDrinkRewardRevealAuto")
+class ProduceHIFDrinkRewardRevealAuto(_ProduceHIFActionBase):
+    """等待已验证的饮料展示动画自行结束，不重复点击瞬态控件。"""
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._configure_page_execution(argv)
+        image = self._get_screenshot_or_stop(context, "hif_drink_reward_reveal")
+        if image is None:
+            return True
+        before = self._capture_evidence(image, "hif_drink_reward_reveal_before")
+        reveal_match = detect_drink_reward_reveal_page(context, image)
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                "hif_drink_reward_reveal",
+                "wait_revealed_drink_reward",
+                "observed",
+                details={
+                    "reason": "page_execution_mode_not_single_step",
+                    "mode": mode.value,
+                    "reward": reveal_match.name if reveal_match else None,
+                },
+                before=before,
+            )
+            return self._stop_unsupported(context, "hif_drink_reward_reveal", "page_execution_mode_not_single_step")
+        if reveal_match is None or reveal_match.name is None:
+            self._record_journal(
+                "hif_drink_reward_reveal",
+                "wait_revealed_drink_reward",
+                "observed",
+                details={"reason": "reveal_transition_already_started"},
+                before=before,
+            )
+            return True
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "hif_drink_reward_reveal")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "hif_drink_reward_reveal_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                "hif_drink_reward_reveal",
+                "wait_revealed_drink_reward",
+                "unverified",
+                details={"reason": "reveal_animation_frame_unchanged", "reward": reveal_match.name},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "hif_drink_reward_reveal", "reveal_animation_frame_unchanged")
+        if detect_drink_reward_reveal_page(context, after_image) is not None:
+            return self._stop_unsupported(context, "hif_drink_reward_reveal", "reveal_animation_still_visible")
+        next_screen = self._detect_confirmed_hif_transition(context, after_image)
+        if next_screen is None:
+            self._record_journal(
+                "hif_drink_reward_reveal",
+                "wait_revealed_drink_reward",
+                "unverified",
+                details={"reason": "reveal_next_page_not_confirmed", "reward": reveal_match.name},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "hif_drink_reward_reveal", "reveal_next_page_not_confirmed")
+        self._record_journal(
+            "hif_drink_reward_reveal",
+            "wait_revealed_drink_reward",
+            "verified",
+            details={"reward": reveal_match.name, "next_screen": next_screen},
+            before=before,
+            after=after,
+        )
+        return True
 
 
 @AgentServer.custom_action("ProduceChooseHIFSkillRewardAuto")
 class ProduceChooseHIFSkillRewardAuto(_ProduceHIFRewardChoiceAction):
-    """按预设领取技能卡，且只在明确识别到再抽选时重抽。"""
+    """技能卡奖励页默认只读停点；显式探针仅临时选中候选读取详情。"""
+
+    SLOT_REGION_IDS = ("candidate_left", "candidate_center", "candidate_right")
+    SLOT_FALLBACKS = ([158, 821, 127, 128], [297, 821, 127, 128], [436, 821, 127, 128])
+    DETAIL_NAME_FALLBACK = [118, 500, 500, 60]
+    DETAIL_TEXT_FALLBACK = [118, 555, 490, 185]
+
+    @staticmethod
+    def _normalized_effect_text(candidate: dict[str, Any]) -> str:
+        effect_text = candidate.get("effect_text")
+        return "".join(effect_text.split()) if isinstance(effect_text, str) else ""
+
+    def _slot_boxes(self) -> tuple[tuple[str, list[int]], ...]:
+        profile = load_hif_screen_profiles().get("skill_reward")
+        return tuple(
+            (
+                region_id,
+                list(profile.regions[region_id]) if profile and region_id in profile.regions else list(fallback),
+            )
+            for region_id, fallback in zip(self.SLOT_REGION_IDS, self.SLOT_FALLBACKS)
+        )
+
+    def _read_skill_reward_detail(self, context: Context, image) -> dict[str, Any] | None:
+        catalog = load_hif_catalog()
+        known_names = tuple(catalog.skill_names)
+        name_detail = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSkillRewardCandidateName",
+            [f".*{re.escape(name)}.*" for name in known_names],
+            self._profile_region("skill_reward", "detail_name", self.DETAIL_NAME_FALLBACK),
+        )
+        detail = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSkillRewardCandidateDetail",
+            [],
+            self._profile_region("skill_reward", "details", self.DETAIL_TEXT_FALLBACK),
+        )
+        name_entries = self._ocr_text_entries(name_detail)
+        detail_entries = self._ocr_text_entries(detail)
+        raw_name = "".join(entry["text"] for entry in name_entries)
+        matched_name = next((name for name in known_names if name in raw_name), None)
+        effect_text = "\n".join(entry["text"] for entry in detail_entries)
+        if matched_name is None or not effect_text:
+            return None
+        return {
+            "name": matched_name,
+            "name_texts": tuple(entry["text"] for entry in name_entries),
+            "effect_text": effect_text,
+            "confidence": max((entry["score"] for entry in name_entries + detail_entries), default=0.0),
+            "name_confidence": max((entry["score"] for entry in name_entries), default=0.0),
+            "detail_confidence": max((entry["score"] for entry in detail_entries), default=0.0),
+        }
+
+    def _select_and_read_skill_slot(
+        self, context: Context, image, slot: str, box: list[int]
+    ) -> tuple[dict[str, Any], Any] | None:
+        before = self._capture_evidence(image, f"skill_reward_{slot}_before")
+        if not self._click_box_center(context, box, double=False):
+            self._stop_unsupported(context, "hif_skill_reward", "skill_reward_candidate_slot_click_failed")
+            return None
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "hif_skill_reward")
+        if after_image is None:
+            return None
+        after = self._capture_evidence(after_image, f"skill_reward_{slot}_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                "hif_skill_reward",
+                "probe_skill_reward_candidate",
+                "unverified",
+                details={"slot": slot, "reason": "skill_reward_slot_selection_frame_unchanged"},
+                before=before,
+                after=after,
+            )
+            self._stop_unsupported(context, "hif_skill_reward", "skill_reward_slot_selection_unverified")
+            return None
+        if not self._matches_screen_profile(context, after_image, "skill_reward"):
+            self._stop_unsupported(context, "hif_skill_reward", "skill_reward_page_lost_after_slot_selection")
+            return None
+        candidate = self._read_skill_reward_detail(context, after_image)
+        if candidate is None:
+            self._stop_unsupported(context, "hif_skill_reward", "skill_reward_candidate_detail_unreadable")
+            return None
+        candidate["slot"] = slot
+        self._record_journal(
+            "hif_skill_reward",
+            "probe_skill_reward_candidate",
+            "observed",
+            details=candidate,
+            before=before,
+            after=after,
+        )
+        return candidate, after_image
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        preset = self._get_preset(argv)
-        chosen = self._choose_named_reward(
-            context,
-            self._reward_search_names("skill", preset),
-            reroll_limit=preset.reroll_limit,
-            screen_state="hif_skill_reward",
+        self._configure_page_execution(argv)
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        params = self._get_action_params(argv)
+        image = self._get_screenshot_or_stop(context, "hif_skill_reward")
+        if image is None:
+            return True
+        before = self._capture_evidence(image, "hif_skill_reward_before")
+        if not self._matches_screen_profile(context, image, "skill_reward"):
+            return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_page_not_confirmed")
+        session = get_runtime_hif_session()
+        pending = session.pending_reward
+        received_drink = pending.name if pending is not None and pending.kind == "drink" else None
+        if received_drink is not None:
+            session.clear_pending_reward()
+        skill_reward_probe = params.get("skill_reward_probe")
+        if skill_reward_probe in {"enumerate_candidates", "decide_candidates", "receive_selected"}:
+            if mode is not HIFExecutionMode.SINGLE_STEP:
+                return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_probe_requires_single_step")
+            if skill_reward_probe == "receive_selected" and params.get("skill_reward_receive_authorized") is not True:
+                return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_receipt_not_authorized")
+            current_image = image
+            candidates: list[dict[str, Any]] = []
+            slots = self._slot_boxes()
+            initial_slot = str(params.get("skill_reward_initial_slot", "")).strip()
+            if initial_slot:
+                known_slots = {slot for slot, _ in slots}
+                if initial_slot not in known_slots:
+                    return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_initial_slot_invalid")
+                if detect_skill_reward_selected_page(context, current_image) is None:
+                    return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_initial_slot_not_selected")
+                candidate = self._read_skill_reward_detail(context, current_image)
+                if candidate is None:
+                    return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_initial_detail_unreadable")
+                candidate["slot"] = initial_slot
+                candidate["selection_already_active"] = True
+                candidates.append(candidate)
+                self._record_journal(
+                    "hif_skill_reward",
+                    "probe_skill_reward_candidate",
+                    "observed",
+                    details=candidate,
+                )
+                slots = tuple((slot, box) for slot, box in slots if slot != initial_slot)
+            for slot, box in slots:
+                selected = self._select_and_read_skill_slot(context, current_image, slot, box)
+                if selected is None:
+                    return True
+                candidate, current_image = selected
+                candidates.append(candidate)
+            self._record_journal(
+                "hif_skill_reward",
+                "enumerate_skill_reward_candidates",
+                "observed",
+                details={"candidates": candidates, "received_drink": received_drink, "mode": mode.value},
+            )
+            if skill_reward_probe in {"decide_candidates", "receive_selected"}:
+                planner = HIFRoutePlanner()
+                preset = self._get_preset(argv)
+                decision = planner.choose_observed_skill_reward(candidates, preset)
+                if decision.should_stop:
+                    self._record_journal(
+                        "hif_skill_reward",
+                        "decide_skill_reward",
+                        "rejected",
+                        details={
+                            "reason": decision.stop_reason,
+                            "candidates": candidates,
+                            "unknown_factors": decision.unknown_factors,
+                        },
+                    )
+                    return self._stop_unsupported(context, "hif_skill_reward", decision.stop_reason or "skill_reward_decision_unavailable")
+                if skill_reward_probe == "receive_selected":
+                    target = next((candidate for candidate in candidates if candidate["name"] == decision.candidate_id), None)
+                    if target is None:
+                        return self._stop_unsupported(context, "hif_skill_reward", "chosen_skill_not_in_observed_candidates")
+                    target_box = next((box for slot, box in self._slot_boxes() if slot == target["slot"]), None)
+                    if target_box is None:
+                        return self._stop_unsupported(context, "hif_skill_reward", "chosen_skill_slot_not_found")
+                    selected = self._select_and_read_skill_slot(context, current_image, target["slot"], target_box)
+                    if selected is None:
+                        return True
+                    confirmed_target, _ = selected
+                    if (
+                        confirmed_target["name"] != target["name"]
+                        or self._normalized_effect_text(confirmed_target) != self._normalized_effect_text(target)
+                    ):
+                        return self._stop_unsupported(context, "hif_skill_reward", "selected_skill_detail_changed")
+                    rechecked_candidates = [
+                        confirmed_target if candidate["slot"] == target["slot"] else candidate for candidate in candidates
+                    ]
+                    rechecked_decision = planner.choose_observed_skill_reward(rechecked_candidates, preset)
+                    if rechecked_decision.should_stop or rechecked_decision.candidate_id != target["name"]:
+                        return self._stop_unsupported(
+                            context,
+                            "hif_skill_reward",
+                            rechecked_decision.stop_reason or "selected_skill_decision_changed",
+                        )
+                    session.set_pending_reward("skill", target["name"], target["slot"])
+                    self._record_journal(
+                        "hif_skill_reward",
+                        "prepare_skill_reward_receipt",
+                        "selected",
+                        details={
+                            "target": confirmed_target,
+                            "confidence": rechecked_decision.confidence,
+                            "reasons": rechecked_decision.reasons,
+                            "candidates": rechecked_candidates,
+                        },
+                    )
+                    return True
+                self._record_journal(
+                    "hif_skill_reward",
+                    "decide_skill_reward",
+                    "selected",
+                    details={
+                        "target": decision.candidate_id,
+                        "confidence": decision.confidence,
+                        "reasons": decision.reasons,
+                        "candidates": candidates,
+                        "next_action": "no_click_pending_receipt_implementation",
+                    },
+                )
+                return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_decision_recorded_stop")
+            return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_probe_complete_stop")
+        self._record_journal(
+            "hif_skill_reward",
+            "observe_skill_reward",
+            "observed",
+            details={
+                "reason": "skill_reward_selection_not_enabled",
+                "mode": mode.value,
+                "received_drink": received_drink,
+            },
+            before=before,
         )
-        return chosen or self._stop_unsupported(context, "hif_skill_reward", "preset_skill_not_found")
+        return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_selection_not_enabled")
 
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeTargetAuto")
 class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
-    """在变卡第一阶段选择预设目标卡，并推进到牌库选择。"""
+    """逐槽读取变卡目标详情；仅在命中预设目标后进入牌库选择。"""
 
-    NEXT_ROI = [200, 1010, 320, 130]
+    SLOT_REGION_IDS = ("candidate_left", "candidate_center", "candidate_right")
+    SLOT_FALLBACKS = ([158, 837, 127, 128], [297, 837, 127, 128], [436, 837, 127, 128])
+    DETAIL_NAME_FALLBACK = [180, 500, 360, 60]
+    NEXT_ROI = [230, 1052, 260, 84]
+    REROLL_ROI = [555, 1072, 112, 58]
+    REROLL_COUNT_ROI = [559, 1042, 102, 40]
 
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        preset = self._get_preset(argv)
-        if not self._choose_named_reward(
+    def _slot_boxes(self) -> tuple[tuple[str, list[int]], ...]:
+        profile = load_hif_screen_profiles().get("select_change_target")
+        return tuple(
+            (
+                region_id,
+                list(profile.regions[region_id]) if profile and region_id in profile.regions else list(fallback),
+            )
+            for region_id, fallback in zip(self.SLOT_REGION_IDS, self.SLOT_FALLBACKS)
+        )
+
+    def _detail_name_roi(self) -> list[int]:
+        return self._profile_region("select_change_target", "detail_name", self.DETAIL_NAME_FALLBACK)
+
+    def _read_target_details(self, context: Context, image, target_names: tuple[str, ...]) -> dict[str, Any] | None:
+        detail = self._run_ocr(
             context,
-            preset.select_change_target_names,
-            reroll_limit=preset.reroll_limit,
-            screen_state="select_change_target",
-        ):
-            return self._stop_unsupported(context, "select_change_target", "preset_target_card_not_found")
+            image,
+            "ProduceRecognitionHIFSelectChangeTargetDetails",
+            [],
+            self._detail_name_roi(),
+        )
+        entries = self._ocr_text_entries(detail)
+        texts = tuple(entry["text"] for entry in entries)
+        raw_text = "".join(texts)
+        if not raw_text:
+            return None
+        target_name = next((name for name in target_names if name in raw_text), None)
+        return {
+            "name": target_name or raw_text,
+            "target_name": target_name,
+            "ocr_texts": texts,
+            "confidence": max((entry["score"] for entry in entries), default=0.0),
+        }
 
-        image = self._get_screenshot_or_stop(context, "select_change_target")
-        if image is None:
-            return True
+    def _select_and_read_slot(
+        self,
+        context: Context,
+        image,
+        slot: str,
+        box: list[int],
+        target_names: tuple[str, ...],
+        event: str,
+    ) -> tuple[dict[str, Any], Any] | None:
+        before = self._capture_evidence(image, f"select_change_target_{slot}_before")
+        if not self._click_box_center(context, box, double=False):
+            self._stop_unsupported(context, "select_change_target", "target_slot_click_failed")
+            return None
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "select_change_target")
+        if after_image is None:
+            return None
+        after = self._capture_evidence(after_image, f"select_change_target_{slot}_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                "select_change_target",
+                event,
+                "unverified",
+                details={"slot": slot, "reason": "slot_selection_frame_unchanged"},
+                before=before,
+                after=after,
+            )
+            self._stop_unsupported(context, "select_change_target", "target_slot_selection_unverified")
+            return None
+        if not self._matches_screen_profile(context, after_image, "select_change_target"):
+            self._stop_unsupported(context, "select_change_target", "target_page_lost_after_slot_selection")
+            return None
+        candidate = self._read_target_details(context, after_image, target_names)
+        if candidate is None:
+            self._stop_unsupported(context, "select_change_target", "target_detail_name_unreadable")
+            return None
+        candidate["slot"] = slot
+        self._record_journal(
+            "select_change_target",
+            event,
+            "verified",
+            details=candidate,
+            before=before,
+            after=after,
+        )
+        return candidate, after_image
+
+    def _read_reroll_count(self, context: Context, image) -> int | None:
+        detail = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSelectChangeRerollCount",
+            [],
+            self._profile_region("select_change_target", "reroll_count", self.REROLL_COUNT_ROI),
+        )
+        text = "".join(entry["text"] for entry in self._ocr_text_entries(detail))
+        match = re.search(r"(\d+)", text)
+        return int(match.group(1)) if match else None
+
+    def _reroll_targets(self, context: Context, image, attempt: int) -> Any | None:
+        before_count = self._read_reroll_count(context, image)
+        if before_count is None:
+            # 从中断恢复时没有本轮内存的重抽次数。若次数和按钮同时消失，
+            # 这是游戏在次数耗尽后的稳定终态，直接以“无可用重抽”安全停止。
+            unavailable = self._find_text_option(
+                context,
+                image,
+                ("再抽選",),
+                self._observed_button_roi("select_change_target", "reroll", self.REROLL_ROI),
+            )
+            if not unavailable:
+                self._record_journal(
+                    "select_change_target",
+                    "reroll_target",
+                    "rejected",
+                    details={"attempt": attempt, "reason": "reroll_controls_hidden_after_exhaustion"},
+                )
+                return self._stop_unsupported(context, "select_change_target", "reroll_unavailable_after_target_enumeration")
+            return self._stop_unsupported(context, "select_change_target", "reroll_count_unreadable")
+        if before_count <= 0:
+            self._stop_unsupported(context, "select_change_target", "reroll_count_unreadable_or_exhausted")
+            return None
+        reroll = self._find_text_option(
+            context,
+            image,
+            ("再抽選",),
+            self._observed_button_roi("select_change_target", "reroll", self.REROLL_ROI),
+        )
+        if not reroll:
+            self._stop_unsupported(context, "select_change_target", "reroll_button_not_found")
+            return None
+        before = self._capture_evidence(image, "select_change_target_reroll_before")
+        if not self._click_box_center(context, reroll.best_result.box, double=False):
+            self._stop_unsupported(context, "select_change_target", "reroll_click_failed")
+            return None
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "select_change_target")
+        if after_image is None:
+            return None
+        after = self._capture_evidence(after_image, "select_change_target_reroll_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                "select_change_target",
+                "reroll_target",
+                "unverified",
+                details={"attempt": attempt, "reason": "reroll_frame_unchanged"},
+                before=before,
+                after=after,
+            )
+            self._stop_unsupported(context, "select_change_target", "reroll_frame_unchanged")
+            return None
+        if not self._matches_screen_profile(context, after_image, "select_change_target"):
+            self._stop_unsupported(context, "select_change_target", "target_page_lost_after_reroll")
+            return None
+        after_count = self._read_reroll_count(context, after_image)
+        # 最后一次重抽会直接隐藏次数和“再抽選”控件。只有重抽前已确认剩 1 次，
+        # 且重抽后按钮也确实消失时，才把缺失次数解释为 0；其他 OCR 缺失仍必须停止。
+        exhausted_by_hidden_controls = False
+        if after_count is None and before_count == 1:
+            after_reroll = self._find_text_option(
+                context,
+                after_image,
+                ("再抽選",),
+                self._observed_button_roi("select_change_target", "reroll", self.REROLL_ROI),
+            )
+            if not after_reroll:
+                after_count = 0
+                exhausted_by_hidden_controls = True
+        if after_count != before_count - 1:
+            self._record_journal(
+                "select_change_target",
+                "reroll_target",
+                "unverified",
+                details={"attempt": attempt, "before_count": before_count, "after_count": after_count},
+                before=before,
+                after=after,
+            )
+            self._stop_unsupported(context, "select_change_target", "reroll_count_not_decremented")
+            return None
+        self._record_journal(
+            "select_change_target",
+            "reroll_target",
+            "verified",
+            details={
+                "attempt": attempt,
+                "before_count": before_count,
+                "after_count": after_count,
+                "exhausted_by_hidden_controls": exhausted_by_hidden_controls,
+            },
+            before=before,
+            after=after,
+        )
+        return after_image
+
+    def _advance_to_source_deck(self, context: Context, image, target: dict[str, Any], candidates: list[dict[str, Any]]) -> bool:
         next_button = self._find_text_option(
             context,
             image,
@@ -810,83 +2235,484 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
         )
         if not next_button:
             return self._stop_unsupported(context, "select_change_target", "next_button_not_found")
-        return self._click_box_with_verification(
-            context,
-            image,
+        before = self._capture_evidence(image, "select_change_target_next_before")
+        if not self._click_box_center(context, next_button.best_result.box, double=False):
+            return self._stop_unsupported(context, "select_change_target", "next_button_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "select_change_target")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "select_change_target_next_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                "select_change_target",
+                "advance_select_change",
+                "unverified",
+                details={"target": target, "reason": "next_frame_unchanged"},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "select_change_target", "next_frame_unchanged")
+        if self._wait_for_screen_profile(context, after_image, "select_change_source_deck") is None:
+            return self._stop_unsupported(context, "select_change_target", "source_deck_page_not_confirmed_after_next")
+        # 源卡确认必须使用本轮真实枚举并二次确认过的目标，绝不能回退到预设首选。
+        get_runtime_hif_session().set_pending_select_change(str(target["target_name"]))
+        self._record_journal(
             "select_change_target",
             "advance_select_change",
-            next_button.best_result.box,
+            "verified",
+            details={"target": target, "candidates": candidates, "next_screen": "select_change_source_deck"},
+            before=before,
+            after=after,
         )
+        return True
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        preset = self._get_preset(argv)
+        params = self._get_action_params(argv)
+        configured_names = params.get("select_change_target_names")
+        if configured_names is None:
+            target_names = preset.select_change_target_names
+        elif isinstance(configured_names, (list, tuple)) and configured_names and all(
+            isinstance(name, str) and name for name in configured_names
+        ):
+            # 仅供显式单步实机授权使用；不修改预设的常规决策优先级。
+            target_names = tuple(configured_names)
+        else:
+            return self._stop_unsupported(context, "select_change_target", "configured_target_names_invalid")
+        image = self._get_screenshot_or_stop(context, "select_change_target")
+        if image is None:
+            return True
+        before = self._capture_evidence(image, "select_change_target_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                "select_change_target",
+                "enumerate_target_candidates",
+                "observed",
+                details={"reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                before=before,
+            )
+            return self._stop_unsupported(context, "select_change_target", "page_execution_mode_not_single_step")
+        image = self._wait_for_screen_profile(context, image, "select_change_target")
+        if image is None:
+            return self._stop_unsupported(context, "select_change_target", "target_page_not_confirmed")
+
+        current_image = image
+        for reroll_attempt in range(preset.reroll_limit + 1):
+            candidates: list[dict[str, Any]] = []
+            for slot, box in self._slot_boxes():
+                selected = self._select_and_read_slot(
+                    context,
+                    current_image,
+                    slot,
+                    box,
+                    target_names,
+                    "enumerate_target_candidate",
+                )
+                if selected is None:
+                    return True
+                candidate, current_image = selected
+                candidates.append(candidate)
+
+            matches = [candidate for candidate in candidates if candidate["target_name"] is not None]
+            if len(matches) > 1:
+                return self._stop_unsupported(context, "select_change_target", "multiple_target_cards_observed")
+            if len(matches) == 1:
+                target = matches[0]
+                if target["slot"] != candidates[-1]["slot"]:
+                    target_box = next(box for slot, box in self._slot_boxes() if slot == target["slot"])
+                    selected = self._select_and_read_slot(
+                        context,
+                        current_image,
+                        target["slot"],
+                        target_box,
+                        target_names,
+                        "select_target_candidate",
+                    )
+                    if selected is None:
+                        return True
+                    confirmed_target, current_image = selected
+                    if confirmed_target["target_name"] != target["target_name"]:
+                        return self._stop_unsupported(context, "select_change_target", "selected_target_name_changed")
+                    target = confirmed_target
+                self._record_journal(
+                    "select_change_target",
+                    "choose_target_card",
+                    "selected",
+                    details={"target": target, "candidates": candidates, "reroll_attempt": reroll_attempt},
+                )
+                return self._advance_to_source_deck(context, current_image, target, candidates)
+
+            if reroll_attempt >= preset.reroll_limit:
+                self._record_journal(
+                    "select_change_target",
+                    "choose_target_card",
+                    "rejected",
+                    details={"reason": "preset_target_card_not_found", "candidates": candidates, "reroll_attempt": reroll_attempt},
+                )
+                return self._stop_unsupported(context, "select_change_target", "preset_target_card_not_found")
+            rerolled_image = self._reroll_targets(context, current_image, reroll_attempt + 1)
+            if rerolled_image is None:
+                return True
+            current_image = rerolled_image
+        return self._stop_unsupported(context, "select_change_target", "target_reroll_loop_exhausted")
 
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeSourceAuto")
 class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
-    """在变卡第二阶段选择预设源卡并确认。"""
+    """默认只记录牌库；显式探针仅可采样一张卡详情，不能确认或滚动。"""
 
-    DECK_ROI = [60, 600, 600, 500]
-    CHANGE_ROI = [350, 1080, 320, 140]
-    MAX_DECK_SCROLLS = 4
+    FIRST_VISIBLE_SLOT_ROI = [80, 638, 120, 120]
+    VISIBLE_SLOT_REGION_IDS = (
+        "visible_slot_r1c1",
+        "visible_slot_r1c2",
+        "visible_slot_r1c3",
+        "visible_slot_r1c4",
+        "visible_slot_r2c1",
+        "visible_slot_r2c2",
+        "visible_slot_r2c3",
+        "visible_slot_r2c4",
+        "visible_slot_r3c1",
+        "visible_slot_r3c2",
+        "visible_slot_r3c3",
+        "visible_slot_r3c4",
+    )
+    VISIBLE_SLOT_FALLBACKS = (
+        [80, 638, 120, 120],
+        [227, 638, 120, 120],
+        [374, 638, 120, 120],
+        [521, 638, 120, 120],
+        [80, 786, 120, 120],
+        [227, 786, 120, 120],
+        [374, 786, 120, 120],
+        [521, 786, 120, 120],
+        [80, 933, 120, 120],
+        [227, 933, 120, 120],
+        [374, 933, 120, 120],
+        [521, 933, 120, 120],
+    )
+    DETAIL_NAME_ROI = [190, 270, 410, 44]
+    DETAIL_TEXT_ROI = [190, 318, 475, 190]
+    COMPLETION_TEXT_ROI = [56, 960, 610, 112]
 
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        preset = self._get_preset(argv)
-        source = None
-        source_image = None
-        for scroll_index in range(self.MAX_DECK_SCROLLS + 1):
-            image = self._get_screenshot_or_stop(context, "select_change_source_deck")
-            if image is None:
-                return True
-            source = self._find_text_option(
-                context,
-                image,
-                preset.select_change_source_names,
-                self._profile_region("select_change_source_deck", "deck_grid", self.DECK_ROI),
-            )
-            if source:
-                source_image = image
-                break
-            if scroll_index < self.MAX_DECK_SCROLLS:
-                if not self._swipe_with_verification(
-                    context,
-                    image,
-                    "select_change_source_deck",
-                    "scroll_deck",
-                    (360, 1040),
-                    (360, 680),
-                    duration=300,
-                    details={"attempt": scroll_index + 1},
-                ):
-                    return True
-        if not source:
-            return self._stop_unsupported(context, "select_change_source_deck", "preset_source_card_not_found")
-        if source_image is None:
-            return self._stop_unsupported(context, "select_change_source_deck", "source_frame_not_available")
-        if not self._click_box_with_verification(
-            context,
-            source_image,
-            "select_change_source_deck",
-            "select_change_source",
-            source.best_result.box,
-        ):
-            return True
-
-        image = self._get_screenshot_or_stop(context, "select_change_source_deck")
-        if image is None:
-            return True
-        change_button = self._find_text_option(
+    def _source_detail_snapshot(self, context: Context, image) -> dict[str, Any]:
+        card_name_patterns = [f".*{re.escape(name)}.*" for name in build_card_name_dict()]
+        name_detail = self._run_ocr(
             context,
             image,
+            "ProduceRecognitionHIFSelectChangeSourcePreviewName",
+            card_name_patterns,
+            self.DETAIL_NAME_ROI,
+        )
+        effect_detail = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSelectChangeSourcePreviewEffect",
+            [],
+            self.DETAIL_TEXT_ROI,
+        )
+        name_entries = self._ocr_text_entries(name_detail)
+        effect_entries = self._ocr_text_entries(effect_detail)
+        best_name = getattr(name_detail, "best_result", None) if name_detail and name_detail.hit else None
+        matched_name = normalize_card_name(str(getattr(best_name, "text", "")).rstrip("+").strip()) if best_name else None
+        return {
+            "name_texts": tuple(entry["text"] for entry in name_entries),
+            "matched_name": matched_name,
+            "effect_texts": tuple(entry["text"] for entry in effect_entries),
+            "confidence": min(
+                (entry["score"] for entry in name_entries + effect_entries),
+                default=0.0,
+            ),
+            "name_confidence": float(getattr(best_name, "score", 0.0)) if best_name else 0.0,
+            "effect_confidence": min((entry["score"] for entry in effect_entries), default=0.0),
+        }
+
+    @staticmethod
+    def _source_detail_is_readable(details: dict[str, Any]) -> bool:
+        return bool(details["matched_name"] and details["effect_texts"] and details["name_confidence"] > 0 and details["effect_confidence"] > 0)
+
+    def _visible_source_slots(self) -> tuple[tuple[str, list[int]], ...]:
+        return tuple(
+            (
+                region_id,
+                self._profile_region("select_change_source_deck", region_id, fallback),
+            )
+            for region_id, fallback in zip(self.VISIBLE_SLOT_REGION_IDS, self.VISIBLE_SLOT_FALLBACKS)
+        )
+
+    def _probe_source_slot(
+        self, context: Context, image, slot_id: str, slot_roi: list[int], *, allow_unreadable_details: bool = False
+    ):
+        before = self._capture_evidence(image, f"select_change_source_deck_{slot_id}_before")
+        if not self._click_box_center(context, slot_roi, double=False):
+            self._stop_unsupported(context, "select_change_source_deck", "source_deck_probe_click_failed")
+            return None
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "select_change_source_deck")
+        if after_image is None:
+            return None
+        after = self._capture_evidence(after_image, f"select_change_source_deck_{slot_id}_after")
+        if not frame_changed(before, after):
+            # 允许把已经选中的首卡作为只读样本，但不把无变化的点击当作已验证执行。
+            details = self._source_detail_snapshot(context, image)
+            if self._source_detail_is_readable(details):
+                self._record_journal(
+                    "select_change_source_deck",
+                    "probe_source_card",
+                    "observed",
+                    details={"slot": slot_id, "slot_roi": slot_roi, "selection_already_active": True, **details},
+                    before=before,
+                )
+                return image
+            self._record_journal(
+                "select_change_source_deck",
+                "probe_source_card",
+                "unverified",
+                details={"slot": slot_id, "reason": "source_deck_probe_frame_unchanged"},
+                before=before,
+                after=after,
+            )
+            self._stop_unsupported(context, "select_change_source_deck", "source_deck_probe_frame_unchanged")
+            return None
+        if not self._matches_screen_profile(context, after_image, "select_change_source_deck"):
+            self._stop_unsupported(context, "select_change_source_deck", "source_deck_page_lost_after_probe")
+            return None
+        details = self._source_detail_snapshot(context, after_image)
+        if not self._source_detail_is_readable(details):
+            if allow_unreadable_details:
+                self._record_journal(
+                    "select_change_source_deck",
+                    "probe_source_card",
+                    "observed",
+                    details={
+                        "slot": slot_id,
+                        "slot_roi": slot_roi,
+                        "name_readable": False,
+                        "reason": "source_deck_probe_detail_unreadable",
+                        **details,
+                    },
+                    before=before,
+                    after=after,
+                )
+                return after_image
+            self._record_journal(
+                "select_change_source_deck",
+                "probe_source_card",
+                "unverified",
+                details={"slot": slot_id, "reason": "source_deck_probe_detail_unreadable", **details},
+                before=before,
+                after=after,
+            )
+            self._stop_unsupported(context, "select_change_source_deck", "source_deck_probe_detail_unreadable")
+            return None
+        self._record_journal(
+            "select_change_source_deck",
+            "probe_source_card",
+            "observed",
+            details={"slot": slot_id, "slot_roi": slot_roi, **details},
+            before=before,
+            after=after,
+        )
+        return after_image
+
+    def _read_change_completion_texts(self, context: Context, image) -> tuple[str, ...]:
+        detail = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSelectChangeCompletion",
+            [],
+            self.COMPLETION_TEXT_ROI,
+        )
+        return tuple(entry["text"] for entry in self._ocr_text_entries(detail))
+
+    @staticmethod
+    def _is_change_completion(texts: tuple[str, ...], source_name: str, target_name: str) -> bool:
+        merged = "".join(texts).replace(" ", "")
+        # 实机 OCR 会把片假名“ミ”稳定误读成汉字“三”；只对已知卡名做这一种受限容错。
+        source_variants = {source_name, source_name.replace("ミ", "三")}
+        target_variants = {target_name, target_name.replace("ミ", "三")}
+        return any(name in merged for name in source_variants) and any(name in merged for name in target_variants) and "チェンジしました" in merged
+
+    def _confirm_source_card_change(
+        self,
+        context: Context,
+        image,
+        source_name: str,
+        target_name: str,
+        preset: HIFPreset,
+        *,
+        source_slot_id: str | None = None,
+        explicit_source_authorized: bool = False,
+    ) -> bool:
+        if source_name not in preset.select_change_source_names and not explicit_source_authorized:
+            return self._stop_unsupported(context, "select_change_source_deck", "source_card_not_in_preset")
+        if source_slot_id not in {slot_id for slot_id, _ in self._visible_source_slots()}:
+            source_slot_id = "visible_slot_r2c3"
+        source_slot = self._profile_region(
+            "select_change_source_deck",
+            source_slot_id,
+            [374, 786, 120, 120],
+        )
+        selected = self._probe_source_slot(context, image, "confirm_source", source_slot)
+        if selected is None:
+            return True
+        source_details = self._source_detail_snapshot(context, selected)
+        if source_details["matched_name"] != source_name or source_details["name_confidence"] < 0.98:
+            self._record_journal(
+                "select_change_source_deck",
+                "select_source_card_for_confirmation",
+                "rejected",
+                details={"expected_source": source_name, "slot_roi": source_slot, **source_details},
+            )
+            return self._stop_unsupported(context, "select_change_source_deck", "source_card_confirmation_target_not_confirmed")
+
+        change_button = self._find_text_option(
+            context,
+            selected,
             ("チェンジ",),
-            self._observed_button_roi("select_change_source_deck", "change", self.CHANGE_ROI),
+            self._observed_button_roi("select_change_source_deck", "change", [373, 1119, 255, 82]),
         )
         if not change_button:
             return self._stop_unsupported(context, "select_change_source_deck", "change_button_not_found")
-        return self._click_box_with_verification(
-            context,
-            image,
-            "select_change_source_deck",
+        before = self._capture_evidence(selected, "select_change_source_deck_confirm_before")
+        if not self._click_box_center(context, change_button.best_result.box, double=False):
+            return self._stop_unsupported(context, "select_change_source_deck", "change_button_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "select_change_result")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "select_change_source_deck_confirm_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                "select_change_source_deck",
+                "confirm_select_change",
+                "unverified",
+                details={"source": source_name, "reason": "change_confirmation_frame_unchanged"},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "select_change_source_deck", "change_confirmation_frame_unchanged")
+
+        completion_image = after_image
+        completion_texts = self._read_change_completion_texts(context, completion_image)
+        for _ in range(2):
+            if self._is_change_completion(completion_texts, source_name, target_name):
+                break
+            time.sleep(self.CLICK_DELAY)
+            completion_image = self._get_screenshot_or_stop(context, "select_change_result")
+            if completion_image is None:
+                return True
+            completion_texts = self._read_change_completion_texts(context, completion_image)
+        if not self._is_change_completion(completion_texts, source_name, target_name):
+            self._record_journal(
+                "select_change_result",
+                "confirm_select_change",
+                "unverified",
+                details={"source": source_name, "target": target_name, "completion_texts": completion_texts},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "select_change_result", "change_completion_text_not_confirmed")
+        self._record_journal(
+            "select_change_result",
             "confirm_select_change",
-            change_button.best_result.box,
+            "verified",
+            details={"source": source_name, "target": target_name, "completion_texts": completion_texts},
+            before=before,
+            after=after,
         )
+        get_runtime_hif_session().clear_pending_select_change()
+        return self._stop_unsupported(context, "select_change_result", "select_change_result_observed_stop")
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        preset = self._get_preset(argv)
+        image = self._get_screenshot_or_stop(context, "select_change_source_deck")
+        if image is None:
+            return True
+        image = self._wait_for_screen_profile(context, image, "select_change_source_deck")
+        if image is None:
+            return self._stop_unsupported(context, "select_change_source_deck", "source_deck_page_not_confirmed")
+        evidence = self._capture_evidence(image, "select_change_source_deck_observed")
+        self._record_journal(
+            "select_change_source_deck",
+            "observe_source_deck",
+            "observed",
+            details={
+                "reason": "source_card_selection_not_authorized",
+                "source_preview_roi": self._profile_region("select_change_source_deck", "source_preview", [168, 96, 144, 144]),
+                "target_preview_roi": self._profile_region("select_change_source_deck", "target_preview", [407, 96, 144, 144]),
+                "deck_grid_roi": self._profile_region("select_change_source_deck", "deck_grid", [80, 623, 560, 485]),
+            },
+            before=evidence,
+        )
+
+        params = self._get_action_params(argv)
+        probe_mode = params.get("source_deck_probe")
+        if not probe_mode:
+            return self._stop_unsupported(context, "select_change_source_deck", "source_card_selection_not_authorized")
+        if getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE) is not HIFExecutionMode.SINGLE_STEP:
+            return self._stop_unsupported(context, "select_change_source_deck", "source_deck_probe_requires_single_step")
+
+        if probe_mode == "confirm_source_card":
+            source_name = params.get("source_card_name")
+            if not isinstance(source_name, str) or not source_name:
+                return self._stop_unsupported(context, "select_change_source_deck", "source_card_name_missing")
+            pending_change = get_runtime_hif_session().pending_select_change
+            target_name = pending_change.target_name if pending_change is not None else None
+            explicit_source_authorized = params.get("explicit_source_authorized") is True
+            if not isinstance(target_name, str) or target_name not in preset.select_change_target_names:
+                return self._stop_unsupported(context, "select_change_source_deck", "selected_target_card_missing_or_invalid")
+            return self._confirm_source_card_change(
+                context,
+                image,
+                source_name,
+                target_name,
+                preset,
+                source_slot_id=params.get("source_card_slot") if isinstance(params.get("source_card_slot"), str) else None,
+                explicit_source_authorized=explicit_source_authorized,
+            )
+
+        if probe_mode is True:
+            slots = (("first_visible", self._profile_region("select_change_source_deck", "first_visible_slot", self.FIRST_VISIBLE_SLOT_ROI)),)
+            stop_reason = "source_deck_probe_complete_stop"
+        elif probe_mode == "visible_grid":
+            slots = self._visible_source_slots()
+            stop_reason = "source_deck_visible_enumeration_complete_stop"
+        elif probe_mode == "visible_grid_after_one_scroll":
+            if not self._swipe_with_verification(
+                context,
+                image,
+                "select_change_source_deck",
+                "scroll_source_deck_once",
+                (360, 1040),
+                (360, 680),
+                duration=300,
+                details={"direction": "up", "max_scrolls": 1},
+            ):
+                return True
+            image = self._get_screenshot_or_stop(context, "select_change_source_deck")
+            if image is None:
+                return True
+            if not self._matches_screen_profile(context, image, "select_change_source_deck"):
+                return self._stop_unsupported(context, "select_change_source_deck", "source_deck_page_lost_after_scroll")
+            slots = self._visible_source_slots()
+            stop_reason = "source_deck_visible_enumeration_after_scroll_complete_stop"
+        else:
+            return self._stop_unsupported(context, "select_change_source_deck", "source_deck_probe_mode_unsupported")
+
+        current_image = image
+        for slot_id, slot_roi in slots:
+            current_image = self._probe_source_slot(
+                context,
+                current_image,
+                slot_id,
+                slot_roi,
+                allow_unreadable_details=probe_mode in {"visible_grid", "visible_grid_after_one_scroll"},
+            )
+            if current_image is None:
+                return True
+        return self._stop_unsupported(context, "select_change_source_deck", stop_reason)
 
 
 @AgentServer.custom_action("ProduceHIFConsultAuto")
@@ -894,9 +2720,15 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
     """首版仅支持保留 P 点并结束咨询商店。"""
 
     FINISH_ROI = [530, 1000, 190, 150]
+    ENHANCE_ROI = [50, 920, 310, 100]
+    DELETE_ROI = [365, 920, 310, 100]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        if self._get_preset(argv).consult_policy != "finish_without_purchase":
+        preset = self._get_preset(argv)
+        probe = str(self._get_action_params(argv).get("consult_probe", ""))
+        if probe in {"enhance", "delete"}:
+            return self._open_consult_manage_page(context, probe)
+        if preset.consult_policy != "finish_without_purchase":
             return self._stop_unsupported(context, "consult_shop", "consult_policy_not_supported")
 
         image = self._get_screenshot_or_stop(context, "consult_shop")
@@ -922,6 +2754,30 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
         # Action 返回成功，避免框架将安全停止误报为动作异常。
         return True
 
+    def _open_consult_manage_page(self, context: Context, probe: str) -> bool:
+        """只读采样咨询的强化/删除页；不选择卡片或提交任何变更。"""
+
+        image = self._get_screenshot_or_stop(context, "consult_shop")
+        if image is None:
+            return True
+        label, roi = ("強化", self.ENHANCE_ROI) if probe == "enhance" else ("削除", self.DELETE_ROI)
+        before = self._capture_evidence(image, f"consult_{probe}_before")
+        if not self._click_text_with_verification(context, image, "consult_shop", f"open_{probe}", (label,), roi):
+            return True
+        after_image = self._get_screenshot_or_stop(context, f"consult_{probe}")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, f"consult_{probe}_opened")
+        self._record_journal(
+            "consult_shop",
+            f"observe_{probe}_page",
+            "observed",
+            details={"probe": probe, "submission": "none"},
+            before=before,
+            after=after,
+        )
+        return self._stop_unsupported(context, f"consult_{probe}", "consult_manage_page_observed_stop")
+
 
 @AgentServer.custom_action("ProduceHIFRewardConfirmAuto")
 class ProduceHIFRewardConfirmAuto(_ProduceHIFActionBase):
@@ -932,14 +2788,238 @@ class ProduceHIFRewardConfirmAuto(_ProduceHIFActionBase):
         image = self._get_screenshot_or_stop(context, "hif_reward_confirm")
         if image is None:
             return True
-        return self._click_text_with_verification(
+        session = get_runtime_hif_session()
+        pending = session.pending_reward
+        if pending is None:
+            return self._stop_unsupported(context, "hif_reward_confirm", "pending_drink_reward_missing")
+        if pending.kind == "skill":
+            return self._confirm_skill_reward(context, argv, image, session, pending)
+        if pending.kind != "drink":
+            return self._stop_unsupported(context, "hif_reward_confirm", "unsupported_pending_reward_kind")
+        page_match = detect_drink_reward_page(context, image)
+        if page_match is None:
+            return self._stop_unsupported(context, "hif_reward_confirm", "drink_reward_page_not_confirmed")
+        if page_match.state != "selected_detail" or page_match.name != pending.name:
+            return self._stop_unsupported(context, "hif_reward_confirm", "pending_drink_reward_not_selected")
+
+        before = self._capture_evidence(image, "hif_reward_confirm_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                "hif_reward_confirm",
+                "confirm_reward",
+                "observed",
+                details={"reason": "page_execution_mode_not_single_step", "mode": mode.value, "reward": pending.name},
+                before=before,
+            )
+            return self._stop_unsupported(context, "hif_reward_confirm", "page_execution_mode_not_single_step")
+        receive = self._find_text_option(
             context,
             image,
-            "hif_reward_confirm",
-            "confirm_reward",
             ("受け取る",),
             self._observed_button_roi("drink_reward", "receive", [230, 1052, 260, 84]),
         )
+        if not receive:
+            return self._stop_unsupported(context, "hif_reward_confirm", "receive_button_not_found")
+        if not self._click_box_center(context, receive.best_result.box, double=False):
+            return self._stop_unsupported(context, "hif_reward_confirm", "receive_button_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "hif_reward_confirm")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "hif_reward_confirm_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                "hif_reward_confirm",
+                "confirm_reward",
+                "unverified",
+                details={"reason": "post_receive_frame_unchanged", "reward": pending.name},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "hif_reward_confirm", "post_receive_frame_unchanged")
+        if self._matches_screen_profile(context, after_image, "skill_reward"):
+            session.clear_pending_reward()
+            self._record_journal(
+                "hif_reward_confirm",
+                "confirm_reward",
+                "verified",
+                details={
+                    "reward": pending.name,
+                    "slot": pending.slot,
+                    "page_state": page_match.state,
+                    "selected_name": page_match.name,
+                    "click_count": 1,
+                    "next_screen": "skill_reward",
+                },
+                before=before,
+                after=after,
+            )
+            return True
+
+        reveal_match = detect_drink_reward_reveal_page(context, after_image)
+        reveal_name_confirmed = reveal_match is not None and reveal_match.name == pending.name
+        if not reveal_name_confirmed:
+            profile = load_hif_screen_profiles().get("drink_reward")
+            reveal_name_roi = list(profile.regions.get("reveal_name", (72, 840, 576, 76))) if profile else [72, 840, 576, 76]
+            reveal_name = self._run_ocr(
+                context,
+                after_image,
+                "ProduceRecognitionHIFDrinkRewardRevealPendingName",
+                [f".*{re.escape(pending.name)}.*"],
+                reveal_name_roi,
+            )
+            reveal_name_confirmed = bool(reveal_name and reveal_name.hit)
+        if not reveal_name_confirmed:
+            return self._stop_unsupported(context, "hif_reward_confirm", "drink_reward_reveal_not_confirmed_after_receive")
+        self._record_journal(
+            "hif_reward_confirm",
+            "confirm_reward",
+            "verified",
+            details={"reward": pending.name, "slot": pending.slot, "click_count": 1, "next_screen": "drink_reward_reveal"},
+            before=before,
+            after=after,
+        )
+
+        # 实机证据表明展示条上的“受け取る”是短暂动画，而非第二个稳定的
+        # 资源提交控件。保留 pending，交由展示等待节点和技能卡页后验完成闭环。
+        return True
+
+    def _confirm_skill_reward(self, context: Context, argv: CustomAction.RunArg, image, session, pending) -> bool:
+        page_match = detect_skill_reward_selected_page(context, image)
+        if page_match is None:
+            return self._stop_unsupported(context, "hif_reward_confirm", "skill_reward_page_not_confirmed")
+        if page_match.name != pending.name:
+            return self._stop_unsupported(context, "hif_reward_confirm", "pending_skill_reward_not_selected")
+
+        before = self._capture_evidence(image, "hif_skill_reward_confirm_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                "hif_reward_confirm",
+                "confirm_skill_reward",
+                "observed",
+                details={"reason": "page_execution_mode_not_single_step", "mode": mode.value, "reward": pending.name},
+                before=before,
+            )
+            return self._stop_unsupported(context, "hif_reward_confirm", "page_execution_mode_not_single_step")
+        if self._get_action_params(argv).get("skill_reward_receive_authorized") is not True:
+            return self._stop_unsupported(context, "hif_reward_confirm", "skill_reward_receipt_not_authorized")
+        receive = self._find_text_option(
+            context,
+            image,
+            ("受け取る",),
+            self._observed_button_roi("skill_reward", "receive", [230, 1052, 260, 84]),
+        )
+        if not receive:
+            return self._stop_unsupported(context, "hif_reward_confirm", "skill_reward_receive_button_not_found")
+        if not self._click_box_center(context, receive.best_result.box, double=False):
+            return self._stop_unsupported(context, "hif_reward_confirm", "skill_reward_receive_button_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "hif_reward_confirm")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "hif_skill_reward_confirm_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                "hif_reward_confirm",
+                "confirm_skill_reward",
+                "unverified",
+                details={"reason": "post_skill_receive_frame_unchanged", "reward": pending.name},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "hif_reward_confirm", "post_skill_receive_frame_unchanged")
+        if self._matches_screen_profile(context, after_image, "round1"):
+            session.clear_pending_reward()
+            self._record_journal(
+                "hif_reward_confirm",
+                "confirm_skill_reward",
+                "verified",
+                details={
+                    "reward": pending.name,
+                    "slot": pending.slot,
+                    "selected_name": page_match.name,
+                    "click_count": 1,
+                    "next_screen": "round1",
+                },
+                before=before,
+                after=after,
+            )
+            return True
+        reveal_match = detect_skill_reward_reveal_page(context, after_image)
+        if reveal_match is None or reveal_match.name != pending.name:
+            return self._stop_unsupported(context, "hif_reward_confirm", "skill_reward_round1_not_confirmed_after_receive")
+        self._record_journal(
+            "hif_reward_confirm",
+            "confirm_skill_reward",
+            "verified",
+            details={
+                "reward": pending.name,
+                "slot": pending.slot,
+                "selected_name": page_match.name,
+                "click_count": 1,
+                "next_screen": "skill_reward_reveal",
+            },
+            before=before,
+            after=after,
+        )
+        return True
+
+
+@AgentServer.custom_action("ProduceHIFSkillRewardRevealAuto")
+class ProduceHIFSkillRewardRevealAuto(_ProduceHIFActionBase):
+    """确认已领取的技能卡展示层，并仅以 Round1 作为关闭后的成功后验。"""
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._configure_page_execution(argv)
+        image = self._get_screenshot_or_stop(context, "hif_skill_reward_reveal")
+        if image is None:
+            return True
+        before = self._capture_evidence(image, "hif_skill_reward_reveal_before")
+        reveal_match = detect_skill_reward_reveal_page(context, image)
+        if reveal_match is None:
+            return self._stop_unsupported(context, "hif_skill_reward_reveal", "skill_reward_reveal_not_confirmed")
+        pending = get_runtime_hif_session().pending_reward
+        params = self._get_action_params(argv)
+        expected_name = pending.name if pending is not None and pending.kind == "skill" else params.get("skill_reward_reveal_expected_name")
+        if reveal_match.name != expected_name:
+            return self._stop_unsupported(context, "hif_skill_reward_reveal", "skill_reward_reveal_name_not_expected")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            return self._stop_unsupported(context, "hif_skill_reward_reveal", "page_execution_mode_not_single_step")
+        if params.get("skill_reward_receive_authorized") is not True:
+            return self._stop_unsupported(context, "hif_skill_reward_reveal", "skill_reward_reveal_not_authorized")
+        receive = self._find_text_option(
+            context,
+            image,
+            ("受け取る",),
+            self._observed_button_roi("skill_reward", "receive", [230, 1052, 260, 84]),
+        )
+        if not receive:
+            return self._stop_unsupported(context, "hif_skill_reward_reveal", "skill_reward_reveal_receive_button_not_found")
+        if not self._click_box_center(context, receive.best_result.box, double=False):
+            return self._stop_unsupported(context, "hif_skill_reward_reveal", "skill_reward_reveal_receive_button_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "hif_skill_reward_reveal")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "hif_skill_reward_reveal_after")
+        if not frame_changed(before, after):
+            return self._stop_unsupported(context, "hif_skill_reward_reveal", "skill_reward_reveal_frame_unchanged")
+        if not self._matches_screen_profile(context, after_image, "round1"):
+            return self._stop_unsupported(context, "hif_skill_reward_reveal", "skill_reward_reveal_round1_not_confirmed")
+        if pending is not None and pending.kind == "skill":
+            get_runtime_hif_session().clear_pending_reward()
+        self._record_journal(
+            "hif_skill_reward_reveal",
+            "confirm_skill_reward_reveal",
+            "verified",
+            details={"reward": reveal_match.name, "click_count": 1, "next_screen": "round1"},
+            before=before,
+            after=after,
+        )
+        return True
 
 
 @AgentServer.custom_action("ProduceHIFKnownNextAuto")
@@ -959,6 +3039,155 @@ class ProduceHIFKnownNextAuto(_ProduceHIFActionBase):
             ("次へ",),
             self._observed_button_roi("public_lesson_result", "next", [180, 1000, 360, 180]),
         )
+
+
+@AgentServer.custom_action("ProduceHIFPublicLessonResultAuto")
+class ProduceHIFPublicLessonResultAuto(_ProduceHIFActionBase):
+    """公开课结算动画页仅在已确认页面上用受限空白点继续。"""
+
+    SAFE_TARGET = [341, 204, 0, 3]
+    MAX_ADVANCES = 4
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._configure_page_execution(argv)
+        image = self._get_screenshot_or_stop(context, "public_lesson_result")
+        if image is None:
+            return True
+        before = self._capture_evidence(image, "public_lesson_result_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                "public_lesson_result",
+                "advance_public_lesson_result",
+                "observed",
+                details={"reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                before=before,
+            )
+            return self._stop_unsupported(context, "public_lesson_result", "page_execution_mode_not_single_step")
+        if not self._matches_screen_profile(context, image, "public_lesson_result"):
+            return self._stop_unsupported(context, "public_lesson_result", "public_lesson_result_page_not_confirmed")
+        current_evidence = before
+        seen_fingerprints = {before.fingerprint}
+        for attempt in range(1, self.MAX_ADVANCES + 1):
+            if not self._click_box_center(context, self.SAFE_TARGET, double=False):
+                return self._stop_unsupported(context, "public_lesson_result", "public_lesson_result_advance_click_failed")
+            time.sleep(self.ACTION_DELAY)
+            after_image = self._get_screenshot_or_stop(context, "public_lesson_result")
+            if after_image is None:
+                return True
+            after = self._capture_evidence(after_image, f"public_lesson_result_after_{attempt}")
+            if not frame_changed(current_evidence, after):
+                self._record_journal(
+                    "public_lesson_result",
+                    "advance_public_lesson_result",
+                    "unverified",
+                    details={"attempt": attempt, "reason": "public_lesson_result_frame_unchanged"},
+                    before=current_evidence,
+                    after=after,
+                )
+                return self._stop_unsupported(context, "public_lesson_result", "public_lesson_result_frame_unchanged")
+            if after.fingerprint in seen_fingerprints:
+                return self._stop_unsupported(context, "public_lesson_result", "public_lesson_result_frame_cycle")
+            seen_fingerprints.add(after.fingerprint)
+            if not self._matches_screen_profile(context, after_image, "public_lesson_result"):
+                next_screen = self._detect_confirmed_hif_transition(context, after_image)
+                if next_screen is None:
+                    self._record_journal(
+                        "public_lesson_result",
+                        "advance_public_lesson_result",
+                        "unverified",
+                        details={"attempt": attempt, "reason": "public_lesson_result_next_page_not_confirmed"},
+                        before=current_evidence,
+                        after=after,
+                    )
+                    return self._stop_unsupported(context, "public_lesson_result", "public_lesson_result_next_page_not_confirmed")
+                self._record_journal(
+                    "public_lesson_result",
+                    "advance_public_lesson_result",
+                    "verified",
+                    details={"target": self.SAFE_TARGET, "attempts": attempt, "next_screen": next_screen},
+                    before=before,
+                    after=after,
+                )
+                return True
+            self._record_journal(
+                "public_lesson_result",
+                "advance_public_lesson_result",
+                "observed",
+                details={"target": self.SAFE_TARGET, "attempt": attempt, "result_still_visible": True},
+                before=current_evidence,
+                after=after,
+            )
+            current_evidence = after
+        return self._stop_unsupported(context, "public_lesson_result", "public_lesson_result_advance_limit_reached")
+
+
+@AgentServer.custom_action("ProduceHIFStartProduceAuto")
+class ProduceHIFStartProduceAuto(_ProduceHIFActionBase):
+    """仅在已确认的 HIF 开始确认页启动本次培育。"""
+
+    START_ROI = [210, 1030, 300, 105]
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._configure_page_execution(argv)
+        image = self._get_screenshot_or_stop(context, "hif_start_confirm")
+        if image is None:
+            return True
+        before = self._capture_evidence(image, "hif_start_confirm_before")
+        mode = getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE)
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                "hif_start_confirm",
+                "start_produce",
+                "observed",
+                details={"reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                before=before,
+            )
+            return self._stop_unsupported(context, "hif_start_confirm", "page_execution_mode_not_single_step")
+        if not self._matches_screen_profile(context, image, "hif_start_confirm"):
+            return self._stop_unsupported(context, "hif_start_confirm", "start_confirm_page_not_confirmed")
+        start = self._find_text_option(context, image, ("プロデュース開始",), self.START_ROI)
+        if not start:
+            return self._stop_unsupported(context, "hif_start_confirm", "start_produce_button_not_found")
+        if not self._click_box_center(context, start.best_result.box, double=False):
+            return self._stop_unsupported(context, "hif_start_confirm", "start_produce_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "hif_start_confirm")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "hif_start_confirm_after")
+        if not frame_changed(before, after):
+            self._record_journal(
+                "hif_start_confirm",
+                "start_produce",
+                "unverified",
+                details={"reason": "post_start_frame_unchanged"},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "hif_start_confirm", "post_start_frame_unchanged")
+        if self._matches_screen_profile(context, after_image, "hif_start_confirm"):
+            return self._stop_unsupported(context, "hif_start_confirm", "start_confirm_page_still_visible")
+        next_screen = self._detect_confirmed_hif_transition(context, after_image)
+        if next_screen is None:
+            self._record_journal(
+                "hif_start_confirm",
+                "start_produce",
+                "unverified",
+                details={"reason": "start_next_page_not_confirmed"},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "hif_start_confirm", "start_next_page_not_confirmed")
+        self._record_journal(
+            "hif_start_confirm",
+            "start_produce",
+            "verified",
+            details={"next_screen": next_screen},
+            before=before,
+            after=after,
+        )
+        return True
 
 
 @AgentServer.custom_action("ProduceHIFChooseFinalModeAuto")
@@ -1100,7 +3329,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             screen_confidence=observation.screen_confidence,
             missing_fields=observation.missing_fields,
             target_count=len(targets),
-            postcondition_supported=True,
+            postcondition_supported=False,
         )
         if card_action.kind is not ActionKind.PLAY_CARD:
             approval_reason = f"action_kind_not_supported:{card_action.kind.value}"
@@ -1270,6 +3499,7 @@ class ProduceHIFSettlementContinueAuto(_ProduceHIFActionBase):
             "continue_settlement",
             ("次へ",),
             self._observed_button_roi("score_settlement", "next", self.NEXT_ROI),
+            allowed_next_screens=("live", "memory_photo_select"),
         )
 
 
@@ -1287,14 +3517,14 @@ class ProduceHIFLiveObserve(_ProduceHIFActionBase):
         before = self._capture_evidence(image, "live_before")
         mode = str(self._get_action_params(argv).get("live_mode", "observe_and_stop"))
         if mode == "skip_once":
-            return self._click_box_with_verification(
-                context,
-                image,
+            self._record_journal(
                 "live",
                 "skip_live",
-                self._profile_region("live", "skip", self.SKIP_ROI),
-                details={"mode": mode, "source": "finals-daily-log"},
+                "observed",
+                details={"reason": "live_skip_execution_not_supported", "mode": mode},
+                before=before,
             )
+            return self._stop_unsupported(context, "live", "live_skip_execution_not_supported")
         self._record_journal(
             "live",
             "skip_live",
@@ -1315,11 +3545,20 @@ class _ProduceHIFMemoryAction(_ProduceHIFActionBase):
         event: str,
         phrases: tuple[str, ...],
         roi: list[int],
+        expected_next_screen: str,
     ) -> bool:
         image = self._get_screenshot_or_stop(context, screen_state)
         if image is None:
             return True
-        return self._click_text_with_verification(context, image, screen_state, event, phrases, roi)
+        return self._click_text_with_verification(
+            context,
+            image,
+            screen_state,
+            event,
+            phrases,
+            roi,
+            allowed_next_screens=(expected_next_screen,),
+        )
 
 
 @AgentServer.custom_action("ProduceHIFMemoryPhotoNext")
@@ -1332,6 +3571,7 @@ class ProduceHIFMemoryPhotoNext(_ProduceHIFMemoryAction):
             "photo_next",
             ("次へ",),
             self._observed_button_roi("memory_photo_select", "next", [240, 1120, 242, 82]),
+            "memory_photo_confirm",
         )
 
 
@@ -1345,6 +3585,7 @@ class ProduceHIFMemoryPhotoConfirm(_ProduceHIFMemoryAction):
             "photo_confirm",
             ("決定",),
             self._observed_button_roi("memory_photo_confirm", "confirm", [373, 1137, 255, 70]),
+            "memory_generate",
         )
 
 
@@ -1358,6 +3599,7 @@ class ProduceHIFMemoryGenerate(_ProduceHIFMemoryAction):
             "generate_memory",
             ("生成",),
             self._observed_button_roi("memory_generate", "generate", [275, 900, 170, 170]),
+            "memory_preview",
         )
 
 
@@ -1371,6 +3613,7 @@ class ProduceHIFMemoryPreviewNext(_ProduceHIFMemoryAction):
             "confirm_memory",
             ("次へ",),
             self._observed_button_roi("memory_preview", "next", [240, 1118, 242, 82]),
+            "finished",
         )
 
 

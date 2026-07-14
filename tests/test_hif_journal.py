@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 
-from agent.hif.journal import HIFJournal, audit_hif_journal, frame_changed, load_hif_journal
+from agent.hif.journal import HIFJournal, frame_changed, load_hif_journal, audit_hif_journal
 from agent.hif.execution import HIFExecutionMode, parse_execution_mode, approve_card_execution
 
 

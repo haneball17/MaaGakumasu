@@ -170,4 +170,11 @@ class _MaafwHIFStateOcrAdapter:
         )
         if detail and detail.hit:
             return detail.best_result.text
+        # 空 expected 的状态读取可能保留 OCR 候选但不设置 hit；
+        # 交由上层严格数值解析校验，不能因此丢弃已读到的 P 点等文本。
+        results = tuple(getattr(detail, "all_results", ()) or ()) if detail else ()
+        texts = [str(getattr(result, "text", "")).strip() for result in results]
+        joined = " ".join(text for text in texts if text)
+        if joined:
+            return joined
         return None

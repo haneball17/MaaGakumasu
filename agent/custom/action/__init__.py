@@ -1,8 +1,8 @@
 from .shop import *
 from .Counter import *
 from .produce import *
-from .produce_hif import *
 from .challenge import *
+from .produce_hif import *
 from .SupportCards import *
 
 __all__ = [
@@ -16,16 +16,21 @@ __all__ = [
     "ProduceChooseHIFPItemAuto",
     "ProduceChooseHIFClassOptionAuto",
     "ProduceChooseHIFDrinkRewardAuto",
+    "ProduceHIFDrinkRewardRevealAuto",
     "ProduceChooseHIFSkillRewardAuto",
+    "ProduceHIFSkillRewardRevealAuto",
     "ProduceChooseHIFSelectChangeTargetAuto",
     "ProduceChooseHIFSelectChangeSourceAuto",
     "ProduceHIFConsultAuto",
     "ProduceHIFRewardConfirmAuto",
     "ProduceHIFKnownNextAuto",
+    "ProduceHIFPublicLessonResultAuto",
+    "ProduceHIFStartProduceAuto",
     "ProduceHIFChooseFinalModeAuto",
     "ProduceHIFValidateDevice",
     "ProduceHIFSelectionObserve",
     "ProduceHIFDrinkOverflowObserve",
+    "ProduceHIFSafeAdvanceAuto",
     "ProduceCardsHIF",
     "ProduceHIFIntervalAuto",
     "ProduceHIFSettlementContinueAuto",

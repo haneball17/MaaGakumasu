@@ -28,6 +28,7 @@
 		"第五天 P 饮料持有上限界面",
 		"第六天初始候选界面",
 		"第六天 相談 商店界面",
+		"HIF 开始确认界面",
 		"本战 Round1 / 初始状态",
 		"Interval 商店初始界面",
 		"持有技能卡检查界面",
@@ -44,14 +45,38 @@
 	],
 	"profiles": [
 		{
+			"screen_id": "hif_start_confirm",
+			"risk": "stateful_choice",
+			"anchors": [{"id": "start", "pattern": "プロデュース開始", "roi": [
+					210,
+					1030,
+					300,
+					105
+				]}],
+			"buttons": [{"id": "start", "text": "プロデュース開始", "roi": [
+					210,
+					1030,
+					300,
+					105
+				]}]
+		},
+		{
 			"screen_id": "finals_prepare",
 			"risk": "stateful_choice",
-			"anchors": [{"id": "day", "pattern": "H\\.?I\\.?F本戦まで.*[1-6]日", "roi": [
+			"anchors": [
+				{"id": "title", "pattern": "H\\.?I\\.?F\\s*本戦まで", "roi": [
 						32,
 						25,
 						160,
-						145
-					]}],
+						60
+					]},
+				{"id": "day", "pattern": "[1-6]\\s*日", "roi": [
+						55,
+						85,
+						110,
+						75
+					]}
+			],
 			"regions": {
 				"health": [
 					285,
@@ -77,6 +102,24 @@
 					552,
 					196
 				],
+				"lesson_accent_left": [
+					205,
+					1008,
+					55,
+					55
+				],
+				"lesson_accent_center": [
+					369,
+					1008,
+					55,
+					55
+				],
+				"lesson_accent_right": [
+					534,
+					1008,
+					55,
+					55
+				],
 				"rest": [
 					600,
 					805,
@@ -94,13 +137,41 @@
 		{
 			"screen_id": "class_options",
 			"risk": "stateful_choice",
-			"anchors": [{"id": "option", "pattern": "余裕です！|長い道のりでした", "roi": [
-						40,
-						620,
-						640,
-						360
-					]}],
-			"regions": {"options": [
+			"anchors": [
+				{"id": "title", "pattern": "授業", "roi": [
+						32,
+						36,
+						160,
+						105
+					]},
+				{"id": "trouble", "pattern": "トラブル", "roi": [
+						500,
+						840,
+						170,
+						55
+					]}
+			],
+			"regions": {"preview": [
+					52,
+					434,
+					616,
+					205
+				], "option_top": [
+					52,
+					650,
+					616,
+					90
+				], "option_middle": [
+					52,
+					750,
+					616,
+					90
+				], "option_bottom": [
+					52,
+					850,
+					616,
+					90
+				], "options": [
 					52,
 					658,
 					616,
@@ -141,7 +212,7 @@
 		{
 			"screen_id": "public_lesson_result",
 			"risk": "safe_continue",
-			"anchors": [{"id": "title", "pattern": "公開レッスン", "roi": [
+			"anchors": [{"id": "title", "pattern": ".*公開.*", "roi": [
 						32,
 						36,
 						160,
@@ -169,21 +240,41 @@
 			"screen_id": "drink_reward",
 			"risk": "resource_choice",
 			"anchors": [{"id": "prompt", "pattern": "受け取るPドリンクを選んでください", "roi": [
-						145,
-						620,
-						430,
-						45
+						120,
+						590,
+						520,
+						80
 					]}],
 			"regions": {"candidates": [
 					158,
 					822,
 					405,
 					127
+				], "candidate_left": [
+					158,
+					822,
+					127,
+					127
+				], "candidate_center": [
+					297,
+					822,
+					127,
+					127
+				], "candidate_right": [
+					436,
+					822,
+					127,
+					127
 				], "details": [
 					118,
 					506,
 					500,
 					230
+				], "reveal_name": [
+					72,
+					840,
+					576,
+					76
 				]},
 			"buttons": [{"id": "receive", "text": "受け取る", "roi": [
 						230,
@@ -195,22 +286,48 @@
 		{
 			"screen_id": "skill_reward",
 			"risk": "resource_choice",
-			"anchors": [{"id": "prompt", "pattern": "受け取るスキルカードを選んでください", "roi": [
-						132,
-						588,
-						456,
-						44
+			"anchors": [{"id": "prompt", "pattern": "受[けは]取るスキルカードを選んでください", "roi": [
+					112,
+					585,
+					510,
+					66
 					]}],
 			"regions": {"candidates": [
 					156,
 					821,
 					408,
 					128
+				], "candidate_left": [
+					158,
+					821,
+					127,
+					128
+				], "candidate_center": [
+					297,
+					821,
+					127,
+					128
+				], "candidate_right": [
+					436,
+					821,
+					127,
+					128
+				], "detail_name": [
+					118,
+					500,
+					500,
+					60
 				], "details": [
 					118,
 					555,
 					490,
 					185
+				],
+				"reveal_name": [
+					72,
+					840,
+					576,
+					76
 				], "reroll_count": [
 					559,
 					1042,
@@ -268,10 +385,10 @@
 			"screen_id": "select_change_target",
 			"risk": "resource_choice",
 			"anchors": [{"id": "prompt", "pattern": "チェンジで獲得するスキルカードを選んでください", "roi": [
-						84,
-						292,
-						545,
-						42
+						60,
+						260,
+						600,
+						110
 					]}],
 			"regions": {"target_preview": [
 					407,
@@ -283,6 +400,26 @@
 					837,
 					408,
 					128
+				], "candidate_left": [
+					158,
+					837,
+					127,
+					128
+				], "candidate_center": [
+					297,
+					837,
+					127,
+					128
+				], "candidate_right": [
+					436,
+					837,
+					127,
+					128
+				], "detail_name": [
+					180,
+					500,
+					360,
+					60
 				], "details": [
 					118,
 					555,
@@ -312,12 +449,20 @@
 		{
 			"screen_id": "select_change_source_deck",
 			"risk": "resource_choice",
-			"anchors": [{"id": "prompt", "pattern": "チェンジするスキルカードを選択してください", "roi": [
+			"anchors": [
+				{"id": "prompt_start", "pattern": "^チェンジする$", "roi": [
 						100,
-						579,
-						520,
-						42
-					]}],
+						570,
+						150,
+						55
+					]},
+				{"id": "prompt_end", "pattern": "^てください$", "roi": [
+						490,
+						570,
+						140,
+						55
+					]}
+			],
 			"regions": {"source_preview": [
 					168,
 					96,
@@ -333,6 +478,71 @@
 					623,
 					560,
 					485
+				], "first_visible_slot": [
+					80,
+					638,
+					120,
+					120
+				], "visible_slot_r1c1": [
+					80,
+					638,
+					120,
+					120
+				], "visible_slot_r1c2": [
+					227,
+					638,
+					120,
+					120
+				], "visible_slot_r1c3": [
+					374,
+					638,
+					120,
+					120
+				], "visible_slot_r1c4": [
+					521,
+					638,
+					120,
+					120
+				], "visible_slot_r2c1": [
+					80,
+					786,
+					120,
+					120
+				], "visible_slot_r2c2": [
+					227,
+					786,
+					120,
+					120
+				], "visible_slot_r2c3": [
+					374,
+					786,
+					120,
+					120
+				], "visible_slot_r2c4": [
+					521,
+					786,
+					120,
+					120
+				], "visible_slot_r3c1": [
+					80,
+					933,
+					120,
+					120
+				], "visible_slot_r3c2": [
+					227,
+					933,
+					120,
+					120
+				], "visible_slot_r3c3": [
+					374,
+					933,
+					120,
+					120
+				], "visible_slot_r3c4": [
+					521,
+					933,
+					120,
+					120
 				], "scrollbar": [
 					678,
 					634,
@@ -385,10 +595,10 @@
 			"screen_id": "round1",
 			"risk": "battle",
 			"anchors": [{"id": "turn", "pattern": "残りターン", "roi": [
-						13,
-						43,
-						120,
-						128
+						8,
+						0,
+						170,
+						48
 					]}],
 			"regions": {"ranking": [
 					223,

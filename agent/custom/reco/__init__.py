@@ -1,3 +1,4 @@
+from .hif import *
 from .work import *
 from .utils import *
 from .produce import *
@@ -12,4 +13,8 @@ __all__ = [
     "ProduceShowEnd",
     "ProduceCardsFlagAuto",
     "ScreenRotateCheck",
+    "ProduceHIFDrinkRewardPage",
+    "ProduceHIFDrinkRewardRevealPage",
+    "ProduceHIFSkillRewardSelectedPage",
+    "ProduceHIFSkillRewardRevealPage",
 ]

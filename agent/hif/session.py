@@ -5,12 +5,32 @@ from __future__ import annotations
 from dataclasses import field, dataclass
 
 
+@dataclass(frozen=True, slots=True)
+class HIFPendingReward:
+    """已完成候选确认、等待点击领取按钮的奖励。"""
+
+    kind: str
+    name: str
+    slot: str
+
+
+@dataclass(frozen=True, slots=True)
+class HIFPendingSelectChange:
+    """已验证进入源卡牌库前实际选中的目标卡。"""
+
+    target_name: str
+
+
 @dataclass(slots=True)
 class HIFRunSession:
     """仅保存已经由点击后验确认的事实，不保存推测状态。"""
 
     selected_p_items: list[tuple[str, int]] = field(default_factory=list)
     played_cards: dict[str, set[str]] = field(default_factory=dict)
+    pending_reward: HIFPendingReward | None = None
+    pending_select_change: HIFPendingSelectChange | None = None
+    safe_advance_count: int = 0
+    safe_advance_fingerprints: set[str] = field(default_factory=set)
 
     def record_p_item(self, name: str, stage: int) -> None:
         self.selected_p_items.append((name, stage))
@@ -23,6 +43,32 @@ class HIFRunSession:
 
     def card_was_played(self, round_key: str, card_name: str) -> bool:
         return card_name in self.played_cards.get(round_key, set())
+
+    def set_pending_reward(self, kind: str, name: str, slot: str) -> None:
+        self.pending_reward = HIFPendingReward(kind=kind, name=name, slot=slot)
+
+    def clear_pending_reward(self) -> None:
+        self.pending_reward = None
+
+    def set_pending_select_change(self, target_name: str) -> None:
+        self.pending_select_change = HIFPendingSelectChange(target_name=target_name)
+
+    def clear_pending_select_change(self) -> None:
+        self.pending_select_change = None
+
+    def record_safe_advance(self, fingerprint: str | None) -> bool:
+        """记录一次空白推进；重复帧代表路由已经陷入循环。"""
+
+        if fingerprint and fingerprint in self.safe_advance_fingerprints:
+            return False
+        if fingerprint:
+            self.safe_advance_fingerprints.add(fingerprint)
+        self.safe_advance_count += 1
+        return True
+
+    def reset_safe_advance(self) -> None:
+        self.safe_advance_count = 0
+        self.safe_advance_fingerprints.clear()
 
 
 _RUNTIME_SESSION = HIFRunSession()
