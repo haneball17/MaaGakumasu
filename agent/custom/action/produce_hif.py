@@ -4862,6 +4862,13 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                 self._apply_current_run_hand_detail_names(observation.detections, session)
                 infer_card_playability(returned_image, observation.detections)
                 if params.get("round_probe") == "hand_details_map_deck_observe":
+                    metrics_result = self._probe_round_details_metrics(context, returned_image, screen_state, continue_after=True)
+                    if not isinstance(metrics_result, tuple):
+                        return True
+                    score_raw, multiplier_raw, returned_image = metrics_result
+                    observation.round_metrics = build_round_metrics(
+                        {"current_score": score_raw, "stage_multiplier": multiplier_raw}
+                    )
                     try:
                         ready = assemble_route_state(
                             observation,
