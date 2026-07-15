@@ -1,759 +1,1010 @@
 {
-  "ProduceHIFPreparationEntry": {
-    "recognition": {
-      "type": "DirectHit",
-      "param": {}
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": ["ProduceHIFMainEventButton", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFMainEventButton": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": ["produce/HIF/button_hif_mainevent.png"]
-      }
-    },
-    "action": {
-      "type": "Click",
-      "param": {}
-    },
-    "next": ["ProduceHIFMainEventNextButton", "ProduceHIFUnknownStop"],
-    "post_wait_freezes": 200
-  },
-  "ProduceHIFMainEventNextButton": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": ["next.png"],
-        "roi": [200, 1000, 320, 180]
-      }
-    },
-    "action": {
-      "type": "Click",
-      "param": {}
-    },
-    "next": ["ProduceHIFProduceStartButton", "ProduceHIFUnknownStop"],
-    "post_wait_freezes": 200
-  },
-  "ProduceHIFProduceStartButton": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": ["produce/HIF/button_hif_producestart.png"]
-      }
-    },
-    "action": {
-      "type": "Click",
-      "param": {}
-    },
-    "next": ["ProduceHIFTransitionClick", "ProduceHIFUnknownStop"],
-    "post_wait_freezes": 500
-  },
-  "ProduceHIFTransitionClick": {
-    "recognition": {
-      "type": "DirectHit",
-      "param": {}
-    },
-    "action": {
-      "type": "Click",
-      "param": {
-        "target": [341, 204, 0, 3]
-      }
-    },
-    "next": ["ProduceHIFMainEventEntranceFlag", "[JumpBack]ProduceHIFTransitionClick", "ProduceHIFUnknownStop"],
-    "max_hit": 8,
-    "post_delay": 200
-  },
-  "ProduceHIFMainEventEntranceFlag": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": ["produce/HIF/flag_hif_mainevent_enterance.png"]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": ["ProduceEntryHIF"]
-  },
-  "ProduceEntryHIF": {
-    "recognition": {
-      "type": "DirectHit",
-      "param": {}
-    },
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ProduceHIFValidateDevice"
-      }
-    },
-    "next": [
-      "ProduceExit",
-      "[JumpBack]ProduceHIFStartConfirmFlag",
-      "ProduceHIFFinishedFlag",
-      "ProduceHIFFailedFlag",
-      "[JumpBack]ProduceChooseHIFPItemFlag",
-      "[JumpBack]ProduceHIFSelectionModeFlag",
-      "[JumpBack]ProduceHIFRound1Flag",
-      "[JumpBack]ProduceHIFRound2Flag",
-      "[JumpBack]ProduceHIFIntervalFlag",
-      "[JumpBack]ProduceHIFDrinkOverflowFlag",
-      "[JumpBack]ProduceHIFScoreSettlementFlag",
-      "[JumpBack]ProduceHIFLiveFlag",
-      "[JumpBack]ProduceHIFMemoryPhotoSelectFlag",
-      "[JumpBack]ProduceHIFMemoryPhotoConfirmFlag",
-      "[JumpBack]ProduceHIFMemoryFlag",
-      "[JumpBack]ProduceHIFMemoryPreviewFlag",
-      "[JumpBack]ProduceHIFSelectChangeSourceFlag",
-      "[JumpBack]ProduceHIFSelectChangeTargetFlag",
-      "[JumpBack]ProduceHIFDrinkRewardRevealFlag",
-      "[JumpBack]ProduceHIFDrinkRewardFlag",
-      "[JumpBack]ProduceHIFSkillRewardRevealFlag",
-      "[JumpBack]ProduceHIFSkillRewardSelectedFlag",
-      "[JumpBack]ProduceHIFSkillRewardFlag",
-      "[JumpBack]ProduceHIFGiftBagsFlag",
-      "[JumpBack]ProduceHIFGiftRewardResultFlag",
-      "[JumpBack]ProduceHIFSkillEnhancedResultFlag",
-      "[JumpBack]ProduceHIFClassOptionFlag",
-      "[JumpBack]ProduceHIFPublicLessonResultFlag",
-      "[JumpBack]ProduceHIFConsultFlag",
-      "[JumpBack]ProduceHIFFinalModeFlag",
-      "[JumpBack]ProduceChooseHIFEventFlag",
-      "ProduceHIFSafeAdvanceFlag",
-      "ProduceHIFUnknownStop"
-    ]
-  },
-  "ProduceHIFStartConfirmFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*プロデュース開始.*"], "roi": [210, 1030, 300, 105]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFStartProduceAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFSelectionModeFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*選抜試験モード.*",
-          ".*選抜試験.*"
-        ],
-        "roi": [
-          40,
-          40,
-          640,
-          220
-        ]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceHIFSelectionObserveFlag"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=????[/color]"
-    }
-  },
-  "ProduceHIFSelectionObserveFlag": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFSelectionObserve"}}
-  },
-  "ProduceHIFFinalModeFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*本戦モード.*"
-        ],
-        "roi": [
-          40,
-          40,
-          640,
-          220
-        ]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceChooseHIFEventFlag",
-      "ProduceHIFUnknownStop"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=??[/color]"
-    }
-  },
-  "ProduceHIFRound1Flag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*Round\\s*1.*",
-          ".*ROUND\\s*1.*",
-          ".*1st.*Round.*",
-          ".*残りターン.*"
-        ],
-        "roi": [
-          8,
-          0,
-          170,
-          48
-        ]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceHIFRound1ActionFlag"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=Round1[/color]"
-    }
-  },
-  "ProduceHIFRound2Flag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*Round\\s*2.*",
-          ".*ROUND\\s*2.*",
-          ".*2nd.*Round.*"
-        ],
-        "roi": [
-          40,
-          40,
-          640,
-          220
-        ]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceHIFRound2ActionFlag"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=Round2[/color]"
-    }
-  },
-  "ProduceHIFGenerationFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*メモリー生成.*"
-        ],
-        "roi": [
-          260,
-          900,
-          200,
-          120
-        ]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceGeneration"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=????[/color]"
-    }
-  },
-  "ProduceHIFFinishedFlag": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": [
-          "produce/finished.png"
-        ],
-        "threshold": 0.9
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceFinished"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=?????[/color]"
-    }
-  },
-  "ProduceHIFUnknownStop": {
-    "recognition": {
-      "type": "DirectHit",
-      "param": {}
-    },
-    "action": {
-      "type": "StopTask",
-      "param": {}
-    },
-    "focus": {
-      "Node.Action.Succeeded": {
-        "content": "? HIF ???????????????????",
-        "display": [
-          "log",
-          "notification"
-        ]
-      }
-    }
-  },
-  "ProduceHIFGiftBagsFlag": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": ["produce/HIF/flag_hif_gift_bags.png"],
-        "roi": [240, 400, 240, 360],
-        "threshold": 0.8
-      }
-    },
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ProduceHIFSafeAdvanceAuto",
-        "custom_action_param": {"source": "gift_bags"}
-      }
-    },
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFGiftRewardResultFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [".*P\u30c9\u30ea\u30f3\u30af\u7372\u5f97.*", ".*\u30b9\u30ad\u30eb\u30ab\u30fc\u30c9\u7372\u5f97.*"],
-        "roi": [100, 650, 520, 220]
-      }
-    },
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ProduceHIFSafeAdvanceAuto",
-        "custom_action_param": {"source": "gift_reward_result"}
-      }
-    },
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFSkillEnhancedResultFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*強化しました.*"], "roi": [60, 940, 600, 115]}
-    },
-    "action": {
-      "type": "Custom",
-      "param": {"custom_action": "ProduceHIFSafeAdvanceAuto", "custom_action_param": {"source": "skill_enhanced_result"}}
-    },
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFSafeAdvanceFlag": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {
-      "type": "Custom",
-      "param": {"custom_action": "ProduceHIFSafeAdvanceAuto"}
-    },
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"],
-    "max_hit": 4
-  },
-  "ProduceChooseHIFEventFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*授業.*",
-          ".*公開レッスン.*",
-          ".*おでかけ.*",
-          ".*差し入れ.*",
-          ".*相談.*"
-        ],
-        "roi": [
-          84,
-          920,
-          552,
-          196
-        ]
-      }
-    },
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ProduceChooseHIFEventAuto"
-      }
-    },
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceChooseHIFPItemFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*カスタムPアイテム.*",
-          ".*Pアイテム.*"
-        ],
-        "roi": [
-          40,
-          40,
-          640,
-          220
-        ]
-      }
-    },
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ProduceChooseHIFPItemAuto"
-      }
-    },
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"],
-    "post_delay": 300
-  },
-  "ProduceHIFButton": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": [
-          "next.png",
-          "produce/retry.png",
-          "produce/decide.png",
-          "produce/skip_confirm.png",
-          "produce/drink_no.png",
-          "produce/close.png",
-          "produce/yes.png",
-          "produce/ok.png",
-          "produce/start.png",
-          "cancel.png"
-        ],
-        "order_by": "Score",
-        "roi": [
-          0,
-          780,
-          720,
-          500
-        ]
-      }
-    },
-    "action": {
-      "type": "Click",
-      "param": {
-        "target_offset": [
-          0,
-          0,
-          0,
-          -10
-        ]
-      }
-    },
-    "pre_delay": 100,
-    "post_delay": 150
-  },
-  "ProduceHIFSelectionModeContinueButton": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": [
-          "next.png",
-          "produce/decide.png"
-        ],
-        "order_by": "Score",
-        "roi": [
-          200,
-          1000,
-          320,
-          160
-        ]
-      }
-    },
-    "action": {
-      "type": "Click",
-      "param": {
-        "target_offset": [
-          0,
-          0,
-          0,
-          -10
-        ]
-      }
-    },
-    "pre_delay": 100,
-    "post_delay": 150
-  },
-  "ProduceHIFFailedFlag": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": [
-          "produce/exam_failed.png"
-        ],
-        "roi": [
-          0,
-          700,
-          720,
-          250
-        ],
-        "threshold": 0.9
-      }
-    },
-    "action": {
-      "type": "StopTask",
-      "param": {}
-    },
-    "focus": {
-      "Node.Recognition.Succeeded": {
-        "content": "❌ HIF 考试失败",
-        "display": [
-          "log",
-          "notification"
-        ]
-      }
-    }
-  },
-  "ProduceHIFRound1ObserveFlag": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFRound1Observe"}},
-    "next": ["ProduceHIFRound1ReachedStop"]
-  },
-  "ProduceHIFRound1ActionFlag": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ProduceCardsHIF",
-        "custom_action_param": {"round": "round1", "execution_mode": "observe_and_stop"}
-      }
-    },
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFRound1ReachedStop": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "StopTask", "param": {}},
-    "focus": {
-      "Node.Action.Succeeded": {
-        "content": "✅ HIF 已安全到达 Round1，首版观察任务结束",
-        "display": ["log", "notification"]
-      }
-    }
-  },
-  "ProduceHIFRound2ActionFlag": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ProduceCardsHIF",
-        "custom_action_param": {"round": "round2", "execution_mode": "observe_and_stop"}
-      }
-    },
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFRound2ReachedStop": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "StopTask", "param": {}},
-    "focus": {
-      "Node.Action.Succeeded": {
-        "content": "✅ HIF 已安全到达 Round2，影子决策任务结束",
-        "display": ["log", "notification"]
-      }
-    }
-  },
-  "ProduceHIFClassOptionFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*授業.*"], "roi": [32, 36, 160, 105]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFClassOptionAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFDrinkRewardFlag": {
-    "recognition": {
-      "type": "Custom",
-      "param": {"custom_recognition": "ProduceHIFDrinkRewardPage"}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFDrinkRewardAuto"}},
-    "next": ["ProduceHIFRewardConfirmFlag", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFDrinkRewardRevealFlag": {
-    "recognition": {
-      "type": "Custom",
-      "param": {"custom_recognition": "ProduceHIFDrinkRewardRevealPage"}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFDrinkRewardRevealAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFSkillRewardFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*受[けは]取るスキルカードを選んでください.*"], "roi": [100, 570, 540, 100]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSkillRewardAuto"}},
-    "next": ["ProduceHIFRewardConfirmFlag", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFSkillRewardRevealFlag": {
-    "recognition": {
-      "type": "Custom",
-      "param": {"custom_recognition": "ProduceHIFSkillRewardRevealPage"}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFSkillRewardRevealAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFSkillRewardSelectedFlag": {
-    "recognition": {
-      "type": "Custom",
-      "param": {"custom_recognition": "ProduceHIFSkillRewardSelectedPage"}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSkillRewardAuto"}},
-    "next": ["ProduceHIFRewardConfirmFlag", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFRewardConfirmFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*受け取る.*"], "roi": [200, 1000, 320, 150]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFRewardConfirmAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"],
-    "post_delay": 500
-  },
-  "ProduceHIFSelectChangeTargetFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*チェンジで獲得するスキルカードを選んでください.*"], "roi": [60, 260, 600, 110]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSelectChangeTargetAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFSelectChangeSourceFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*チェンジ.*"], "roi": [0, 28, 285, 58]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSelectChangeSourceAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFConsultFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*Pポイントと交換するものを選んでください.*"], "roi": [100, 250, 520, 120]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFConsultAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFPublicLessonResultFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*公開レッスン.*"], "roi": [20, 20, 340, 140]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFPublicLessonResultAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFKnownNextButton": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {"template": ["next.png", "produce/continue.png"], "roi": [180, 1000, 360, 180], "threshold": 0.8}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFKnownNextAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"],
-    "post_delay": 500
-  },
-  "ProduceHIFDrinkOverflowFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*[PＰ]ドリンク所持上限.*"], "roi": [40, 70, 400, 100]}
-    },
-    "action": {"type": "DoNothing", "param": {}},
-    "next": ["ProduceHIFDrinkOverflowObserveFlag"]
-  },
-  "ProduceHIFDrinkOverflowObserveFlag": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFDrinkOverflowObserve"}}
-  },
-  "ProduceHIFIntervalFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*インターバル.*"], "roi": [20, 20, 360, 150]}
-    },
-    "action": {"type": "DoNothing", "param": {}},
-    "next": ["ProduceHIFIntervalActionFlag"]
-  },
-  "ProduceHIFIntervalActionFlag": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFIntervalAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFIntervalReachedStop": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "StopTask", "param": {}},
-    "focus": {
-      "Node.Action.Succeeded": {
-        "content": "✅ HIF Interval 已记录，等待确认商店决策后继续",
-        "display": ["log", "notification"]
-      }
-    }
-  },
-  "ProduceHIFScoreSettlementFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*優勝.*"], "roi": [20, 20, 240, 160]}
-    },
-    "action": {"type": "DoNothing", "param": {}},
-    "next": ["ProduceHIFSettlementContinueFlag"]
-  },
-  "ProduceHIFSettlementContinueFlag": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFSettlementContinueAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFLiveFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*歌詞OFF.*"], "roi": [20, 760, 180, 90]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFLiveObserve", "custom_action_param": {"live_mode": "observe_and_stop"}}}
-  },
-  "ProduceHIFMemoryPhotoSelectFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*メモリーにするフォトを選んでください.*"], "roi": [160, 420, 400, 90]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFMemoryPhotoNext"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFMemoryPhotoConfirmFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*選択したフォトをメモリーとして保存しますか.*"], "roi": [80, 980, 560, 120]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFMemoryPhotoConfirm"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFMemoryFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*MEMORY.*", ".*メモリー.*"], "roi": [20, 120, 680, 220]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFMemoryGenerate"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFMemoryPreviewFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*H\\.I\\.F専用.*"], "roi": [50, 930, 620, 150]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFMemoryPreviewNext"}},
-    "next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
-  }
+	"ProduceHIFPreparationEntry": {
+		"recognition": {
+			"type": "DirectHit",
+			"param": {}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": [
+			"ProduceHIFMainEventButton",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFMainEventButton": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": ["produce/HIF/button_hif_mainevent.png"]
+			}
+		},
+		"action": {
+			"type": "Click",
+			"param": {}
+		},
+		"next": [
+			"ProduceHIFMainEventNextButton",
+			"ProduceHIFUnknownStop"
+		],
+		"post_wait_freezes": 200
+	},
+	"ProduceHIFMainEventNextButton": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": ["next.png"],
+				"roi": [
+					200,
+					1000,
+					320,
+					180
+				]
+			}
+		},
+		"action": {
+			"type": "Click",
+			"param": {}
+		},
+		"next": [
+			"ProduceHIFProduceStartButton",
+			"ProduceHIFUnknownStop"
+		],
+		"post_wait_freezes": 200
+	},
+	"ProduceHIFProduceStartButton": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": ["produce/HIF/button_hif_producestart.png"]
+			}
+		},
+		"action": {
+			"type": "Click",
+			"param": {}
+		},
+		"next": [
+			"ProduceHIFTransitionClick",
+			"ProduceHIFUnknownStop"
+		],
+		"post_wait_freezes": 500
+	},
+	"ProduceHIFTransitionClick": {
+		"recognition": {
+			"type": "DirectHit",
+			"param": {}
+		},
+		"action": {
+			"type": "Click",
+			"param": {
+				"target": [
+					341,
+					204,
+					0,
+					3
+				]
+			}
+		},
+		"next": [
+			"ProduceHIFMainEventEntranceFlag",
+			"[JumpBack]ProduceHIFTransitionClick",
+			"ProduceHIFUnknownStop"
+		],
+		"max_hit": 8,
+		"post_delay": 200
+	},
+	"ProduceHIFMainEventEntranceFlag": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": ["produce/HIF/flag_hif_mainevent_enterance.png"]
+			}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": ["ProduceEntryHIF"]
+	},
+	"ProduceEntryHIF": {
+		"recognition": {
+			"type": "DirectHit",
+			"param": {}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceHIFValidateDevice"
+			}
+		},
+		"next": [
+			"ProduceExit",
+			"[JumpBack]ProduceHIFStartConfirmFlag",
+			"ProduceHIFFinishedFlag",
+			"ProduceHIFFailedFlag",
+			"[JumpBack]ProduceChooseHIFPItemFlag",
+			"[JumpBack]ProduceHIFSelectionModeFlag",
+			"[JumpBack]ProduceHIFFinalsRankingFlag",
+			"[JumpBack]ProduceHIFRound1Flag",
+			"[JumpBack]ProduceHIFRound2Flag",
+			"[JumpBack]ProduceHIFIntervalFlag",
+			"[JumpBack]ProduceHIFDrinkOverflowFlag",
+			"[JumpBack]ProduceHIFScoreSettlementFlag",
+			"[JumpBack]ProduceHIFLiveFlag",
+			"[JumpBack]ProduceHIFMemoryPhotoSelectFlag",
+			"[JumpBack]ProduceHIFMemoryPhotoConfirmFlag",
+			"[JumpBack]ProduceHIFMemoryFlag",
+			"[JumpBack]ProduceHIFMemoryPreviewFlag",
+			"[JumpBack]ProduceHIFSelectChangeSourceFlag",
+			"[JumpBack]ProduceHIFSelectChangeTargetFlag",
+			"[JumpBack]ProduceHIFDrinkRewardRevealFlag",
+			"[JumpBack]ProduceHIFDrinkRewardFlag",
+			"[JumpBack]ProduceHIFSkillRewardRevealFlag",
+			"[JumpBack]ProduceHIFSkillRewardSelectedFlag",
+			"[JumpBack]ProduceHIFSkillRewardFlag",
+			"[JumpBack]ProduceHIFGiftBagsFlag",
+			"[JumpBack]ProduceHIFGiftRewardResultFlag",
+			"[JumpBack]ProduceHIFSkillEnhancedResultFlag",
+			"[JumpBack]ProduceHIFClassOptionFlag",
+			"[JumpBack]ProduceHIFPublicLessonResultFlag",
+			"[JumpBack]ProduceHIFConsultFlag",
+			"[JumpBack]ProduceHIFFinalModeFlag",
+			"[JumpBack]ProduceChooseHIFEventFlag",
+			"ProduceHIFSafeAdvanceFlag",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFStartConfirmFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*プロデュース開始.*"], "roi": [
+					210,
+					1030,
+					300,
+					105
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFStartProduceAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFSelectionModeFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {
+				"expected": [
+					".*選抜試験モード.*",
+					".*選抜試験.*"
+				],
+				"roi": [
+					40,
+					40,
+					640,
+					220
+				]
+			}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": [
+			"ProduceHIFSelectionObserveFlag"
+		],
+		"focus": {
+			"Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=????[/color]"
+		}
+	},
+	"ProduceHIFSelectionObserveFlag": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFSelectionObserve"}}
+	},
+	"ProduceHIFFinalModeFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {
+				"expected": [
+					".*本戦モード.*"
+				],
+				"roi": [
+					40,
+					40,
+					640,
+					220
+				]
+			}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": [
+			"ProduceChooseHIFEventFlag",
+			"ProduceHIFUnknownStop"
+		],
+		"focus": {
+			"Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=??[/color]"
+		}
+	},
+	"ProduceHIFRound1Flag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {
+				"expected": [
+					".*Round\\s*1.*",
+					".*ROUND\\s*1.*",
+					".*1st.*Round.*",
+					".*残りターン.*"
+				],
+				"roi": [
+					8,
+					0,
+					170,
+					48
+				]
+			}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": [
+			"ProduceHIFRound1ActionFlag"
+		],
+		"focus": {
+			"Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=Round1[/color]"
+		}
+	},
+	"ProduceHIFRound2Flag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {
+				"expected": [
+					".*Round\\s*2.*",
+					".*ROUND\\s*2.*",
+					".*2nd.*Round.*"
+				],
+				"roi": [
+					40,
+					40,
+					640,
+					220
+				]
+			}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": [
+			"ProduceHIFRound2ActionFlag"
+		],
+		"focus": {
+			"Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=Round2[/color]"
+		}
+	},
+	"ProduceHIFGenerationFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {
+				"expected": [
+					".*メモリー生成.*"
+				],
+				"roi": [
+					260,
+					900,
+					200,
+					120
+				]
+			}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": [
+			"ProduceGeneration"
+		],
+		"focus": {
+			"Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=????[/color]"
+		}
+	},
+	"ProduceHIFFinishedFlag": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": [
+					"produce/finished.png"
+				],
+				"threshold": 0.9
+			}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": [
+			"ProduceFinished"
+		],
+		"focus": {
+			"Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=?????[/color]"
+		}
+	},
+	"ProduceHIFUnknownStop": {
+		"recognition": {
+			"type": "DirectHit",
+			"param": {}
+		},
+		"action": {
+			"type": "StopTask",
+			"param": {}
+		},
+		"focus": {
+			"Node.Action.Succeeded": {
+				"content": "? HIF ???????????????????",
+				"display": [
+					"log",
+					"notification"
+				]
+			}
+		}
+	},
+	"ProduceHIFGiftBagsFlag": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": ["produce/HIF/flag_hif_gift_bags.png"],
+				"roi": [
+					240,
+					400,
+					240,
+					360
+				],
+				"threshold": 0.8
+			}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceHIFSafeAdvanceAuto",
+				"custom_action_param": {"source": "gift_bags"}
+			}
+		},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFGiftRewardResultFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {
+				"expected": [
+					".*P\u30c9\u30ea\u30f3\u30af\u7372\u5f97.*",
+					".*\u30b9\u30ad\u30eb\u30ab\u30fc\u30c9\u7372\u5f97.*"
+				],
+				"roi": [
+					100,
+					650,
+					520,
+					220
+				]
+			}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceHIFSafeAdvanceAuto",
+				"custom_action_param": {"source": "gift_reward_result"}
+			}
+		},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFSkillEnhancedResultFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*強化しました.*"], "roi": [
+					60,
+					940,
+					600,
+					115
+				]}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceHIFSafeAdvanceAuto",
+				"custom_action_param": {"source": "skill_enhanced_result"}
+			}
+		},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFSafeAdvanceFlag": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {
+			"type": "Custom",
+			"param": {"custom_action": "ProduceHIFSafeAdvanceAuto"}
+		},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		],
+		"max_hit": 4
+	},
+	"ProduceChooseHIFEventFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {
+				"expected": [
+					".*授業.*",
+					".*公開レッスン.*",
+					".*おでかけ.*",
+					".*差し入れ.*",
+					".*相談.*"
+				],
+				"roi": [
+					84,
+					920,
+					552,
+					196
+				]
+			}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceChooseHIFEventAuto"
+			}
+		},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceChooseHIFPItemFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {
+				"expected": [
+					".*カスタムPアイテム.*",
+					".*Pアイテム.*"
+				],
+				"roi": [
+					40,
+					40,
+					640,
+					220
+				]
+			}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceChooseHIFPItemAuto"
+			}
+		},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		],
+		"post_delay": 300
+	},
+	"ProduceHIFButton": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": [
+					"next.png",
+					"produce/retry.png",
+					"produce/decide.png",
+					"produce/skip_confirm.png",
+					"produce/drink_no.png",
+					"produce/close.png",
+					"produce/yes.png",
+					"produce/ok.png",
+					"produce/start.png",
+					"cancel.png"
+				],
+				"order_by": "Score",
+				"roi": [
+					0,
+					780,
+					720,
+					500
+				]
+			}
+		},
+		"action": {
+			"type": "Click",
+			"param": {
+				"target_offset": [
+					0,
+					0,
+					0,
+					-10
+				]
+			}
+		},
+		"pre_delay": 100,
+		"post_delay": 150
+	},
+	"ProduceHIFSelectionModeContinueButton": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": [
+					"next.png",
+					"produce/decide.png"
+				],
+				"order_by": "Score",
+				"roi": [
+					200,
+					1000,
+					320,
+					160
+				]
+			}
+		},
+		"action": {
+			"type": "Click",
+			"param": {
+				"target_offset": [
+					0,
+					0,
+					0,
+					-10
+				]
+			}
+		},
+		"pre_delay": 100,
+		"post_delay": 150
+	},
+	"ProduceHIFFailedFlag": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": [
+					"produce/exam_failed.png"
+				],
+				"roi": [
+					0,
+					700,
+					720,
+					250
+				],
+				"threshold": 0.9
+			}
+		},
+		"action": {
+			"type": "StopTask",
+			"param": {}
+		},
+		"focus": {
+			"Node.Recognition.Succeeded": {
+				"content": "❌ HIF 考试失败",
+				"display": [
+					"log",
+					"notification"
+				]
+			}
+		}
+	},
+	"ProduceHIFRound1ObserveFlag": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFRound1Observe"}},
+		"next": ["ProduceHIFRound1ReachedStop"]
+	},
+	"ProduceHIFRound1ActionFlag": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceCardsHIF",
+				"custom_action_param": {"round": "round1", "execution_mode": "observe_and_stop"}
+			}
+		},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFRound1ReachedStop": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "StopTask", "param": {}},
+		"focus": {
+			"Node.Action.Succeeded": {
+				"content": "✅ HIF 已安全到达 Round1，首版观察任务结束",
+				"display": [
+					"log",
+					"notification"
+				]
+			}
+		}
+	},
+	"ProduceHIFRound2ActionFlag": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceCardsHIF",
+				"custom_action_param": {"round": "round2", "execution_mode": "observe_and_stop"}
+			}
+		},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFRound2ReachedStop": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "StopTask", "param": {}},
+		"focus": {
+			"Node.Action.Succeeded": {
+				"content": "✅ HIF 已安全到达 Round2，影子决策任务结束",
+				"display": [
+					"log",
+					"notification"
+				]
+			}
+		}
+	},
+	"ProduceHIFClassOptionFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*授業.*"], "roi": [
+					32,
+					36,
+					160,
+					105
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFClassOptionAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFDrinkRewardFlag": {
+		"recognition": {
+			"type": "Custom",
+			"param": {"custom_recognition": "ProduceHIFDrinkRewardPage"}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFDrinkRewardAuto"}},
+		"next": [
+			"ProduceHIFRewardConfirmFlag",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFDrinkRewardRevealFlag": {
+		"recognition": {
+			"type": "Custom",
+			"param": {"custom_recognition": "ProduceHIFDrinkRewardRevealPage"}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFDrinkRewardRevealAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFSkillRewardFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*受[けは]取るスキルカードを選んでください.*"], "roi": [
+					100,
+					570,
+					540,
+					100
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSkillRewardAuto"}},
+		"next": [
+			"ProduceHIFRewardConfirmFlag",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFSkillRewardRevealFlag": {
+		"recognition": {
+			"type": "Custom",
+			"param": {"custom_recognition": "ProduceHIFSkillRewardRevealPage"}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFSkillRewardRevealAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFSkillRewardSelectedFlag": {
+		"recognition": {
+			"type": "Custom",
+			"param": {"custom_recognition": "ProduceHIFSkillRewardSelectedPage"}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSkillRewardAuto"}},
+		"next": [
+			"ProduceHIFRewardConfirmFlag",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFRewardConfirmFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*受け取る.*"], "roi": [
+					200,
+					1000,
+					320,
+					150
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFRewardConfirmAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		],
+		"post_delay": 500
+	},
+	"ProduceHIFSelectChangeTargetFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*チェンジで獲得するスキルカードを選んでください.*"], "roi": [
+					60,
+					260,
+					600,
+					110
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSelectChangeTargetAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFSelectChangeSourceFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*チェンジ.*"], "roi": [
+					0,
+					28,
+					285,
+					58
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSelectChangeSourceAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFConsultFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*Pポイントと交換するものを選んでください.*"], "roi": [
+					100,
+					250,
+					520,
+					120
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFConsultAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFFinalsRankingFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*タップして次へ.*"], "roi": [
+					245,
+					1140,
+					250,
+					80
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFFinalsRankingContinueAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFPublicLessonResultFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*公開レッスン.*"], "roi": [
+					20,
+					20,
+					340,
+					140
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFPublicLessonResultAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFKnownNextButton": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {"template": [
+					"next.png",
+					"produce/continue.png"
+				], "roi": [
+					180,
+					1000,
+					360,
+					180
+				], "threshold": 0.8}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFKnownNextAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		],
+		"post_delay": 500
+	},
+	"ProduceHIFDrinkOverflowFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*[PＰ]ドリンク所持上限.*"], "roi": [
+					40,
+					70,
+					400,
+					100
+				]}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"next": ["ProduceHIFDrinkOverflowObserveFlag"]
+	},
+	"ProduceHIFDrinkOverflowObserveFlag": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFDrinkOverflowObserve"}}
+	},
+	"ProduceHIFIntervalFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*インターバル.*"], "roi": [
+					20,
+					20,
+					360,
+					150
+				]}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"next": ["ProduceHIFIntervalActionFlag"]
+	},
+	"ProduceHIFIntervalActionFlag": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFIntervalAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFIntervalReachedStop": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "StopTask", "param": {}},
+		"focus": {
+			"Node.Action.Succeeded": {
+				"content": "✅ HIF Interval 已记录，等待确认商店决策后继续",
+				"display": [
+					"log",
+					"notification"
+				]
+			}
+		}
+	},
+	"ProduceHIFScoreSettlementFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*優勝.*"], "roi": [
+					20,
+					20,
+					240,
+					160
+				]}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"next": ["ProduceHIFSettlementContinueFlag"]
+	},
+	"ProduceHIFSettlementContinueFlag": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFSettlementContinueAuto"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFLiveFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*歌詞OFF.*"], "roi": [
+					20,
+					760,
+					180,
+					90
+				]}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceHIFLiveObserve",
+				"custom_action_param": {"live_mode": "observe_and_stop"}
+			}
+		}
+	},
+	"ProduceHIFMemoryPhotoSelectFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*メモリーにするフォトを選んでください.*"], "roi": [
+					160,
+					420,
+					400,
+					90
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFMemoryPhotoNext"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFMemoryPhotoConfirmFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*選択したフォトをメモリーとして保存しますか.*"], "roi": [
+					80,
+					980,
+					560,
+					120
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFMemoryPhotoConfirm"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFMemoryFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [
+					".*MEMORY.*",
+					".*メモリー.*"
+				], "roi": [
+					20,
+					120,
+					680,
+					220
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFMemoryGenerate"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFMemoryPreviewFlag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*H\\.I\\.F専用.*"], "roi": [
+					50,
+					930,
+					620,
+					150
+				]}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFMemoryPreviewNext"}},
+		"next": [
+			"[JumpBack]ProduceEntryHIF",
+			"ProduceHIFUnknownStop"
+		]
+	}
 }

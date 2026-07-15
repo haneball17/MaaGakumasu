@@ -31,6 +31,9 @@ class HIFRunSession:
     pending_select_change: HIFPendingSelectChange | None = None
     safe_advance_count: int = 0
     safe_advance_fingerprints: set[str] = field(default_factory=set)
+    round_hand_probe_started: bool = False
+    round_post_hand_probe_started: bool = False
+    round_hand_detail_names: dict[tuple[int, int, int, int], str] = field(default_factory=dict)
 
     def record_p_item(self, name: str, stage: int) -> None:
         self.selected_p_items.append((name, stage))
@@ -69,6 +72,31 @@ class HIFRunSession:
     def reset_safe_advance(self) -> None:
         self.safe_advance_count = 0
         self.safe_advance_fingerprints.clear()
+
+    def record_hand_detail_name(self, box: tuple[int, int, int, int], name: str) -> None:
+        if name:
+            self.round_hand_detail_names[box] = name
+
+    def hand_detail_name(self, box: tuple[int, int, int, int]) -> str | None:
+        direct = self.round_hand_detail_names.get(box)
+        if direct:
+            return direct
+        matches = [
+            name
+            for recorded_box, name in self.round_hand_detail_names.items()
+            if _box_iou(box, recorded_box) >= 0.8
+        ]
+        return matches[0] if len(matches) == 1 else None
+
+
+def _box_iou(left: tuple[int, int, int, int], right: tuple[int, int, int, int]) -> float:
+    left_x, left_y, left_width, left_height = left
+    right_x, right_y, right_width, right_height = right
+    overlap_width = max(0, min(left_x + left_width, right_x + right_width) - max(left_x, right_x))
+    overlap_height = max(0, min(left_y + left_height, right_y + right_height) - max(left_y, right_y))
+    overlap = overlap_width * overlap_height
+    union = left_width * left_height + right_width * right_height - overlap
+    return overlap / union if union else 0.0
 
 
 _RUNTIME_SESSION = HIFRunSession()

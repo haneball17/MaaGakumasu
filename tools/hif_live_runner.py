@@ -27,6 +27,96 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--task", default="ProduceEntryHIF", help="正式 Pipeline 入口节点")
     parser.add_argument("--seconds", type=float, default=30.0, help="单次运行最长秒数")
     parser.add_argument("--single-step", action="store_true", help="仅启用已审阅的 HIF 单步节点；Round 与技能卡领取保持停止")
+    parser.add_argument(
+        "--round1-deck-probe",
+        action="store_true",
+        help="仅在 --single-step 下打开持有技能卡列表读取数量并关闭；保持影子决策，不出牌",
+    )
+    parser.add_argument(
+        "--round1-hand-detail-probe",
+        action="store_true",
+        help="仅在 --single-step 下逐张单击手牌读取详情标题；不点击 SELECT，最后一张保持选中",
+    )
+    parser.add_argument(
+        "--round1-hand-detail-probe-from-selected",
+        action="store_true",
+        help="仅从已验证 SELECT 的页面恢复：零点击记录当前牌，再逐张切换其余手牌",
+    )
+    parser.add_argument(
+        "--round1-hand-detail-map-observe",
+        action="store_true",
+        help="同一进程内用详情标题补齐五卡手牌 OCR 后仅记录完整性，不出牌",
+    )
+    parser.add_argument(
+        "--round1-hand-detail-map-deck-observe",
+        action="store_true",
+        help="同一进程内完成详情映射和牌库读取后只记录完整状态与策略，不出牌",
+    )
+    parser.add_argument(
+        "--round1-hand-detail-map-deck-observe-from-selected",
+        action="store_true",
+        help="从已选详情态完成手牌映射和牌库读取，仅记录完整状态与策略，不出牌",
+    )
+    parser.add_argument(
+        "--round1-hand-detail-map-deck-select-one-from-selected",
+        action="store_true",
+        help="从已选详情态完成映射后，仅选择一张经严格策略批准的卡，不确认出牌",
+    )
+    parser.add_argument(
+        "--round1-hand-detail-map-deck-play-one",
+        action="store_true",
+        help="同一进程内完成五张手牌详情映射与牌库读取，仅在完整受限审批后执行話題沸騰",
+    )
+    parser.add_argument(
+        "--round1-hand-detail-map-deck-select-presence",
+        action="store_true",
+        help="仅用于已授权的存在感：完成详情映射和牌库读取后只进行首次选择，不确认出牌",
+    )
+    parser.add_argument(
+        "--round1-selected-card-detail-probe",
+        action="store_true",
+        help="零点击读取当前已选中手牌的详情标题并停止",
+    )
+    parser.add_argument(
+        "--round1-turn-roi-probe",
+        action="store_true",
+        help="零点击比较多组剩余回合 ROI 的 OCR 原文与置信度",
+    )
+    parser.add_argument(
+        "--round1-counter-roi-probe",
+        action="store_true",
+        help="零点击读取 Round1 再演/使用次数候选区域；仅采证，不恢复状态或出牌",
+    )
+    parser.add_argument(
+        "--round1-details-observe",
+        action="store_true",
+        help="仅打开并关闭已校准的 Round1 详情面板，读取分数/审查基准/倍率；不选牌、不出牌",
+    )
+    parser.add_argument(
+        "--round1-state-observe",
+        action="store_true",
+        help="隔离根路由后零点击读取 Round1 完整状态与影子决策",
+    )
+    parser.add_argument(
+        "--round1-play-one",
+        action="store_true",
+        help="仅在 --single-step 下读取牌库并执行一张唯一目标牌；语义后验后立即停止",
+    )
+    parser.add_argument(
+        "--round1-confirm-selected",
+        action="store_true",
+        help="恢复显式绑定的已选卡：验证标题与 SELECT 后执行第二次点击并停止",
+    )
+    parser.add_argument(
+        "--round1-confirm-selected-name",
+        choices=("至高のエンタメ", "お姉さんの感覚", "仕切り直し", "アイドル宣言", "存在感"),
+        help="与 --round1-confirm-selected 一起使用；默认仍为至高のエンタメ",
+    )
+    parser.add_argument(
+        "--round1-play-one-after-entertainment",
+        action="store_true",
+        help="仅在已验证至高のエンタメ首牌后恢复 reprise=0，读取牌库并单步执行下一唯一目标",
+    )
     source_probe_group = parser.add_mutually_exclusive_group()
     source_probe_group.add_argument(
         "--source-deck-probe",
@@ -48,6 +138,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="仅在 --single-step 下重选已实测的大胆不敵并提交チェンジ；必须通过结果文本后验",
     )
+    source_probe_group.add_argument(
+        "--source-deck-cancel-to-target",
+        action="store_true",
+        help="仅在 --single-step 下点击源卡页的キャンセル并验证返回目标三选页",
+    )
     parser.add_argument("--source-deck-confirm-name", help="经用户明确授权的源卡名；仅能与 --source-deck-confirm-target 一起使用")
     parser.add_argument(
         "--source-deck-confirm-slot",
@@ -55,8 +150,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="经实机枚举确认的源卡槽位；仅能与 --source-deck-confirm-target 一起使用",
     )
     parser.add_argument(
+        "--source-deck-confirm-scroll-once",
+        action="store_true",
+        help="仅与 --source-deck-confirm-target 一起使用；确认前复现一次已验证的向上滑动",
+    )
+    parser.add_argument(
         "--select-change-target-name",
         help="单步实机中由用户明确指定的变卡目标；不修改默认预设优先级",
+    )
+    parser.add_argument(
+        "--select-change-target-enumerate",
+        action="store_true",
+        help="仅在 --single-step 下枚举三个变卡目标后停止；不重抽、不点次へ",
     )
     parser.add_argument(
         "--skill-reward-enumerate",
@@ -147,6 +252,7 @@ def single_step_override() -> dict[str, dict[str, Any]]:
             "ProduceHIFGiftRewardResultFlag",
             "ProduceHIFSkillEnhancedResultFlag",
             "ProduceHIFConsultFlag",
+            "ProduceHIFFinalsRankingFlag",
             "ProduceHIFSafeAdvanceFlag",
             "ProduceHIFDrinkRewardFlag",
             "ProduceHIFDrinkRewardRevealFlag",
@@ -281,13 +387,392 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
         override = _deep_merge(override, hif_from_home_override())
     if args.single_step:
         override = _deep_merge(override, single_step_override())
+    round1_modes = sum(
+        (
+            args.round1_deck_probe,
+            args.round1_hand_detail_probe,
+            args.round1_hand_detail_probe_from_selected,
+            args.round1_hand_detail_map_observe,
+            args.round1_hand_detail_map_deck_observe,
+            args.round1_hand_detail_map_deck_observe_from_selected,
+            args.round1_hand_detail_map_deck_select_one_from_selected,
+            args.round1_hand_detail_map_deck_play_one,
+            args.round1_hand_detail_map_deck_select_presence,
+            args.round1_selected_card_detail_probe,
+            args.round1_turn_roi_probe,
+            args.round1_counter_roi_probe,
+            args.round1_details_observe,
+            args.round1_state_observe,
+            args.round1_play_one,
+            args.round1_confirm_selected,
+            args.round1_play_one_after_entertainment,
+        )
+    )
+    if round1_modes > 1:
+        raise ValueError("Round1 牌库观察、单张出牌与已选卡确认模式不能同时启用")
+    if args.round1_hand_detail_probe:
+        if not args.single_step:
+            raise ValueError("Round1 手牌详情探针必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "hand_details",
+                                "round_probe_execution_mode": "single_step",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_hand_detail_probe_from_selected:
+        if not args.single_step:
+            raise ValueError("Round1 已选中手牌详情探针必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "hand_details_selected",
+                                "round_probe_execution_mode": "single_step",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_hand_detail_map_observe:
+        if not args.single_step:
+            raise ValueError("Round1 手牌详情映射观察必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "hand_details_map_observe",
+                                "round_probe_execution_mode": "single_step",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_hand_detail_map_deck_observe:
+        if not args.single_step:
+            raise ValueError("Round1 手牌详情映射加牌库观察必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "hand_details_map_deck_observe",
+                                "round_probe_execution_mode": "single_step",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_hand_detail_map_deck_observe_from_selected:
+        if not args.single_step:
+            raise ValueError("Round1 已选手牌详情映射加牌库观察必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "hand_details_map_deck_observe_from_selected",
+                                "round_probe_execution_mode": "single_step",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_hand_detail_map_deck_select_one_from_selected:
+        if not args.single_step:
+            raise ValueError("Round1 已选手牌详情映射后选择一张卡必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "single_step",
+                                "round_probe": "hand_details_map_deck_select_one_from_selected",
+                                "round_probe_execution_mode": "single_step",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_hand_detail_map_deck_play_one:
+        if not args.single_step:
+            raise ValueError("Round1 手牌详情映射加牌库单步出牌必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "single_step",
+                                "round_probe": "hand_details_map_deck_play_one",
+                                "round_probe_execution_mode": "single_step",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_hand_detail_map_deck_select_presence:
+        if not args.single_step:
+            raise ValueError("Round1 存在感首次选择必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "single_step",
+                                "round_probe": "hand_details_map_deck_select_explicit",
+                                "round_probe_execution_mode": "single_step",
+                                "explicit_card_name": "存在感",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_selected_card_detail_probe:
+        if not args.single_step:
+            raise ValueError("Round1 当前已选卡详情探针必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "selected_hand_detail_read_only",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_turn_roi_probe:
+        if not args.single_step:
+            raise ValueError("Round1 回合 ROI 探针必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "turn_roi_candidates",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_counter_roi_probe:
+        if not args.single_step:
+            raise ValueError("Round1 计数器 ROI 探针必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "counter_roi_candidates",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_details_observe:
+        if not args.single_step:
+            raise ValueError("Round1 详情观察必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "details_metrics",
+                                "round_probe_execution_mode": "single_step",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_state_observe:
+        if not args.single_step:
+            raise ValueError("Round1 状态观察必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_deck_probe or args.round1_play_one:
+        if not args.single_step:
+            raise ValueError("Round1 牌库探针或单张出牌必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "single_step" if args.round1_play_one else "observe_and_stop",
+                                "round_probe": "deck_count",
+                                "round_probe_execution_mode": "single_step",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {
+                    "next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]
+                },
+            },
+        )
+    if args.round1_confirm_selected:
+        if not args.single_step:
+            raise ValueError("Round1 已选卡确认必须与 --single-step 一起使用")
+        confirm_selected_name = args.round1_confirm_selected_name or "至高のエンタメ"
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "single_step",
+                                "confirm_selected_card": confirm_selected_name,
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    elif args.round1_confirm_selected_name:
+        raise ValueError("指定已选卡名必须与 --round1-confirm-selected 一起使用")
+    if args.round1_play_one_after_entertainment:
+        if not args.single_step:
+            raise ValueError("Round1 首牌后恢复出牌必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "single_step",
+                                "round_probe": "deck_count",
+                                "round_probe_execution_mode": "single_step",
+                                "reprise_recovery": "after_entertainment_turn8",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
     if args.select_change_target_name:
+        if args.select_change_target_enumerate:
+            raise ValueError("变卡目标枚举不能与指定目标同时启用")
         if not args.single_step:
             raise ValueError("指定变卡目标必须与 --single-step 一起使用")
         override = _deep_merge(
             override,
             {
                 "ProduceHIFSelectChangeTargetFlag": {
+                    "recognition": "DirectHit",
                     "action": {
                         "param": {
                             "custom_action_param": {
@@ -297,7 +782,33 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
                             }
                         }
                     }
-                }
+                },
+                "ProduceEntryHIF": {
+                    "next": ["[JumpBack]ProduceHIFSelectChangeTargetFlag", "ProduceHIFUnknownStop"]
+                },
+            },
+        )
+    if args.select_change_target_enumerate:
+        if not args.single_step:
+            raise ValueError("变卡目标枚举必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFSelectChangeTargetFlag": {
+                    "recognition": "DirectHit",
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "execution_mode": "single_step",
+                                "select_change_target_probe": "enumerate_candidates",
+                            }
+                        }
+                    },
+                },
+                "ProduceEntryHIF": {
+                    "next": ["[JumpBack]ProduceHIFSelectChangeTargetFlag", "ProduceHIFUnknownStop"]
+                },
             },
         )
     if args.drink_overflow_keep_black_vinegar:
@@ -330,7 +841,9 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
             },
         )
     source_probe_mode: bool | str | None = (
-        "visible_grid_after_one_scroll"
+        "cancel_to_target"
+        if args.source_deck_cancel_to_target
+        else "visible_grid_after_one_scroll"
         if args.source_deck_scroll_enumerate_visible
         else "visible_grid"
         if args.source_deck_enumerate_visible
@@ -354,14 +867,43 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
                         "source_card_name": args.source_deck_confirm_name,
                         "source_card_slot": f"visible_slot_{args.source_deck_confirm_slot}",
                         "selected_target_name": args.select_change_target_name,
+                        "explicit_target_authorized": bool(args.select_change_target_name),
                         "explicit_source_authorized": True,
+                        "source_card_scroll_once": args.source_deck_confirm_scroll_once,
                     }
                 )
             else:
                 params["source_card_name"] = "大胆不敵"
         override = _deep_merge(override, source_override)
+        if args.source_deck_cancel_to_target:
+            override = _deep_merge(
+                override,
+                {
+                    "ProduceHIFSelectChangeSourceFlag": {"recognition": "DirectHit"},
+                    "ProduceEntryHIF": {
+                        "next": ["[JumpBack]ProduceHIFSelectChangeSourceFlag", "ProduceHIFUnknownStop"]
+                    },
+                },
+            )
+        elif args.select_change_target_name:
+            override = _deep_merge(
+                override,
+                {
+                    "ProduceHIFSelectChangeTargetFlag": {
+                        "next": ["ProduceHIFSelectChangeSourceFlag", "ProduceHIFUnknownStop"]
+                    },
+                    "ProduceEntryHIF": {
+                        "next": [
+                            "[JumpBack]ProduceHIFSelectChangeTargetFlag",
+                            "ProduceHIFUnknownStop",
+                        ]
+                    }
+                },
+            )
     elif args.source_deck_confirm_name or args.source_deck_confirm_slot:
         raise ValueError("指定源卡名和槽位必须与 --source-deck-confirm-target 一起使用")
+    elif args.source_deck_confirm_scroll_once:
+        raise ValueError("源卡确认滚动必须与 --source-deck-confirm-target 一起使用")
     skill_reward_modes = sum(
         (args.skill_reward_enumerate, args.skill_reward_decide, args.skill_reward_receive, args.skill_reward_reveal_confirm)
     )
@@ -437,10 +979,29 @@ def main(argv: list[str] | None = None) -> int:
         "run_id": run_id,
         "task": task_entry,
         "single_step": args.single_step,
+        "round1_deck_probe": args.round1_deck_probe,
+        "round1_hand_detail_probe": args.round1_hand_detail_probe,
+        "round1_hand_detail_probe_from_selected": args.round1_hand_detail_probe_from_selected,
+        "round1_hand_detail_map_observe": args.round1_hand_detail_map_observe,
+        "round1_hand_detail_map_deck_observe": args.round1_hand_detail_map_deck_observe,
+        "round1_hand_detail_map_deck_observe_from_selected": args.round1_hand_detail_map_deck_observe_from_selected,
+        "round1_hand_detail_map_deck_select_one_from_selected": args.round1_hand_detail_map_deck_select_one_from_selected,
+        "round1_hand_detail_map_deck_play_one": args.round1_hand_detail_map_deck_play_one,
+        "round1_hand_detail_map_deck_select_presence": args.round1_hand_detail_map_deck_select_presence,
+        "round1_selected_card_detail_probe": args.round1_selected_card_detail_probe,
+        "round1_turn_roi_probe": args.round1_turn_roi_probe,
+        "round1_counter_roi_probe": args.round1_counter_roi_probe,
+        "round1_state_observe": args.round1_state_observe,
+        "round1_play_one": args.round1_play_one,
+        "round1_confirm_selected": args.round1_confirm_selected,
+        "round1_confirm_selected_name": args.round1_confirm_selected_name,
+        "round1_play_one_after_entertainment": args.round1_play_one_after_entertainment,
         "source_deck_probe": args.source_deck_probe,
         "source_deck_enumerate_visible": args.source_deck_enumerate_visible,
         "source_deck_scroll_enumerate_visible": args.source_deck_scroll_enumerate_visible,
         "source_deck_confirm_target": args.source_deck_confirm_target,
+        "source_deck_cancel_to_target": args.source_deck_cancel_to_target,
+        "select_change_target_enumerate": args.select_change_target_enumerate,
         "skill_reward_enumerate": args.skill_reward_enumerate,
         "skill_reward_decide": args.skill_reward_decide,
         "skill_reward_receive": args.skill_reward_receive,

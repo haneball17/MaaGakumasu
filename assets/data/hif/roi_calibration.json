@@ -1,23 +1,82 @@
 {
 	"schema_version": 1,
-  "frame_size": [
+	"frame_size": [
 		720,
 		1280
-  ],
-  "updated_at": "",
-  "device_id": "",
-  "controller_kind": "",
-  "game_version": "",
-  "locale": "",
-  "evidence_sha256": "",
-	"source": "待使用 MuMu 12 设备截图校准；null 表示禁止自动读取/点击依赖该字段。",
+	],
+	"updated_at": "2026-07-15T03:31:45+08:00",
+	"device_id": "mumu12-instance1-127.0.0.1:16416",
+	"controller_kind": "adb",
+	"game_version": "",
+	"locale": "ja-JP",
+	"evidence_sha256": "1ca97f085533e2fd33e6bfe923be526f1ecb41da4255b44576618ee6e941e78c",
+	"source": "MuMu 12 ADB 720x1280 Round1 数值实机帧 hif-round1-good-condition-roi-probe-20260715-033138",
 	"exam_numeric": {
-		"good_condition": null,
-		"reprise": null,
-		"focus": null,
-		"turn": null,
-		"flow": null,
+		"good_condition": [
+			60,
+			255,
+			110,
+			38
+		],
+		"reprise": [
+			12,
+			638,
+			150,
+			100
+		],
+		"focus": [
+			14,
+			300,
+			150,
+			70
+		],
+		"turn": [
+			13,
+			43,
+			120,
+			128
+		],
+		"flow": [
+			95,
+			55,
+			150,
+			85
+		],
 		"deck_size": null,
-		"p_drinks": null
+		"p_drinks": null,
+		"stamina": [
+			570,
+			200,
+			65,
+			55
+		]
+	},
+	"round_metrics": {
+		"stage_multiplier": [
+			65,
+			75,
+			150,
+			48
+		]
+	},
+	"round_metrics_panel": {
+		"current_score": [
+			42,
+			145,
+			135,
+			38
+		]
+	},
+	"settlement_metrics": {
+		"leader_score_pair": [
+			220,
+			290,
+			330,
+			75
+		]
+	},
+	"settlement_metrics_evidence": {
+		"source": "assets/resource/test/学マス(2).mp4_20260709_221803.047.jpg（MuMu 12 原始 720x1280 优胜结算帧）",
+		"sha256": "5fff1e6bffd139f2e74738ab141a5259771700bf31c7377eecf303158d877c44"
 	}
 }

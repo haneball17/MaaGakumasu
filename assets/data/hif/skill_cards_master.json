@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "entity": "skill_cards_raw",
-  "updated_at": "2026-07-01T08:28:23+00:00",
+  "updated_at": "2026-07-14T21:28:28+08:00",
   "sources": [
     {
       "source": "seesaawiki:skill-cards-sense",
@@ -26,6 +26,14 @@
       "item_count": 14,
       "status": "ok",
       "warning": ""
+    },
+    {
+      "source": "adb-observation:hif-skill-reward",
+      "url": "",
+      "fetched_at": "2026-07-14T21:28:28+08:00",
+      "item_count": 1,
+      "status": "ok",
+      "warning": "仅记录当前 HIF 实机奖励页可验证的无印效果"
     }
   ],
   "cards": [
@@ -4013,6 +4021,21 @@
           "focus_cost": null,
           "cost_raw": "ﾇｹ",
           "effect_raw": ""
+        }
+      }
+    },
+    {
+      "wiki_id": "observed_HIF_20260714_high_tension",
+      "name_jp": "ハイテンション",
+      "page_category": "hif_observed",
+      "note_raw": "レッスン中1回；HIF 实机技能卡奖励页观察",
+      "is_lesson_once": true,
+      "tiers": {
+        "無印": {
+          "stamina_cost": 0,
+          "focus_cost": null,
+          "cost_raw": "0",
+          "effect_raw": "元気+11 元気増加無効2ターン 消費体力減少3ターン"
         }
       }
     }

@@ -5,7 +5,7 @@ from agent.hif.adapters.card_dict import build_card_name_dict
 def test_catalog_loads_full_hif_skill_and_drink_data():
     catalog = load_hif_catalog()
 
-    assert len(catalog.skill_cards) == 121
+    assert len(catalog.skill_cards) == 122
     assert len(catalog.drinks) == 28
     assert catalog.custom_p_item_names("sense")[:2] == ("もじゃ（黄）", "花もじゃ（黄）")
     assert catalog.custom_p_item_names("sense", stage=2, parent="もじゃ（黄）") == ("花もじゃ（黄）",)
@@ -57,3 +57,14 @@ def test_full_catalog_is_used_by_card_name_dictionary():
     assert "シュプレヒコール" in names
     assert "至高のエンタメ" in names
     assert "国民的アイドル" in names
+
+
+def test_catalog_includes_the_observed_hif_high_tension_reward():
+    catalog = load_hif_catalog()
+
+    high_tension = catalog.skill_cards["ハイテンション"]
+    assert high_tension.is_lesson_once
+    assert high_tension.stamina_cost == 0
+    assert high_tension.effect_text == "元気+11 元気増加無効2ターン 消費体力減少3ターン"
+    assert "recovery" in high_tension.tags
+    assert "ハイテンション" in build_card_name_dict()

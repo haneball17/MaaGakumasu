@@ -101,6 +101,9 @@ class ExamState:
     # 横切参数：识别层填充后用于参数感知告警，默认空值不破坏旧构造。
     params: ParamSet = field(default_factory=ParamSet)
     judge_thresholds: JudgeThresholds = field(default_factory=JudgeThresholds)
+    # 局内得分与倍率必须来自本局同帧的校准 ROI；缺失时保持 None，不用零值伪造。
+    current_score: int | None = None
+    stage_multiplier: float | None = None
 
 
 @dataclass(slots=True)

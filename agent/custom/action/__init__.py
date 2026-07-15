@@ -31,6 +31,7 @@ __all__ = [
     "ProduceHIFSelectionObserve",
     "ProduceHIFDrinkOverflowObserve",
     "ProduceHIFSafeAdvanceAuto",
+    "ProduceHIFFinalsRankingContinueAuto",
     "ProduceCardsHIF",
     "ProduceHIFIntervalAuto",
     "ProduceHIFSettlementContinueAuto",

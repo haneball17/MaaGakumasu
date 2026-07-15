@@ -7,21 +7,29 @@
 from __future__ import annotations
 
 import json
-import argparse
 import hashlib
-from datetime import datetime, timezone
+import argparse
 from pathlib import Path
+from datetime import datetime, timezone
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CALIBRATION = ROOT / "assets" / "data" / "hif" / "roi_calibration.json"
 FRAME_SIZE = (720, 1280)
-FIELDS = ("good_condition", "reprise", "focus", "turn", "flow", "deck_size", "p_drinks")
+EXAM_NUMERIC_FIELDS = ("good_condition", "reprise", "focus", "turn", "flow", "deck_size", "p_drinks", "stamina")
+ROUND_METRIC_FIELDS = ("param_vo", "param_da", "param_vi", "current_score", "stage_multiplier")
+SETTLEMENT_METRIC_FIELDS = ("leader_score_pair", "multiplier")
+CALIBRATION_KINDS = {
+    "exam_numeric": EXAM_NUMERIC_FIELDS,
+    "round_metrics": ROUND_METRIC_FIELDS,
+    "settlement_metrics": SETTLEMENT_METRIC_FIELDS,
+}
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="校准 MaaGakumasu HIF 出牌数值 ROI")
     parser.add_argument("--image", type=Path, help="用于校验分辨率的 MuMu 原始截图")
-    parser.add_argument("--field", choices=FIELDS, help="要校准的数值字段")
+    parser.add_argument("--kind", choices=tuple(CALIBRATION_KINDS), default="exam_numeric", help="ROI 所属读数类别")
+    parser.add_argument("--field", help="要校准的字段；可选值随 --kind 变化")
     parser.add_argument("--roi", help="ROI，格式 x,y,width,height")
     parser.add_argument("--source", default="MuMu 12 实机截图", help="写入的校准来源说明")
     parser.add_argument("--device-id", help="稳定设备标识；执行级校准必须提供")
@@ -52,12 +60,15 @@ def main() -> int:
         return 0
     if not args.field or not args.roi:
         raise SystemExit("更新 ROI 时必须同时提供 --field 与 --roi")
+    if args.field not in CALIBRATION_KINDS[args.kind]:
+        choices = ", ".join(CALIBRATION_KINDS[args.kind])
+        raise SystemExit(f"--field {args.field!r} 不属于 {args.kind}；可选：{choices}")
 
     roi = parse_roi(args.roi)
     payload = json.loads(args.calibration.read_text(encoding="utf-8"))
     if payload.get("frame_size") != list(FRAME_SIZE):
         raise SystemExit("校准文件 frame_size 不匹配，拒绝写入")
-    payload.setdefault("exam_numeric", {})[args.field] = list(roi)
+    payload.setdefault(args.kind, {})[args.field] = list(roi)
     payload["source"] = args.source
     payload["updated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
     if args.device_id:
@@ -76,7 +87,7 @@ def main() -> int:
         print(rendered)
         return 0
     args.calibration.write_text(rendered, encoding="utf-8")
-    print(f"已写入 {args.calibration}: {args.field}={roi}")
+    print(f"已写入 {args.calibration}: {args.kind}.{args.field}={roi}")
     return 0
 
 

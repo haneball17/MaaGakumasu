@@ -19,6 +19,9 @@ class HIFRoiCalibration:
     schema_version: int
     frame_size: tuple[int, int]
     exam_numeric: dict[str, ROI]
+    round_metrics: dict[str, ROI]
+    round_metrics_panel: dict[str, ROI]
+    settlement_metrics: dict[str, ROI]
     updated_at: str
     source: str
     device_id: str = ""
@@ -30,11 +33,25 @@ class HIFRoiCalibration:
     def roi_for_exam_numeric(self, name: str) -> ROI | None:
         return self.exam_numeric.get(name)
 
+    def roi_for_round_metric(self, name: str) -> ROI | None:
+        return self.round_metrics.get(name)
+
+    def roi_for_round_metric_panel(self, name: str) -> ROI | None:
+        return self.round_metrics_panel.get(name)
+
+    def roi_for_settlement_metric(self, name: str) -> ROI | None:
+        return self.settlement_metrics.get(name)
+
     @property
     def is_exam_execution_ready(self) -> bool:
         """只有全部出牌必需数值均有同一份可追溯校准时才允许自动执行。"""
 
-        required = {"good_condition", "reprise", "focus", "turn", "flow", "deck_size", "p_drinks"}
+        required = {"good_condition", "reprise", "focus", "turn", "flow", "deck_size", "p_drinks", "stamina"}
+        return bool(self.device_id and self.evidence_sha256 and required.issubset(self.exam_numeric))
+
+    def supports_exam_fields(self, required: set[str]) -> bool:
+        """确认一组直接画面读数字段来自同一份可追溯校准。"""
+
         return bool(self.device_id and self.evidence_sha256 and required.issubset(self.exam_numeric))
 
 
@@ -53,18 +70,17 @@ def load_hif_roi_calibration(path: str | Path | None = None) -> HIFRoiCalibratio
     frame_size = _parse_frame_size(payload.get("frame_size"))
     if frame_size != HIF_FRAME_SIZE:
         raise ValueError(f"HIF ROI 校准必须基于 {HIF_FRAME_SIZE}，当前为 {frame_size}")
-    raw_regions = payload.get("exam_numeric", {})
-    if not isinstance(raw_regions, dict):
-        raise ValueError("HIF ROI exam_numeric 必须为对象")
-    regions = {
-        name: roi
-        for name, raw in raw_regions.items()
-        if isinstance(name, str) and (roi := _parse_roi(raw)) is not None
-    }
+    regions = _parse_region_map(payload.get("exam_numeric", {}), "exam_numeric")
+    round_metrics = _parse_region_map(payload.get("round_metrics", {}), "round_metrics")
+    round_metrics_panel = _parse_region_map(payload.get("round_metrics_panel", {}), "round_metrics_panel")
+    settlement_metrics = _parse_region_map(payload.get("settlement_metrics", {}), "settlement_metrics")
     return HIFRoiCalibration(
         schema_version=1,
         frame_size=frame_size,
         exam_numeric=regions,
+        round_metrics=round_metrics,
+        round_metrics_panel=round_metrics_panel,
+        settlement_metrics=settlement_metrics,
         updated_at=str(payload.get("updated_at", "")),
         source=str(payload.get("source", "")),
         device_id=str(payload.get("device_id", "")),
@@ -73,6 +89,16 @@ def load_hif_roi_calibration(path: str | Path | None = None) -> HIFRoiCalibratio
         locale=str(payload.get("locale", "")),
         evidence_sha256=str(payload.get("evidence_sha256", "")),
     )
+
+
+def _parse_region_map(raw_regions: object, name: str) -> dict[str, ROI]:
+    if not isinstance(raw_regions, dict):
+        raise ValueError(f"HIF ROI {name} 必须为对象")
+    return {
+        key: roi
+        for key, raw in raw_regions.items()
+        if isinstance(key, str) and (roi := _parse_roi(raw)) is not None
+    }
 
 
 def _parse_frame_size(raw: object) -> tuple[int, int]:

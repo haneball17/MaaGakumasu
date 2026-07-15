@@ -48,17 +48,17 @@
 			"screen_id": "hif_start_confirm",
 			"risk": "stateful_choice",
 			"anchors": [{"id": "start", "pattern": "プロデュース開始", "roi": [
-					210,
-					1030,
-					300,
-					105
-				]}],
+						210,
+						1030,
+						300,
+						105
+					]}],
 			"buttons": [{"id": "start", "text": "プロデュース開始", "roi": [
-					210,
-					1030,
-					300,
-					105
-				]}]
+						210,
+						1030,
+						300,
+						105
+					]}]
 		},
 		{
 			"screen_id": "finals_prepare",
@@ -287,10 +287,10 @@
 			"screen_id": "skill_reward",
 			"risk": "resource_choice",
 			"anchors": [{"id": "prompt", "pattern": "受[けは]取るスキルカードを選んでください", "roi": [
-					112,
-					585,
-					510,
-					66
+						112,
+						585,
+						510,
+						66
 					]}],
 			"regions": {"candidates": [
 					156,
@@ -322,8 +322,7 @@
 					555,
 					490,
 					185
-				],
-				"reveal_name": [
+				], "reveal_name": [
 					72,
 					840,
 					576,
@@ -592,6 +591,30 @@
 					]}]
 		},
 		{
+			"screen_id": "finals_ranking_transition",
+			"risk": "safe_continue",
+			"anchors": [
+				{"id": "title", "pattern": "現在順位", "roi": [
+						0,
+						120,
+						720,
+						120
+					]},
+				{"id": "prompt", "pattern": "タップして次へ", "roi": [
+						200,
+						1120,
+						320,
+						120
+					]}
+			],
+			"regions": {"ranking": [
+					20,
+					230,
+					680,
+					790
+				]}
+		},
+		{
 			"screen_id": "round1",
 			"risk": "battle",
 			"anchors": [{"id": "turn", "pattern": "残りターン", "roi": [
@@ -620,7 +643,72 @@
 					1178,
 					360,
 					78
+				], "deck_button": [
+					519,
+					1174,
+					80,
+					82
 				]}
+		},
+		{
+			"screen_id": "round_details",
+			"risk": "read_only",
+			"anchors": [
+				{"id": "score", "pattern": "獲得スコア", "roi": [
+						20,
+						110,
+						220,
+						80
+					]},
+				{"id": "hand_info", "pattern": "手札情報", "roi": [
+						540,
+						420,
+						170,
+						90
+					]}
+			],
+			"regions": {"close": [
+					314,
+					1118,
+					92,
+					92
+				]},
+			"buttons": [{"id": "hand_info", "text": "手札情報", "roi": [
+					540,
+					420,
+					170,
+					90
+				]}]
+		},
+		{
+			"screen_id": "hand_history_view",
+			"risk": "read_only",
+			"anchors": [
+				{"id": "title", "pattern": "手札情報確認", "roi": [
+						15,
+						565,
+						500,
+						80
+					]},
+				{"id": "used_cards", "pattern": "使用したスキルカード", "roi": [
+						35,
+						860,
+						430,
+						70
+					]}
+			],
+			"regions": {"hand": [
+					45,
+					925,
+					300,
+					145
+				]},
+			"buttons": [{"id": "close", "text": "閉じる", "roi": [
+					225,
+					1110,
+					275,
+					100
+				]}]
 		},
 		{
 			"screen_id": "interval_shop",

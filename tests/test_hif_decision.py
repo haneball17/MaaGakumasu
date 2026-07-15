@@ -17,6 +17,92 @@ from agent.hif import (
     build_default_scenario_config,
     build_default_hif_evaluation_config,
 )
+from agent.hif.decisions.state import ExamRound, ExamState, HandSummary
+from agent.hif.decisions.round1_fallback import (
+    choose_observed_round1_recovery_card,
+    choose_high_good_condition_topic_card,
+    choose_observed_round1_post_topic_card,
+    choose_observed_round1_post_shikirinaoshi_card,
+)
+
+
+def _observed_round1_recovery_state() -> ExamState:
+    return ExamState(
+        round=ExamRound.HONSEN_R1,
+        turn=7,
+        total_turns=9,
+        current_flow="Vi",
+        good_condition_turns=40,
+        focus=4,
+        stamina=30,
+        hand=HandSummary(False, False, False, 2, False, False),
+        reprise_count=2,
+        cards_played=0,
+        deck_size=21,
+        oneesan_used=True,
+        natural_finisher_used=False,
+        available_p_drinks=[],
+    )
+
+
+def test_observed_round1_recovery_hand_prefers_tenbu_for_focus_and_deck_setup():
+    action = choose_observed_round1_recovery_card(_observed_round1_recovery_state(), ["天賦の才", "シュプレヒコール"])
+
+    assert action is not None
+    assert action.target_card == "天賦の才"
+
+
+def test_observed_round1_recovery_rule_refuses_any_unobserved_candidate_set():
+    assert choose_observed_round1_recovery_card(_observed_round1_recovery_state(), ["天賦の才"]) is None
+
+
+def test_high_good_condition_topic_card_is_unique_and_zero_cost():
+    action = choose_high_good_condition_topic_card(_observed_round1_recovery_state(), ["話題沸騰", "始まりの合図"])
+
+    assert action is not None
+    assert action.target_card == "話題沸騰"
+
+
+def test_high_good_condition_topic_card_refuses_the_card_below_its_gate():
+    state = _observed_round1_recovery_state()
+    state.good_condition_turns = 7
+
+    assert choose_high_good_condition_topic_card(state, ["話題沸騰"]) is None
+
+
+def test_observed_post_topic_hand_prefers_low_cost_shikirinaoshi_only_for_exact_state():
+    state = _observed_round1_recovery_state()
+    state.turn = 6
+    state.good_condition_turns = 47
+    state.focus = 5
+    state.stamina = 33
+    action = choose_observed_round1_post_topic_card(
+        state, ["鳴り止まない拍手", "夏夜に咲く思い出", "仕切り直し", "始まりの合図"]
+    )
+
+    assert action is not None
+    assert action.target_card == "仕切り直し"
+    state.focus = 4
+    assert choose_observed_round1_post_topic_card(state, ["鳴り止まない拍手", "夏夜に咲く思い出", "仕切り直し", "始まりの合図"]) is None
+
+
+def test_observed_post_shikirinaoshi_hand_prefers_zero_cost_idol_declaration_only_for_exact_state():
+    state = _observed_round1_recovery_state()
+    state.turn = 6
+    state.good_condition_turns = 47
+    state.focus = 5
+    state.stamina = 33
+
+    action = choose_observed_round1_post_shikirinaoshi_card(
+        state, ["アイドル宣言", "演出計画", "存在感", "眠気", "祝福"]
+    )
+
+    assert action is not None
+    assert action.target_card == "アイドル宣言"
+    state.stamina = 32
+    assert choose_observed_round1_post_shikirinaoshi_card(
+        state, ["アイドル宣言", "演出計画", "存在感", "眠気", "祝福"]
+    ) is None
 from agent.hif.journal import HIFJournal, load_hif_journal, audit_hif_journal
 from agent.hif.presets import parse_hif_preset, choose_first_matching, choose_schedule_priority
 from agent.hif.session import get_runtime_hif_session, reset_runtime_hif_session
@@ -721,6 +807,61 @@ def test_hif_select_change_target_enumerates_slots_then_advances_only_after_exac
     audit = audit_hif_journal(load_hif_journal(journal.path))
     assert audit.ok
     assert audit.verified_execution_count == 5
+
+
+def test_hif_select_change_target_probe_enumerates_once_without_reroll_or_advance(monkeypatch):
+    agent_path = str(Path("agent").resolve())
+    sys.path.insert(0, agent_path)
+    try:
+        module = import_module("agent.custom.action.produce_hif")
+    finally:
+        sys.path.remove(agent_path)
+
+    action = module.ProduceChooseHIFSelectChangeTargetAuto()
+    action.ACTION_DELAY = 0
+    images = iter((b"initial", b"left", b"center", b"right"))
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: next(images))
+    monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen: image)
+    monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen: screen == "select_change_target")
+    details = iter(
+        (
+            {"name": "軽い足取り", "target_name": "軽い足取り", "ocr_texts": ("軽い足取り",), "confidence": 0.99},
+            {"name": "祝福", "target_name": "祝福", "ocr_texts": ("祝福",), "confidence": 0.99},
+            {"name": "スタンドプレー", "target_name": "スタンドプレー", "ocr_texts": ("スタンドプレー",), "confidence": 0.99},
+        )
+    )
+    monkeypatch.setattr(action, "_read_target_details", lambda context, image, target_names: dict(next(details)))
+    clicks = []
+    monkeypatch.setattr(action, "_click_box_center", lambda context, box, double=False, **kwargs: clicks.append(list(box)) or True)
+    records = []
+    monkeypatch.setattr(
+        module,
+        "get_runtime_hif_journal",
+        lambda: SimpleNamespace(
+            capture=lambda image, label: SimpleNamespace(fingerprint=f"{label}:{image}"),
+            record=lambda *args, **kwargs: records.append((args, kwargs)),
+        ),
+    )
+    stop_reasons = []
+    monkeypatch.setattr(
+        action,
+        "_stop_unsupported",
+        lambda context, screen, reason: stop_reasons.append((screen, reason)) or True,
+    )
+
+    assert action.run(
+        object(),
+        SimpleNamespace(
+            custom_action_param=(
+                '{"preset_id":"rinami_good_condition_safe","execution_mode":"single_step",'
+                '"select_change_target_probe":"enumerate_candidates"}'
+            )
+        ),
+    )
+    assert clicks == [[158, 837, 127, 128], [297, 837, 127, 128], [436, 837, 127, 128]]
+    assert stop_reasons == [("select_change_target", "target_candidate_probe_complete_stop")]
+    summary = next(record for record in records if record[0][1:3] == ("enumerate_target_candidates", "observed"))
+    assert [candidate["name"] for candidate in summary[1]["details"]["candidates"]] == ["軽い足取り", "祝福", "スタンドプレー"]
 
 
 def test_hif_select_change_reroll_requires_counter_to_decrement(monkeypatch):

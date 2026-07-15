@@ -31,3 +31,15 @@ def test_hif_session_tracks_pending_reward_and_stops_safe_advance_frame_cycles()
     assert session.pending_reward is None
     assert session.pending_select_change is None
     assert session.safe_advance_count == 0
+
+
+def test_hif_session_keeps_verified_hand_detail_titles_only_for_the_current_run():
+    session = HIFRunSession()
+    box = (19, 884, 138, 250)
+
+    session.record_hand_detail_name(box, "話題沸騰")
+    session.record_hand_detail_name((142, 884, 141, 248), "")
+
+    assert session.hand_detail_name(box) == "話題沸騰"
+    assert session.hand_detail_name((20, 884, 138, 250)) == "話題沸騰"
+    assert session.hand_detail_name((142, 884, 141, 248)) is None

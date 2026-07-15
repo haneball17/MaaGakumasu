@@ -29,8 +29,14 @@ from agent.hif.decisions.state import ExamRound, ActionKind, CardAction
 from agent.hif.screen_profiles import load_hif_screen_profiles
 from agent.hif.decisions.config import ProfilePayload
 from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict, is_good_condition_card
-from agent.hif.adapters.exam_reader import CardDetection, ExamStateReader
+from agent.hif.adapters.exam_reader import NumericRead, CardDetection, ExamStateReader, build_hand_summary
 from agent.hif.adapters.hif_state_reader import HIFStateReader
+from agent.hif.decisions.round1_fallback import (
+    choose_observed_round1_recovery_card,
+    choose_high_good_condition_topic_card,
+    choose_observed_round1_post_topic_card,
+    choose_observed_round1_post_shikirinaoshi_card,
+)
 
 
 class _ProduceHIFActionBase(CustomAction):
@@ -706,18 +712,46 @@ class ProduceHIFDrinkOverflowObserve(_ProduceHIFActionBase):
     def _commit_preselected_drinks(self, context: Context, image, before: HIFFrameEvidence) -> bool:
         """仅提交已完成的保留集合，要求可见初星黒酢的已校准效果作为双锚点。"""
 
-        ulong = self._run_ocr(
+        current_image = image
+        black_vinegar = self._run_ocr(
             context,
-            image,
-            "ProduceRecognitionHIFDrinkOverflowUlong",
-            list(self._ULONG_EFFECT),
+            current_image,
+            "ProduceRecognitionHIFDrinkOverflowBlackVinegar",
+            list(self._BLACK_VINEGAR_EFFECT),
             self._profile_region("drink_overflow", "held_drinks", [54, 713, 612, 350]),
         )
-        if not (ulong and ulong.hit and getattr(ulong, "best_result", None)):
+        if not (black_vinegar and black_vinegar.hit and getattr(black_vinegar, "best_result", None)):
+            if not self._swipe_with_verification(
+                context,
+                current_image,
+                "drink_overflow",
+                "scroll_preselected_drinks_once",
+                (360, 1020),
+                (360, 780),
+                duration=300,
+                details={"direction": "up", "max_scrolls": 1, "reason": "reveal_black_vinegar_effect"},
+            ):
+                return True
+            current_image = self._get_screenshot_or_stop(context, "drink_overflow")
+            if current_image is None:
+                return True
+            if not self._matches_screen_profile(context, current_image, "drink_overflow"):
+                return self._stop_unsupported(context, "drink_overflow", "drink_overflow_page_lost_after_preselected_scroll")
+            remaining = self._remaining_prompt(context, current_image, self._REMAINING_ZERO)
+            if not (remaining and remaining.hit):
+                return self._stop_unsupported(context, "drink_overflow", "drink_overflow_selection_changed_after_preselected_scroll")
+            black_vinegar = self._run_ocr(
+                context,
+                current_image,
+                "ProduceRecognitionHIFDrinkOverflowBlackVinegar",
+                list(self._BLACK_VINEGAR_EFFECT),
+                self._profile_region("drink_overflow", "held_drinks", [54, 713, 612, 350]),
+            )
+        if not (black_vinegar and black_vinegar.hit and getattr(black_vinegar, "best_result", None)):
             return self._stop_unsupported(context, "drink_overflow", "drink_overflow_preselected_black_vinegar_not_found")
         keep = self._find_text_option(
             context,
-            image,
+            current_image,
             ("残す",),
             self._observed_button_roi("drink_overflow", "keep", [230, 1116, 260, 84]),
         )
@@ -744,9 +778,9 @@ class ProduceHIFDrinkOverflowObserve(_ProduceHIFActionBase):
         return True
 
     def _post_overflow_screen(self, context: Context, image) -> str | None:
-        """饮料提交后可直接进入 Round，也可回到距离本战 1 日的正式行动页。"""
+        """饮料提交后可进入展示层、Round，或回到正式行动页。"""
 
-        for screen_id in ("round1", "finals_prepare"):
+        for screen_id in ("drink_reward_reveal", "round1", "finals_prepare"):
             if self._matches_screen_profile(context, image, screen_id):
                 return screen_id
         return None
@@ -831,6 +865,32 @@ class ProduceHIFSafeAdvanceAuto(_ProduceHIFActionBase):
         )
         session.reset_safe_advance()
         return True
+
+
+@AgentServer.custom_action("ProduceHIFFinalsRankingContinueAuto")
+class ProduceHIFFinalsRankingContinueAuto(_ProduceHIFActionBase):
+    """从本战前当前順位展示页推进，且只接受进入 Round1。"""
+
+    PROMPT_ROI = [245, 1140, 250, 80]
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._configure_page_execution(argv)
+        screen_state = "finals_ranking_transition"
+        image = self._get_screenshot_or_stop(context, screen_state)
+        if image is None:
+            return True
+        if not self._matches_screen_profile(context, image, screen_state):
+            return self._stop_unsupported(context, screen_state, "finals_ranking_transition_page_not_confirmed")
+        return self._click_text_with_verification(
+            context,
+            image,
+            screen_state,
+            "continue_finals_ranking",
+            ("タップして次へ",),
+            self.PROMPT_ROI,
+            allowed_next_screens=("round1",),
+            postcondition_failure_reason="finals_ranking_round1_not_confirmed",
+        )
 
 
 @AgentServer.custom_action("ProduceChooseHIFEventAuto")
@@ -2270,8 +2330,11 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
         params = self._get_action_params(argv)
+        target_probe = params.get("select_change_target_probe")
         configured_names = params.get("select_change_target_names")
-        if configured_names is None:
+        if target_probe == "enumerate_candidates":
+            target_names = load_hif_catalog().skill_names
+        elif configured_names is None:
             target_names = preset.select_change_target_names
         elif isinstance(configured_names, (list, tuple)) and configured_names and all(
             isinstance(name, str) and name for name in configured_names
@@ -2314,6 +2377,15 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
                     return True
                 candidate, current_image = selected
                 candidates.append(candidate)
+
+            if target_probe == "enumerate_candidates":
+                self._record_journal(
+                    "select_change_target",
+                    "enumerate_target_candidates",
+                    "observed",
+                    details={"candidates": candidates, "reroll_attempt": reroll_attempt},
+                )
+                return self._stop_unsupported(context, "select_change_target", "target_candidate_probe_complete_stop")
 
             matches = [candidate for candidate in candidates if candidate["target_name"] is not None]
             if len(matches) > 1:
@@ -2654,6 +2726,35 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         if getattr(self, "_page_execution_mode", HIFExecutionMode.OBSERVE) is not HIFExecutionMode.SINGLE_STEP:
             return self._stop_unsupported(context, "select_change_source_deck", "source_deck_probe_requires_single_step")
 
+        if probe_mode == "cancel_to_target":
+            cancel = self._find_text_option(
+                context,
+                image,
+                ("キャンセル",),
+                [70, 1100, 300, 110],
+            )
+            if not cancel:
+                return self._stop_unsupported(context, "select_change_source_deck", "source_deck_cancel_button_not_found")
+            before = self._capture_evidence(image, "select_change_source_deck_cancel_before")
+            if not self._click_box_center(context, cancel.best_result.box, double=False):
+                return self._stop_unsupported(context, "select_change_source_deck", "source_deck_cancel_click_failed")
+            time.sleep(self.ACTION_DELAY)
+            after_image = self._get_screenshot_or_stop(context, "select_change_target")
+            if after_image is None:
+                return True
+            after = self._capture_evidence(after_image, "select_change_source_deck_cancel_after")
+            if not frame_changed(before, after) or not self._matches_screen_profile(context, after_image, "select_change_target"):
+                return self._stop_unsupported(context, "select_change_source_deck", "source_deck_cancel_target_page_not_confirmed")
+            self._record_journal(
+                "select_change_source_deck",
+                "cancel_source_deck",
+                "verified",
+                details={"next_screen": "select_change_target"},
+                before=before,
+                after=after,
+            )
+            return True
+
         if probe_mode == "confirm_source_card":
             source_name = params.get("source_card_name")
             if not isinstance(source_name, str) or not source_name:
@@ -2661,8 +2762,28 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             pending_change = get_runtime_hif_session().pending_select_change
             target_name = pending_change.target_name if pending_change is not None else None
             explicit_source_authorized = params.get("explicit_source_authorized") is True
-            if not isinstance(target_name, str) or target_name not in preset.select_change_target_names:
+            explicit_target_authorized = params.get("explicit_target_authorized") is True
+            if not isinstance(target_name, str) or (
+                target_name not in preset.select_change_target_names and not explicit_target_authorized
+            ):
                 return self._stop_unsupported(context, "select_change_source_deck", "selected_target_card_missing_or_invalid")
+            if params.get("source_card_scroll_once") is True:
+                if not self._swipe_with_verification(
+                    context,
+                    image,
+                    "select_change_source_deck",
+                    "scroll_source_deck_before_confirm",
+                    (360, 1040),
+                    (360, 680),
+                    duration=300,
+                    details={"direction": "up", "max_scrolls": 1},
+                ):
+                    return True
+                image = self._get_screenshot_or_stop(context, "select_change_source_deck")
+                if image is None:
+                    return True
+                if not self._matches_screen_profile(context, image, "select_change_source_deck"):
+                    return self._stop_unsupported(context, "select_change_source_deck", "source_deck_page_lost_after_confirm_scroll")
             return self._confirm_source_card_change(
                 context,
                 image,
@@ -3233,6 +3354,980 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
         "round2": (ExamRound.HONSEN_R2, 12, "round2"),
     }
 
+    _DIRECT_CARD_EXECUTION_FIELDS = {"good_condition", "focus", "turn", "flow", "stamina"}
+    POSTCONDITION_ATTEMPTS = 8
+    POSTCONDITION_SETTLE_DELAY = 1.0
+
+    @staticmethod
+    def _infer_initial_reprise(observation, total_turns: int) -> bool:
+        """仅在 Round 尚未消耗回合时，按机制确定再演发动次数为零。"""
+
+        if "reprise" not in observation.missing_fields or observation.state.turn != total_turns:
+            return False
+        observation.numerics["reprise"] = NumericRead("reprise", "initial_round=0", 0)
+        observation.state.reprise_count = 0
+        observation.missing_fields = tuple(field for field in observation.missing_fields if field != "reprise")
+        return True
+
+    @staticmethod
+    def _resolve_initial_default_target(card_action: CardAction, observation, total_turns: int) -> CardAction:
+        """首回合默认分支唯一选择可支付的持续收益卡，其他回合保持安全停止。"""
+
+        if card_action.kind is not ActionKind.PLAY_CARD or card_action.target_card or observation.state.turn != total_turns:
+            return card_action
+        active_names = {
+            normalize_card_name(detection.card_name)
+            for detection in observation.detections
+            if detection.card_name and not detection.suppressed_reason and detection.label != "useless"
+        }
+        target_name = "至高のエンタメ"
+        card = load_hif_catalog().skill_cards.get(target_name)
+        focus_cost = card.focus_cost if card and card.focus_cost is not None else 3
+        if target_name not in active_names or observation.state.focus < focus_cost:
+            return card_action
+        return CardAction(
+            ActionKind.PLAY_CARD,
+            target_name,
+            f"首回合优先发动持续加分与次回合补抽；当前集中{observation.state.focus}可支付保守消耗{focus_cost}",
+        )
+
+    @staticmethod
+    def _recover_reprise_after_entertainment(observation, session, round_key: str, total_turns: int) -> tuple[bool, str]:
+        """按首牌前后实证恢复第 2 回合状态，不接受其他页面或手牌组合。"""
+
+        if round_key != "round1":
+            return False, "reprise_recovery_round_mismatch"
+        if total_turns != 9:
+            return False, "reprise_recovery_total_turns_mismatch"
+        if observation.state.turn != 8:
+            return False, "reprise_recovery_turn_mismatch"
+        if "reprise" not in observation.missing_fields:
+            return False, "reprise_recovery_not_missing"
+        if set(observation.missing_fields) != {"reprise"}:
+            return False, "reprise_recovery_other_fields_missing"
+        active_names = {
+            normalize_card_name(detection.card_name)
+            for detection in observation.detections
+            if detection.card_name and not detection.suppressed_reason
+        }
+        required = {"自然体の魅力", "お姉さんの感覚"}
+        if not required.issubset(active_names):
+            return False, "reprise_recovery_hand_evidence_missing"
+        if "至高のエンタメ" in active_names:
+            return False, "reprise_recovery_entertainment_still_in_hand"
+        observation.numerics["reprise"] = NumericRead("reprise", "recovered_after_entertainment=0", 0)
+        observation.state.reprise_count = 0
+        observation.missing_fields = tuple(field for field in observation.missing_fields if field != "reprise")
+        session.record_card(round_key, "至高のエンタメ")
+        return True, "turn9_entertainment_played_without_shizen_in_pre_hand"
+
+    def _read_card_postcondition(
+        self,
+        context: Context,
+        after_image,
+        screen_state: str,
+        round_: ExamRound,
+        total_turns: int,
+        target: CardDetection,
+        before_detections: list[CardDetection],
+        *,
+        before_state: Any | None = None,
+    ) -> tuple[bool, dict[str, Any]]:
+        """确认目标已生效；再演/动画中间态必须等到稳定手牌后再判定。"""
+
+        state_fields = ("turn", "good_condition_turns", "focus", "stamina", "reprise_count", "deck_size")
+        before_state_values = {
+            name: value
+            for name in state_fields
+            if isinstance((value := getattr(before_state, name, None)), int)
+        }
+        stable_image = self._wait_for_screen_profile(context, after_image, screen_state, attempts=4)
+        if stable_image is None:
+            return False, {"reason": "round_page_not_confirmed_after_card"}
+        before_names = [
+            normalize_card_name(detection.card_name)
+            for detection in before_detections
+            if detection.card_name and not detection.suppressed_reason
+        ]
+        target_name = normalize_card_name(target.card_name)
+        last_details: dict[str, Any] = {
+            "target_card": target_name,
+            "before_hand": before_names,
+            "after_hand": [],
+            "post_screen_confidence": 0.0,
+        }
+        post_hand_recovered = False
+        for attempt in range(self.POSTCONDITION_ATTEMPTS):
+            post_health = self._get_health(context, stable_image)
+            post = ExamStateReader.from_context(context).read_exam_observation(
+                round_,
+                total_turns,
+                post_health["current"] if post_health else None,
+            )
+            if "hand_names" in post.missing_fields and not post_hand_recovered:
+                details = self._probe_round_hand_details(
+                    context,
+                    stable_image,
+                    screen_state,
+                    return_details=True,
+                    post_execution=True,
+                )
+                if not isinstance(details, list):
+                    return False, {"reason": "post_hand_detail_mapping_failed"}
+                selected_image = self._get_screenshot_or_stop(context, screen_state)
+                if selected_image is None:
+                    return False, {"reason": "post_hand_screencap_failed"}
+                deck_size, stable_image = self._probe_round_deck_size(context, selected_image, screen_state)
+                if deck_size is None or stable_image is None:
+                    return False, {"reason": "post_hand_deck_probe_failed"}
+                post_health = self._get_health(context, stable_image)
+                post = ExamStateReader.from_context(context).read_exam_observation(
+                    round_, total_turns, post_health["current"] if post_health else None
+                )
+                post.numerics["deck_size"] = NumericRead("deck_size", str(deck_size), deck_size)
+                post.state.deck_size = deck_size
+                post.missing_fields = tuple(field for field in post.missing_fields if field != "deck_size")
+                self._complete_current_run_hand_observation(post, get_runtime_hif_session())
+                post_hand_recovered = True
+            after_names = [
+                normalize_card_name(detection.card_name)
+                for detection in post.detections
+                if detection.card_name and not detection.suppressed_reason
+            ]
+            post_state_values = {
+                name: value
+                for name in state_fields
+                if isinstance((value := getattr(getattr(post, "state", None), name, None)), int)
+            }
+            last_details = {
+                "target_card": target_name,
+                "before_hand": before_names,
+                "after_hand": after_names,
+                "post_screen_confidence": post.screen_confidence,
+                "post_hand_attempt": attempt + 1,
+                "post_state": post_state_values,
+            }
+            if after_names and "hand" not in post.missing_fields and "hand_names" not in post.missing_fields:
+                if target_name in after_names:
+                    last_details["reason"] = "target_card_still_in_hand"
+                elif before_names == after_names:
+                    last_details["reason"] = "hand_not_changed_after_card"
+                elif before_state is not None:
+                    comparable_fields = before_state_values.keys() & post_state_values.keys()
+                    if not comparable_fields:
+                        last_details["reason"] = "post_state_not_readable"
+                    else:
+                        changed_fields = sorted(
+                            name for name in comparable_fields if before_state_values[name] != post_state_values[name]
+                        )
+                        last_details["state_changed_fields"] = changed_fields or ["hand"]
+                        return True, last_details
+                else:
+                    return True, last_details
+            if attempt < self.POSTCONDITION_ATTEMPTS - 1:
+                time.sleep(self.POSTCONDITION_SETTLE_DELAY)
+                stable_image = self._get_screenshot_or_stop(context, screen_state)
+                if stable_image is None or not self._matches_screen_profile(context, stable_image, screen_state):
+                    return False, {**last_details, "reason": "round_page_lost_during_postcondition"}
+        return False, {**last_details, "reason": last_details.get("reason", "post_hand_not_readable")}
+
+    @staticmethod
+    def _apply_current_run_hand_detail_names(detections: list[CardDetection], session) -> None:
+        """只用同一次运行已验证的详情标题补齐空 OCR 名，框集合不匹配则不猜。"""
+
+        for detection in detections:
+            if detection.suppressed_reason or detection.card_name:
+                continue
+            verified = session.hand_detail_name(detection.box)
+            if verified:
+                detection.card_name = normalize_card_name(verified)
+                detection.raw_card_name = verified
+                detection.card_name_confidence = 1.0
+
+    @classmethod
+    def _complete_current_run_hand_observation(cls, observation, session) -> list[CardDetection]:
+        """以本次详情映射补全手牌后，才恢复完整状态的置信度。"""
+
+        cls._apply_current_run_hand_detail_names(observation.detections, session)
+        active = [detection for detection in observation.detections if not detection.suppressed_reason]
+        if active and all(detection.card_name for detection in active):
+            observation.state.hand = build_hand_summary(observation.detections)
+            observation.missing_fields = tuple(field for field in observation.missing_fields if field != "hand_names")
+        if not observation.missing_fields:
+            observation.screen_confidence = 1.0
+        return active
+
+    @staticmethod
+    def _box_iou(left: tuple[int, int, int, int], right: tuple[int, int, int, int]) -> float:
+        left_x, left_y, left_width, left_height = left
+        right_x, right_y, right_width, right_height = right
+        overlap_width = max(0, min(left_x + left_width, right_x + right_width) - max(left_x, right_x))
+        overlap_height = max(0, min(left_y + left_height, right_y + right_height) - max(left_y, right_y))
+        overlap = overlap_width * overlap_height
+        if overlap <= 0:
+            return 0.0
+        return overlap / (left_width * left_height + right_width * right_height - overlap)
+
+    @staticmethod
+    def _selected_marker_detection(marker, detections: list[CardDetection]) -> CardDetection | None:
+        """用 SELECT 标记的横向位置唯一回配已选卡框；缺少几何证据时拒绝猜测。"""
+
+        best = getattr(marker, "best_result", None)
+        box = getattr(best, "box", None)
+        try:
+            marker_box = tuple(box)
+        except TypeError:
+            return None
+        if len(marker_box) != 4:
+            return None
+        marker_center_x = marker_box[0] + marker_box[2] / 2
+        matches = [
+            detection
+            for detection in detections
+            if detection.box[0] <= marker_center_x <= detection.box[0] + detection.box[2]
+        ]
+        return matches[0] if len(matches) == 1 else None
+
+    def _approve_round1_detail_mapped_topic_target(
+        self,
+        observation,
+        details: list[dict[str, Any]],
+        *,
+        selected_at_start: bool,
+        expected_card: str = "話題沸騰",
+        expected_hand_size: int = 5,
+    ) -> tuple[CardDetection | None, str]:
+        """只接受本次五张详情与重建手牌一一对应的話題沸騰目标。"""
+
+        if selected_at_start:
+            return None, "round1_detail_requires_unselected_hand"
+        raw_active = [detection for detection in observation.detections if not detection.suppressed_reason]
+        active = []
+        for detail in details:
+            box = detail.get("box")
+            if not isinstance(box, list | tuple) or len(box) != 4:
+                return None, "round1_detail_title_unreadable"
+            matches = [detection for detection in raw_active if self._box_iou(tuple(box), detection.box) >= 0.8]
+            if len(matches) != 1:
+                return None, "round1_detail_mapping_iou_conflict"
+            active.append(matches[0])
+        if len(details) != expected_hand_size:
+            return None, "round1_detail_mapping_incomplete"
+        if len(active) != expected_hand_size or len({id(detection) for detection in active}) != expected_hand_size:
+            return None, "round1_detail_mapping_iou_conflict"
+        mapped: set[int] = set()
+        for detail in details:
+            box = detail.get("box")
+            title = normalize_card_name(str(detail.get("detail_title", "")))
+            if not isinstance(box, list | tuple) or len(box) != 4 or not title:
+                return None, "round1_detail_title_unreadable"
+            matches = [
+                index
+                for index, detection in enumerate(active)
+                if self._box_iou(tuple(box), detection.box) >= 0.8
+            ]
+            if len(matches) != 1:
+                return None, "round1_detail_mapping_iou_conflict"
+            index = matches[0]
+            if index in mapped:
+                return None, "round1_detail_mapping_iou_conflict"
+            detection = active[index]
+            if detection.card_name and normalize_card_name(detection.card_name) != title:
+                if detection.card_name_confidence >= float(detail.get("detail_title_confidence", 0.0)):
+                    return None, "round1_detail_title_conflict"
+            detection.card_name = title
+            detection.raw_card_name = str(detail.get("detail_title_raw") or detail["detail_title"])
+            detection.card_name_confidence = 1.0
+            mapped.add(index)
+        if len(mapped) != expected_hand_size:
+            return None, "round1_detail_mapping_incomplete"
+        if observation.missing_fields:
+            return None, "round1_detail_state_incomplete"
+        if getattr(observation.state, "good_condition_turns", 0) < 8:
+            return None, "round1_detail_good_condition_insufficient"
+        targets = [
+            detection
+            for detection in active
+            if detection.label != "useless" and normalize_card_name(detection.card_name) == expected_card
+        ]
+        if len(targets) != 1:
+            return None, "round1_detail_topic_target_not_unique"
+        return targets[0], "approved"
+
+    def _card_selection_confirmed(self, context: Context, image, target_name: str) -> bool:
+        """要求卡牌详情标题与 SELECT 标记同时存在，才允许第二次点击。"""
+
+        title = None
+        for roi in ([180, 430, 360, 90], [180, 500, 360, 90], [180, 570, 360, 90], [180, 640, 360, 90]):
+            title = self._run_ocr(
+                context,
+                image,
+                "ProduceRecognitionHIFSelectedCardTitle",
+                [rf".*{re.escape(target_name)}.*"],
+                roi,
+            )
+            if title and title.hit:
+                break
+        selected = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSelectedCardMarker",
+            [r".*SELECT.*", r".*SELEC.*"],
+            [0, 1080, 720, 100],
+        )
+        return bool(title and title.hit and selected and selected.hit)
+
+    def _read_selected_card_title(self, context: Context, image, card_dict: list[str]) -> tuple[str, str, float]:
+        """从详情弹窗标题读取标准卡名；逐段搜索避免把效果正文误认成标题。"""
+
+        expected = [*card_dict, *(f"{name}+" for name in card_dict), *(f"{name}++" for name in card_dict)]
+        for index, roi in enumerate(([180, 430, 360, 90], [180, 500, 360, 90], [180, 570, 360, 90], [180, 640, 360, 90])):
+            raw, confidence = ExamStateReader.from_context(context).ocr._run_ocr_with_confidence(
+                f"ProduceRecognitionHIFSelectedCardTitleProbe{index}",
+                expected,
+                tuple(roi),
+            )
+            if not raw:
+                continue
+            candidate = raw.rstrip("+")
+            normalized = normalize_card_name(candidate)
+            if normalized in card_dict:
+                return normalized, raw, confidence
+        return "", "", 0.0
+
+    def _probe_selected_hand_detail(self, context: Context, image, screen_state: str) -> bool:
+        """只读取当前已选中手牌的详情标题，不发送任何控制器输入。"""
+
+        if not self._matches_screen_profile(context, image, screen_state):
+            return self._stop_unsupported(context, screen_state, "round_page_not_confirmed_before_selected_detail_probe")
+        marker = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSelectedCardMarkerReadOnly",
+            [r".*SELECT.*", r".*SELEC.*"],
+            [0, 1080, 720, 100],
+        )
+        if not marker or not marker.hit:
+            return self._stop_unsupported(context, screen_state, "selected_detail_probe_requires_selected_hand")
+        reader = ExamStateReader.from_context(context)
+        detections = [detection for detection in reader._read_detections() if not detection.suppressed_reason]
+        title, raw_title, title_confidence = self._read_selected_card_title(context, image, build_card_name_dict())
+        targets = [
+            detection
+            for detection in detections
+            if normalize_card_name(detection.card_name.rstrip("+-")) == title
+        ]
+        if not title or len(targets) != 1:
+            return self._stop_unsupported(context, screen_state, "selected_detail_probe_target_not_unique")
+        target = targets[0]
+        evidence = self._capture_evidence(image, f"{screen_state}_selected_hand_detail")
+        self._record_journal(
+            screen_state,
+            "probe_selected_hand_detail",
+            "verified",
+            details={
+                "box": list(target.box),
+                "yolo_label": target.label,
+                "yolo_confidence": target.confidence,
+                "caption_raw": target.raw_card_name,
+                "caption_confidence": target.card_name_confidence,
+                "detail_title": title,
+                "detail_title_raw": raw_title,
+                "detail_title_confidence": title_confidence,
+                "controller_inputs": 0,
+            },
+            before=evidence,
+        )
+        return self._finish_observation(context, screen_state)
+
+    def _probe_turn_roi_candidates(self, context: Context, image, screen_state: str) -> bool:
+        """零输入比较多组剩余回合 ROI，记录 OCR 原文后停止。"""
+
+        if not self._matches_screen_profile(context, image, screen_state):
+            return self._stop_unsupported(context, screen_state, "round_page_not_confirmed_before_turn_probe")
+        candidates = (
+            (13, 43, 120, 128),
+            (25, 70, 100, 80),
+            (35, 72, 80, 76),
+            (43, 75, 60, 72),
+            (50, 80, 45, 58),
+        )
+        reads = []
+        for index, roi in enumerate(candidates):
+            result = self._run_ocr(
+                context,
+                image,
+                f"ProduceRecognitionHIFTurnRoiProbe{index}",
+                [r".*\d+.*"],
+                list(roi),
+            )
+            best = getattr(result, "best_result", None) if result and result.hit else None
+            reads.append(
+                {
+                    "roi": list(roi),
+                    "raw": str(getattr(best, "text", "")) if best else "",
+                    "confidence": float(getattr(best, "score", 0.0)) if best else 0.0,
+                    "box": list(getattr(best, "box", [])) if best else [],
+                }
+            )
+        evidence = self._capture_evidence(image, f"{screen_state}_turn_roi_probe")
+        self._record_journal(
+            screen_state,
+            "probe_turn_rois",
+            "observed",
+            details={"reads": reads, "controller_inputs": 0},
+            before=evidence,
+        )
+        return self._finish_observation(context, screen_state)
+
+    def _probe_counter_roi_candidates(self, context: Context, image, screen_state: str) -> bool:
+        """零输入采集再演/技能卡使用次数的候选区域，不根据读数推导状态。"""
+
+        if not self._matches_screen_profile(context, image, screen_state):
+            return self._stop_unsupported(context, screen_state, "round_page_not_confirmed_before_counter_probe")
+        candidates = {
+            "good_condition_current": (14, 237, 160, 70),
+            "good_condition_label_and_value": (52, 245, 130, 50),
+            "good_condition_value_only": (60, 255, 110, 38),
+            "focus_current": (14, 300, 150, 70),
+            "focus_label_and_value": (52, 306, 90, 48),
+            "focus_value_only": (58, 314, 50, 34),
+            "right_skill_card_uses": (580, 235, 110, 75),
+            "left_reprise_counter": (12, 638, 150, 100),
+            "left_reprise_turn_limit": (8, 674, 180, 70),
+        }
+        reads = {}
+        for name, roi in candidates.items():
+            result = self._run_ocr(
+                context,
+                image,
+                f"ProduceRecognitionHIFCounterRoiProbe_{name}",
+                [r".*\d+.*"],
+                list(roi),
+            )
+            best = getattr(result, "best_result", None) if result and result.hit else None
+            reads[name] = {
+                "roi": list(roi),
+                "raw": str(getattr(best, "text", "")) if best else "",
+                "confidence": float(getattr(best, "score", 0.0)) if best else 0.0,
+                "box": list(getattr(best, "box", [])) if best else [],
+            }
+        evidence = self._capture_evidence(image, f"{screen_state}_counter_roi_probe")
+        self._record_journal(
+            screen_state,
+            "probe_counter_rois",
+            "observed",
+            details={"reads": reads, "controller_inputs": 0},
+            before=evidence,
+        )
+        return self._finish_observation(context, screen_state)
+
+    def _probe_round_details_metrics(self, context: Context, image, screen_state: str) -> bool:
+        """进入已采证的详情面板读取实时分数与倍率，再验证返回同一 Round。
+
+        详情入口和关闭按钮均为只读 UI；本动作不触碰手牌、饮料、重抽或任何资源。
+        参数三维值在该面板中并不显示，必须明确记为不可用，不能把排名卡数值代替。
+        """
+
+        if not self._matches_screen_profile(context, image, screen_state):
+            return self._stop_unsupported(context, screen_state, "round_page_not_confirmed_before_details_probe")
+        before = self._capture_evidence(image, f"{screen_state}_details_probe_before")
+        details_button = [422, 1160, 76, 76]
+        if not self._click_box_center(context, details_button, double=False):
+            return self._stop_unsupported(context, screen_state, "round_details_open_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        panel_image = self._get_screenshot_or_stop(context, "round_details")
+        if panel_image is None:
+            return True
+        panel_evidence = self._capture_evidence(panel_image, "round_details_metrics_panel_opened")
+        if not frame_changed(before, panel_evidence):
+            return self._stop_unsupported(context, screen_state, "round_details_not_confirmed")
+
+        # 2026-07-15 实机面板带“獲得スコア / 審査基準”双锚点。旧 screen
+        # profile 的“手札情報確認”锚点只适用于另一种内容滚动位置，不能据此
+        # 把当前可读指标页误判成未知页。
+        score_anchor = self._run_ocr(
+            context, panel_image, "ProduceRecognitionHIFRoundMetricsScoreAnchor", ("獲得スコア",), [32, 118, 220, 52]
+        )
+        judge_anchor = self._run_ocr(
+            context, panel_image, "ProduceRecognitionHIFRoundMetricsJudgeAnchor", (r"審[査查]基準",), [520, 125, 160, 58]
+        )
+        if score_anchor and score_anchor.hit and judge_anchor and judge_anchor.hit:
+            calibration = load_hif_roi_calibration()
+            score_roi = calibration.roi_for_round_metric_panel("current_score")
+            multiplier_roi = calibration.roi_for_round_metric("stage_multiplier")
+            if score_roi is None or multiplier_roi is None:
+                return self._stop_unsupported(context, "round_metrics_panel", "round_metrics_roi_not_calibrated")
+            score_result = self._run_ocr(
+                context,
+                panel_image,
+                "ProduceRecognitionHIFHandHistoryCurrentScore",
+                [r"\d+"],
+                list(score_roi),
+            )
+            score_best = getattr(score_result, "best_result", None) if score_result and score_result.hit else None
+            multiplier_result = self._run_ocr(
+                context,
+                image,
+                "ProduceRecognitionHIFRoundCurrentMultiplier",
+                [r".*\d+.*%"],
+                list(multiplier_roi),
+            )
+            multiplier_best = getattr(multiplier_result, "best_result", None) if multiplier_result and multiplier_result.hit else None
+            self._record_journal(
+                "round_metrics_panel",
+                "observe_round_metrics",
+                "observed",
+                details={
+                    "reads": {
+                        "current_score": {
+                            "roi": list(score_roi),
+                            "raw": str(getattr(score_best, "text", "")) if score_best else "",
+                            "confidence": float(getattr(score_best, "score", 0.0)) if score_best else 0.0,
+                        },
+                        "stage_multiplier": {
+                            "roi": list(multiplier_roi),
+                            "raw": str(getattr(multiplier_best, "text", "")) if multiplier_best else "",
+                            "confidence": float(getattr(multiplier_best, "score", 0.0)) if multiplier_best else 0.0,
+                        },
+                    },
+                    "params_available": False,
+                    "controller_inputs": 1,
+                },
+                before=panel_evidence,
+            )
+            close = [314, 1118, 92, 92]
+            if not self._click_box_center(context, close, double=False):
+                return self._stop_unsupported(context, "round_metrics_panel", "round_metrics_panel_close_failed")
+            time.sleep(self.ACTION_DELAY)
+            returned_image = self._get_screenshot_or_stop(context, screen_state)
+            if returned_image is None:
+                return True
+            returned = self._capture_evidence(returned_image, f"{screen_state}_after_hand_history_metrics")
+            if not frame_changed(panel_evidence, returned) or not self._matches_screen_profile(context, returned_image, screen_state):
+                return self._stop_unsupported(context, "round_metrics_panel", "round_page_not_restored_after_metrics")
+            self._record_journal(
+                "round_metrics_panel",
+                "close_round_metrics",
+                "verified",
+                details={"close_roi": close, "controller_inputs": 2},
+                before=panel_evidence,
+                after=returned,
+            )
+            return self._finish_observation(context, screen_state)
+        # 早期样本中的“手札履历”仍按原契约处理；此处只接受两种已采证页面。
+        if self._matches_screen_profile(context, panel_image, "hand_history_view"):
+            return self._stop_unsupported(context, "hand_history_view", "legacy_hand_history_metrics_not_supported")
+        if not self._matches_screen_profile(context, panel_image, "round_details"):
+            return self._stop_unsupported(context, screen_state, "round_details_not_confirmed")
+
+        details_image = panel_image
+        details_evidence = self._capture_evidence(details_image, "round_details_metrics_observed")
+
+        candidates = {
+            "current_score": ((42, 140, 130, 52), [r"\\d+"]),
+            "judge_threshold": ((528, 168, 120, 54), [r"\\d+"]),
+            "stage_multiplier": ((230, 445, 230, 68), [r".*\\d+.*%"]),
+        }
+        reads: dict[str, dict[str, Any]] = {}
+        for name, (roi, expected) in candidates.items():
+            result = self._run_ocr(context, details_image, f"ProduceRecognitionHIFRoundDetails_{name}", expected, list(roi))
+            best = getattr(result, "best_result", None) if result and result.hit else None
+            reads[name] = {
+                "roi": list(roi),
+                "raw": str(getattr(best, "text", "")) if best else "",
+                "confidence": float(getattr(best, "score", 0.0)) if best else 0.0,
+                "box": list(getattr(best, "box", [])) if best else [],
+            }
+        self._record_journal(
+            "round_details",
+            "observe_round_details_metrics",
+            "observed",
+            details={"reads": reads, "params_available": False, "controller_inputs": 2},
+            before=before,
+            after=details_evidence,
+        )
+
+        profile = load_hif_screen_profiles().get("round_details")
+        close = profile.regions.get("close") if profile else None
+        if close is None or not self._click_box_center(context, list(close), double=False):
+            return self._stop_unsupported(context, "round_details", "round_details_close_failed")
+        time.sleep(self.ACTION_DELAY)
+        returned_image = self._get_screenshot_or_stop(context, screen_state)
+        if returned_image is None:
+            return True
+        returned = self._capture_evidence(returned_image, f"{screen_state}_details_probe_returned")
+        if not frame_changed(details_evidence, returned) or not self._matches_screen_profile(context, returned_image, screen_state):
+            return self._stop_unsupported(context, "round_details", "round_page_not_restored_after_details_probe")
+        self._record_journal(
+            "round_details",
+            "close_round_details_metrics",
+            "verified",
+            details={"close_roi": list(close), "controller_inputs": 3},
+            before=details_evidence,
+            after=returned,
+        )
+        return self._finish_observation(context, screen_state)
+
+    def _probe_round_hand_details(
+        self,
+        context: Context,
+        image,
+        screen_state: str,
+        *,
+        allow_selected_start: bool = False,
+        return_details: bool = False,
+        post_execution: bool = False,
+    ) -> bool | list[dict[str, Any]]:
+        """逐张打开手牌详情读取标题；只切换选中态，绝不点击同一张牌两次。"""
+
+        if not self._matches_screen_profile(context, image, screen_state):
+            return self._stop_unsupported(context, screen_state, "round_page_not_confirmed_before_hand_probe")
+        selected = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSelectedCardMarkerProbePreflight",
+            [r".*SELECT.*", r".*SELEC.*"],
+            [0, 1080, 720, 100],
+        )
+        selected_at_start = bool(selected and selected.hit)
+        if selected_at_start and not allow_selected_start:
+            return self._stop_unsupported(context, screen_state, "round_hand_probe_requires_unselected_hand")
+        if allow_selected_start and not selected_at_start:
+            return self._stop_unsupported(context, screen_state, "round_hand_probe_requires_selected_hand")
+        session = get_runtime_hif_session()
+        probe_started = "round_post_hand_probe_started" if post_execution else "round_hand_probe_started"
+        if getattr(session, probe_started):
+            return self._stop_unsupported(context, screen_state, "round_hand_probe_already_started")
+        setattr(session, probe_started, True)
+        reader = ExamStateReader.from_context(context)
+        detections = sorted(
+            (detection for detection in reader._read_detections() if not detection.suppressed_reason),
+            key=lambda detection: detection.box[0],
+        )
+        if len(detections) < 3 or len(detections) > 5:
+            return self._stop_unsupported(context, screen_state, "round_hand_probe_card_count_not_supported")
+        observed = []
+        previous_box = None
+        if selected_at_start:
+            title, raw_title, title_confidence = self._read_selected_card_title(context, image, build_card_name_dict())
+            selected_targets = [
+                detection
+                for detection in detections
+                if normalize_card_name(detection.card_name.rstrip("+-")) == title
+            ]
+            selected_detection = selected_targets[0] if len(selected_targets) == 1 else self._selected_marker_detection(selected, detections)
+            if not title or selected_detection is None:
+                best = getattr(selected, "best_result", None)
+                marker_box = getattr(best, "box", None)
+                try:
+                    marker_box = list(marker_box)
+                except TypeError:
+                    marker_box = []
+                self._record_journal(
+                    screen_state,
+                    "probe_selected_hand_mapping",
+                    "rejected",
+                    details={
+                        "detail_title": title,
+                        "title_match_count": len(selected_targets),
+                        "selected_marker_box": marker_box,
+                        "detections": [
+                            {"box": list(detection.box), "card_name": detection.card_name, "label": detection.label}
+                            for detection in detections
+                        ],
+                    },
+                )
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_selected_target_not_unique")
+            selected_details = {
+                "index": detections.index(selected_detection) + 1,
+                "box": list(selected_detection.box),
+                "yolo_label": selected_detection.label,
+                "yolo_confidence": selected_detection.confidence,
+                "caption_raw": selected_detection.raw_card_name,
+                "caption_confidence": selected_detection.card_name_confidence,
+                "detail_title": title,
+                "detail_title_raw": raw_title,
+                "detail_title_confidence": title_confidence,
+                "already_selected": True,
+            }
+            observed.append(selected_details)
+            session.record_hand_detail_name(selected_detection.box, title)
+            selected_evidence = self._capture_evidence(image, f"{screen_state}_hand_probe_selected_start")
+            self._record_journal(
+                screen_state,
+                "probe_hand_card_detail",
+                "verified",
+                details=selected_details,
+                before=selected_evidence,
+            )
+            detections = [detection for detection in detections if detection is not selected_detection]
+
+        for index, detection in enumerate(detections, start=1):
+            if previous_box == detection.box:
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_duplicate_target")
+            before = self._capture_evidence(image, f"{screen_state}_hand_probe_{index}_before")
+            if not self._click_box_center(context, list(detection.box), double=False):
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_click_failed")
+            previous_box = detection.box
+            time.sleep(self.ACTION_DELAY)
+            image = self._get_screenshot_or_stop(context, screen_state)
+            if image is None:
+                return True
+            after = self._capture_evidence(image, f"{screen_state}_hand_probe_{index}_selected")
+            if not frame_changed(before, after) or not self._matches_screen_profile(context, image, screen_state):
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_selection_not_confirmed")
+            marker = None
+            title = raw_title = ""
+            title_confidence = 0.0
+            for title_attempt in range(3):
+                marker = self._run_ocr(
+                    context,
+                    image,
+                    "ProduceRecognitionHIFSelectedCardMarkerProbe",
+                    [r".*SELECT.*", r".*SELEC.*"],
+                    [0, 1080, 720, 100],
+                )
+                title, raw_title, title_confidence = self._read_selected_card_title(context, image, build_card_name_dict())
+                if marker and marker.hit and title:
+                    break
+                if title_attempt < 2:
+                    time.sleep(self.CLICK_DELAY)
+                    image = self._get_screenshot_or_stop(context, screen_state)
+                    if image is None or not self._matches_screen_profile(context, image, screen_state):
+                        return self._stop_unsupported(context, screen_state, "round_hand_probe_selection_lost_during_title_read")
+            if not marker or not marker.hit or not title:
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_title_not_confirmed")
+            details = {
+                "index": index,
+                "box": list(detection.box),
+                "yolo_label": detection.label,
+                "yolo_confidence": detection.confidence,
+                "caption_raw": detection.raw_card_name,
+                "caption_confidence": detection.card_name_confidence,
+                "detail_title": title,
+                "detail_title_raw": raw_title,
+                "detail_title_confidence": title_confidence,
+            }
+            observed.append(details)
+            session.record_hand_detail_name(detection.box, title)
+            self._record_journal(screen_state, "probe_hand_card_detail", "verified", details=details, before=before, after=after)
+        self._record_journal(
+            screen_state,
+            "probe_hand_details",
+            "verified",
+            details={"cards": observed, "leaves_last_card_selected": True},
+        )
+        if return_details:
+            return observed
+        return self._finish_observation(context, screen_state)
+
+    def _confirm_preselected_card(
+        self,
+        context: Context,
+        image,
+        screen_state: str,
+        round_: ExamRound,
+        total_turns: int,
+        round_key: str,
+        target_name: str,
+    ) -> bool:
+        """恢复已通过首次点击选中的卡牌，仅执行绑定目标的第二次点击。"""
+
+        before = self._capture_evidence(image, f"{screen_state}_preselected_before")
+        if not self._matches_screen_profile(context, image, screen_state) or not self._card_selection_confirmed(context, image, target_name):
+            return self._stop_unsupported(context, screen_state, "preselected_card_not_confirmed")
+        reader = ExamStateReader.from_context(context)
+        detections = reader._read_detections()
+        targets = [
+            detection
+            for detection in detections
+            if not detection.suppressed_reason
+            and detection.label != "useless"
+            and normalize_card_name(detection.card_name) == target_name
+        ]
+        if len(targets) != 1:
+            return self._stop_unsupported(context, screen_state, "preselected_card_target_not_unique")
+        target = targets[0]
+        if not self._click_box_center(context, list(target.box), double=False):
+            return self._stop_unsupported(context, screen_state, "preselected_card_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, screen_state)
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, f"{screen_state}_preselected_after")
+        ok, details = self._read_card_postcondition(
+            context,
+            after_image,
+            screen_state,
+            round_,
+            total_turns,
+            target,
+            detections,
+        )
+        if not ok:
+            reason = str(details.get("reason", "preselected_card_postcondition_failed"))
+            self._record_journal(
+                screen_state,
+                "confirm_selected_card",
+                "unverified",
+                details={**details, "reason": reason, "card": target_name},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, screen_state, reason)
+        self._record_journal(
+            screen_state,
+            "confirm_selected_card",
+            "verified",
+            details={**details, "card": target_name},
+            before=before,
+            after=after,
+        )
+        get_runtime_hif_session().record_card(round_key, target_name)
+        return self._finish_observation(context, round_key)
+
+    def _probe_round_deck_size(self, context: Context, image, screen_state: str):
+        """打开只读持有卡列表读取总数，关闭后必须回到同一 Round。"""
+
+        initial = self._capture_evidence(image, f"{screen_state}_deck_probe_initial")
+
+        if self._matches_screen_profile(context, image, "hand_history_view"):
+            hand_evidence = self._capture_evidence(image, "hand_history_observed")
+            self._record_journal(
+                "hand_history_view",
+                "observe_hand_history",
+                "observed",
+                details={"visible_hand_card_count": 3, "reason": "read_only_hand_evidence"},
+                before=hand_evidence,
+            )
+            hand_close = self._find_text_option(
+                context,
+                image,
+                ("閉じる",),
+                self._observed_button_roi("hand_history_view", "close", [225, 1110, 275, 100]),
+            )
+            if hand_close is None or not self._click_box_center(context, hand_close.best_result.box, double=False):
+                self._stop_unsupported(context, "hand_history_view", "hand_history_close_failed")
+                return None, None
+            time.sleep(self.ACTION_DELAY)
+            image = self._get_screenshot_or_stop(context, "round_details")
+            if image is None:
+                return None, None
+            details_after_hand = self._capture_evidence(image, "round_details_after_hand_history")
+            if not frame_changed(hand_evidence, details_after_hand) or not self._matches_screen_profile(context, image, "round_details"):
+                self._stop_unsupported(context, "hand_history_view", "round_details_not_restored_after_hand_history")
+                return None, None
+            self._record_journal(
+                "hand_history_view",
+                "close_hand_history",
+                "verified",
+                before=hand_evidence,
+                after=details_after_hand,
+            )
+
+        if self._matches_screen_profile(context, image, "round_details"):
+            details_before = self._capture_evidence(image, "round_details_before_close")
+            details_profile = load_hif_screen_profiles().get("round_details")
+            details_close = details_profile.regions.get("close") if details_profile else None
+            if details_close is None or not self._click_box_center(context, list(details_close), double=False):
+                self._stop_unsupported(context, "round_details", "round_details_close_failed")
+                return None, None
+            time.sleep(self.ACTION_DELAY)
+            image = self._get_screenshot_or_stop(context, screen_state)
+            if image is None:
+                return None, None
+            round_after_details = self._capture_evidence(image, f"{screen_state}_after_details")
+            if not frame_changed(details_before, round_after_details) or not self._matches_screen_profile(context, image, screen_state):
+                self._stop_unsupported(context, "round_details", "round_page_not_restored_after_details")
+                return None, None
+            self._record_journal(
+                "round_details",
+                "close_round_details",
+                "verified",
+                details={"close_roi": list(details_close)},
+                before=details_before,
+                after=round_after_details,
+            )
+
+        if not self._matches_screen_profile(context, image, screen_state):
+            self._stop_unsupported(context, screen_state, "round_page_not_confirmed_before_deck_probe")
+            return None, None
+        profile = load_hif_screen_profiles().get(screen_state)
+        deck_button = profile.regions.get("deck_button") if profile else None
+        if deck_button is None:
+            self._stop_unsupported(context, screen_state, "round_deck_button_not_calibrated")
+            return None, None
+        before = self._capture_evidence(image, f"{screen_state}_deck_probe_before")
+        if not self._click_box_center(context, list(deck_button), double=False):
+            self._stop_unsupported(context, screen_state, "round_deck_button_click_failed")
+            return None, None
+        time.sleep(self.ACTION_DELAY)
+        deck_image = self._get_screenshot_or_stop(context, "skill_deck_view")
+        if deck_image is None:
+            return None, None
+        deck_evidence = self._capture_evidence(deck_image, "skill_deck_view_opened")
+        if not frame_changed(before, deck_evidence) or not self._matches_screen_profile(context, deck_image, "skill_deck_view"):
+            self._stop_unsupported(context, screen_state, "skill_deck_view_not_confirmed")
+            return None, None
+        self._record_journal(
+            screen_state,
+            "open_skill_deck",
+            "verified",
+            details={"button_roi": list(deck_button)},
+            before=before,
+            after=deck_evidence,
+        )
+        deck_profile = load_hif_screen_profiles().get("skill_deck_view")
+        tab_roi = list(deck_profile.regions["tab"]) if deck_profile and "tab" in deck_profile.regions else [27, 1010, 666, 74]
+        count_read = self._run_ocr(
+            context,
+            deck_image,
+            "ProduceRecognitionHIFRoundDeckCount",
+            [r".*スキルカード.*\d+.*"],
+            tab_roi,
+        )
+        count_text = str(getattr(getattr(count_read, "best_result", None), "text", "")) if count_read and count_read.hit else ""
+        match = re.search(r"[（(](\d+)[）)]", count_text)
+        if match is None:
+            self._stop_unsupported(context, "skill_deck_view", "round_deck_count_not_readable")
+            return None, None
+        deck_size = int(match.group(1))
+        close = self._find_text_option(
+            context,
+            deck_image,
+            ("閉じる",),
+            self._observed_button_roi("skill_deck_view", "close", [232, 1119, 256, 82]),
+        )
+        if close is None or not self._click_box_center(context, close.best_result.box, double=False):
+            self._stop_unsupported(context, "skill_deck_view", "round_deck_close_failed")
+            return None, None
+        time.sleep(self.ACTION_DELAY)
+        returned_image = self._get_screenshot_or_stop(context, screen_state)
+        if returned_image is None:
+            return None, None
+        returned = self._capture_evidence(returned_image, f"{screen_state}_deck_probe_returned")
+        if not self._matches_screen_profile(context, returned_image, screen_state):
+            self._stop_unsupported(context, "skill_deck_view", "round_page_not_restored_after_deck_probe")
+            return None, None
+        self._record_journal(
+            "skill_deck_view",
+            "close_skill_deck",
+            "verified",
+            details={"deck_size": deck_size},
+            before=deck_evidence,
+            after=returned,
+        )
+        self._record_journal(
+            screen_state,
+            "probe_deck_size",
+            "verified",
+            details={"deck_size": deck_size},
+            before=initial,
+            after=returned,
+        )
+        return deck_size, returned_image
+
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         params = self._get_action_params(argv)
         round_key = str(params.get("round", "round1"))
@@ -3261,6 +4356,288 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             )
             return self._stop_unsupported(context, screen_state, validation.reason)
 
+        confirm_selected_card = params.get("confirm_selected_card")
+        if isinstance(confirm_selected_card, str) and confirm_selected_card:
+            if mode is not HIFExecutionMode.SINGLE_STEP:
+                return self._stop_unsupported(context, screen_state, "confirm_selected_card_requires_single_step")
+            return self._confirm_preselected_card(
+                context,
+                before_image,
+                screen_state,
+                round_,
+                total_turns,
+                round_key,
+                normalize_card_name(confirm_selected_card),
+            )
+
+        if params.get("round_probe") == "hand_details":
+            probe_mode = parse_execution_mode(params.get("round_probe_execution_mode"))
+            if probe_mode is not HIFExecutionMode.SINGLE_STEP:
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_requires_single_step")
+            try:
+                return self._probe_round_hand_details(context, before_image, screen_state)
+            except Exception as error:
+                reason = f"round_hand_probe_exception:{type(error).__name__}"
+                self._record_journal(
+                    screen_state,
+                    "probe_hand_details",
+                    "rejected",
+                    details={"reason": reason, "error": str(error)},
+                    before=before,
+                )
+                return self._stop_unsupported(context, screen_state, reason)
+        if params.get("round_probe") in {
+            "hand_details_map_observe",
+            "hand_details_map_deck_observe",
+            "hand_details_map_deck_observe_from_selected",
+            "hand_details_map_deck_select_one_from_selected",
+            "hand_details_map_deck_play_one",
+            "hand_details_map_deck_select_explicit",
+        }:
+            probe_mode = parse_execution_mode(params.get("round_probe_execution_mode"))
+            if probe_mode is not HIFExecutionMode.SINGLE_STEP:
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_requires_single_step")
+            reader = ExamStateReader.from_context(context)
+            health = self._get_health(context, before_image)
+            observation = reader.read_exam_observation(round_, total_turns, health["current"] if health else None)
+            initial_turn = observation.state.turn
+            missing_before = observation.missing_fields
+            try:
+                details = self._probe_round_hand_details(
+                    context,
+                    before_image,
+                    screen_state,
+                    allow_selected_start=params.get("round_probe") == "hand_details_map_deck_observe_from_selected",
+                    return_details=True,
+                )
+            except Exception as error:
+                reason = f"round_hand_probe_exception:{type(error).__name__}"
+                self._record_journal(
+                    screen_state,
+                    "probe_hand_details_map",
+                    "rejected",
+                    details={"reason": reason, "error": str(error)},
+                    before=before,
+                )
+                return self._stop_unsupported(context, screen_state, reason)
+            if not isinstance(details, list):
+                return True
+            session = get_runtime_hif_session()
+            active = self._complete_current_run_hand_observation(observation, session)
+            topic_action = None
+            if params.get("round_probe") in {
+                "hand_details_map_deck_observe",
+                "hand_details_map_deck_observe_from_selected",
+                "hand_details_map_deck_select_one_from_selected",
+                "hand_details_map_deck_play_one",
+                "hand_details_map_deck_select_explicit",
+            }:
+                selected_image = self._get_screenshot_or_stop(context, screen_state)
+                if selected_image is None:
+                    return True
+                deck_size, returned_image = self._probe_round_deck_size(context, selected_image, screen_state)
+                if deck_size is None or returned_image is None:
+                    return True
+                selected_marker = self._run_ocr(
+                    context,
+                    returned_image,
+                    "ProduceRecognitionHIFSelectedCardMarkerAfterDeckProbe",
+                    [r".*SELECT.*", r".*SELEC.*"],
+                    [0, 1080, 720, 100],
+                )
+                if selected_marker and selected_marker.hit:
+                    return self._stop_unsupported(context, screen_state, "deck_probe_did_not_clear_selected_hand")
+                post_health = self._get_health(context, returned_image)
+                observation = reader.read_exam_observation(round_, total_turns, post_health["current"] if post_health else None)
+                if observation.state.turn <= 0 < initial_turn:
+                    observation.state.turn = initial_turn
+                    observation.numerics["turn"] = NumericRead("turn", f"retained_initial={initial_turn}", initial_turn)
+                observation.numerics["deck_size"] = NumericRead("deck_size", str(deck_size), deck_size)
+                observation.state.deck_size = deck_size
+                observation.missing_fields = tuple(field for field in observation.missing_fields if field != "deck_size")
+                active = self._complete_current_run_hand_observation(observation, session)
+                verified_detail_names = [normalize_card_name(str(detail.get("detail_title", ""))) for detail in details]
+                topic_action = choose_high_good_condition_topic_card(observation.state, verified_detail_names)
+            if params.get("round_probe") in {
+                "hand_details_map_deck_play_one",
+                "hand_details_map_deck_select_one_from_selected",
+                "hand_details_map_deck_select_explicit",
+            }:
+                explicit_card_name = normalize_card_name(str(params.get("explicit_card_name", "")))
+                if params.get("round_probe") == "hand_details_map_deck_select_explicit":
+                    if explicit_card_name != "存在感":
+                        return self._stop_unsupported(context, screen_state, "round1_explicit_card_not_authorized")
+                    strategy_action = CardAction(ActionKind.PLAY_CARD, explicit_card_name, "用户授权的存在感单次首次选择")
+                else:
+                    strategy_action = topic_action or choose_observed_round1_post_topic_card(
+                        observation.state, verified_detail_names
+                    )
+                    strategy_action = strategy_action or choose_observed_round1_post_shikirinaoshi_card(
+                        observation.state, verified_detail_names
+                    )
+                if strategy_action is None or strategy_action.kind is not ActionKind.PLAY_CARD:
+                    self._record_journal(
+                        screen_state,
+                        "round1_exact_strategy",
+                        "rejected",
+                        details={
+                            "mapped_hand": [normalize_card_name(detection.card_name) for detection in active],
+                            "state": {
+                                "turn": observation.state.turn,
+                                "good_condition": observation.state.good_condition_turns,
+                                "focus": observation.state.focus,
+                                "stamina": observation.state.stamina,
+                                "deck_size": observation.state.deck_size,
+                            },
+                        },
+                    )
+                    return self._stop_unsupported(context, screen_state, "round1_detail_exact_strategy_not_available")
+                target, approval_reason = self._approve_round1_detail_mapped_topic_target(
+                    observation,
+                    details,
+                    selected_at_start=False,
+                    expected_card=normalize_card_name(strategy_action.target_card),
+                    expected_hand_size=4 if normalize_card_name(strategy_action.target_card) == "仕切り直し" else 5,
+                )
+                if target is None:
+                    return self._stop_unsupported(context, screen_state, approval_reason)
+                if (
+                    strategy_action is None
+                    or strategy_action.kind is not ActionKind.PLAY_CARD
+                    or normalize_card_name(strategy_action.target_card) != normalize_card_name(target.card_name)
+                ):
+                    return self._stop_unsupported(context, screen_state, "round1_detail_exact_strategy_not_topic")
+                calibration = load_hif_roi_calibration()
+                if not calibration.supports_exam_fields(self._DIRECT_CARD_EXECUTION_FIELDS):
+                    return self._stop_unsupported(context, screen_state, "exam_roi_calibration_not_execution_ready")
+                approval = approve_card_execution(
+                    HIFExecutionMode.SINGLE_STEP,
+                    screen_confidence=observation.screen_confidence,
+                    missing_fields=observation.missing_fields,
+                    target_count=1,
+                    postcondition_supported=True,
+                )
+                if not approval.should_execute:
+                    return self._stop_unsupported(context, screen_state, approval.reason)
+                execution_before = self._capture_evidence(returned_image, f"{screen_state}_detail_map_play_before")
+                if not self._click_box_center(context, list(target.box), double=False):
+                    return self._stop_unsupported(context, screen_state, "card_click_failed")
+                time.sleep(self.ACTION_DELAY)
+                selected_image = self._get_screenshot_or_stop(context, screen_state)
+                if selected_image is None:
+                    return True
+                selected_after = self._capture_evidence(selected_image, f"{screen_state}_detail_map_play_selected")
+                if not frame_changed(execution_before, selected_after) or not self._card_selection_confirmed(
+                    context, selected_image, normalize_card_name(target.card_name)
+                ):
+                    return self._stop_unsupported(context, screen_state, "round1_detail_selection_not_confirmed")
+                if params.get("round_probe") in {
+                    "hand_details_map_deck_select_one_from_selected",
+                    "hand_details_map_deck_select_explicit",
+                }:
+                    self._record_journal(
+                        screen_state,
+                        "select_card",
+                        "verified",
+                        details={"card": target.card_name, "reason": strategy_action.reason, "confirmation_clicks": 0},
+                        before=execution_before,
+                        after=selected_after,
+                    )
+                    return self._finish_observation(context, round_key)
+                if not self._click_box_center(context, list(target.box), double=False):
+                    return self._stop_unsupported(context, screen_state, "selected_card_confirm_click_failed")
+                time.sleep(self.ACTION_DELAY)
+                after_image = self._get_screenshot_or_stop(context, screen_state)
+                if after_image is None:
+                    return True
+                postcondition_ok, postcondition_details = self._read_card_postcondition(
+                    context,
+                    after_image,
+                    screen_state,
+                    round_,
+                    total_turns,
+                    target,
+                    observation.detections,
+                    before_state=observation.state,
+                )
+                if not postcondition_ok:
+                    return self._stop_unsupported(
+                        context, screen_state, str(postcondition_details.get("reason", "card_postcondition_failed"))
+                    )
+                self._record_journal(
+                    screen_state,
+                    "play_card",
+                    "verified",
+                    details={"card": target.card_name, **postcondition_details},
+                    before=execution_before,
+                    after=self._capture_evidence(after_image, f"{screen_state}_detail_map_play_after"),
+                )
+                session.record_card(round_key, target.card_name)
+                return self._finish_observation(context, round_key)
+            self._record_journal(
+                screen_state,
+                "probe_hand_details_map",
+                "observed",
+                details={
+                    "cards": details,
+                    "missing_before": missing_before,
+                    "missing_after": observation.missing_fields,
+                    "mapped_hand": [normalize_card_name(detection.card_name) for detection in active],
+                    "state": {
+                        "round": observation.state.round.value,
+                        "turn": observation.state.turn,
+                        "good_condition": observation.state.good_condition_turns,
+                        "focus": observation.state.focus,
+                        "stamina": observation.state.stamina,
+                        "reprise": observation.state.reprise_count,
+                        "deck_size": observation.state.deck_size,
+                    },
+                    "target_card": topic_action.target_card if topic_action else None,
+                    "target_reason": topic_action.reason if topic_action else "",
+                    "controller_inputs": len(details),
+                },
+                before=before,
+            )
+            return self._finish_observation(context, round_key)
+        if params.get("round_probe") == "hand_details_selected":
+            probe_mode = parse_execution_mode(params.get("round_probe_execution_mode"))
+            if probe_mode is not HIFExecutionMode.SINGLE_STEP:
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_requires_single_step")
+            try:
+                return self._probe_round_hand_details(context, before_image, screen_state, allow_selected_start=True)
+            except Exception as error:
+                reason = f"round_hand_probe_exception:{type(error).__name__}"
+                self._record_journal(
+                    screen_state,
+                    "probe_hand_details",
+                    "rejected",
+                    details={"reason": reason, "error": str(error)},
+                    before=before,
+                )
+                return self._stop_unsupported(context, screen_state, reason)
+        if params.get("round_probe") == "selected_hand_detail_read_only":
+            return self._probe_selected_hand_detail(context, before_image, screen_state)
+        if params.get("round_probe") == "turn_roi_candidates":
+            return self._probe_turn_roi_candidates(context, before_image, screen_state)
+        if params.get("round_probe") == "counter_roi_candidates":
+            return self._probe_counter_roi_candidates(context, before_image, screen_state)
+        if params.get("round_probe") == "details_metrics":
+            probe_mode = parse_execution_mode(params.get("round_probe_execution_mode"))
+            if probe_mode is not HIFExecutionMode.SINGLE_STEP:
+                return self._stop_unsupported(context, screen_state, "round_details_probe_requires_single_step")
+            return self._probe_round_details_metrics(context, before_image, screen_state)
+
+        probed_deck_size = None
+        if params.get("round_probe") == "deck_count":
+            probe_mode = parse_execution_mode(params.get("round_probe_execution_mode"))
+            if probe_mode is not HIFExecutionMode.SINGLE_STEP:
+                return self._stop_unsupported(context, screen_state, "round_deck_probe_requires_single_step")
+            probed_deck_size, returned_image = self._probe_round_deck_size(context, before_image, screen_state)
+            if probed_deck_size is None or returned_image is None:
+                return True
+            before_image = returned_image
+            before = self._capture_evidence(before_image, f"{screen_state}_before")
+
         if mode is not HIFExecutionMode.OBSERVE and preset.preset_id != "rinami_good_condition_safe":
             self._record_journal(
                 screen_state,
@@ -3277,10 +4654,41 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             total_turns,
             health["current"] if health else None,
         )
+        if probed_deck_size is not None:
+            observation.numerics["deck_size"] = NumericRead("deck_size", str(probed_deck_size), probed_deck_size)
+            observation.state.deck_size = probed_deck_size
+            observation.missing_fields = tuple(field for field in observation.missing_fields if field != "deck_size")
+        initial_reprise_inferred = self._infer_initial_reprise(observation, total_turns)
         session = get_runtime_hif_session()
+        reprise_recovery = None
+        if params.get("reprise_recovery") == "after_entertainment_turn8":
+            recovered, reprise_recovery = self._recover_reprise_after_entertainment(observation, session, round_key, total_turns)
+            if not recovered:
+                self._record_journal(
+                    screen_state,
+                    "recover_reprise",
+                    "rejected",
+                    details={"reason": reprise_recovery},
+                    before=before,
+                )
+                return self._stop_unsupported(context, screen_state, reprise_recovery)
+        if not observation.missing_fields:
+            observation.screen_confidence = 1.0
         observation.state.oneesan_used = session.card_was_played(round_key, "お姉さんの感覚")
         observation.state.natural_finisher_used = session.card_was_played(round_key, "自然体の魅力")
         card_action = GarakutaRinamiStrategy(ProfilePayload.default()).decide(observation.state)
+        card_action = self._resolve_initial_default_target(card_action, observation, total_turns)
+        if card_action.kind is ActionKind.PLAY_CARD and not card_action.target_card:
+            fallback = choose_observed_round1_recovery_card(
+                observation.state,
+                [
+                    normalize_card_name(detection.card_name)
+                    for detection in observation.detections
+                    if detection.card_name and not detection.suppressed_reason and detection.label != "useless"
+                ],
+            )
+            if fallback is not None:
+                card_action = fallback
         action_details = {
             "mode": mode.value,
             "round": round_.value,
@@ -3289,7 +4697,24 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             "reason": card_action.reason,
             "screen_confidence": observation.screen_confidence,
             "missing_fields": observation.missing_fields,
-            "detected_cards": [d.card_name for d in observation.detections if d.card_name],
+            "initial_reprise_inferred": initial_reprise_inferred,
+            "reprise_recovery": reprise_recovery,
+            "detected_cards": [
+                {
+                    "label": getattr(detection, "label", "cards"),
+                    "box": list(detection.box),
+                    "confidence": getattr(detection, "confidence", 0.0),
+                    "card_name": detection.card_name,
+                    "raw_card_name": getattr(detection, "raw_card_name", detection.card_name),
+                    "card_name_confidence": getattr(detection, "card_name_confidence", 0.0),
+                    "suppressed_reason": getattr(detection, "suppressed_reason", ""),
+                }
+                for detection in observation.detections
+            ],
+            "numeric_reads": {
+                name: {"raw": reading.raw, "value": reading.value, "flow": reading.flow}
+                for name, reading in getattr(observation, "numerics", {}).items()
+            },
         }
 
         if mode is HIFExecutionMode.OBSERVE:
@@ -3308,7 +4733,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             return self._stop_unsupported(context, screen_state, "continuous_mode_requires_live_validation")
 
         calibration = load_hif_roi_calibration()
-        if not calibration.is_exam_execution_ready:
+        if not calibration.supports_exam_fields(self._DIRECT_CARD_EXECUTION_FIELDS):
             self._record_journal(
                 screen_state,
                 "card_decision",
@@ -3323,13 +4748,24 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             )
             return self._stop_unsupported(context, screen_state, "exam_roi_calibration_not_execution_ready")
 
+        if card_action.kind is ActionKind.PLAY_CARD and not card_action.target_card:
+            approval_reason = "card_decision_target_not_explicit"
+            self._record_journal(
+                screen_state,
+                "card_decision",
+                "rejected",
+                details={**action_details, "reason": approval_reason, "target_count": 0},
+                before=before,
+            )
+            return self._stop_unsupported(context, screen_state, approval_reason)
+
         targets = self._find_play_card_targets(card_action, observation.detections)
         approval = approve_card_execution(
             mode,
             screen_confidence=observation.screen_confidence,
             missing_fields=observation.missing_fields,
             target_count=len(targets),
-            postcondition_supported=False,
+            postcondition_supported=True,
         )
         if card_action.kind is not ActionKind.PLAY_CARD:
             approval_reason = f"action_kind_not_supported:{card_action.kind.value}"
@@ -3380,17 +4816,55 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             )
             return self._stop_unsupported(context, screen_state, "post_click_frame_unchanged")
 
+        if self._card_selection_confirmed(context, after_image, normalize_card_name(target.card_name)):
+            self._record_journal(
+                screen_state,
+                "select_card",
+                "verified",
+                details={**action_details, "card": target.card_name},
+                before=before,
+                after=after,
+            )
+            if not self._click_box_center(context, list(target.box), double=False):
+                return self._stop_unsupported(context, screen_state, "selected_card_confirm_click_failed")
+            time.sleep(self.ACTION_DELAY)
+            after_image = self._get_screenshot_or_stop(context, screen_state)
+            if after_image is None:
+                return True
+            after = self._capture_evidence(after_image, f"{screen_state}_after_confirm")
+
+        postcondition_ok, postcondition_details = self._read_card_postcondition(
+            context,
+            after_image,
+            screen_state,
+            round_,
+            total_turns,
+            target,
+            observation.detections,
+        )
+        if not postcondition_ok:
+            reason = str(postcondition_details.get("reason", "card_postcondition_failed"))
+            self._record_journal(
+                screen_state,
+                "play_card",
+                "unverified",
+                details={**action_details, **postcondition_details, "reason": reason, "card": target.card_name},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, screen_state, reason)
+
         self._record_journal(
             screen_state,
             "play_card",
             "verified",
-            details={**action_details, "card": target.card_name},
+            details={**action_details, **postcondition_details, "card": target.card_name},
             before=before,
             after=after,
         )
         session.record_card(round_key, target.card_name)
         logger.success(f"HIF {screen_state} 单步出牌已验证: {target.card_name}")
-        return True
+        return self._finish_observation(context, round_key)
 
     @staticmethod
     def _find_play_card_targets(card_action: CardAction, detections: list[CardDetection]) -> list[CardDetection]:
@@ -3400,11 +4874,20 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             return []
         target_name = normalize_card_name(card_action.target_card) if card_action.target_card else ""
         if target_name:
-            return [detection for detection in detections if normalize_card_name(detection.card_name) == target_name]
+            return [
+                detection
+                for detection in detections
+                if not getattr(detection, "suppressed_reason", "")
+                and getattr(detection, "label", "cards") != "useless"
+                and normalize_card_name(detection.card_name) == target_name
+            ]
         return [
             detection
             for detection in detections
-            if detection.card_name and is_good_condition_card(normalize_card_name(detection.card_name))
+            if detection.card_name
+            and not getattr(detection, "suppressed_reason", "")
+            and getattr(detection, "label", "cards") != "useless"
+            and is_good_condition_card(normalize_card_name(detection.card_name))
         ]
 
     @staticmethod

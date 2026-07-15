@@ -29,6 +29,9 @@
 - 变卡源卡确认必须持有同一运行期记录的目标卡；不能从 Action 参数重建丢失状态。
 - 奖励页 Custom Recognition 的 `box` 与 `detail` 在命中、无框命中和未命中时均有离线契约测试。
 - Round 单步出牌尚无“手牌/回合/数值确实更新”的实机后验，因此审批器固定声明 `postcondition_supported=false`，即使 ROI 与候选完整也不得点击。
+- `--round1-state-observe` 必须隔离根路由；它只允许 `Round1Flag → Round1Action → Stop`，以免正式根路由的通用 `Click_1` 进入观察任务。实机 Maa 日志必须没有 `MaaControllerPostClickV2` / `MaaControllerPostSwipeV2` 记录。
+- 已采证回合数字可使用高置信模板兜底；其余 Round 数值要求三次采样中至少两次解析为同一数值，三种不同读数或无法解析时必须写入 `missing_fields`，禁止出牌。
+- 即使状态完整，`CardAction.target_card` 为空的泛化策略动作也必须以 `card_decision_target_not_explicit` 安全停止；不得从多个同类非灰手牌中猜选。
 - Live 快进尚无目标页后验，`skip_once` 只记录并安全停止；不得把动画帧变化当作快进成功。
 - 回忆照片、生成、预览和结算按钮必须依次命中声明的下一页面；变化后的未知帧进入 `ProduceHIFUnknownStop`。
 

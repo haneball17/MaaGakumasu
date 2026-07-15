@@ -21,10 +21,12 @@
 
 from __future__ import annotations
 
+import time
 from typing import TYPE_CHECKING, Protocol
 from dataclasses import dataclass
 
 from agent.hif.calibration import load_hif_roi_calibration
+from agent.hif.round_metrics import RoundMetrics, build_round_metrics
 from agent.hif.decisions.state import (
     ParamSet,
     ExamRound,
@@ -61,7 +63,29 @@ _NUMERIC_LABELS = {
     "flow": "当前流 Vo/Da/Vi",
     "deck_size": "山札张数",
     "p_drinks": "持有Pドリンク",
+    "stamina": "体力",
 }
+
+_NUMERIC_EXPECTED = {
+    "flow": [".*(?:Vo|Da|Vi|ボーカル|ダンス|ビジュアル).*"],
+    "p_drinks": [],
+}
+
+_ROUND_METRIC_LABELS = {
+    "param_vo": "Vo参数",
+    "param_da": "Da参数",
+    "param_vi": "Vi参数",
+    "current_score": "局内实时分数",
+    "stage_multiplier": "当前审查倍率",
+}
+
+_TURN_DIGIT_TEMPLATES = {
+    7: "produce/HIF/turn_digits/7.png",
+    8: "produce/HIF/turn_digits/8.png",
+    9: "produce/HIF/turn_digits/9.png",
+}
+_TURN_DIGIT_ROI = (13, 43, 120, 128)
+_TURN_DIGIT_MIN_CONFIDENCE = 0.95
 
 
 def _load_numeric_roi() -> dict[str, NumericROI]:
@@ -75,6 +99,17 @@ def _load_numeric_roi() -> dict[str, NumericROI]:
 
 
 _NUMERIC_ROI = _load_numeric_roi()
+
+
+def _load_round_metric_roi() -> dict[str, NumericROI]:
+    calibration = load_hif_roi_calibration()
+    return {
+        key: NumericROI(label, calibration.roi_for_round_metric(key) or (0, 0, 0, 0))
+        for key, label in _ROUND_METRIC_LABELS.items()
+    }
+
+
+_ROUND_METRIC_ROI = _load_round_metric_roi()
 
 
 # ---------------------------------------------------------------------------
@@ -93,6 +128,10 @@ class CardDetection:
     label: str
     box: tuple[int, int, int, int]
     card_name: str = ""
+    raw_card_name: str = ""
+    confidence: float = 0.0
+    card_name_confidence: float = 0.0
+    suppressed_reason: str = ""
 
 
 @dataclass(slots=True)
@@ -121,8 +160,49 @@ class ExamStateObservation:
     state: ExamState
     detections: list[CardDetection]
     numerics: dict[str, NumericRead]
+    round_metrics: RoundMetrics
     missing_fields: tuple[str, ...]
     screen_confidence: float
+
+
+def _hand_card_name_roi(box: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
+    """返回实机卡牌底部标题栏 ROI；保留足够上下留白供 OCR 检测。"""
+
+    x, y, width, height = box
+    top_offset = int(height * 0.68)
+    if width < 160:
+        # 五张手牌会压缩到约 140px 宽；沿用宽卡的横向扩展会吞入相邻标题，
+        # 使 OCR 得到空名或拼接名。窄框只读自身可见标题带。
+        return x, y + top_offset, width, max(1, height - top_offset)
+    padded_x = max(0, x - 20)
+    padded_width = min(720 - padded_x, width + 40)
+    return padded_x, y + top_offset, padded_width, max(1, height - top_offset)
+
+
+def _suppress_overlapping_card_detections(detections: list[CardDetection]) -> None:
+    """标记被高置信卡框覆盖的窄重复框，同时保留原始检测证据。"""
+
+    accepted: list[CardDetection] = []
+    for detection in sorted(detections, key=lambda item: item.confidence, reverse=True):
+        if detection.suppressed_reason:
+            continue
+        x, y, width, height = detection.box
+        area = width * height
+        if area <= 0:
+            detection.suppressed_reason = "invalid_box"
+            continue
+        duplicate = False
+        for existing in accepted:
+            ex, ey, ew, eh = existing.box
+            overlap_width = max(0, min(x + width, ex + ew) - max(x, ex))
+            overlap_height = max(0, min(y + height, ey + eh) - max(y, ey))
+            if overlap_width * overlap_height / area >= 0.45:
+                duplicate = True
+                break
+        if duplicate:
+            detection.suppressed_reason = "overlap_duplicate"
+        else:
+            accepted.append(detection)
 
 
 _CARD_EXECUTION_NUMERICS = (
@@ -163,13 +243,14 @@ def build_hand_summary(detections: list[CardDetection]) -> HandSummary:
     - good_condition_card_count：label=suggestions 的数量 + 命中好调卡名的数量
     - draw_available/swap_hand_available：当前未识别（留 False，待实机补按钮识别）
     """
-    card_names = [normalize_card_name(d.card_name) for d in detections if d.card_name]
+    active = [detection for detection in detections if not detection.suppressed_reason]
+    card_names = [normalize_card_name(d.card_name) for d in active if d.card_name]
     has_shizen = "自然体の魅力" in card_names
     has_oneesan = "お姉さんの感覚" in card_names
     has_kokuminteki = "国民的アイドル" in card_names
 
     # 好调卡计数：YOLO suggestions 标签 + OCR 命中的好调卡名（去重避免双计）
-    suggestion_count = sum(1 for d in detections if d.label == "suggestions")
+    suggestion_count = sum(1 for d in active if d.label == "suggestions")
     ocr_good_count = sum(1 for n in set(card_names) if is_good_condition_card(n))
     good_count = max(suggestion_count, ocr_good_count)
 
@@ -190,6 +271,7 @@ def build_exam_state(
     round_: ExamRound,
     total_turns: int,
     stamina: int,
+    round_metrics: RoundMetrics | None = None,
 ) -> ExamState:
     """从 HandSummary + 数值字段组装 ExamState（纯逻辑，可单测）。
 
@@ -223,7 +305,9 @@ def build_exam_state(
         oneesan_used=False,  # 是否本レッスン已用お姉さん，需跨回合状态（Step4 在 action 内维护）
         natural_finisher_used=False,  # 同上
         available_p_drinks=p_drinks,
-        params=ParamSet(),  # 三维参数，当前不识别（仅影响参数感知告警，非关键）
+        params=round_metrics.params if round_metrics and round_metrics.is_complete else ParamSet(),
+        current_score=round_metrics.current_score if round_metrics and round_metrics.is_complete else None,
+        stage_multiplier=round_metrics.stage_multiplier if round_metrics and round_metrics.is_complete else None,
     )
 
 
@@ -247,20 +331,68 @@ class _MaafwOcrAdapter:
 
         复用 produce_hif.py 的 pipeline_override 机制调用 maafw OCR。
         """
-        detail = self.context.run_recognition(
-            name,
-            self.context.tasker.controller.post_screencap().wait().get(),
-            pipeline_override={
-                name: {
-                    "recognition": "OCR",
-                    "expected": expected,
-                    "roi": list(roi),
-                }
-            },
-        )
-        if detail and detail.hit:
-            return detail.best_result.text
-        return None
+        text, _ = self._run_ocr_with_confidence(name, expected, roi)
+        return text
+
+    def run_turn_digit_template(self) -> tuple[str | None, float]:
+        """仅在回合 OCR 空读时，以已采证的数字模板作受限兜底。
+
+        不把模板匹配的任意命中直接当成状态：只有一个候选达到阈值且严格
+        高于其余候选时才返回。模板来自同一 MuMu 原始帧，后续新样式必须先
+        补样本，不能降低阈值猜测。
+        """
+
+        candidates: list[tuple[int, float]] = []
+        image = self.context.tasker.controller.post_screencap().wait().get()
+        for digit, template in _TURN_DIGIT_TEMPLATES.items():
+            name = f"HIFTurnDigit{digit}"
+            detail = self.context.run_recognition(
+                name,
+                image,
+                pipeline_override={
+                    name: {
+                        "recognition": "TemplateMatch",
+                        "template": template,
+                        "roi": list(_TURN_DIGIT_ROI),
+                        "threshold": _TURN_DIGIT_MIN_CONFIDENCE,
+                    }
+                },
+            )
+            if detail and detail.hit:
+                score = getattr(detail.best_result, "score", 0.0)
+                if isinstance(score, (int, float)):
+                    candidates.append((digit, float(score)))
+
+        qualified = [(digit, score) for digit, score in candidates if score >= _TURN_DIGIT_MIN_CONFIDENCE]
+        if len(qualified) != 1:
+            return None, 0.0
+        digit, score = qualified[0]
+        return str(digit), score
+
+    def _run_ocr_with_confidence(
+        self,
+        name: str,
+        expected: list[str],
+        roi: tuple[int, int, int, int],
+    ) -> tuple[str | None, float]:
+        for attempt in range(3):
+            detail = self.context.run_recognition(
+                name,
+                self.context.tasker.controller.post_screencap().wait().get(),
+                pipeline_override={
+                    name: {
+                        "recognition": "OCR",
+                        "expected": expected,
+                        "roi": list(roi),
+                    }
+                },
+            )
+            if detail and detail.hit:
+                score = getattr(detail.best_result, "score", 0.0)
+                return detail.best_result.text, float(score) if isinstance(score, (int, float)) else 0.0
+            if attempt < 2:
+                time.sleep(0.15)
+        return None, 0.0
 
     def run_yolo_cards(self) -> list[CardDetection]:
         """跑 ProduceRecognitionCards(YOLO)，把 maafw 返回映射为 CardDetection 列表。
@@ -279,18 +411,36 @@ class _MaafwOcrAdapter:
             box = tuple(result.box)  # type: ignore[arg-type]
             # label 从 detail 的分类信息读取（maafw NeuralNetworkDetect 提供）
             label = getattr(result, "label", "cards") or "cards"
-            # 对每个 box 跑 OCR 读卡名（卡牌上半部为卡名区，box 上移压缩高度）
-            card_name = self._read_card_name_in_box(box)
-            detections.append(CardDetection(label=label, box=box, card_name=card_name))
+            score = getattr(result, "score", 0.0)
+            detection = CardDetection(
+                label=label,
+                box=box,
+                confidence=float(score) if isinstance(score, (int, float)) else 0.0,
+            )
+            if box[1] < 800:
+                # HIF Round 手牌固定出现在底部；保留 YOLO 原始框供 Journal 审计，
+                # 但不能让角色/特效误框参与手牌名称、详情或出牌决策。
+                detection.suppressed_reason = "outside_hand_roi"
+            detections.append(detection)
+        _suppress_overlapping_card_detections(detections)
+        for detection in detections:
+            if detection.suppressed_reason:
+                continue
+            card_name, raw_name, name_confidence = self._read_card_name_in_box(detection.box)
+            detection.card_name = card_name
+            detection.raw_card_name = raw_name
+            detection.card_name_confidence = name_confidence
         return detections
 
-    def _read_card_name_in_box(self, box: tuple[int, int, int, int]) -> str:
-        """在 YOLO box 内跑 OCR 读卡名（box 上半部为卡名区域）。"""
-        x, y, w, h = box
-        # 卡名通常在卡牌上半部：ROI 取 box 上 40% 高度区域。
-        name_roi = (x, y, w, max(1, int(h * 0.4)))
-        text = self.run_ocr("HIFHandCardName", self._card_dict, name_roi)
-        return normalize_card_name(text) if text else ""
+    def _read_card_name_in_box(self, box: tuple[int, int, int, int]) -> tuple[str, str, float]:
+        """在卡牌底部标题栏读取名称，同时保留强化后缀和 OCR 置信度。"""
+
+        expected = [*self._card_dict, *(f"{name}+" for name in self._card_dict)]
+        raw_name, confidence = self._run_ocr_with_confidence("HIFHandCardName", expected, _hand_card_name_roi(box))
+        if not raw_name:
+            return "", "", confidence
+        normalized = normalize_card_name(raw_name[:-1] if raw_name.endswith("+") else raw_name)
+        return normalized, raw_name, confidence
 
 
 class ExamStateReader:
@@ -328,9 +478,47 @@ class ExamStateReader:
             if all(v == 0 for v in roi_spec.roi):
                 # 未校准 ROI 跳过，避免把页面其他数字误读成状态。
                 continue
-            raw = self.ocr.run_ocr(f"HIFNumeric_{key}", [], roi_spec.roi) or ""
+            expected = _NUMERIC_EXPECTED.get(key, [".*\\d+.*"])
+            raw = self._read_numeric_raw(key, expected, roi_spec.roi)
             numerics[key] = _parse_numeric(key, raw)
         return numerics
+
+    def read_round_metrics(self) -> RoundMetrics:
+        """只读取已校准的 Round 参数/分数 ROI；缺项不会猜测或继承旧帧值。"""
+
+        reads: dict[str, str] = {}
+        for key, roi_spec in _ROUND_METRIC_ROI.items():
+            if not any(roi_spec.roi):
+                continue
+            expected = [r"\\d+(?:[,.]\\d+)*(?:\\s*(?:%|％|倍))?"]
+            raw = self._read_numeric_raw(key, expected, roi_spec.roi)
+            reads[key] = raw
+        return build_round_metrics(reads)
+
+    def _read_numeric_raw(self, key: str, expected: list[str], roi: tuple[int, int, int, int]) -> str:
+        """读取单个数值，模板优先修正回合 OCR，普通数值要求三次中至少两次一致。
+
+        HIF 的动态舞台背景会让单次 OCR 偶发把 ``7`` 读为 ``1``、把 ``40``
+        读为 ``2``。一次空读不会抹掉两次同值，但三种不同读数仍会保留为
+        缺失字段并阻止执行，不能向策略层伪造一个看似有效的数值。
+        """
+
+        if key == "turn":
+            template_reader = getattr(self.ocr, "run_turn_digit_template", None)
+            if callable(template_reader):
+                template_raw, _ = template_reader()
+                if template_raw:
+                    return template_raw
+        if key == "flow":
+            return self.ocr.run_ocr(f"HIFNumeric_{key}", expected, roi) or ""
+
+        reads = [self.ocr.run_ocr(f"HIFNumeric_{key}", expected, roi) or "" for _ in range(3)]
+        parsed = [_parse_numeric(key, raw).value for raw in reads]
+        candidates = {value for value in parsed if value is not None}
+        value = next((candidate for candidate in candidates if parsed.count(candidate) >= 2), None)
+        if value is None:
+            return ""
+        return next(raw for raw in reads if _parse_numeric(key, raw).value == value)
 
     def read_exam_state(
         self,
@@ -352,9 +540,13 @@ class ExamStateReader:
         detections = self._read_detections()
         hand = build_hand_summary(detections)
         numerics = self.read_numerics()
+        round_metrics = self.read_round_metrics()
         missing = []
-        if not detections:
+        active_detections = [detection for detection in detections if not detection.suppressed_reason]
+        if not active_detections:
             missing.append("hand")
+        elif any(not detection.card_name for detection in active_detections):
+            missing.append("hand_names")
         for key in _CARD_EXECUTION_NUMERICS:
             read = numerics.get(key)
             if key == "flow":
@@ -362,15 +554,21 @@ class ExamStateReader:
                     missing.append(key)
             elif read is None or read.value is None:
                 missing.append(key)
-        if stamina is None or stamina < 0:
-            missing.append("stamina")
-        state = build_exam_state(hand, numerics, round_, total_turns, stamina if stamina is not None else 0)
-        required_count = len(_CARD_EXECUTION_NUMERICS) + 2  # 手牌和体力
+        missing.extend(key for key in round_metrics.missing_fields if key not in missing)
+        numeric_stamina = numerics.get("stamina")
+        resolved_stamina = stamina if stamina is not None else numeric_stamina.value if numeric_stamina else None
+        if resolved_stamina is None or resolved_stamina < 0:
+            if "stamina" not in missing:
+                missing.append("stamina")
+            resolved_stamina = 0
+        state = build_exam_state(hand, numerics, round_, total_turns, resolved_stamina, round_metrics)
+        required_count = len(_CARD_EXECUTION_NUMERICS) + len(_ROUND_METRIC_LABELS) + 2  # 完整手牌、体力与局内指标
         confidence = round(max(0, required_count - len(missing)) / required_count, 2)
         return ExamStateObservation(
-            state=state,
-            detections=detections,
-            numerics=numerics,
+                state=state,
+                detections=detections,
+                numerics=numerics,
+                round_metrics=round_metrics,
             missing_fields=tuple(missing),
             screen_confidence=confidence,
         )
@@ -382,8 +580,13 @@ def _parse_numeric(key: str, raw: str) -> NumericRead:
     flow 字段提取 Vo/Da/Vi；其他字段提取整数；解析失败 value=None。
     """
     if key == "flow":
-        for flow in ("Vo", "Da", "Vi"):
-            if flow in raw:
+        aliases = {
+            "Vo": ("Vo", "ボーカル"),
+            "Da": ("Da", "ダンス"),
+            "Vi": ("Vi", "ビジュアル"),
+        }
+        for flow, tokens in aliases.items():
+            if any(token in raw for token in tokens):
                 return NumericRead(name=key, raw=raw, value=None, flow=flow)
         return NumericRead(name=key, raw=raw, value=None, flow=None)
 

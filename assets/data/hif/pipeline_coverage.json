@@ -140,6 +140,7 @@
 				"ProduceHIFSafeAdvanceFlag",
 				"ProduceHIFPublicLessonResultFlag",
 				"ProduceHIFKnownNextButton",
+				"ProduceHIFFinalsRankingFlag",
 				"ProduceHIFScoreSettlementFlag",
 				"ProduceHIFSettlementContinueFlag",
 				"ProduceHIFMemoryPhotoSelectFlag",

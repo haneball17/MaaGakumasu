@@ -38,6 +38,26 @@ def test_screen_profiles_cover_all_reviewed_roi_sections_and_stay_inside_hif_fra
     assert source_deck.regions["visible_slot_r1c1"] == (80, 638, 120, 120)
     assert source_deck.regions["visible_slot_r3c4"] == (521, 933, 120, 120)
     assert profiles.button_roi("score_settlement", "next") == (230, 1094, 258, 82)
+    assert profiles.get("round1").regions["deck_button"] == (519, 1174, 80, 82)
+    round_details = profiles.get("round_details")
+    assert round_details is not None
+    assert [(anchor.anchor_id, anchor.roi) for anchor in round_details.anchors] == [
+        ("score", (20, 110, 220, 80)),
+        ("hand_info", (540, 420, 170, 90)),
+    ]
+    assert round_details.regions["close"] == (314, 1118, 92, 92)
+    hand_history = profiles.get("hand_history_view")
+    assert hand_history is not None
+    assert [(anchor.anchor_id, anchor.roi) for anchor in hand_history.anchors] == [
+        ("title", (15, 565, 500, 80)),
+        ("used_cards", (35, 860, 430, 70)),
+    ]
+    ranking_transition = profiles.get("finals_ranking_transition")
+    assert ranking_transition is not None
+    assert [(anchor.anchor_id, anchor.roi) for anchor in ranking_transition.anchors] == [
+        ("title", (0, 120, 720, 120)),
+        ("prompt", (200, 1120, 320, 120)),
+    ]
     assert profiles.button_roi("missing", "button") is None
     for profile in profiles.profiles.values():
         for anchor in profile.anchors:
@@ -69,6 +89,7 @@ def test_page_observation_requires_a_unique_anchor_match():
     assert observe_hif_page(["チェンジする", "てください"]).screen_id == "select_change_source_deck"
     assert observe_hif_page(["Pドリンク所持上限", "保持しておくドリンクを選んでください"]).screen_id == "drink_overflow"
     assert observe_hif_page(["メモリーにするフォトを選んでください"]).screen_id == "memory_photo_select"
+    assert observe_hif_page(["現在順位", "タップして次へ"]).screen_id == "finals_ranking_transition"
 
     ambiguous = observe_hif_page(["インターバル", "Pポイントと交換するものを選んでください"])
     assert ambiguous.screen_id is None
