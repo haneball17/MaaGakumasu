@@ -1,6 +1,6 @@
 # HIF MVP 实机交接
 
-_最后更新：2026-07-15；在 M0 建档阶段未执行新的模拟器输入。_
+_最后更新：2026-07-15；M1 启动时完成一次零输入复核。_
 
 ## 当前权威停点
 
@@ -10,9 +10,15 @@ _最后更新：2026-07-15；在 M0 建档阶段未执行新的模拟器输入�
 - 状态：`good_condition=47`、`focus=10`、`stamina=33`、`reprise=2`。
 - 指标：`current_score=116611`、`stage_multiplier=3807%`。
 - 手牌：`演出計画`、灰色 `眠気`、`祝福`、`祝福+`。
-- 牌库数量：未知；历史默认 `0` 不可信，禁止使用。
+- 牌库数量：新原始帧右上角可见 `22`，但当前读取器尚未形成严格识别结果；在状态读取子任务完成前仍按未验证处理，历史默认 `0` 禁止使用。
 
 ## 最近实机证据
+
+- M1 零输入复核运行目录：`debug/hif-live/hif-mvp-m1-stop-recheck-20260715/`
+- M1 Journal：`debug/hif-journal/20260715T214307-25052.jsonl`
+- M1 原始帧仍为 Round1 未选中四卡页：`演出計画`、灰色 `眠気`、`祝福`、`祝福+`；可见牌库数 `22`。
+- M1 读取结果仍将 `deck_size`、Vo/Da/Vi、`current_score` 和 `stage_multiplier` 标为缺失，并让旧影子理由出现“山札0枚”；这不是可执行决策，已交由状态读取与评分器子任务修复。
+- M1 运行目录的 `maafw.log` 不含 Click/Swipe，本次未改变游戏状态或资源。
 
 - 运行目录：`debug/hif-live/hif-round1-score-multiplier-calibrated-20260715/`
 - Journal：`debug/hif-journal/20260715T185253-45208.jsonl`
