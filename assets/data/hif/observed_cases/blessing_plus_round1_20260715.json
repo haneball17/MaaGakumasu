@@ -1,0 +1,49 @@
+{
+	"schema_version": 1,
+	"route_id": "rinami_garakuta_road",
+	"round": "round1",
+	"card": {
+		"name": "祝福",
+		"upgrade": "+",
+		"displayed_score": 3731,
+		"catalog_effect": "パラメータ+40 好調 1ターン",
+		"catalog_stamina_cost": 4
+	},
+	"before": {
+		"turn": 6,
+		"current_score": 116611,
+		"stage_multiplier_percent": 3807,
+		"stamina": 33,
+		"focus": 10,
+		"good_condition": 47,
+		"deck_size": 21,
+		"guard": 22
+	},
+	"after": {
+		"turn": 6,
+		"current_score": 121485,
+		"stage_multiplier_percent": 3807,
+		"stamina": 31,
+		"focus": 10,
+		"good_condition": 49,
+		"deck_size": 21,
+		"guard": 22,
+		"target_left_hand": true
+	},
+	"observed_delta": {
+		"current_score": 4874,
+		"stamina": -2,
+		"good_condition": 2,
+		"deck_size": 0,
+		"turn": 0
+	},
+	"evidence": {
+		"action_run": "debug/hif-live/hif-mvp-m2-blessing-plus-closed-loop-20260715/",
+		"action_journal": "debug/hif-journal/20260715T232450-42392.jsonl",
+		"post_state_run": "debug/hif-live/hif-mvp-m2-blessing-plus-poststate-20260715/",
+		"deck_journal": "debug/hif-journal/20260715T232853-42888.jsonl",
+		"score_journal": "debug/hif-journal/20260715T232948-3836.jsonl"
+	},
+	"status": "model_discovery_not_counted",
+	"reason": "动作发生后正式后验未能在同一运行闭环；实测增量与基础卡面值不同，说明存在未建模的减耗、好调或得分联动。"
+}

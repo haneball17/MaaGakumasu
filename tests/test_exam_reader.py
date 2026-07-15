@@ -449,7 +449,7 @@ def test_reader_rejects_an_unstable_numeric_read() -> None:
     class _UnstableNumericPort(_MockOcrPort):
         def __init__(self):
             super().__init__([])
-            self.good_condition_reads = iter(("40ターン", "2", "3") * 2)
+            self.good_condition_reads = iter(("40ターン", "2", "3") * 3)
 
         def run_ocr(self, name, expected, roi):
             if name.endswith("good_condition"):
@@ -460,7 +460,7 @@ def test_reader_rejects_an_unstable_numeric_read() -> None:
 
     assert numerics["good_condition"].value is None
     assert numerics["good_condition"].status is ReadStatus.CONFLICT
-    assert numerics["good_condition"].samples == ("40ターン", "2", "3") * 2
+    assert numerics["good_condition"].samples == ("40ターン", "2", "3") * 3
 
 
 def test_reader_accepts_two_matching_numeric_reads_when_the_third_is_empty() -> None:
@@ -495,7 +495,7 @@ def test_exam_observation_keeps_conflict_distinct_from_missing() -> None:
     class _ConflictPort(_MockOcrPort):
         def __init__(self):
             super().__init__([])
-            self.reads = iter(("21", "22", "23") * 2)
+            self.reads = iter(("21", "22", "23") * 3)
 
         def run_ocr(self, name, expected, roi):
             if name.endswith("good_condition"):

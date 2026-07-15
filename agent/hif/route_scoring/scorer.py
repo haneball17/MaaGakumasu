@@ -28,7 +28,6 @@ _REQUIRED_FIELDS = (
     "stamina",
     "focus",
     "good_condition_turns",
-    "reprise_count",
     "deck_size",
     "trusted",
     "fresh",
@@ -106,7 +105,6 @@ class RinamiGarakutaRouteScorer:
         assert state.stamina is not None
         assert state.focus is not None
         assert state.good_condition_turns is not None
-        assert state.reprise_count is not None
         assert state.deck_size is not None
         if not 1 <= state.turn <= state.total_turns:
             return RejectionCode.INVALID_STATE, "turn 不在 [1,total_turns]"
@@ -116,7 +114,6 @@ class RinamiGarakutaRouteScorer:
             state.stamina,
             state.focus,
             state.good_condition_turns,
-            state.reprise_count,
             state.deck_size,
         ) < 0:
             return RejectionCode.INVALID_STATE, "牌局数值不能为负"

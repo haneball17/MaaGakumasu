@@ -41,7 +41,6 @@ _NUMERIC_FIELDS = {
     "good_condition": "good_condition_turns",
     "focus": "focus",
     "stamina": "stamina",
-    "reprise": "reprise_count",
     "deck_size": "deck_size",
 }
 
@@ -107,6 +106,7 @@ def assemble_route_state(
     assert battle_round is not None
     assert metrics.current_score is not None
     assert metrics.stage_multiplier is not None
+    reprise_read = observation.numerics.get("reprise")
     return RouteStateReady(
         RouteBattleState(
             route_id=route_id,
@@ -118,7 +118,7 @@ def assemble_route_state(
             stamina=numeric_values["stamina"],
             focus=numeric_values["focus"],
             good_condition_turns=numeric_values["good_condition_turns"],
-            reprise_count=numeric_values["reprise_count"],
+            reprise_count=reprise_read.value if reprise_read is not None else None,
             deck_size=numeric_values["deck_size"],
             trusted=True,
             fresh=True,

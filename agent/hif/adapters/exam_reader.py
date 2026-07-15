@@ -192,6 +192,8 @@ class NumericRead:
     flow: str | None = None  # 仅 flow 字段使用
     status: ReadStatus | None = None
     samples: tuple[str, ...] = ()
+    confidence: float = 0.0
+    confidences: tuple[float, ...] = ()
 
     def __post_init__(self) -> None:
         if self.status is None:
@@ -213,9 +215,26 @@ def _consensus_numeric_reads(key: str, reads: tuple[NumericRead, ...]) -> Numeri
             if len(candidates) > 1 or any(read.status is ReadStatus.CONFLICT for read in reads)
             else ReadStatus.MISSING
         )
-        return NumericRead(key, "", None, status=status, samples=samples)
+        return NumericRead(
+            key,
+            "",
+            None,
+            status=status,
+            samples=samples,
+            confidence=max((read.confidence for read in reads), default=0.0),
+            confidences=tuple(read.confidence for read in reads),
+        )
     accepted = next(read for read, value in zip(reads, values, strict=True) if value == winner)
-    return NumericRead(key, accepted.raw, accepted.value, accepted.flow, ReadStatus.OK, samples)
+    return NumericRead(
+        key,
+        accepted.raw,
+        accepted.value,
+        accepted.flow,
+        ReadStatus.OK,
+        samples,
+        accepted.confidence,
+        tuple(read.confidence for read in reads),
+    )
 
 
 @dataclass(slots=True)
@@ -469,6 +488,14 @@ class _MaafwOcrAdapter:
         text, _ = self._run_ocr_with_confidence(name, expected, roi)
         return text
 
+    def run_ocr_with_confidence(
+        self,
+        name: str,
+        expected: list[str],
+        roi: tuple[int, int, int, int],
+    ) -> tuple[str | None, float]:
+        return self._run_ocr_with_confidence(name, expected, roi)
+
     def run_turn_digit_template(self) -> tuple[str | None, float]:
         """仅在回合 OCR 空读时，以已采证的数字模板作受限兜底。
 
@@ -615,7 +642,15 @@ class ExamStateReader:
                 # 未校准 ROI 跳过，避免把页面其他数字误读成状态。
                 continue
             expected = _NUMERIC_EXPECTED.get(key, [".*\\d+.*"])
-            reads = tuple(self._read_numeric(key, expected, roi_spec.roi) for roi_spec in roi_specs)
+            reads = tuple(
+                self._read_numeric(
+                    key,
+                    expected,
+                    roi_spec.roi,
+                    recognition_name=f"HIFNumericRoi{index}_{key}",
+                )
+                for index, roi_spec in enumerate(roi_specs)
+            )
             numerics[key] = _consensus_numeric_reads(key, reads)
         return numerics
 
@@ -634,7 +669,14 @@ class ExamStateReader:
                 conflicts.add(key)
         return build_round_metrics(reads, conflicting_fields=frozenset(conflicts))
 
-    def _read_numeric(self, key: str, expected: list[str], roi: tuple[int, int, int, int]) -> NumericRead:
+    def _read_numeric(
+        self,
+        key: str,
+        expected: list[str],
+        roi: tuple[int, int, int, int],
+        *,
+        recognition_name: str | None = None,
+    ) -> NumericRead:
         """三次读取至少两次一致；多值冲突与纯缺失保持不同类型。"""
 
         if key == "turn":
@@ -646,17 +688,35 @@ class ExamStateReader:
                     parsed.samples = (template_raw,)
                     return parsed
 
-        reads = tuple(self.ocr.run_ocr(f"HIFNumeric_{key}", expected, roi) or "" for _ in range(3))
+        name = recognition_name or f"HIFNumeric_{key}"
+        confidence_reader = getattr(self.ocr, "run_ocr_with_confidence", None)
+        if callable(confidence_reader):
+            results = tuple(confidence_reader(name, expected, roi) for _ in range(3))
+        else:
+            results = tuple((self.ocr.run_ocr(name, expected, roi), 0.0) for _ in range(3))
+        reads = tuple(text or "" for text, _ in results)
+        confidences = tuple(float(confidence) for _, confidence in results)
         parsed = tuple(_parse_numeric(key, raw) for raw in reads)
         values = tuple(item.flow if key == "flow" else item.value for item in parsed)
         candidates = {value for value in values if value is not None}
         value = next((candidate for candidate in candidates if values.count(candidate) >= 2), None)
         if value is None:
             status = ReadStatus.CONFLICT if len(candidates) > 1 else ReadStatus.MISSING
-            return NumericRead(key, "", None, status=status, samples=reads)
+            return NumericRead(
+                key,
+                "",
+                None,
+                status=status,
+                samples=reads,
+                confidence=max(confidences, default=0.0),
+                confidences=confidences,
+            )
         accepted = next(item for item, parsed_value in zip(parsed, values, strict=True) if parsed_value == value)
         accepted.status = ReadStatus.OK
         accepted.samples = reads
+        matching_confidences = tuple(confidence for confidence, parsed_value in zip(confidences, values, strict=True) if parsed_value == value)
+        accepted.confidence = max(matching_confidences, default=0.0)
+        accepted.confidences = confidences
         return accepted
 
     def read_exam_state(

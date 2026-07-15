@@ -44,6 +44,7 @@ from agent.hif.decisions.round1_fallback import (
     choose_observed_round1_post_topic_card,
     choose_observed_round1_post_shikirinaoshi_card,
 )
+from agent.hif.route_scoring.postconditions import verify_blessing_plus
 
 
 class _ProduceHIFActionBase(CustomAction):
@@ -3684,6 +3685,85 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
         )
         return bool(title and title.hit and selected and selected.hit)
 
+    def _read_card_display_score(self, context: Context, image, target: CardDetection) -> int | None:
+        """读取当前目标卡面显示的即时分数；混入其他文本或多个数字时拒绝。"""
+
+        x, y, width, height = target.box
+        roi = [x, y, width, min(90, height)]
+        result = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSelectedRouteCardScore",
+            [r"\d+"],
+            roi,
+        )
+        best = getattr(result, "best_result", None) if result and result.hit else None
+        raw = str(getattr(best, "text", "")).replace(",", "").strip() if best else ""
+        return int(raw) if re.fullmatch(r"\d+", raw) else None
+
+    def _verify_blessing_plus_postcondition(
+        self,
+        context: Context,
+        image,
+        screen_state: str,
+        round_: ExamRound,
+        total_turns: int,
+        before_state,
+        displayed_score: int,
+    ) -> tuple[bool, dict[str, Any]]:
+        """动作后重新读取牌库、分数和 Round 状态，验证 ``祝福+`` 的完整语义。"""
+
+        stable_image = self._wait_for_screen_profile(context, image, screen_state, attempts=4)
+        if stable_image is None:
+            return False, {"reason": "round_page_not_confirmed_after_blessing_plus"}
+        deck_size, returned_image = self._probe_round_deck_size(context, stable_image, screen_state)
+        if deck_size is None or returned_image is None:
+            return False, {"reason": "post_blessing_deck_probe_failed"}
+        panel_result = self._probe_round_details_metrics(context, returned_image, screen_state, continue_after=True)
+        if not isinstance(panel_result, tuple):
+            return False, {"reason": "post_blessing_metrics_probe_failed"}
+        score_raw, multiplier_raw, returned_image = panel_result
+        health = self._get_health(context, returned_image)
+        observation = ExamStateReader.from_context(context).read_exam_observation(
+            round_, total_turns, health["current"] if health else None
+        )
+        observation.numerics["deck_size"] = NumericRead("deck_size", str(deck_size), deck_size)
+        observation.round_metrics = build_round_metrics(
+            {"current_score": score_raw, "stage_multiplier": multiplier_raw}
+        )
+        infer_card_playability(returned_image, observation.detections)
+        try:
+            ready = assemble_route_state(
+                observation,
+                route_id="rinami_garakuta_road",
+                round_key="round1" if round_ is ExamRound.HONSEN_R1 else "round2",
+                total_turns=total_turns,
+            )
+        except RouteStateRejected as error:
+            return False, {
+                "reason": "post_blessing_route_state_rejected",
+                "issues": [
+                    {"field": issue.field, "code": issue.code.value, "detail": issue.detail}
+                    for issue in error.issues
+                ],
+            }
+        result = verify_blessing_plus(before_state, ready.state, displayed_score=displayed_score)
+        details = {
+            "reason": "verified" if result.verified else "blessing_plus_semantic_postcondition_failed",
+            "semantic_assertions": result.assertions,
+            "failed_assertions": result.failed_assertions,
+            "post_state": {
+                "turn": ready.state.turn,
+                "current_score": ready.state.current_score,
+                "stamina": ready.state.stamina,
+                "focus": ready.state.focus,
+                "good_condition": ready.state.good_condition_turns,
+                "reprise": ready.state.reprise_count,
+                "deck_size": ready.state.deck_size,
+            },
+        }
+        return result.verified, details
+
     def _read_selected_card_title(self, context: Context, image, card_dict: list[str]) -> tuple[str, str, float]:
         """从详情弹窗标题读取标准卡名；逐段搜索避免把效果正文误认成标题。"""
 
@@ -3796,6 +3876,8 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             "good_condition_current": (14, 237, 160, 70),
             "good_condition_label_and_value": (52, 245, 130, 50),
             "good_condition_value_only": (60, 255, 110, 38),
+            "good_condition_sweep_45": (45, 245, 140, 50),
+            "good_condition_sweep_50": (50, 250, 135, 45),
             "focus_current": (14, 300, 150, 70),
             "focus_label_and_value": (52, 306, 90, 48),
             "focus_value_only": (58, 314, 50, 34),
@@ -4728,6 +4810,8 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                         "flow": reading.flow,
                         "status": reading.status.value if reading.status is not None else None,
                         "samples": reading.samples,
+                        "confidence": reading.confidence,
+                        "confidences": reading.confidences,
                     }
                     for name, reading in observation.numerics.items()
                 },
@@ -4767,6 +4851,9 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
 
         target = route_state.targets[route_decision.selected_target_id]
         selected_display_name = target.raw_card_name or target.card_name
+        display_score = self._read_card_display_score(context, before_image, target)
+        # 当前实机证明祝福+会触发未建模的状态联动；在主动状态模型完成前保持关闭。
+        postcondition_supported = False
         card_action = CardAction(ActionKind.PLAY_CARD, target.card_name, route_decision.rejection_detail or "当前路线确定性评分唯一最高")
         action_details = {
             "mode": mode.value,
@@ -4774,6 +4861,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             "decision_kind": card_action.kind.value,
             "target_card": selected_display_name,
             "target_id": route_decision.selected_target_id,
+            "display_score": display_score,
             "reason": card_action.reason,
             "screen_confidence": 1.0,
             "missing_fields": (),
@@ -4812,7 +4900,13 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                 for detection in observation.detections
             ],
             "numeric_reads": {
-                name: {"raw": reading.raw, "value": reading.value, "flow": reading.flow}
+                name: {
+                    "raw": reading.raw,
+                    "value": reading.value,
+                    "flow": reading.flow,
+                    "confidence": reading.confidence,
+                    "confidences": reading.confidences,
+                }
                 for name, reading in getattr(observation, "numerics", {}).items()
             },
         }
@@ -4853,7 +4947,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             screen_confidence=1.0,
             missing_fields=(),
             target_count=1,
-            postcondition_supported=False,
+            postcondition_supported=postcondition_supported,
         )
         if card_action.kind is not ActionKind.PLAY_CARD:
             approval_reason = f"action_kind_not_supported:{card_action.kind.value}"
@@ -4903,7 +4997,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             )
             return self._stop_unsupported(context, screen_state, "post_click_frame_unchanged")
 
-        if self._card_selection_confirmed(context, after_image, normalize_card_name(target.card_name)):
+        if self._card_selection_confirmed(context, after_image, selected_display_name):
             self._record_journal(
                 screen_state,
                 "select_card",
@@ -4920,14 +5014,15 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                 return True
             after = self._capture_evidence(after_image, f"{screen_state}_after_confirm")
 
-        postcondition_ok, postcondition_details = self._read_card_postcondition(
+        assert display_score is not None
+        postcondition_ok, postcondition_details = self._verify_blessing_plus_postcondition(
             context,
             after_image,
             screen_state,
             round_,
             total_turns,
-            target,
-            observation.detections,
+            route_state.state,
+            display_score,
         )
         if not postcondition_ok:
             reason = str(postcondition_details.get("reason", "card_postcondition_failed"))
@@ -4949,7 +5044,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             before=before,
             after=after,
         )
-        session.record_card(round_key, target.card_name)
+        get_runtime_hif_session().record_card(round_key, selected_display_name)
         logger.success(f"HIF {screen_state} 单步出牌已验证: {target.card_name}")
         return self._finish_observation(context, round_key)
 

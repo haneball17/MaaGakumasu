@@ -375,7 +375,7 @@ def test_start_produce_stops_when_the_confirmation_disappears_without_a_known_ta
     assert records[-1][0][1:3] == ("start_produce", "unverified")
 
 
-def test_card_single_step_stays_blocked_until_route_semantic_postcondition_exists(monkeypatch):
+def test_card_single_step_keeps_blessing_plus_closed_without_active_status_model(monkeypatch):
     module = _load_action_module()
 
     action = module.ProduceCardsHIF()
@@ -412,6 +412,7 @@ def test_card_single_step_stays_blocked_until_route_semantic_postcondition_exist
     monkeypatch.setattr(module, "infer_card_playability", lambda *args: None)
     monkeypatch.setattr(module, "assemble_route_state", lambda *args, **kwargs: SimpleNamespace(state=object(), targets={"hand-1": target}))
     monkeypatch.setattr(module, "RinamiGarakutaRouteScorer", lambda: SimpleNamespace(decide=lambda state: decision))
+    monkeypatch.setattr(action, "_read_card_display_score", lambda *args: 3731)
     monkeypatch.setattr(
         module,
         "load_hif_roi_calibration",
@@ -1198,6 +1199,8 @@ def test_counter_roi_probe_records_candidates_without_controller_input(monkeypat
             "40ターン",
             "40ターン",
             "40",
+            "40ターン",
+            "40ターン",
             "集中4",
             "集中4",
             "4",

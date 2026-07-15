@@ -15,6 +15,11 @@ _最后更新：2026-07-15；M1 启动时完成一次零输入复核。_
 
 ## 最近实机证据
 
+- `祝福+` 模型发现运行：`debug/hif-live/hif-mvp-m2-blessing-plus-closed-loop-20260715/`，Journal `debug/hif-journal/20260715T232450-42392.jsonl`。
+- 动作前完整状态与目标绑定成立，`祝福+` 已完成两段式确认并离手；动作后正式后验在动画期打开牌库失败，因此本次不计入严格成功样本。
+- 分离的稳定后状态证据为：分数 `116611→121485`、体力 `33→31`、好调 `47→49`、集中 `10`、回合 `6`、牌库 `21`、元气 `22`。结构化记录见 `assets/data/hif/observed_cases/blessing_plus_round1_20260715.json`。
+- 实测增量 `+4874/-2/+2` 与卡表基础 `显示3731/体力4/好调1` 不同，证明当前活跃状态存在未建模联动。普通出牌后验已重新关闭；完成状态图标动态定位与联动模型前禁止下一张牌。
+
 - M1 可信绑定运行目录：`debug/hif-live/hif-mvp-m1-consensus-bind-stop-20260715/`
 - M1 可信绑定 Journal：`debug/hif-journal/20260715T225918-6632.jsonl`
 - 同一运行完整决策字段：`turn=6`、`good_condition=47`、`focus=10`、`stamina=33`、`reprise=2`、`deck_size=21`、`current_score=116611`、`stage_multiplier=3807%`。
