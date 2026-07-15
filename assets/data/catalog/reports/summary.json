@@ -1,0 +1,30 @@
+{
+  "compatibility_differences": 0,
+  "conflicts": 816,
+  "coverage": {
+    "characters": 13,
+    "drinks": 28,
+    "produce_idol_cards": 136,
+    "skill_cards": 125,
+    "wiki_skill_cards": 122
+  },
+  "hif_runtime_support": {
+    "display_only": 25,
+    "executable": 6,
+    "modeled": 10,
+    "recognizable": 112
+  },
+  "ocr_collisions": 0,
+  "parse_status": {
+    "complete": 93,
+    "failed": 7,
+    "partial": 415
+  },
+  "required_semantics": 31,
+  "schema_version": "2.0",
+  "translations": {
+    "drink_zh_cn": "0/28",
+    "wiki_skill_zh_cn": "121/122"
+  },
+  "unknown_nodes": 422
+}

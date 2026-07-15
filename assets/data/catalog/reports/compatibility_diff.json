@@ -1,0 +1,15 @@
+{
+  "artifacts": [
+    "drinks",
+    "produce_decision_data",
+    "skill_cards_compact",
+    "skill_cards_master",
+    "skill_cards_zh"
+  ],
+  "differences": [],
+  "dynamic_metadata_allowlist": [
+    "/updated_at",
+    "/保存时间"
+  ],
+  "schema_version": "2.0"
+}

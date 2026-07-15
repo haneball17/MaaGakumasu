@@ -1,0 +1,189 @@
+{
+  "drinks": {
+    "entity": "p_drinks",
+    "report": {
+      "effects_parsed": 18,
+      "total_drinks": 28,
+      "unmatched_fragments": 22,
+      "unmatched_samples": [
+        "(好調 集中 熱意の効果を受ける)",
+        "(やる気の効果を受ける)",
+        "強気 に変更 全力値 +1",
+        "温存 に変更 全力値 +2",
+        "手札をすべて レッスン中強化",
+        "手札をすべて入れ替える",
+        "パラメータ上昇量増加 30%(3ターン) 消費体力減少 3ターン 体力消費 2",
+        "山札か捨て札にあるアイドル固有スキルカード1枚を手札に移動 消費体力減少 3ターン",
+        "パラメータ上昇量増加 10%（5ターン) スキルカードを2枚引く 体力消費 2 以降の5ターンの間、ターン開始後、スキルカードを引く",
+        "好印象 の100％分パラメータ上昇",
+        "山札か捨て札にあるスキルカードを選択し 保留 に移動 段階目に変更",
+        "スキルカード使用数追加 +1",
+        "ランダムな強化済みスキルカード(SSR)を、手札に 生成 (PLv制限無視、プラン違いとサポートカード取得は出ない)",
+        "以降 ターン終了時",
+        "絶 手札をすべて レッスン中強化",
+        "山札か捨札にあるスキルカードを選択し、手札に移動 次に使用したスキルカードの消費体力を0にする（2回） 体力消費 2 消費体力増加 1ターン",
+        "以降 ターン終了時",
+        "以降 ターン終了時",
+        "次に使用する アクティブスキルカード の効果をもう1回発動(1回・1ターン) 体力消費 2 消費体力増加 1ターン",
+        "段階目に変更 消費体力減少 1ターン"
+      ]
+    },
+    "schema_version": 2,
+    "sources": [
+      {
+        "fetched_at": "2026-06-30T13:04:38+00:00",
+        "item_count": 28,
+        "source": "seesaawiki:p-drinks",
+        "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7"
+      }
+    ],
+    "updated_at": "2026-06-30T13:04:38+00:00"
+  },
+  "produce_decision_data": {
+    "schema_version": 1,
+    "updated_at": "2026-05-18T14:49:42+00:00"
+  },
+  "schema_version": "2.0",
+  "skill_cards_compact": [
+    {
+      "delete_priority": 1,
+      "name_jp": "???????",
+      "name_zh": "????",
+      "skill_card_id": "40c54ff3ff64ce38",
+      "tags": [
+        "basic",
+        "score_main"
+      ],
+      "type": "basic",
+      "upgrade_priority": 1
+    },
+    {
+      "delete_priority": 1,
+      "name_jp": "?????",
+      "name_zh": "????",
+      "skill_card_id": "564fe0bd37e52fc1",
+      "tags": [
+        "basic",
+        "buff_main"
+      ],
+      "type": "basic",
+      "upgrade_priority": 0
+    },
+    {
+      "delete_priority": 1,
+      "name_jp": "??????",
+      "name_zh": "????",
+      "skill_card_id": "846701fbea0ad7dd",
+      "tags": [
+        "basic",
+        "buff_main"
+      ],
+      "type": "basic",
+      "upgrade_priority": 0
+    },
+    {
+      "delete_priority": 0,
+      "name_jp": "?????",
+      "name_zh": "?????",
+      "skill_card_id": "1d66612cc6eba909",
+      "tags": [
+        "buff_main"
+      ],
+      "type": "support",
+      "upgrade_priority": 1
+    },
+    {
+      "delete_priority": 0,
+      "name_jp": "?????????",
+      "name_zh": "???",
+      "skill_card_id": "9b4c71be7fa9a67d",
+      "tags": [
+        "buff_main"
+      ],
+      "type": "support",
+      "upgrade_priority": 1
+    },
+    {
+      "delete_priority": 0,
+      "name_jp": "???????",
+      "name_zh": "????",
+      "skill_card_id": "f69c54d0761a88e8",
+      "tags": [
+        "loop_core",
+        "draw_cycle",
+        "buff_main"
+      ],
+      "type": "engine",
+      "upgrade_priority": 3
+    },
+    {
+      "delete_priority": 0,
+      "name_jp": "????????",
+      "name_zh": "???",
+      "skill_card_id": "dca7460577d0356c",
+      "tags": [
+        "score_main"
+      ],
+      "type": "score",
+      "upgrade_priority": 2
+    },
+    {
+      "delete_priority": 5,
+      "name_jp": "????",
+      "name_zh": "??",
+      "skill_card_id": "be387d3e92027edd",
+      "tags": [
+        "trouble"
+      ],
+      "type": "trouble",
+      "upgrade_priority": 0
+    }
+  ],
+  "skill_cards_master": {
+    "entity": "skill_cards_raw",
+    "notes": "seesaawiki 原始抓取数据，未归一化。归一化（词条+数值）由 normalize_effects.py 处理。",
+    "schema_version": 1,
+    "sources": [
+      {
+        "fetched_at": "2026-07-01T08:28:14+00:00",
+        "item_count": 52,
+        "source": "seesaawiki:skill-cards-sense",
+        "status": "ok",
+        "url": "https://seesaawiki.jp/gakumasu/d/%A5%B9%A5%AD%A5%EB%A5%AB%A1%BC%A5%C9%B0%EC%CD%F7",
+        "warning": ""
+      },
+      {
+        "fetched_at": "2026-07-01T08:28:19+00:00",
+        "item_count": 55,
+        "source": "seesaawiki:skill-cards-support",
+        "status": "ok",
+        "url": "https://seesaawiki.jp/gakumasu/d/%A5%B9%A5%AD%A5%EB%A5%AB%A1%BC%A5%C9%B0%EC%CD%F7/%A5%B5%A5%DD%A1%BC%A5%C8%A5%AB%A1%BC%A5%C9%B8%C7%CD%AD",
+        "warning": ""
+      },
+      {
+        "fetched_at": "2026-07-01T08:28:22+00:00",
+        "item_count": 14,
+        "source": "seesaawiki:skill-cards-rinami",
+        "status": "ok",
+        "url": "https://seesaawiki.jp/gakumasu/d/%A5%B9%A5%AD%A5%EB%A5%AB%A1%BC%A5%C9%B0%EC%CD%F7/P%A5%A2%A5%A4%A5%C9%A5%EB%B8%C7%CD%AD",
+        "warning": ""
+      },
+      {
+        "fetched_at": "2026-07-14T21:28:28+08:00",
+        "item_count": 1,
+        "source": "adb-observation:hif-skill-reward",
+        "status": "ok",
+        "url": "",
+        "warning": "仅记录当前 HIF 实机奖励页可验证的无印效果"
+      }
+    ],
+    "updated_at": "2026-07-14T21:28:28+08:00"
+  },
+  "skill_cards_zh": {
+    "name_zh_coverage": "121/121",
+    "schema_version": 1,
+    "source": "seesaawiki(日文) + gamekee(中文) + 人工翻译(兜底)",
+    "total_cards": 121,
+    "updated_at": "2026-07-03T02:26:00+00:00"
+  }
+}

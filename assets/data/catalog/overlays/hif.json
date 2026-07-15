@@ -1,0 +1,2316 @@
+{
+  "entries": [
+    {
+      "entity_id": "drink:228bf1cc-ffa2-5f6b-b6bf-5fa49b8277f7",
+      "evidence_assertion_ids": [
+        "assertion:13289d572862867f9ff2836927368c2f5db1500da5e437408035def937425603",
+        "assertion:134e97ddf2307695d26347f934eae22b4b9827896e86a8818e7ec5f4e6d16a83",
+        "assertion:25ec6abf998a870d6bad0714e52d16ec3332b78adcc55a681219a5bd7c347966",
+        "assertion:2f68f0f8c444bf0bfd3ccf78388075f4a6ff8b6c553c69979a6efe9cd8111d14",
+        "assertion:380d6de20b634b7187c100a5bd7e5b0943168a84db9928c94f042d93d75ccc64",
+        "assertion:391ad457699b34b19c881c7bc61027f9a6ed12b0635c12c37e4dd833c9261949",
+        "assertion:3e5f23861be699265889b8cc7100a3427b5ef6eb2a3309a2dbbe3f30a97f1f34",
+        "assertion:3f1303a6146ef4f30e1bfd8564f375ef52c958dfd4f7bb931fc35325c766af73"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:bfb2b852-6782-554d-9a32-f3794109ca46",
+      "evidence_assertion_ids": [
+        "assertion:1f0c532787cfa51340dc43b711e95d3bd7d6382b17291974e478bf01b097c231",
+        "assertion:25724f5f3d9e4552fd20578621699c05e7d5a11cd93cabc0cc7a9a73c0a8f65f",
+        "assertion:4101ffd45737a83367a06f71992f83482a0a26b4364023873a5226a968977bd0",
+        "assertion:45d36f0fd617d2cad28eab3784ac0fb96854a26471991cb8b234cbbd457ec84c",
+        "assertion:4e1d66cbb2f873bf31a4a5a0164973d8ce6c472252bf8c4abaf41b17b64f131f",
+        "assertion:58c405440509d993d06b5a7b7498bc087bbe0c1da8f938399d3d4f4d989af7ef",
+        "assertion:7808a64497304403392006f604acf95fcf8d3b9566932b0cc256a2e9fb599de2",
+        "assertion:795967c02cf2d93106e65f71199293577dba4bacf9173fa57f88fcfe1870c98a"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:d49e4fe2-7da5-5b19-bc8f-ee186338dc2a",
+      "evidence_assertion_ids": [
+        "assertion:094e0ccaf8d745ff96c44c80cec850adc1e0556932a110fc4a591121488b9e9c",
+        "assertion:140e1da979edd3ad8713144a7d0b1eef81812a71d6fa95493a06a17d5c4b1335",
+        "assertion:1da6bbf72e96106f8c299ea934e0e968c27116b10b9ba0efbe428f36c721f2a1",
+        "assertion:226ed6e63b1a44befeea0a18dd16b7e12fe811837ba83097674fa3d92d92294b",
+        "assertion:2fecdb84694159550dc9c361b7c8c261b819de7e3d38af1523d232d70ba69772",
+        "assertion:39996a5187b28b9c3f11260303ba0a6fd26ba727b54a8ad292e820fc95876487",
+        "assertion:4b2015df3b59ef251d116921679840e48f315a54be63ba58651a9ad6fd008149",
+        "assertion:593014db18db3ee93c04c9a61f351c1529fc0748b4d24d1a2e035657abfcd890"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:13608b36-85a8-50c0-95b5-b58619bf6e48",
+      "evidence_assertion_ids": [
+        "assertion:0afca5d6ca0cdcc821517caed9688ab0e24784f6a6208d8b423d329c5334147f",
+        "assertion:165e459035908e878d6955f4645f2381b2aa81930b7177b3848258777bad4f3e",
+        "assertion:16af38222e2dcc068b1e5dd198e6947e24eb07b2e5d8057e4bedfd0f71d8517c",
+        "assertion:34289217690234aa6911bc3311d3e1bad83af69fefda60b2a958a870bc638c0d",
+        "assertion:39aa7dad24a9ee7474096251b6912324d61c1f0c4180392a4bbcd5087be1d15b",
+        "assertion:3ee5c3df1b0be35b80e83521c11ed662c6ad30c6567cfa2f55b4541f0e86b0bf",
+        "assertion:41d963a00f8446d29f2fdbaddf963595f8eb21781d2e035a7a1ca09484f17f33",
+        "assertion:4bcb6c0adb13ac729be84f3491271223e40c7aa78749981a0627cf48ae01b3b5"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:a0157b4e-03a4-5c38-ad74-e141b7698ccc",
+      "evidence_assertion_ids": [
+        "assertion:1bf62ed5083e7b41179acca751e64c87ebdf956200991c74e629f187e3c8f1e7",
+        "assertion:3cfb6d38d78e512d51a86924cf33afec1f1845a0bf4ca73e72c86df9bbea4e8b",
+        "assertion:3f46839bddfb4e0662950794def63eb0f525b209a1a06b52be8a1ad8c5ae50fb",
+        "assertion:418c1bdfa48370522b32954f3f64014ba6874474a29c9d0849452d844c190598",
+        "assertion:5145eb3c2ba0e50d14c19bc1de3c3130bc428bfa3c2f85f346271f499dc6036f",
+        "assertion:6077a5ab30af03cc28d56978428b34ec7234fa19f727536ef9678402549fdb78",
+        "assertion:76a42c12aec556a7709f921bf734f6859315b768a53eedf5be2c9c9dcf0633ea",
+        "assertion:9461117ebf1f3464ab5dc670210026a47fbe9855724f460f4e1d8c4c8c6e2af3"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:358cd693-e84f-5d37-92e6-ee9f7ed8b969",
+      "evidence_assertion_ids": [
+        "assertion:030e0e22768a0f995be070757ba4f2bd2df17e01357e09794ebaade8fb785b4a",
+        "assertion:03819c022d2e41372f04365d2371aaa46bffb4bd85af0e95f153aab3b81807d3",
+        "assertion:05a8c3c999cd2f5d5f58f6ae3eb559173940de60e9108dd3afb4854ceda692d4",
+        "assertion:071ff044b5f4dc422d692efb02125ecb746e4ed52f087069420debab4f25fa09",
+        "assertion:0ed5a38a4cd4b0c1f1ffafe92bce80a0d8dfb11209b89069540f34450be26be3",
+        "assertion:19b6d7c407a96e873488292b24bf8a073c4072ca44bef2357544e7e3efbf79c5",
+        "assertion:1e9a54552e95a5000d86bf6f1be556991079e057f90ee70add27816c41320f57",
+        "assertion:22219d26abe3e0377fd420c27a6d8e2c2999cd0db4617f5087b9ca4d630d610f"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:1ef6372c-6107-5669-b285-be9bc40d512b",
+      "evidence_assertion_ids": [
+        "assertion:12bae1a7e93a88e7c2d08161079e11930984aa8e954356a0ff164d1eb2f99824",
+        "assertion:17c9277dad76b6299576a9a2b80ddf58d57578a9e49ce38dae6eca45869bbefa",
+        "assertion:3886cc8b77c42369ac6c41807afc01a6071632f0a7e7a4198cf9092df74354dc",
+        "assertion:42d3927a51bc2d8ed8c301282c29a981e15a441f0fec42c04ef9606dd45e4c30",
+        "assertion:523eb6b136086a69ca689aa028798ada4f04cc85849ebefd90e0f7635675dcf2",
+        "assertion:7f48ad12e4245853d2cf28cb4029e711d0d84239bb19e10804dac3eec64e4a59",
+        "assertion:8b3aad92935569285eee36f2462d0b467b20a8db1d89989785cccb4a71b60c91",
+        "assertion:8dc5e1942aefd1f7b333ae362e704971e3a6cdd0643a0c6562d30337925bda7d"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:56e7041a-a452-58d7-8d47-a161dcc41392",
+      "evidence_assertion_ids": [
+        "assertion:3711bc18461cf5f99887c001ab1809615baa869717c199f018e640ec8de1ab79",
+        "assertion:3b8dcbfc78b4ea891e8e5c26dd028fd62fc1d94258f21e934c618d46348ddc20",
+        "assertion:3d887ba71d60d7e6d6b6123c02ce7371981a684741863b3656cdb564f2843fa6",
+        "assertion:4eac7b0aebade9a242a90b7ad3ca01b88d23d4d779f939424dc2a61b02a50825",
+        "assertion:5f72b4ac1b597054903eeecf4f69417d3034e6fc0d71f8b78fd7810135bbcb79",
+        "assertion:60d226ead2d18de86b0d7e55f36788303a2f420aaef1817a9c9e36ab25b6e198",
+        "assertion:7084909bb41ea8988e454ceb74044cdf34658d5dcb1fee522838daaca30a040a",
+        "assertion:7a09fe1e38716dcd89874aea8d6a98a698f428e27979b7d77910af5ded3bc25f"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:0d3d225a-ff77-599b-9be1-0ae2e4887fd4",
+      "evidence_assertion_ids": [
+        "assertion:0be868e64cab027a6ccda5a678e2c619612171811446d69b47574f38dcf22d2a",
+        "assertion:1020da0eaa663f2efb1fab7814f6a6170c9396e0a464ea5a3bd7627f351e17d3",
+        "assertion:137649beaa3f25a6bcdab487011b0bde845bfbca1b0fb7f3bf49b47665c7682f",
+        "assertion:2535c65109ef915b6642650efad29005fa3f2c73cd04139ec326585a8e667ede",
+        "assertion:2559c6ce51be129ddc6798a07a4b86e2eaa3106bffa585414393fa1ec130eda5",
+        "assertion:2b1463cae19874bff18dd2c892af000d187455fd3a8143268784b6250a87ddeb",
+        "assertion:3e737df425bae95cb3d4417081580e025baa88a3259590557068a6f2922b6fe9",
+        "assertion:465dc15eb360320d674f7181965256f967d45680aed51fed88066271c8bcc2af"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:1d1ba33c-1d77-52e2-9a26-b4121212555e",
+      "evidence_assertion_ids": [
+        "assertion:0c536d52a3c840d11c8d48cfd89bacd65516f7b289ad52e38916fad729ed0f44",
+        "assertion:11e1fd5a68b229de7c0488f8947dcb0522df98fe9e9aef2032e4d46dbf3d4bb1",
+        "assertion:47377dae6d686c7cf390801ef269b07816dacceac0c342d996f70a4ddd4d1da3",
+        "assertion:593914f53d853b391af5d09779e2c9f29cbd128ecc0928301390aaed58819641",
+        "assertion:59e43b79ed7342b9638c1481d9af01f8a4781ad70d9f868288afa8b294a0bdbb",
+        "assertion:611b066bc49b41a32724a0d56ef3aacb69deb559f0b0dd8353531d5a3c237466",
+        "assertion:6bf58a427a16afb11236507e18e8c7f840eb57f58a9bdcace23ade64837cd7d8",
+        "assertion:738fea22a6c3087167a0bf312e1118c26858ec698337ca9cafb3ae078db05e1f"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:12bacb46-7494-5d83-96f2-43672e075da8",
+      "evidence_assertion_ids": [
+        "assertion:06fbc65e26d6333a8149cf66cc9aec3f206eb2a7be272e35b479c35be9c55b52",
+        "assertion:0d3ec13b407388ca3b1445f05994c06feb3591db23e36d2a08253ed514256595",
+        "assertion:0dc6424f9ff9eec8d8212c80d978501bdeceea6d16d59a8fe656fea5f0ea9b3d",
+        "assertion:250e6d7f07e9f2c033b44c48d9134069736ba9b3475561bd50f4f2a992dbdb5b",
+        "assertion:598c0509ce537be708afd7f1510989a90a380cfa973a4e335a021834155c958a",
+        "assertion:7171ac3f9c392771d822917c71c25c93a77de1d17425415c2eb93780f79a07fa",
+        "assertion:7535c82984ffb4dcd040e657b20edf69da1c63804db9cfadb734f7689bbd35d7",
+        "assertion:7c357731b7b53b77ac1c60a1e53652ef3819d0f137ff3605dfcc7805f99cc97e"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:1a89aad5-f6c7-589c-9119-ed3b6ceb27d0",
+      "evidence_assertion_ids": [
+        "assertion:00dd19c7d9e19beb6ac3e468bd747d90f5ef57360b4411cf2acea19db65f804c",
+        "assertion:11c67812916456156f6a8bf8882fb54ad141407d712cd239bd890e0a42b1e471",
+        "assertion:1522f221bc6ec92a74795ccb1ae93c5803c001062341adc89751f3e10aa01c07",
+        "assertion:1c5a7fab0a44441b49c62bce7ef6da8c0e2c6c65dbf3537182ab218431980f6f",
+        "assertion:49318c9b7ae7ef5a7a2a7bd41c35b0a8e78911d78d7cbd37ba7eaa05ac11f237",
+        "assertion:6a3976182ca025193c6ab8844bdd3b3bb7299b758091240f25a4cd046cd914e6",
+        "assertion:73d5a5889db13bcba9b1d4bcb663fc2d1a41b8ea460108d53f385216f03ab92f",
+        "assertion:9753f299ce3fb396d32b576196128f624e9aa6b2b0e0d6013e7b5ede6199316b"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:0b72359d-217a-5286-a417-0f1c778e67df",
+      "evidence_assertion_ids": [
+        "assertion:0bc7244df26446f24b4d290346307b01049f6d460d7ba58aaae53ee1f7e14cd6",
+        "assertion:23a2844becb689239921835eb2baf89bd191881ed181a0d27bc7c4bbbd2db89c",
+        "assertion:2dfe88cb58bd58f75fbe81f6375da5832e9c6dfa01863ccc3d24a7d6d7b636bb",
+        "assertion:3040630a6c780fd88307964af983e3a98d489ee2540d1a410737d78700e2510e",
+        "assertion:3961fdd4c4c4dd6068df42fac353425ea1d7a0f45f8ade96500bc98132423f50",
+        "assertion:4708b980eff848df2e351251ea30d974d339ff34c135f5c3983002d89a830fa2",
+        "assertion:4729176bcee20bb543055198a89eae5f491ee0a7c63f819a2e3d9fd26518c849",
+        "assertion:4e50a4d85fddb03e5c1fd7a294a50c18a8ff7deb0ef8d374037c29ac1c1d2dbb"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:9f51d4af-1046-5c18-aba3-b261c5471722",
+      "evidence_assertion_ids": [
+        "assertion:0710488936e54698cf2e52fb3d251809068af0ae4f6b2505bab28027a5f26b9e",
+        "assertion:15aff50eb5e52a2c933dcf4d53853081e8d4fbf3e5fd486f2378e7d60db9d2e2",
+        "assertion:22b5b17d4251ca029e2fa2abc55c285da93e25a0080e3676f394a910fb8b2468",
+        "assertion:2516ac52a17f694575f17ddf6e470ae8e6752185108a8d9990a03ba3de530da6",
+        "assertion:30abbfc42f132b15407ae2264e11ab6e44421f972f9d8ad3deb8aac2aaf0df43",
+        "assertion:4374aaa11fc20ee2d30a37955bf8defc6d9117aefa0652e322ae1161ab0668f3",
+        "assertion:4b2063809a53d82765f78fecde69844548e9846b63a5a650def1484c8ae4ef62",
+        "assertion:5fd9095980035e8ec1c29da8a666d47a675978ffba825207b45ffccbd5909807"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:6fbe3a86-f73a-59b9-9abd-493396f6a8e7",
+      "evidence_assertion_ids": [
+        "assertion:0e79b2c10eb8edbd791eb693b8a0fe6228fab9f074b51534d54b9b45555205ac",
+        "assertion:0f4e137326f02c69d6e0d8d1c7fbe5eb30c72fb3ba1aa2dae8a645942b668aa3",
+        "assertion:2354ab30c1c19a2102c8eb83bd837b09dc3c371139e68fd0442d6a97d5e8d61e",
+        "assertion:54707bb57fe47a1f394a686d628587dec99a0924e700764759bceebc14a5fd4a",
+        "assertion:5c4cb2cabcc921c24cf0d3803387261942cac8e625f73327fa2efb2f23cf43ae",
+        "assertion:6c9260dc6ee50e32177c08130f65cbc2ce71380522629c9e82c5061a9ec240d6",
+        "assertion:7147effd2649fef1206a2135ad9b0f480d9d9fb371cb7108362d0f524c24ffcc",
+        "assertion:87f63b4d15c4324a56c36c508eaec65f99777574e2f411b4601d8df29d8509a6"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:a4e3a4e7-e22c-58cc-981d-391b7670af69",
+      "evidence_assertion_ids": [
+        "assertion:1c7deadfeafcf53364b8a016a78b7374860a3f3379d19772aec9fd71d0cbff5e",
+        "assertion:53eddb4f0c0e47e145344f5f4cdc0ed33d5e06745271696b6e78db043b623451",
+        "assertion:5bbacdd72d13de3fdb2a885560c318b3d064d22d2ef081a77451383fe7d17a3b",
+        "assertion:6b53e8c7b47bdf2f9676106a122492352e6f3096a8be19f742f58cf280c150ca",
+        "assertion:6c60173ef775413fcd0a168cf4379048161ac8f1e67aae457510de519fb5990d",
+        "assertion:7cee3130203bdb5519d56a181670471a22d67866896b3c4add01855f60bd7352",
+        "assertion:8ab9cb912c0617528e4b21f6a9191e3871fbb4f689f4fe8cb8a2f3334c420d40",
+        "assertion:abd26ee50aa4426af016db57b8a210ccf26a56e33b728a32625b5fd80c5136ca"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:a8ae97aa-dd67-549b-adce-3b1e56bc8736",
+      "evidence_assertion_ids": [
+        "assertion:099472c90801d86cd71b446db8082323bb3740a4aa3b0c7e168b04ae7c608614",
+        "assertion:11bbc0a081021c42ff2d1785fe0f52e8965804e74a2e4a7f5305dccdfe94870d",
+        "assertion:146fc3b171060f002d7fa94133359a7634210dad912c5d0ddb82278727647052",
+        "assertion:2aec9d0122093ccd7e27386cf1f3c18cd0e31d130d433fca1322e354492155ad",
+        "assertion:34a98f76e4686e1d6eac312895ca276663e54e4bd9598a544bf96c94625df851",
+        "assertion:3547e02cf911eceb1c7aba27735befb09aaa4904b86f70383996e81c6fd0be33",
+        "assertion:6483ae4a208fa4d168375a3f7741c71fd5ec72b5b879a019362b865d15213e69",
+        "assertion:67c1ae99eec9f6a9081d16c34642b66ecef3394030fb92b739b2da5e0b2a4971"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:16274e81-141e-5ca1-974b-2668016d905b",
+      "evidence_assertion_ids": [
+        "assertion:062c67ad3cad72f0ff0ab0e5c133b92ba2fc44b86ec1341c4561faf8b711bb07",
+        "assertion:16d2cb32b7ddc33c01081f0cb491820a8e7292507b342862f6653cabd76f7ca1",
+        "assertion:1702a66ee2961cd8d1a0da7097e5bc56bb8d89c4db98d804c985cf62bbea17b1",
+        "assertion:2631c39a4bcd88c7b2f08386f4c6d2ea23afd3dd5a223a538cf19851e2672166",
+        "assertion:38e142b59ffe5901d509b6f276239c113bfc8ef2920f82ec89f8ba8ca585ece3",
+        "assertion:3f6d34d8c563b45e474aa63069cbaf8693aef2b415f9e77e89ba3ccabcfa664a",
+        "assertion:435f98e814358ec2ecb468e5fa9570fd10062ee16989426d895112b2eba4edaf",
+        "assertion:73838bbda13121d58c6aab2732ed6f26a592e9f39bdcd1b113fad33f5b85b56f"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:dee1ce44-d1ef-50ff-9369-fecf1929bf70",
+      "evidence_assertion_ids": [
+        "assertion:2b32e494f176f9cecd018c2fca7d066f95c91aca31311ac931817bf43a8d9b0b",
+        "assertion:2ec08b538eb62b8cfc78be76e1f462e5e738f5243bee7788930fe5c486237648",
+        "assertion:2f308344e380a75316d6c606b9b95ee68d8e2fd5b966424f3dfe1080dab8e66d",
+        "assertion:42f9a49a19b42866b9f5816d8f47e179edd58f9f0f8efb3e7400ee6fbb7c4892",
+        "assertion:545e52be5830257ade9c843564c71653cf24f8b6ee0ad15b9bc2a2e84b23e3b1",
+        "assertion:62f6d8ff02c7de0a50494bf05ed99b45a53fe1b1f3dce488dc8e52978da4bab5",
+        "assertion:7d82cef17cb01bc4ba0340bf9487a602966e8a658c61ad3cbfe8a505e869fb47",
+        "assertion:979d1139b8c45676b3d3ce78c637ccd25f1fe69cb216a0ab3d9c094a0bee3a0b"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:5ce1c406-7804-50a8-801c-fae125cc5028",
+      "evidence_assertion_ids": [
+        "assertion:08b47fcd405e62f4acaa3eb2a354fe27726465a8a47ba01a628e7c12d91ee54a",
+        "assertion:15950a96193591c985fa010a2fa1a4e0ffbfdfd258b202b3de26050e46f87ee4",
+        "assertion:1f68d79f98341fb124c8fc3cc01471140b090ba1b483b32a3d5a01921b461697",
+        "assertion:2579d644dc9042d0502193f58c79b9b01d16698e39d72782a3aaae426dff7dd4",
+        "assertion:30d4232ae3b02b09c28e95c13815e0e462c34d1913b13588f8eae48b2cc33120",
+        "assertion:529c15fbf07b61524ca13de7d1009d95be2973277abfee101022a1a5372d6cf0",
+        "assertion:5701bd931fcf845f4120e6e5bcb0e996d19076af46d3fab3e0a3a62b1618e470",
+        "assertion:58c0852bae6e1c892597f89358d1f72e67b9739f5caa591a40b6800ed31e9cd0"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:b7915201-66f3-596b-ac9f-393e4502a7ee",
+      "evidence_assertion_ids": [
+        "assertion:116f4d7f1ff5a119a5dc13c4326cd5736c885e80fd0a72e796f2ffc3645c0092",
+        "assertion:1995e93704d7792880fa421f0c295e170d9b57effb4a33f26a4e05ceab350f68",
+        "assertion:3041d7ced32052c4dc15e0acb8d9ffdda80a747a6c0138904ab6df0fb432b84a",
+        "assertion:3a859c4b642efa5ccb26c155cee59e12a2f8071fe697151fb8c0d5d10e46778d",
+        "assertion:4a34076da4ca97b5d88fc20b0514b8d0ecc7b2dea1167eac960841bbe0d7ad94",
+        "assertion:4b7ec4ecce5cd049d34407a8f369954e5add1176c6787991807641529dd03db6",
+        "assertion:64314f1daf6c08cf3aeb13705157f386de10abb3938bba79751b63445b019a08",
+        "assertion:64cdb8f22878a98a47305b2ced88f3f9552616cef3a34b7ab6dd7fc782ca71e0"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:916291e9-b7ac-5b64-8f80-1171c72584ae",
+      "evidence_assertion_ids": [
+        "assertion:04820dd58decd01c56f9f9a3b5395824e2867606ed4c4d4244a02c11e6345114",
+        "assertion:04b66e5b0a76f415d839a1e48dec27ae40cdedd744730531ec6b4cf0fb114ac1",
+        "assertion:21a56205248bead9233988e67a55fe126b85c4bd2af928897ae9b109ac7731d1",
+        "assertion:227b459f847febd6585294884f945009e0a1609f0ebb4d2762d4b0c154061d9e",
+        "assertion:2dd34e22a5a4a5adc0ed49c4753205658e16318e1cbc884d4b301eadfeb3d45e",
+        "assertion:4c4188ec9591df2112cde90ac808f24f55ff4b390d1d00d7f19305bb87e4f887",
+        "assertion:83d42db66ef3674723baed71b1e5754298fc393b051d0379332a5e85819ea571",
+        "assertion:8bbb60f7517dabfa69dfa8bbe5940bc7fc952c4bcb3cec002ab5d5617c463f49"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:1bfc0a83-c6b4-52e5-90ec-b061c731a5b2",
+      "evidence_assertion_ids": [
+        "assertion:16e034bf012c65d3160fb9fa3574a04a403395d3f260cfd9021aa7ad3d524b5c",
+        "assertion:1ab1787597c010006b3b1175d846b3eaf8e25fa687accaa9d0e5f02b4078e1c2",
+        "assertion:23fde4410ead1c3f280eec9a0de3424383cab1870991a65a3955c3009344b343",
+        "assertion:317b5977c56ad6c28ac674441440788d1d154af34c0631c89ad1a640158d7ac6",
+        "assertion:387deec36fa439d5e5d6629d2448138ceceb1dab8b4dba293dc08538eff54de7",
+        "assertion:43fc74b8a64ae9d987bff57f0227f3256e141e6c0d09ae942fd82a641d3ecfc3",
+        "assertion:6682f65984d26af435703ae1b91d89f3b61b2037c16b119129b1c86a5dab0f1a",
+        "assertion:8fc21f0c33a3a3ee2b576da29579b6365cee8f95b43b4c5fe905f76355baabe2"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:e06ef761-d87f-5ec9-8b1c-2d5d0579bf61",
+      "evidence_assertion_ids": [
+        "assertion:0fc71e004d90d4fb9153adb161d7b57f23fd4193e53e060ac1f3bbc351788df1",
+        "assertion:141c2a29ee2e916dfd8008ea20c5961c9c4b21ee35748c45929680d0a84f5879",
+        "assertion:1b62e700180109fbf1dc200da501161a18cb0d50cd99844c5c64ff8ae822cbcd",
+        "assertion:2f6d9ac41da428f232476d9d436597413228fd15a3f52574d1f7cd836698366e",
+        "assertion:3c94e2eac9e321dd4fbfb2ee8e19c772eab1823d8dc71712627099ed01001c39",
+        "assertion:3f3ab73a907152df4463a7e87d4e60a33d8dd29605f9022470231be243994bf4",
+        "assertion:49340205ca0f5899eab26748620528c3033152a14cd2333f9981c5e7dc81e341",
+        "assertion:60395f8359ab2579fec96710e92450bd15ee05828147e31c21d13388ade76129"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:9abc6cce-b03f-5cea-b649-8b5967ca0c1e",
+      "evidence_assertion_ids": [
+        "assertion:0230e5376a42c12b4e4a4c97136843d8a17ccc91225fb75a5a8ca7720a2090a4",
+        "assertion:19bade24a2e3cc8e291fee76caecf7112e0203c92792173312d34e355f44cb60",
+        "assertion:241defdbf1682e3cfc3a45957748661b4398ffb74456775175328eaaac0f7c02",
+        "assertion:26c64a0a4dfb9828cdc3a90c443d480042f63974cbe029711b162c6140968781",
+        "assertion:45d3e4c9279f17509a831eddbea1e4f6a3410e4d26777a9dabdf928bb121d834",
+        "assertion:577f0316ff9143bb94c9c339e54b969d1323e03912d9da0811b51621a025028d",
+        "assertion:5a36b2501be447edfd47865dc98d3fc0f81a2dca64d2e5561c00fe5f1b2bef90",
+        "assertion:5d9049d40b0e309029d14b2a00c9469b0fd5a4def1dd9131251761888c42dbb4"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:8aaa2b24-ee18-515c-b23a-f96348ca571c",
+      "evidence_assertion_ids": [
+        "assertion:1ba994a00863229766daee5d6440fad297be7c6d7b7afa9557138f70d5905b05",
+        "assertion:1fae1b39374bba217f890fd7ed755a306ab050be072edfed1e5a09407cebd55e",
+        "assertion:2827989c702ba4c9c008871eff70fc754d4167f94d01af35bb0c9bebffe4b15d",
+        "assertion:2b9c6f83316c4c9fc5540a4afe35d8e779db88710daaab20ec51a177f7496186",
+        "assertion:2fc24751269f1e8c656367eae03e44e00954d5a5ccbdce2e0a9fedba53b261a2",
+        "assertion:3fed9f6b30d58c9295bc051b3cb8edc7cc9551831443d3298bd48324fece988a",
+        "assertion:40be8c219d7c45d1dd4b6308207d1c4cc013c3d195fb22e34ec4bccb69b900e1",
+        "assertion:5a29fdf9acc64063e4c919d61427068818ad699a49e78fbded9a283359301116"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:4f13dd91-abc8-536d-af86-16eafa870f63",
+      "evidence_assertion_ids": [
+        "assertion:03f4c884a58c3066e0d910b9b5ffb297ab6b97be6a2ec5e557fdafefc2f6f19d",
+        "assertion:055afde1d6d7b80cd46a039a25c5fed6984e83d964853b7c4ec91c4e4e3aea53",
+        "assertion:0908585db340dc1ba9ba444f35e29f902c7e28132d6b567423514aaa96e02e8e",
+        "assertion:45f17288aa8dc1dd33463d6394bccbc098888076a45519cf947c1c3b9edf290c",
+        "assertion:4aa952ce4f883ceb55a5e31c62c8a2a7ebf916407d678a99683cebadc9c3aa2f",
+        "assertion:4f5a98a7e37671cb32995f6c4346593c733029283a63b4d927476e3efdc9912d",
+        "assertion:5f53df1cf20134f0c16b8496895fc9fdbbb3cc534e8958a7f5291748ff43bed6",
+        "assertion:76ae4e1c89395b0940d54ed781c485bcf359da8a59d7b7dd326f0e3beeb26132"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "drink:d4c051f6-af50-56ba-9794-488b254a9bc8",
+      "evidence_assertion_ids": [
+        "assertion:102cc6149c0a9d7b674d57a9bfa8df601ef11ffbe520f33a59bbded12730ac1c",
+        "assertion:2a6ec41bd15ff28734f7b50d8cc9b6856bbcdb10bdf72e9060503711c8168fbb",
+        "assertion:4f13ddfb6de4d2e7a3ea98572768013e064d9e820cd48ef5126f3fa79d1bf4ed",
+        "assertion:57d21a2e15500f992b4fb0f4cf6055593c755417fcebfd536dccb619af27b50e",
+        "assertion:62fd3345c0e4a484cc8756bfba6f7472a30c0dcbb8b438b73cfb07ae875d5acd",
+        "assertion:63d614b27b8b8c400b3b00f7b92f455e02c0398daeb67aea7dc50dd14b2df7db",
+        "assertion:70d0e9d82c4eabe4c7b43a85035a84c3ee37e8b1ced92a940bc38ba024ae4b73",
+        "assertion:73763b483b81feeab5e84887929260afba0aed3a827285b9811bdbb4d9c7a1a5"
+      ],
+      "runtime_support": "display_only",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:5dfcde6a-24c1-501e-b2ab-484aee633e92",
+      "evidence_assertion_ids": [
+        "assertion:012eac0817edebf70c7e8e6725b66faf8d39fca56dfa7829b840c60893407472",
+        "assertion:04ccc1a8bd5621b7036028fe891b5df192b6c5df86c7ec0709e26107fafb7b5e",
+        "assertion:122299723df9ff763ff40ed8739eca5ffe750ca9bc783473c337f8d9853f2653",
+        "assertion:1f22f6d04922be2cadeb1da87438b6069abc2d011a566a43eed352b0ab25a08c",
+        "assertion:21d2b8d16e67f9d6fae908bdc95a8578f8cd401cefffa6301fd1ed2f1c3e1feb",
+        "assertion:28aa27b6ce562520a58173d950f092f9b3d5670ec48b39ccf296dc296b6d6e98",
+        "assertion:328e64649c2df3b88a7ccf30cb12fff3fb4fe2058fbd5230a5a027749bca976e",
+        "assertion:34ef3ec80796cbf6d1d9353006c5a8670fe969d2da424d7bcc60c08bd941ae96"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:4101888d-17c9-5507-9e99-2bf581ce0eb3",
+      "evidence_assertion_ids": [
+        "assertion:01756fbed8dc5c863f0ab679ac9d1f503567cbb5f9bd3b71d5c03d474c154eaf",
+        "assertion:083e777a7fb22e9a577cf40335632024642b1a793917638e5b332f6210dd378f",
+        "assertion:08767cd123130386296e7a02c444c90bbe7d798d3913cdcfe19ea91e9e3d1e6d",
+        "assertion:09897a3879f145381ebca1175377de6023fec5d4c61a5972cbaed6734a26c525",
+        "assertion:161954312b3629e8c48f1c1143a156ed7fd7f08b209f12c8fc4b7f7c8672044f",
+        "assertion:186f8ec480417f79fb7f7a2cc4680c27ec111006bb51b5a3420d89723a014bb8",
+        "assertion:1a849488a129b548b94e495071182b98c964f9f5cd133ebfcacc3fd70ab9be0a",
+        "assertion:1a9ba3e880bb91ec954d9872dccfdf12913c02564062e549602feb1493002f3f"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:747b07b3-037e-50e1-8646-6c2fcee6c22f",
+      "evidence_assertion_ids": [
+        "assertion:0ce55a0abea6762262d59e07bee5a78d3736dcaafa6a7d371e607ac52e4b1c38",
+        "assertion:1232d893987aa9d8a72c661d74546b633075134d3e5fbcdf7bdc3629d5f08075",
+        "assertion:1cb2997328920e3d4f8496ecb7753ed988a573ee1c9288cab2abc18c595971c9",
+        "assertion:1fe508edbc17befc0a1e6f8d18d0149de687e4fa395255cc6471f8462caf6d0e",
+        "assertion:2811f73e44edde142a426a23d3150de9b8739aa8fe682841198a69d61a3368d6",
+        "assertion:2f7c0dc930ca6c5a9f7599ae57eff8ca2cda036054e19c8ae0e2bf74cf61d560",
+        "assertion:36728c16ebcfb8f0f1c3625e4e6ea05679d9f0ce95ec58e7db518b9bcda1846a",
+        "assertion:377eae0d62bfa581e5411e244b32e7b8cd3193cbe6378bf85d80c6abedfba4d9"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:171b40e6-5cb2-526d-9368-ed5ac8230905",
+      "evidence_assertion_ids": [
+        "assertion:02c5943e83505bc24a69df9e3500c0e7e0614aed7e52355e7557166908c6a08c",
+        "assertion:0c825932cc34190761a5c3c031bf8d73211bd6cb47883b14aca0ee7525dcf559",
+        "assertion:0eca30ca2f6acf299e13a08f10f37647a14d68d354a8531bbfebd3c27e69566c",
+        "assertion:1f33f42ba21396651f8d70b606a3bed17ef5f99000cc95c0edb3323d5ad6c938",
+        "assertion:207a3f335a651fd8df471b5fe787566247a8f6a9b2352aece8111c28b6f29976",
+        "assertion:2314ac364fa387062fb2f5619191e5d344393627b118120ea0e01c92f7520e64",
+        "assertion:2c39bfc5c9a6a50cbd1ad34327bf93dbb096cb12b43bfea0070926afc637c4fe",
+        "assertion:31ecf871c0da2765f25bd860185b1b37204cd8a274f38a8fe4eebddbc7f9710a"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:e4d36cee-97ce-5042-b953-5be6856b8b98",
+      "evidence_assertion_ids": [
+        "assertion:0cf20e841f3c6964c691962a4113553e1051504e9e90aa3e5a056416ffb2a151",
+        "assertion:0fb0bab7cd22b5ded9a5c098316307c0c3abbb6135c7e78653b4587f3b2f0b13",
+        "assertion:123e09f04f88d36c41d18bd9e123018442763775b25cc6a32c3d6f7dd4d67695",
+        "assertion:1656f147292cdb95909201e0482b47d5e4d30b4150345ae8b1f5543257ab8564",
+        "assertion:20d15dbe56e8abc371eb32b1890dbb8c36d76e44dad5472157ac3cb903e75ded",
+        "assertion:228d568d9d3aa409a9c0246d6d747abacde7bf67cad3bdf0f7d0aafd929ea88e",
+        "assertion:24f68b2f693d780c8aeb4d4b45001f2796f0800dd848249d36891cd548965078",
+        "assertion:31e473f8da9ef309acb149b2cbc0b8564c4c903ac4a5c6314f85f295cec73764"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3998cd22-2827-5c04-a4f2-5342c7c57bd9",
+      "evidence_assertion_ids": [
+        "assertion:03de5776fca28827c82f0ba33f1bb02adce5de5c58a58865d86ec024c0222ac9",
+        "assertion:121b5a8661469fca65f4310413e107ddccc4e04480969e1a1a785f656681858a",
+        "assertion:17ae7774c23e3dd85a9d6481e967e99ed9f30091a21e8513472d48bc5d9a0b5e",
+        "assertion:19a59b164134b0f28650b8d33e0ce6de9eb53ffe5e91e26f3b8b693a5f3cf264",
+        "assertion:225d63053e24103266b0036eb8480a172bf10d89f0d33a0c55d5aada2d6cd196",
+        "assertion:2937025bab7bd40b8a7dcf414cb5a23ae31d2aaaa1a85922321fd6669c82321f",
+        "assertion:3efb4048590b4f729b6ba1c71ef18818c0aa1ec689a61df59c4a338bb384b3b0",
+        "assertion:430c2db48ea3607729131d3bf5c501d6f9138fb863de1028cfa23e3cee79faa2"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:d684ec08-f497-5a20-a70f-f4631e64f46c",
+      "evidence_assertion_ids": [
+        "assertion:0fd2f2bf5cd2e04e198c423e1c2576337bd38f2a890e4505d6e08f8730857c1e",
+        "assertion:1890c71aa9cc971428bb3494f732c933f32079c7bc78ea258c66dbeef16826ba",
+        "assertion:1ef2e34c8b8ecef7cde3f69d9f070a8d0afc9340dbca066f4cb6067e13571a14",
+        "assertion:1f933500e6be2440ba76f9012958d2c9c6d49c7926f8bf924069f65fbd6ba7b5",
+        "assertion:2462e8a5df35fce661b05e239ab273e36b500bf2425aaedb67c3b2aee6fae22f",
+        "assertion:297cff1812a8c57f45fabc054ab30eb37f5794a984b2bd7312622f52ba89b0f7",
+        "assertion:2a97be2e1d0b09ce77d57c32ca126e1f47e2a0892c033943a393168dcac98f49",
+        "assertion:2e7367309b4882d1e88d7c3333afab62e930213bd5594d0859ef47c36ec637c9"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:afafb955-2758-56e8-abd4-38574762ea68",
+      "evidence_assertion_ids": [
+        "assertion:00fa900581fc7d606de92b275572a5dcd1e0477e5eeb3e409b67b38ceec15f63",
+        "assertion:0b35a720fdd4ba1ec64f81677099d012e0ca31d10c9624d9f8829e2d93139968",
+        "assertion:10b67ce2db74ce2dff2fbe010b83ff7b75f3c11f5a02a0745f6625be8f5e5813",
+        "assertion:19e8706077d43a21604624735751d9b792ed5af570473d231b7ca73af3bcb15e",
+        "assertion:261aec1666959513025b829f740209421a83ebbcffeed8d3314379966816e6ab",
+        "assertion:26654b047df7e82a88b78a75095ddb0cf30c2e56f9b2a8ca952fe156258b1077",
+        "assertion:2a796b8c6ff646dc55301168beda88aa2310483f19464768a16e799a65ca90dc",
+        "assertion:2d040a6df3b385400f8dd19fd2b332cf486d077157576e98c2e4a224d81ef66b"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:01ef714f-4029-561b-8db8-636f3d4a16c4",
+      "evidence_assertion_ids": [
+        "assertion:037f1925b94cd368a9cf242ede22f1948ee5f60d87da5405c9e1cbd0f661e2b1",
+        "assertion:0a567d7c331124d3ca66819d0b2591a320dc1fd29cc210c788cd4f1805843936",
+        "assertion:1494212767e69d5da528939923b1af73f41299d59734c54f7cd7f6c040f4ecf5",
+        "assertion:19035db048c9e2b8c4cbb02178797e13944d0cda7a62fdcdd00e2880ae28e3aa",
+        "assertion:1b194abdc8fc3b1fc498e8ca73ba9100c861aa6c64c13fd537582c70519c7100",
+        "assertion:1dbaac2754e2ce5b88a0154fbf473d670511521c3eeaf178ef03444afd239277",
+        "assertion:2847c3661025e1d506649f7bc8f55da286506115a0207870e5e17b4e5c12ce59",
+        "assertion:29443225d156bc764e7eddb37732141d59ce51902277110a78aed26d2ce995f4"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:515677c9-8988-517a-aff5-9323039812f9",
+      "evidence_assertion_ids": [
+        "assertion:0f6b8fe5e748cabd4add0e99cbb4946f88bb2c256f0f30c03042a4b521de054a",
+        "assertion:222bc65b670a13ef6c0db1b41ec873443d850494fe80f20326db056e305dc6dd",
+        "assertion:3186c454836413749538d598f80c93c01b7db03cb1e85c19d0f821e69654bb87",
+        "assertion:3496e9979b9dd089646db6481b883fc489835d621f6dee301bccf08882cd9321",
+        "assertion:36e77e9b6aee0456018249315556f83b5103f9e7107a0947bdd4462065ebbac2",
+        "assertion:383ff2f1f2447e0824c047916a6a5451aa9b8c4837b3e9bb1d3e5a9b7c55229a",
+        "assertion:3b9ec7be96cb67082fd15e43fa077c72e91f403b05f470475939487898fb3dee",
+        "assertion:4280f24a66d33137109ce4b0404c4912b4438880ede267d32dfc89197c23bab8"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:a5a09254-a036-568e-84b2-740cd3d14a26",
+      "evidence_assertion_ids": [
+        "assertion:0af6f21504f402714710a3c3e40c654f66eecb93592762cd315d2b2de7ba914b",
+        "assertion:15c65882de3415d0d0426afb3713663763ecd5a7c8ade44d03fd44fe47700e89",
+        "assertion:184a9c615130222f67f5779e80702ec0fa9ae8360d73bfde92c34a32b3dcd8f7",
+        "assertion:235dd655f1c2177cdf26556666cb131bdc62bae7603c773b72ae8380fe6a737e",
+        "assertion:2f5660666f42de0a9070c5f5bf8918fcb59b7a610b33743658208f0c5390ee48",
+        "assertion:49bdbc9bcc8c96f0af2114b17a1955685f1a6aae82f19965e7d212b692162b48",
+        "assertion:4d0f1995501981f7859cd272abdf97eac40c338263fa2ef1e9dc58dcd6adba2f",
+        "assertion:4fdb8b22c1d5fe4236c3c6350f8bb61d3ab38a298d9ed5e57cb8f6fe3d467ce0"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:6db285b3-2c44-5427-8b69-3d6ca7b5a5bc",
+      "evidence_assertion_ids": [
+        "assertion:0a5baee194d8c96698d3fc95d789d071efdd69693ae6493927502144219fbbf7",
+        "assertion:0ad52e747bd0054a3db43f08b3e86f71f43e8c75074a1dda279caff6b5202399",
+        "assertion:177bd798eadcddad802306dfb8c4c528dd9b07f2b5eff3af7ea2aefe049e8d5e",
+        "assertion:21f797f368316b735a57f0055e5985e6e7a49dc6149f9ca25352cbaae616fd32",
+        "assertion:24c6fab522b065d31f2386ce866c2ef543c05a311b55e1d8aae10f6756c3d03e",
+        "assertion:2b34fb657ad8eeb61ed9195da7e72d11bf477b92e01174c0a8c5dce345778a70",
+        "assertion:2b8b64e374022704f5ffbc643d9f170319874ca6fd54ebd7c292b5f96b5a6a9a",
+        "assertion:33f6f99d592e2908852a94bcf2867511220737c9ec7782b8f87e73e1c439d6e3"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3db96674-ab9b-52ed-b2a3-c1bcf74a844d",
+      "evidence_assertion_ids": [
+        "assertion:032fa146bb9e45d6eefd31aa06287c068df84c4fd736f04934f65458cd2249a9",
+        "assertion:0ea05a83972c0794cb608c27b0d48aae58107b2906480deaa1085adca75f7065",
+        "assertion:0f784d1bc319381c6e8f93efcf9d79d99870a2fa8ffa50141ab8dd7faca27a73",
+        "assertion:177c5ba9f5e8503508317cae34352383d399ee9354ea3660493ae6b9a41f10dd",
+        "assertion:279b8eb676768bac2cc90a8b0c8a4eed4aee9b04de2c66742bb680732d6f3d98",
+        "assertion:2d148d7b477f274b007384a072d1ec4102dc29bb07aa5fc9c8e46d2cc29277d7",
+        "assertion:2df64ee53f9a6aaf4365def46ea379d5ab5b3c5f50b94c61064f649ccb0182a5",
+        "assertion:2eee9206bf1e904ab6bba072f5dd56b2b9f92eefd8661e0633fba51827ab8b42"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3b3a0024-bd5b-5797-90d1-56a0ed2b69db",
+      "evidence_assertion_ids": [
+        "assertion:05c46f92f7c8b9922bdb2da48525eff37798c4b8eefedec09cd17df4fa2b4b57",
+        "assertion:073ba084ac1851e1be004a80e5b959a0f7483bb6943a8db582bfd1bfc6c9fdbd",
+        "assertion:07e321ab23b4b34232dc2c08a7e7bf68b59bf1270f5cc133ced88bc794fe0ede",
+        "assertion:09d767c8953dd73a002215d4cce29619dabbcb0309a4585a9af3314ed7ac039b",
+        "assertion:1514a160930c5ab4c51d6714c56c8a5d351ede5807591c4642508787505f6dd2",
+        "assertion:23dde09da330551ec0ad344d78f3aa9a053715758536449ea6a1352d03064534",
+        "assertion:2a0eace150827d634bd1f546440c449cd5bf900cb9de7416edc5fc0611592f0e",
+        "assertion:39dfadbc0e21b4b03c73fa0c00d9d2b0869fa5c130a8ecb68fe1689f33ff4fde"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:9e7ccdae-7a35-529e-9c89-5d24ba8ab6ad",
+      "evidence_assertion_ids": [
+        "assertion:0143a6dcc9856f3cc2bf7b6c6b8255d10afe983a41931668c25f06a90be61891",
+        "assertion:10a7679a2d875ab770242834bfb7e29851edf02aac431c2608de96ff18a37f71",
+        "assertion:20fd6fb7e611bb1988f01fe3cbd3e13e4383bd1c53184a21f0545b9a7df5c6b2",
+        "assertion:23d8de40f9964282c727ca9f0cbc7e7f5c9f2253bce6af8b63214959de65a888",
+        "assertion:32b96e4e3cb0d68882e198f4564689d64cf606891e15c7a75f774b4012e4b2b1",
+        "assertion:49e38dff230effdd46515ee68c6a6cff3e8dfa5e2f4fa9c1183876364c918830",
+        "assertion:52ade3bd2ed2d5564f0103c64faff12c6191ecd4f391d54628abd4fdf8b85647",
+        "assertion:5a92a2efaa13c8af16735664bdeccae200b777a99c6d3b70018078c62d8cf411"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:ec440466-3cc7-5549-81e1-38d4ca5a95fc",
+      "evidence_assertion_ids": [
+        "assertion:00a4bc54634b8946ab08efed0d9c954a74b41efde62194bd9f76d2b4b23a8cec",
+        "assertion:0d8c739a83689a034692d962202cb7e80e114ef52faa7763389ef2b8410139f3",
+        "assertion:15c04fdd3a4c3fe6be3f343ef427de780d6390140dc4bb1a4c3903da070ceb9f",
+        "assertion:1638b15b9ef1550dbd7b19af3fa8a652b5f8afee2a6610ad29304090b3e501dd",
+        "assertion:19953e8e0d89adf7a63a402166f5d9fe8dcd7f1a761f8a5d78bc4cbe415949f3",
+        "assertion:1ddd6affb15f9f67f79aa6adc88a26b2e847ef72d125266fbc6c34437221529e",
+        "assertion:240fbedffe32c1fc22f1441037ff5d5fd11099d3ff8f10478f92a372a102286a",
+        "assertion:29c9d161a80fc859fea2a41e3386dadba46349616580deed48bc1b518d587890"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:75ca6ac0-4a74-5f47-bffe-bef0f4be1aef",
+      "evidence_assertion_ids": [
+        "assertion:0a5a371d8421aa30ef720f036f232af4e2cf6d3a4ef22bd99c99413c98f9e3c9",
+        "assertion:0aa9edd182df8073504bb11b620d8610c565521a2e53f8eee6a9a31f6e9df2ac",
+        "assertion:0d37f5d2844ac832334f7d0afb55a2d0686e421ac5bc261d981cb320f8f84402",
+        "assertion:0dcf6cfa1718d0b537c80c85693926dff80e06805f0dc59ed0c970906c16c37a",
+        "assertion:1e5b1cad13be312609965228ba43dcdbc3992cfb06a185603b0090fbcb0738f0",
+        "assertion:22e28cce6cdf1c8c31bafc60088e749b2081ef39330a897d71c875502cbc18e7",
+        "assertion:23a33f71a484a6cf09eed55933f56c86eb5e25f04b1b64104d36c6df19807b92",
+        "assertion:23f6d292816e400a63a02c4c8ae678a7cdb6444a22a058f401c57d3419d41b49"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3f7a65d9-37e6-5160-a3d5-f1f092e6316a",
+      "evidence_assertion_ids": [
+        "assertion:0a1831249795ad431ac3953de602dcd3e1ac190ae593a789fd8aec9eeacd33da",
+        "assertion:100ec44e6fcdd2f5a441622a397a72396a3d304938fed5abebf249242945dbba",
+        "assertion:104f692b0619a0ce7fbdcce8a9f3f2eb375257442129891e7456da52a8c36cc8",
+        "assertion:12112d0a09dd87cdba94f4c24455e640d2ee2e365bf79e840e90bfa6b8aee2f4",
+        "assertion:175de7791a6e4d2438efa240975caeb546c10e7c84012c8a60ead18224f9a0ce",
+        "assertion:18d4710b2504d8ef1ed7e0aa7ea9ef1e2a322a40bfba1444658bdc6f91f612ef",
+        "assertion:1a927eb810f14f4e957345d73ecfaed37fbac870c9f0532fcbcd009839604fab",
+        "assertion:377a7fee77fee8642cead2281ce898c03a724537dbca71624772ab9d679062e1"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:26380966-11db-54fb-b1fd-f5bc0bd4d927",
+      "evidence_assertion_ids": [
+        "assertion:06e0871ac3b6c50ad1633bb9ee99768069be55592a4fda3cfc416b6aaf806b9a",
+        "assertion:089237a08924bdb8b8354c8d3a8d6dfdeeeea6068f54bb66c2a91d13bba4ec1b",
+        "assertion:1e2bb6559aa6c595d3523e2efd8840625e4e4f52779ce9ae44860d062f0a534e",
+        "assertion:251b64d137a69498fc4f6529e6bd76c0f77cf11ef855d73282b6e755eccbcdaa",
+        "assertion:2c8189198654f8c7596c5a58c965ba1ef17f872f953a1e4f7b9135a62c16398f",
+        "assertion:330892cda131e8571cd1673a00400353e0bcae1f10ee80cd3779916a8d553084",
+        "assertion:332ff0cb936c2305fe08feaf4ca4ecb442469884ecec997bdb52b3f58d73e62b",
+        "assertion:3d9670b3949b71abb7988d1cb99189df107fb690bb7fd5f5fedb913d0107e810"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:374c2688-13d9-5a80-944a-b52d551ad0c8",
+      "evidence_assertion_ids": [
+        "assertion:0390168e3373a0525063d4d52dfe2e1869cc6b8284c4862089f25b0b2ed65016",
+        "assertion:0bc9938942da272f752b937e145c3de5ac7aba9a735d6b656ab4041d3d09fe13",
+        "assertion:104018f94ff9a744fe7b792d472b506d3aa19ad5666bfe15307266b77946f6da",
+        "assertion:1787680a6ac85720b90ab2a8b68042d302ddd98fd4f3d9655093b1b3abc9b632",
+        "assertion:1e4d2712be759264ded52566e9f1e0fc76bf08b899e89e93dd8dca4e24e2179c",
+        "assertion:2eaf95309ed19684d2b5345d8f0228179ee151727784a2eb27a668e92ebc3e4f",
+        "assertion:30a8d69c9797995d6d2fb9289b051c7dd29d8e0b18395babf92f7d98812f6d1f",
+        "assertion:4c1675e6bcbe92c46844a44f656edf4b6885deb1305b9400c3619e560d7b450e"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:55dbe422-09e4-51e0-904d-928c2d433e0f",
+      "evidence_assertion_ids": [
+        "assertion:0dcc83085d195f66b68267d1bdfa3255fb23d240723f95eab9f7f17f078d0b7a",
+        "assertion:151bf0359c7d25bb78e2393268dd43e7d67accc0c067504eaaa632f13f63ff7d",
+        "assertion:25fc1c8297d1e77f3ffc47c79ea78de95b330f1e4cae1658745c9b115d6c5d24",
+        "assertion:29fefdf7bfffb1e2ca72ef97a2ec9f98639ff232df5c2ad988d0038ab7a123e6",
+        "assertion:3399bc53f810ca66a512b3f59536f20b6069317fce66b10242c95bddd43488ef",
+        "assertion:400c381febc101f0d5e30613a343c3e74f857695addb2a246bb5589cd44a6bb2",
+        "assertion:42670b55014a47935db3006f786c4bfdec08e1c55364a5c279488cdcba58e52b",
+        "assertion:44750cfbcfc033b5fad630456223380e7af48348bc69b8313fbca934b2f9a2af"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:ef86908f-fab4-52f0-ac84-78c48a2723e3",
+      "evidence_assertion_ids": [
+        "assertion:0734432d66177e16d5b50844705777dba46774d8115976a3ef0c8f027b5b32d7",
+        "assertion:0768804939c3201f3a9531309f3949f87a45a603b7cf3f75cfad0be423261c16",
+        "assertion:07d5ec5c76e505392ee1b6e0c0ba4c9d8bb49c94d72a6340f42dcd3c99bafda7",
+        "assertion:0cc2d7d554ac903764bc8c8eed7ee43aa52cf812d7a6ae4df2f709a6d7605e01",
+        "assertion:1c77f655299e939dc14954d4ea2b420b342063bad6361ae0b727590003968090",
+        "assertion:25f747595e80b34549a06ce032746488779582184103773a4cf988a664280035",
+        "assertion:264b83057668144acaa5a246da9eea1fd8385f6ee1c0863cdc6c6829cba929a9",
+        "assertion:2c1c4a1052a8fb183525e42a8c102079e988131e3ab0daeb7cc434e0be4ef564"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:28c8ce8c-f79d-58c8-9117-76916221e69a",
+      "evidence_assertion_ids": [
+        "assertion:083b071d9115a01d0d32a2bb768977d4215cd03c78683ddad729d63d290e9eef",
+        "assertion:0998b1735371f78bb5aeeff34c833969a6af76dfc7f18aafa8440a35433daf79",
+        "assertion:1aa5dd6ad1ccf3e25443ab20ffbdab9f11848a3c29a547202fb6dd9fe1a42a86",
+        "assertion:1e081fe73d99c016dbc0bb66962d5dd5b56d720971f7395ae595d4d37e2948d7",
+        "assertion:2e83b4b0e9d155d291ceec620a18b9a28add23f893f4e89028beaf96859667fa",
+        "assertion:345192a6263bdaac4cad28ea705c0dc03b3de52a632de51d38860358a0e834b5",
+        "assertion:4729792338e16009509c0f2df4c42d2884cd73abd57cbd0131bb9fc0dc6a853e",
+        "assertion:4825c1f69b8c20e09857e2dc4f221dab9107f37a52c38758e6b6512d830bb848"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:af601ba8-df47-5314-a447-85539c6ab414",
+      "evidence_assertion_ids": [
+        "assertion:0bca2da354e56ff6dde0bd3483197532545c3b27666f2d98802696a3936ce999",
+        "assertion:0e419fd4927673b8d56213d42c1e557a706315d3ae82856397afd5edf3754711",
+        "assertion:143b8b299755d1987ec35576c794b3d17b85912fe0e3a74900039db6c439a439",
+        "assertion:1cdef38f318c44509b3372259f570dd21049e35064824591755ad2b46a2d95e3",
+        "assertion:1df48899a70a61bbc0cc552686d84f7ab474729ea202993a1a3bfeefdf06da8d",
+        "assertion:294d491f30d26b67e52e761e38c520170510d0ac1e3622c3739e8a8569258654",
+        "assertion:2fb1039834ced1c6cd3e736d076e33ab823bf70719f1d74d6d8a2d3817c45055",
+        "assertion:3b9fcf72408fceb003ad8c0ea7729f551c6d66b7e1434e90999bb4cf7846ce67"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:ec21294b-35d2-5d8c-b131-37e38eb3cfe3",
+      "evidence_assertion_ids": [
+        "assertion:4f197f317bb0e4bfefd142f641089512859d1a1732056a5fe94d224961914d16",
+        "assertion:ee8d365aac576cdd44d5116fd963c10d8fba7209e2958442ce96dba6d267a566"
+      ],
+      "runtime_support": "executable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:0ce6cd01-d84c-5f24-a92e-806073bbbdda",
+      "evidence_assertion_ids": [
+        "assertion:00db5f147bbd51c3f2e42079d731a8bdb9a16ba34e1ff6516a464b1ca1c12519",
+        "assertion:02f8746f29d22edb0887a21ad79eac908dd9dd9b6adfea65f6d9057549f08ebc",
+        "assertion:0d68d2285b5a73ab5162c12fcd4dd3f4bc288eef5510c498fd2e69cdca0fcf2f",
+        "assertion:0e8f7cf1b484f604d5b8dcf1457748b334faea962c51a6a6351522ccc264e282",
+        "assertion:1103457d29afb10986e1b95a56af0628fffef96813fa963eac74878ffebbb4fb",
+        "assertion:19ffb2974ded1f847373f360a0b65681eaadb85eb4981152d8cb6f5f87f559a6",
+        "assertion:20d3c9ac3c61accc8ae274df8cabf110fbb14dd3684c290bdc29a513073be4f3",
+        "assertion:265d0c06228e69b6f3fcfc0fc79df620774c5884f4e028e22bbfa39e7551ccfe"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:6a9819f7-54d6-5f64-9632-b0c45e931e50",
+      "evidence_assertion_ids": [
+        "assertion:07c277e78435db100b9a36cdac90bd983e7b0321c761b764c0d4ffb039f1f712",
+        "assertion:08eeeb7348e9f892dfe5884ac424baa8c0679e5ff182b3a07833bcdd4341ac37",
+        "assertion:0903d58dba6dfcd34df33150befd7dc05b747b8902604cb4a7f5d11700b14749",
+        "assertion:15415faa2d5a0c56dc22e416a2909a1670a5a511fcef5d908318bf52ca903808",
+        "assertion:1742a74c5fc44d1920fcd5637eb4fb82858a249054ef59afecee005c66be5e30",
+        "assertion:1e76ff0dd86e28747b6aac25bb1faf3f7ecdfbb2997a9d05b07eab7e3f4be202",
+        "assertion:24140f43678313f97edd0a38399edca2e1d8342299504d25eb99b42819db36dc",
+        "assertion:2b3b2b8f42b302dfdada5a36956a26bbf5f1b4f1b28a057f03499033971cb1fe"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:487cf7a7-09b5-5963-a003-5475f51dd923",
+      "evidence_assertion_ids": [
+        "assertion:118c1fe3ffa892a2a26f1875cf81fd39fb3bb4ad9460fa31ddf7611d8e451c42",
+        "assertion:1f84fa4b374c3f5af287252bb18971e1507c184d0aed658ec0cd8e6293c4fa00",
+        "assertion:2877df70d1fbed265c903f398fa33b7587c6312444bc1bc08544106cf1d1bf1a",
+        "assertion:28f05e5fabfaeee45bbe2a2b5588a77b9da589fbb42cea45d656a3c66824642f",
+        "assertion:2c42ba19151272a2666b21aecd76e14da70a68ac0c801af102a0bd094b2632a3",
+        "assertion:319cba6efd032dcc1071097afb9464c8d246701578d6e2acd6c4535a22367d4b",
+        "assertion:3656c8848c13ad8b94c976c027283ba849c80001d0739d73190361ab9b22c005",
+        "assertion:37a5221774e2a687ee69330c1bc283f0cbcdb6440a86f789c79adbed95ff4e60"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:adc27826-fac1-5fc3-a87b-511828fbec85",
+      "evidence_assertion_ids": [
+        "assertion:0342e194ada000b40c0484e7b0d0773cc537e22b36635cd20f4e71d69032ca16",
+        "assertion:098ac8c558c73251f66863e521b204513d040c7004fdfadbbb27e999683c4980",
+        "assertion:198898bddb0d2da76e918b9c176ad7df8d4d72cc0028fc70a724033ef4eca29e",
+        "assertion:1cf4976e3a06d247a2bb71403a6e5421cbb5f55758f0c2e39e0f93332dfd33dd",
+        "assertion:2a0c1a5d9178fd17c8f7acdba2fdf367b5d641f6c045cf577b512c426068e8de",
+        "assertion:390e2e2d4b1637565360934c1832fcc9be27c4842a7b80c671a6aae94a174450",
+        "assertion:4b0e73ba4ba49181420c1404ef1cdcb13be989dd799a85116fdc64f78220bfd8",
+        "assertion:55aaed18f75d5bc5a17ffed713a0c8810585e40917be242647c4d15ad1cb1945"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:46a9cf21-5b81-5e85-9114-e82e62f26a42",
+      "evidence_assertion_ids": [
+        "assertion:005f7e719357095f91d24ef6f3a77cb265d111de2db0480552d1cc84f30dd3d2",
+        "assertion:00c1455de8c9e4d14ee5b61e6538a58e6a818b9fe3630cab90ca94e3f25e56ff",
+        "assertion:07d6e2c97b91244275b2d3b37fa815c8efb6aacdb4117e70b0a5d34b87158e3f",
+        "assertion:131e8ab723e0ffc8268cdbb889c95c4f392465367f14aaa4df1dd3efdc3f7505",
+        "assertion:19d7901003f19a983f162c68ad177bfd85a304926125525d706990f97897f339",
+        "assertion:1dcf5539f43353f0041b6aacee7efe91bc43bb92c7f008d86264ed8c0ccb67d2",
+        "assertion:2150da684c630082f7572e758119a0c781a8e48bc89777b1f0caecb2c0ab2fff",
+        "assertion:316e3a9ff516519403b8951ae86f0847b09c640737dd0e6c8831f7b0f6c0db06"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:7aac50b0-d3f9-57b7-840a-a73c7505b7e9",
+      "evidence_assertion_ids": [
+        "assertion:00dd000051fa63f354556e2f0c271c5ac5b87fb391b665bf25c40f5aaa5ff91e",
+        "assertion:10796010ed8631d0693c9b0badf5d217775b2b495f107bc128087fe84e9defa7",
+        "assertion:159a7e6fd13b755c932fca5a4ea9049ce199e8f343edb1759e503592541c779f",
+        "assertion:45e41cb8058e8065e45a1ee9f9b239f4fc8f74526a0eb31e795ef82dd916d178",
+        "assertion:49c29785cbfc0ac46393183c81a2aac3dd9f0bd79bcd4544fccf07cbd1a4b364",
+        "assertion:4ed5241ce2c8b89d1b434a72ddae726ed3c6c698f7f75c7fb15e4e7540a732e9",
+        "assertion:513baac33ac641364344025e5ff7afebc70fe261eb447fcb438a95ffd167183d",
+        "assertion:5d342cbd8b73c2c1aaa7f6a3773dc860b2557bfc559acf268682164684b43bcf"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:5c15d945-ef5b-54d3-9319-545d6bb49be1",
+      "evidence_assertion_ids": [
+        "assertion:05b486b013d1ca09facf1a944217ed9dc93183ff8b45913b22c5c940438604b3",
+        "assertion:0e52cd19b83feff1a17c1bb72d348af7d22e46a4445c95efefcc080a605330d6",
+        "assertion:12af78eba8ed7e86ec954dbb3df7ace6b233cf5cf635c6d3d3fd1b4655d5e65c",
+        "assertion:235e1401deb2d4266adfef2b704e368143f18321c6235b2cf290a1e60b5b503b",
+        "assertion:26cec8f75d00c00be183b21e3fa8df34df29380b1a4dbb5453e2ef9a35d5b33c",
+        "assertion:26f64f9afb9b93a6f9c87b80a6d6d262790712adaec05da5c02ec8311d51ec4f",
+        "assertion:2c60ee0c834fca3e0eb63502124b27a08ee839c1d1a1af0a4d139023c69118cf",
+        "assertion:343fcba43a4adfd69af4faa89a302aa00a532dc02fa264eaaf94ac1873244527"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3044f547-a646-549f-98a8-9072c94c9c5b",
+      "evidence_assertion_ids": [
+        "assertion:30007ab7d9c6fa8ee3ed30e4d2fbdc87340862bf0d0d4a4782dde2fbb024d614",
+        "assertion:318b92f2d7239ef03cce75e33f1853d3ed06b427c5d62cc76356c8ae2f2654a9",
+        "assertion:3780c8c95588f4442b549baed9e23cbccca94c2341b45f30dbba9b30c5a51ff2",
+        "assertion:3df8679ffc73b47c912fbe49e6f1c5e32d457796b103cfaab58454632a5cbe99",
+        "assertion:3e98dbada13bd7443c9621e42c4a24b31ce1f670d0d83f3bcac12353a0b53ed7",
+        "assertion:3fcd0583374d368158b7258248da9f0ce8d0b830c6d72e988069279cbeaa4189",
+        "assertion:451e7a8ca2916580246da88fabfca12e4cd2d5bb603973368a663414d1bee9a2",
+        "assertion:4f510980a545137ba3306dbe94dfe61299a34b33c9593df87a41edaf0d4327d6"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:d156b671-a63b-5bed-9d26-398bd7154595",
+      "evidence_assertion_ids": [
+        "assertion:008d766e2f3e42f03833f5d5938684ebb237c7b492fd0d3879cee629a087ddd6",
+        "assertion:0467507d69d7abe5d1a54f9c9723225b3bcf949f20971cfbba2c162e2d8f1df8",
+        "assertion:0b3580948b1053777d8fc63e4b785bd4a01fcc4597b82bfbe74fac0533aa6b0e",
+        "assertion:0f170e207d38d36f3624d54a07c7b8be47950d3b7ee440365e68b5e1a786ce80",
+        "assertion:19d6b28ebf2b5342f8f114bfa271e3d3d62b51169ac2f4e304420826caebeb25",
+        "assertion:1d5247af50082bd7144607c4e8a0237531d664a330b18ed46f1ede4c6a5b5566",
+        "assertion:2f05ea612055e956e573f27e28b3a8a89130f59daf1ad81f7e75efed687c1568",
+        "assertion:328b49d6b40f65ba0bcb9971f03dc372f3944d43dac52be7fed4a2f288acf1c9"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:58419bdd-9d85-59fa-8f72-7157826b2fa6",
+      "evidence_assertion_ids": [
+        "assertion:01505daaf1012e6ae3100273b60d483df75c0fc71449cd29927ae84b66336f17",
+        "assertion:069f2a01086d216f43e1c6546eb0dc816b73cd517901ff3596911e080a072f6d",
+        "assertion:0804205ee4fd971088eb2b59da17e3f3d001a39bc5c0d7b78f97f9efc6cc39c5",
+        "assertion:11497a91ac3a387329cbff2c74d5b8e003c704cbf506d3642fef3a67b6d45095",
+        "assertion:151a6ade95c92c3cab1f5658b3d6aa8c6a34f80221817b699670b182652b7c27",
+        "assertion:1d82dc691f56ae79d2e2621849f51eed750c74ad3024536de756f0e497433007",
+        "assertion:2486be35aac9341da09a83953fe8977a706e9a21ddccc8428ff704075df69d88",
+        "assertion:24ffbece5ae6701f19f2508ea86504a27811cd592dc695d6b71979993968b8d5"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:e08760c7-a2fd-5527-a22f-3b449c156a88",
+      "evidence_assertion_ids": [
+        "assertion:0b6caf6987e5f5b6f8e23b33f04a5b1ca09f6fb27eda6bd7339a905f60b89a81",
+        "assertion:0e883c7e2c20c9bb69fd2bd660cd5485dc13b28f39cf1644e76eeedfab538294",
+        "assertion:114eb92c708321c36990726c9c9d4ee299a87b7271774318ae3d95b6b4911956",
+        "assertion:1286fe25680d2085d1058d14b111d2147cccab02e75756d40646bf8013d6a2b1",
+        "assertion:1b9a666a451b87e44087fa2cb9b3189a1f9e15df5158220a075d4f9001e75985",
+        "assertion:23119d6b08e2a1a56b8c965a2a234941ed55358b17b8c820b533b443ffadacef",
+        "assertion:29773d50e4b8a8188db7385749dfcae5f1ef0e68fd62400417e0f46725e7de48",
+        "assertion:2e814f0cc6ac9e5da940f01bc89f9a809d29aa0ea085bb71fe9d6c9eb94cd56f"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:586c4fec-42a1-5b52-ac1e-193b882df73f",
+      "evidence_assertion_ids": [
+        "assertion:0483294b6ce3f9cc1dc3b631705e9621bdb17e2d8efc18db63d2b0e12c9311f8",
+        "assertion:12d835e40b81b5385b43fc9baea33ce7e18ae5097949eef8ed634181ef3e6391",
+        "assertion:17e0d403b509a80e0243b4c7aba68c734035d3e04acf7fcaed9c6631cba7b990",
+        "assertion:18397f6afa9acdc578025fd396eead257fa6280d2f4a2604973324306a84aa74",
+        "assertion:27135de5627c0eb8295178177add3c4410c2202411d9204257d2a804db6c57f0",
+        "assertion:2aa82017b212da8c577cf963ad24ce13e07a1276cda4ffcec75b350e2c84dcc8",
+        "assertion:2daa0ae89e5637e9214db176165ec124699187bbf163fd4065b2c4b8305d37f0",
+        "assertion:375b40ae738cd2ef5ce6ee7df760f0ccc9b3ae63b581abaf9b8ba9c32e6b0851"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:323e38df-86eb-5f20-a545-562635efb30a",
+      "evidence_assertion_ids": [
+        "assertion:0059a4648715065470051055633bd7f9902d06041a3ba3bc1f89cf8a260c1cba",
+        "assertion:1666f0f9b734e75ea93eba03dd62000d2fec54977695e1c386d32b2c7b95adaf",
+        "assertion:1a50a1d6b157c2677b74913c96902e4eaa473089dd349319a1b1e5a430079074",
+        "assertion:283043f7e480b916a60a318ee9afe51aceab40c7804a21c63ad5816f53df9fec",
+        "assertion:2aac359b19301db113515a312a3b01373d4f6a33da774d0f954cb7d7a7b1fe92",
+        "assertion:31c404f10e3602cc0cb1d15246bdba19dbbb56b7a8f4c7b2df74b00813101c55",
+        "assertion:32bd873856eceb4bcac5e96e69b39a60fe1958850b6b5903680b0deff76f88ab",
+        "assertion:37767ac3654fd93ef8282e19d52b6953ff24ef6b50d5d6da508602de9d4269cb"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:af22cfae-ec2c-5b5a-8b98-3880a0f45942",
+      "evidence_assertion_ids": [
+        "assertion:02123386ad239c5eeccc3d8bb4952a51d9af6a0b75a650735829d2173b3b6d76",
+        "assertion:0a99b7129f0daf627820c1b9b4549d1410ac0dbe3f9863936eca44432a4b3e9a",
+        "assertion:0f49f054cae8d8034e7201310c770db744f3b94e9bf091a98a4d80e6885d4a92",
+        "assertion:13472805a131ba028a64d89312328765a390bd6c8fb7456233d4489796489ef3",
+        "assertion:15b2673201afc7663c77b4d2099745ba1d1c7b3b1c80ce98672f2e2bd1ed0e35",
+        "assertion:1b8d8734e7dbdd683131865a67bd1053fc5aedc919954b099f01be82803199a4",
+        "assertion:1c0f28cd91fdc42d8e0321333feba995ca29759b0f5f793ed7a5d1af41642af1",
+        "assertion:1db6a33993d35e83b79d22bb955c2b8b0af55eb269cd7901f38d0a3d323e11ce"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:9aab6940-455e-53ed-adce-9135ba40de69",
+      "evidence_assertion_ids": [
+        "assertion:027007632490ec8d8df6446c7bb19dcbf30270447b939c4a0afeed6f551f15b0",
+        "assertion:0fe8ae14be3b2edab8532b450e26f7edac0b090e7e33d992c36004acd5f011e9",
+        "assertion:191156bd1992f4710e88be523132a9bd3bfb30d00932996870c0a098ac375453",
+        "assertion:1949629b5e244e54b201d6509c9c8dff60602f83e592e91143abd55775278fe8",
+        "assertion:2250707dafe3c8d6fa5436f14549b34a0a69115faa554389649ac02c0fd3861a",
+        "assertion:24ffe625c074456779d5169fc78ae1aa1562483b6e15b889f9208aa3a66f3752",
+        "assertion:2a8c38ec7990902cb6e6c7389bdea99f97d7b4b6de3a76931055a62e56c91228",
+        "assertion:395f59d14691b91c4ab45975e326039ef43914861321b4575e577df2fe73300c"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:9c54e710-fe93-5046-b7f5-a52c9d07dd77",
+      "evidence_assertion_ids": [
+        "assertion:01cad0e9144dbc5cbf5b04367fa3c25d6b0b87c38c0fb104390281d86daf9614",
+        "assertion:0671f841898d136712bb09ee0bef085f47081f01ca616ac80b78ea6901718736",
+        "assertion:08f179cf6eee6bdea4100b96d1928477b2bf2a559aa7dba6950bbed682702109",
+        "assertion:0b62327ff576dd5b322087577e4e4e117763b623de17b930df56e2905c479fda",
+        "assertion:0bdf16094c95d453922ea75b4155e4990b767d2ef4a3bc16f73230ab52be274f",
+        "assertion:1116ea4835cfa0211b90134182617fc6065ec6e2cdadfc8bab12542bc8dc11f0",
+        "assertion:144e5d1f80ef65ece45ce1378f2b2311d8df8886b9a126a1dbc684dc9a0a9066",
+        "assertion:14b167d329db20a444ae4cdd4a106c4ce5f01a1ef7fca51f8be0785b21b1eb6e"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:4b071dd0-7a55-516e-862a-b6bdedfca336",
+      "evidence_assertion_ids": [
+        "assertion:18294ead6988e501e167e75b99d0641827775b06c78b890406d475137a9287e0",
+        "assertion:32e45d9d5c264692e4a472bc9106bab4157cff34a9f413e02382589dbd0ff473",
+        "assertion:4d5050ffdee42a31cac68a3be65e3573a337e965abf4c5fc930d80b3f65459f2",
+        "assertion:4f2271b44afad1df60d021a86c050f0cf499d1d85a9f7cb11ab3f67b7e78a8c8",
+        "assertion:778f8dcb40f409b119ca22fac447f75d0a36d4ff410524523b8330af3dbfd07f",
+        "assertion:7a8df20ced16b5e205848cb0cb585906e89253910621d9a48fd2da6f37cc3075",
+        "assertion:7aad0d74747d428fd5646c145765ccb393996488265e88f006386e95c65b036c",
+        "assertion:80d2debe09278463f8fe31c09dbde9a2e64a28eb38c4b72f0ef06222289a8940"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:2236d0e4-9d82-5355-b0f3-d2b8e0a55878",
+      "evidence_assertion_ids": [
+        "assertion:05578dc52dc431f55f4ae6367f13efdf0d594f111b54d4b4d4cee738863dccc7",
+        "assertion:2458fdb9076f3fd5f3a8773c33b565b1325db51131a7002c8e09e5dcc124ceea",
+        "assertion:2a4c22527455094a9e26b863687a8eeeec69b342f05c9eb60807dad279806f89",
+        "assertion:304889148cae0f1e0592d9aadff93cba114b8acae949a4b1ef5d99c123fb887c",
+        "assertion:3306d2be57900cdcf3fcf1d462c0eb1e515c0eaafba226bca8fa1b15dae5a516",
+        "assertion:3bf140a09244d1810dc8d401d59b863d8d921dd4a1baf3340d76ed701de3b627",
+        "assertion:3e69b3c66fa42360cc1d9200e99290ebe7e4b9fc112fc2a27d9dce7f89b83ecf",
+        "assertion:4bc7e9834be1248b73cd85fc138b0376d48e153367b03254970296bcb8e87ce4"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:279ef114-ecbc-5c92-af3d-1ad1e84a3334",
+      "evidence_assertion_ids": [
+        "assertion:0228d83b761cd6df993f3b89fbf2e3c4e8848b46e42aa7535e34699834cc30df",
+        "assertion:09f8c62ee2b8bee80a161f75118bfc95a52b8767592acf09d02351d5e5559e7a",
+        "assertion:0f5efc7780e2cdbff63c8f84f52da552cdf060fb3602853b681dd5d77c1280b4",
+        "assertion:10b11112461192967f3da72e71f0a4471ec86aeafe18ac006aaa5a87f45f9ab3",
+        "assertion:1e95b9b53ff471baf81a76be61bf314cbd7eb2bd49c17c5de66dc52cea0341a0",
+        "assertion:2f03e11bde15e4a78ebac0b23f6808d9a20af46dc5e5d68461554a8f4b315429",
+        "assertion:307ec8090ebf7da0fa39eecaee178b42287e301151689e43cf70e03f2277e7f8",
+        "assertion:32a40e0145e82b804264e38e7e78e9fbdb001307a2efc7c6d8828a44041ec72a"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:dbb2d0f5-aacf-5cde-946e-105722aee4fb",
+      "evidence_assertion_ids": [
+        "assertion:03b2c37e953b8332a82a939828eaa0a79d55e081b9734b12c0832616ec27c324",
+        "assertion:077469aaa4a7fe873f6bd98b4bd48d91c5f671e2f015b194146e13d07a26731d",
+        "assertion:1607e8f642813b03493a4e92b8e0e036a393ad5d70e80da132d28e486998b29d",
+        "assertion:1893003d9fbf5df432b851b5a333aabfa9f2eb2aa9db684d4d2a20669af7031a",
+        "assertion:2ee4653122a8a970f510bdaa43462ab1654a9db00dbe3e1d5c205be7001587ae",
+        "assertion:4233fa9c0eeb9a9c9d3255309f1aad16c2eabd8b42f83c862923115103fc1564",
+        "assertion:4834fb85a55ddeb80fcdef542f9bdc43c54417d636a04dbb6a88cbb96929046a",
+        "assertion:55a69bcc716ace879c72e521b8cefed4d652c68a3da4ba8e2e3b5b071a1974cc"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:b1477796-d0a9-5bd7-98f2-0fa25d01fcba",
+      "evidence_assertion_ids": [
+        "assertion:06fb0ddc9e41af0d02cc52abf52e13006d1c6a0ff069f6c8f767b467bfbf57cf",
+        "assertion:1980341daf69cb7f41b84ad00db3a7be0a88a52a65e0d0d6eeaf3a669388ccd4",
+        "assertion:1a222cb87abd097424baa68351b003cb368a1c2aefe2be99949aeb913bf61a7f",
+        "assertion:20c79324209ec4d3c8935fcab505e8b61f129e824ceed1c079cc2146ff7e53a6",
+        "assertion:23a47e72925deb5c709c34d8d3e59ac89e2f8d9b24de9b4429ecc0b49c2474c2",
+        "assertion:2702c3ad30679e146618a4d37a50795d8efa612f2238922442b7d81752ba9c33",
+        "assertion:32fef144f67d1b979cd95617cca6a42b43b6637d65c34c58ac6fcf09659cc026",
+        "assertion:349b5dba633f456b85e55941d06af05ccb03a7c0e78a5f1d5d89a2d2fa92bbe8"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:9c92a17f-44e5-58fc-94f6-16d7f4c576cd",
+      "evidence_assertion_ids": [
+        "assertion:22ebc35ea93129f63734547133a1c8e08027c7c7d50daf6cbe3af5a9d698d1a5",
+        "assertion:239ff511e8e14770b1223b03d29e3c9389dae13a0edea7b99dd0ca6b9249d55e",
+        "assertion:25178f3f791b34c990272b6fb165aa31c475da862e0384ab9853653f0c1d93bc",
+        "assertion:252ad9d25fabc5447e5adc281f48d0edf466adde472f8e1a6b43243783e11e11",
+        "assertion:38c4c69b589f52bfd9c26f453c418d47756f334086b960d51e6a50ed88360421",
+        "assertion:39844930f9533aae0f2a47cdac95da2f214656ca39072c3c5585b3e7b56168a0",
+        "assertion:3a9a179b9d8ef1f59762109428f4be57d84613f724606b628c8ea75ed719c960",
+        "assertion:3ad1562246ce47bb2ba7d10bb4ad449490a7919b166ce0e978062115fb0815ea"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:f5330084-3683-57d9-8cb2-bcb037f4ef0e",
+      "evidence_assertion_ids": [
+        "assertion:0c8696da2aa3c120949add541ad912d0c58f60c6dd1bb0f4105909c89a5ccaea",
+        "assertion:1036d8d87c47c33a87d2276cb708626599b4eeb78d87c5c84fbe5b66a2afa3f5",
+        "assertion:181e1bcbeb5361296b0a3b4a41541e7df18fab1dede1ad8a5d218106a3d9e4b0",
+        "assertion:1fc404e4209fa67073fbe3e1e4007420139e34cad1191dc0f64a2dd7267d68ef",
+        "assertion:27c78fd408e673664ca3dcae11faff73dcef1eac2b845c5d32ce96ff997e153b",
+        "assertion:3e273e6dbcf44ab6a75befa68d6975188a6292a1d5a1f8eda8f1654a6ee4309d",
+        "assertion:412994877a1b6c039ccf70da38e5639b2c26b345582ec55453101d7c653f0aae",
+        "assertion:451e509dd79d1862cef4749e0f3925ad8173116f89943a3eabed6f6eba0b263f"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3c5d00a0-9f1c-5d84-b394-b573965078f2",
+      "evidence_assertion_ids": [
+        "assertion:012cf5dc5aa37e55fe59578ae90f42493fa9f3d6feb9b4424168762d84ec9a9c",
+        "assertion:0170944a73df7416931863ddbb42c25bd27c18f2e26a468515cd7268a924d5e1",
+        "assertion:05a99ab72ac78f07c6c64393eaf5fc79117fe2cbb818e44dadcf40ee1d672f2d",
+        "assertion:0afed83d09afedc7207f2954c04dcea9544da13aecd5c9f63b6f66886edf10e5",
+        "assertion:16a32dd02a83e78176815fa79061ba3206e31ed8e1030a188cb1612052b76161",
+        "assertion:212c764ac053831ee43ef71a918d356ce61148149dd7343c87440e53a10562d6",
+        "assertion:267f30fbaa2cbefc62bc448ca9f6edba822144cd4fdc52d8f3432ed16e86f776",
+        "assertion:32a091b59702efeb97b436dd75b1ad9c4b0ab1a0b7a4b9a17d88480cf8f6447f"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:d29e9301-526b-59ba-aac3-1889da3d822f",
+      "evidence_assertion_ids": [
+        "assertion:09e97bc879c5a390e503c98f2e67c5539a945dc2562c84564d1619e154386f94",
+        "assertion:0f4de224f549393fe12752d62e890d9eafe7ff77d3bc328797e862a8625c3c8b",
+        "assertion:22ce4adb79b8ea9db3ddb15a32cfdc88c5c20ecff623e3877a6d1da81daa9ebf",
+        "assertion:2423cc573ab9864abed735fcc3ae1e11f2b87ce8fec617466c2fe2e364e3ea71",
+        "assertion:339730fc3e3ddd85b95c05a92304095eff2cac165fedefa27e459ad32d309f7b",
+        "assertion:350fbf3d0fb617cdc174f7087c45c194adb1fc5b8488a40e4d6d70118e960a5b",
+        "assertion:35606e1451757a4eb11ad36492b4f6562541fe80d614d798e5dbc9fd0d7b6d06",
+        "assertion:39386642dc99fd710a9fb46ae7866e620663ae427a872bb78a30c3e4241f25e5"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:6d02a653-e507-576e-98ed-8eaf4d92d765",
+      "evidence_assertion_ids": [
+        "assertion:776cf82b3fa03f385245d744f86735431e3495cefde8e1b58bba1bfc678e39d3",
+        "assertion:eeaf53a4fc6dcfafa4bba51b8f3d36d657c5ad3e4da99cfe02f9172af1e332d1"
+      ],
+      "runtime_support": "executable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:9fb51f96-f4be-5ce5-89c2-d31a7552ea65",
+      "evidence_assertion_ids": [
+        "assertion:08f51feec4104056df67675dab97ecfff268f1e696712e1e8a6612a002efcff1",
+        "assertion:1323886f632a1f63f1414d53e988b159774cf669137ec5f9ea685504787801bd",
+        "assertion:26b2c97a258937bd9c435d25b574deeac58209ce57aeac7642b870c16eed927f",
+        "assertion:2dd84bf095a0ed3bfb35392706155cbb47b20d23610df7174db3d423c0ce0571",
+        "assertion:2e1f5af51909b014e1cf4165f6033ff2dc58157e3865ac718b28ffac6c72607d",
+        "assertion:2e4a2e00aed431c46d0cd469e3ff5e69ac09567e8d3f0d41ed4e3a315b2df674",
+        "assertion:3002dbe0afc5afe011b7e3311c2787418f7c4d3f6d34369f7eedde60d7e85937",
+        "assertion:40e217dcdc1be9bc737bebcafffa8c06199d1d714fe75a63aebd71c7d4fca593"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:fbe5c67e-d783-50e0-a102-4f2001ff48bb",
+      "evidence_assertion_ids": [
+        "assertion:04c0e142a2e30038037c7925d219e5d8e5476d59dfc4927bf189a63bf3e1a783",
+        "assertion:0a495827db63d0834fe27559148630ef9e11bd6d5544b76cb49705b87f331d15",
+        "assertion:0c46979aef6bbd5a9a7086d47a9b99e617feaba5ed7f916ae9a15241305060fe",
+        "assertion:0f1b96e3a30765b35500a2a31af44808ff1eeed5f46892aa4998988410bc161a",
+        "assertion:164eeabbe69bcc586c9202564637aa600304867546aa7788a5d0391ec8ee33e6",
+        "assertion:17a8df5541c3439f9610d96f4729400dcbe3c30af6020ffcaf6fa29f7c3c9397",
+        "assertion:1b03f1bafcb41c76beed140d66e010a2c54c18929c78535eb246dc1fa01f970a",
+        "assertion:2edb628b9070d85015000efcb9f71b1d977a609d69f478e53f1dac17c9d32e7f"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:ea6b9787-f7cb-5fda-bd2f-f876821b0f0d",
+      "evidence_assertion_ids": [
+        "assertion:065c71d5a937ee436eab62e42bb5201f0bdc3e9cbdb86cecd23551a6ab0b4643",
+        "assertion:08c4943b35ada469e0bd7fd782363ded0683162ad269e77d6bdc6c0daec1b8cb",
+        "assertion:0ee52f0342dbad6f5f3eeec3ce68bf3fd8e7c30786ab2a311fad4e2e40be8df1",
+        "assertion:29b530c816b9efd79087d42b6a5f66ec71cbb30e45e4fe12428758f409c2d6a9",
+        "assertion:36d342f6d2b596136726cec770e3457e7ef9a57e4cb54ad58cd63d0f11341f73",
+        "assertion:3dde425d42c4b5a48de4c634fe04539ea1b1124e9c41a3087c454bfd13d4663d",
+        "assertion:3f6bb5f986b8a29d78c9cf197ac80978f32042fe17617bc94705bc882e32d719",
+        "assertion:4d9a96d2dfaffe89cb8aafeab5d0bfbb5034ae3d1a82b539128cd737821f745d"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:163d24a0-2aa9-5e1d-b663-131e5d7e8d9c",
+      "evidence_assertion_ids": [
+        "assertion:09de449bfd18417acf711be541270d69620ee90911abfd1fd3c0ea4aebda600f",
+        "assertion:22ce8ec10dbbd59b06376c66252f3392a2417d066d30b30e5e5e704084bc071d",
+        "assertion:249f0f184103dc8f66c0bbb03ef2794339ab61a7ca40afa92bcb418aa9d72fab",
+        "assertion:2a4581b0fa8a6694bbc503782ac6569054e9b9d605df51272f9875f15c8c39f4",
+        "assertion:2ab38b2017f7356c12bcf917eea4390b35185c42fae2bc7788698719de84c6b9",
+        "assertion:2f1b1ff796a848f9e3c3250fc6e843b7528075f6e683aa647c1b6e7a1dceb721",
+        "assertion:39eb716c86b31ae0c261a3c15f98b77ff2d56a42d434d5ad5520345f7dbe646e",
+        "assertion:3a597394743390a2f533cda3022ff298608955701833ba0c5db2bf37b7b3ed7f"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:e56203ad-71cd-564a-8dc6-9f66902964cf",
+      "evidence_assertion_ids": [
+        "assertion:02ac58418d8d6d08bb158f71863e7cfbfc7d228b07c0ae692595f0cb4078a2f1",
+        "assertion:1b194822fb7b0d68e13f5e7bf8e91776af2e7349f39c70d86a233d56dee4b9ae",
+        "assertion:1dc4e22876e1560237cbcf905d55ae120129dbfcfa7deb6d41fb361e185ea02b",
+        "assertion:241d8f7b97d16b519524030eb1897514b767a91813cb4bf5e1e2090499a32676",
+        "assertion:2730e3f1614406a8debd4ad0f7b04e112eda9d7b02239cd39b50075e0b979563",
+        "assertion:295811eaa3335fe92edee2b2ef544f7ffb24ba71b031a65caf71f3733e988162",
+        "assertion:2cd01206eedf4431614d7d6c29091e3756f227a38b8d6c6ed3593c9cdd47d6c9",
+        "assertion:2d521eb5dcfed0290696c41b498b1d04ae3463bc52e3a0f1cea0fb0ce3ae5ec1"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:5883384c-2a7d-5c09-9179-79d7ee400af2",
+      "evidence_assertion_ids": [
+        "assertion:07189b6e00e3650f9bcee9500277f54e6b5d9edaefba403a3a3c1c5d35634e77",
+        "assertion:15bc21961a8bc54370f50b1a761ba2911b4adfa2187a53d0b7b18d7bd738712a",
+        "assertion:2890cd310df3bd38afa0adc57099f871a1461ea958c0aaabb48ccf1e3abd2a36",
+        "assertion:2b5711015c81d479942f6c94c4bc44c55ee57d45ebdae538b21eb3f87aed3245",
+        "assertion:466b3bdcd5b816633eebf8aca32fe38682f3071182b96be581604a37311efdd6",
+        "assertion:498a2b7a7c312abb77aae1cdc877dbd8a84d0db4f27b175feeaa6d563da04988",
+        "assertion:507ed732aedf7735fbaa33a713c3075bd2d42934737cecdc1b455966a5fce879",
+        "assertion:560b56c7585c0b1fb48a47706be236f2c70af666df778254fddd536b3f2d8788"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:f79fd49b-8b2a-53b7-9d31-9b4c095c3fad",
+      "evidence_assertion_ids": [
+        "assertion:1be70db7f40aeaf5b1d91d6bd1b1781e3e78ebdf39073ad14f4d7b0b8aeada7e",
+        "assertion:209265c9a88179da861ae86f5d511a8b1bb38788a1881fcd82d11513219f4c02",
+        "assertion:29b7a0dd1f448178a001bef9dca0e7282f3165233cec46a2a048b2209439af2c",
+        "assertion:2edc02fcfd3e2bd79a79ba91b800f8b0d9f5ea76edef3f6592fd142a9c09ad9e",
+        "assertion:2f4d3d5a1f4ce9447a7b9e4574b9131964ce47f51fbb9cfcb2aa82877aa6cf6b",
+        "assertion:334edae28b82622065ec103ace9bb6e93397bfdf7d0903ee477c00d51eb61cdb",
+        "assertion:33c5382fd493ede2fa07a815ddeefd9998cf01f2ce47c97b9b4f12ddee964e3b",
+        "assertion:3d719dfbc786486e8122b8839d25cf88cde0279769759b4818d2f238ef86d63a"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3ae5dc46-6350-506f-bd5e-13e5098f3b4d",
+      "evidence_assertion_ids": [
+        "assertion:04cf4f81c8e27b1d8471672a94289625ad143db7c8740993df5f81c815738a30",
+        "assertion:07f5bfb79a721517eaeed3cdb38ec90cd56c6ef9d01b90759f487ce7b5230130",
+        "assertion:0afa2e932e0863d2d5fa4a1410d9d2efc38b9f71f43dd837cddd641efeec0b00",
+        "assertion:19d4ae9b3eb3a70a7d365a59819b9e96da58a7bbcf2dc48dea46506c6a38f3be",
+        "assertion:25f305caae8389599d978d0d8fb8f308968b90493618cddffc4ca037e5a1de45",
+        "assertion:2ebf3af633aa36b00ef539e30a84cf0fa896534b0b4e0a28ea49dbcfcfcaa884",
+        "assertion:3b8cbeb6e0c7833ed997a5a98f250a8ee0b80bdcccf49e610e6be130cdf01a82",
+        "assertion:4f012aec084af55d8ed311df564194de0a5ace0ef0f69419d0d93749c38c21dc"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:44e08ea1-36b1-5c0a-92f3-b61415a60920",
+      "evidence_assertion_ids": [
+        "assertion:037678d4700e5b77386d10b7008d05fc3d233910d4c1a72d3369a78ca4e3cb56",
+        "assertion:0dafa274f63f8a14c10c79b360a7de772c54a5c17f173d037510c681bdeedb50",
+        "assertion:0f5bf2bd95d5130949553d67e1cd460a1a4bdcf9da14248b61402ff5f9d33c28",
+        "assertion:1287d468586df1858984a6a50c8d3c27056cabd52728e5ba670ca3d5a67c81bc",
+        "assertion:14beed8b813a1378f14ff892c54a13e6c859db0f05de9efc7b51e95ebc4f085c",
+        "assertion:1ad486603f0d9faf5a12ca3231578f0c9f601a5bb16ada03ed7077c98511c4b6",
+        "assertion:1e1dd3a486281c94cee7486fc9d36acf5b0342bb683c439d4c329f06eef1252c",
+        "assertion:212d16db2105adb387b628ba18b5ac60778e037ab33f2a7ffed2f0cdb7ea90bc"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:b11d2119-e75e-5050-98b5-2031bcb116f3",
+      "evidence_assertion_ids": [
+        "assertion:05bbb0c3236124794225f92ab09fcb40c615d6f7fa492bb09019bc1e1e0e31dd",
+        "assertion:075020ff4e8cefb24bec9bb2f203366ea3c0dcbe980a6f6bfc8c29dbd7afdfba",
+        "assertion:08c19811cbbe27e2af1038d5f987ec0b78190f47c65b120ff0eef516e1661654",
+        "assertion:1763d6dc6aa51302b257058870b0171555847bb7be1d911bc44522b683cfc9a6",
+        "assertion:2d4d823dcb4a353ecd2eed295d6adfcdffbfadc946dea7ebaa266730eb13d755",
+        "assertion:339a2e4d95621a3ba05732ccad7624bfd2aff6207a6c79dcdde17f16a647e453",
+        "assertion:36e92ee02fef72b1f8f3813ffd3b2d9f68f5cc0b6508b8429bc8639bc7378c8b",
+        "assertion:39f7fa726de5f788d799aff804b0498f10e51c6c3ec662a680474586a9659bb5"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:9d67f842-bf2e-5449-a8fe-c05f05b68986",
+      "evidence_assertion_ids": [
+        "assertion:0040aaf3d44921b85183e4f340af3169fc7d359cdf1594c2e15819c5e028252f",
+        "assertion:07a7f8be39ed29e8d35b635e298b3ecfdb006780f82093392794a62835aae47b",
+        "assertion:0869eb2ac44f16a260826eac76a7cd934497c5eacec22225fd1623412e0a914c",
+        "assertion:095db0baa43166dc66e7e80ed6fadf7e10269175d2eb6e3ac5f0e7021e20bb13",
+        "assertion:118a2c85f95655da5460d526a065813c441210935edd08fcaadd5ea724755f63",
+        "assertion:1679973dc7de3555ee1f04d4ccfea7e5954f63faceea6cae0b44a632f52d05d1",
+        "assertion:1c5bb7967d7ffec1dfcca6aee808b0b360dbc0f659fedb9b409807e4f00ea2e5",
+        "assertion:321aa12d0d3be49a596f92150794dd8ce150819b4b871c5d846e4dad4be20c6f"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:4a695193-94d7-5775-ac2a-4f9a02e9302b",
+      "evidence_assertion_ids": [
+        "assertion:01361922a0768dcf33901fdd812034a21e89e906fd68364e2235186c42074af1",
+        "assertion:09f5e7e342fd2961e7003f4d8b56b1ed310558c866a10eba0b6c18414441cf5e",
+        "assertion:144886110fc9ec02c9cb358d2a45e3bd8d14250325a8d1e725c92484efa7b19f",
+        "assertion:270ea67fa417214af93291cb79c29117a994d336ceed8d9a2deb8acc47261baf",
+        "assertion:2714b2636ab5ece18a86d4969ec8622b50e79415a0839b68750f78e6ebb799d9",
+        "assertion:3cb4a7a505e1a910d67adfe73e4eebb82dd8efb1eff814164e3dff818f0b4d48",
+        "assertion:403d71f943aea3c8a10a2b285c47e6ff7514c8f89a0e6b88532d4efdba1f3711",
+        "assertion:41b4532d95aae450ae3a30ea177481ea7cdde84459a920c5ad1812deb7f99d3b"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:fe07425a-2e02-595b-ab81-8928b0f6d7cf",
+      "evidence_assertion_ids": [
+        "assertion:01804ff5047c35a8cf25582ed9ed51a9d3df98314b75612ffaf503fa7f880d84",
+        "assertion:03421ad10dd3f54f4824b132ef7133e225ebae2b913dfd64d60f77f484650b30",
+        "assertion:072164fa69e3eb9dee97de549dae221839e7302be7557a3cdace73d2ec80eee2",
+        "assertion:0f28e76deea875399044e70f277fefbfc20aa0594ef7d44d50c4e132a57b5161",
+        "assertion:18033ac552b18bb8d204cf29c6320c96151b3fe2b130a19006aeeb060c2de7db",
+        "assertion:302d3734a3f5d162ac6c5e03fb6f4e455fa5a32a0fa1fa48a0b196640a3b90de",
+        "assertion:3337114956a1655e0f333c16d6c370d7f5e0771d5cfb266fd6214ae784e0db75",
+        "assertion:3699e4dde10c1b2a6d2d87f926ea04054c60378a9c3ed102e755e432037a2c71"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:76601311-631e-59d4-8949-c78a55a63976",
+      "evidence_assertion_ids": [
+        "assertion:00275f79ae0c76fd312aef5f8d5fd832e0e5b381f53da0458431406fa1117388",
+        "assertion:067a271b5bcf2588f6e21322c3f8bc2ff4854aa8e4882d53b5d3886121d1fd46",
+        "assertion:09a1a5f8efc51d87f26fb44de71a6430bd1f63d22c0fbffd355932ec9b6b37be",
+        "assertion:0d9a53ae45a4885cce1106a75c7eed986831760b7991564b4cb253abb0945d26",
+        "assertion:1cb38b4cf556a6c017d92e6214fc86fa4165d30cb82224dbe0beebd969246b52",
+        "assertion:2f1b2250aa3ae5455c6ff024e7a3bd6abb9784165a637655049fd716372c32c4",
+        "assertion:3039ce021abaff033e5a6b8cd735dca8a18bd138b293ed9fd2b44250066c7ea0",
+        "assertion:3576a334868e23a292333174d32ce437680c21618be1c74ed7621d0f4d8c93e4"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:b12d681b-a40e-5931-b9a1-2f66f79d8582",
+      "evidence_assertion_ids": [
+        "assertion:0b7efcec98c17b75b177eabfd6f6f6a3c46e4300265acfa09c2e616259a5c48a",
+        "assertion:0dc2b2955f4b50d96ce2aa48f6cc65e5195db4d6c35ada7ce03d84bae130d42b",
+        "assertion:1273732d9b21dec9499b6a06251a0ad39c2786709f72c56e4311650ebb8e6d4d",
+        "assertion:187d5803b4013791bf706a97d58c5085b9655c048232265b9cb55239e84e70d5",
+        "assertion:1a521640c29c98df63037caeb762066239ec205eae21af3ae81f806993799fba",
+        "assertion:1ae73e67c5601504fcc985dde1a3fd5a4bfe773dbb159167e92977c5c3331571",
+        "assertion:41ff4ef4bb190a2ceff36b6e09338e9d31d8c1f9152f2de8f920aad300f23293",
+        "assertion:453dbccc42410d880469484f29208423872b37eae2411d10401f18a102870d90"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:b06953c6-3c69-5eb0-8c62-6009a4a63edb",
+      "evidence_assertion_ids": [
+        "assertion:0d84376cc66b6cb57d7a04a7557db7290499d9f7bc7a265d77a9ef146bf375f7",
+        "assertion:138718a3447e597573996427dc88de7daf605e58eb8d752bb0560faa3db6e134",
+        "assertion:155ce78202b55c86bacbfdb5ab98177efb44ae96ca7d077127691388b8899459",
+        "assertion:27cadfde9e222f9e9d44d6813a1284aa6ec2e83c3822cb0b970cd767cbe02037",
+        "assertion:36c3593b7fbed1380b218799849e3c5d417201d84b87df31ae861317807bd2cb",
+        "assertion:3da89d82ea7cbfcf08f9374a6e5e9695d55e7533fa68e8579df4b3d7e4026b24",
+        "assertion:3f4ccef54144073ee3fcf58dbd7e5d69a23d3c12efb9eb0e97b47ff6bbc04e2a",
+        "assertion:42add8a7ec89f3e2023c7998ed1ce399b2f14649e1307d2e9a144785c42c9530"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:68984e73-a667-52b5-a093-bb611f135439",
+      "evidence_assertion_ids": [
+        "assertion:0603c29c7a518480af4e458baadaad80eac2053af3b3a8baa71cb7b5bcdbe9e1",
+        "assertion:0a12262290cc7899aafaaa8b66c4d43acf1a155525ce73e6e6580bc2fb4af12e",
+        "assertion:11c8a00bdbf308fb19c659b4575f813d78e95d241ec824d9cf32fc689c0fef3a",
+        "assertion:19c86877c53696f8df153c53b20cf80f3ecbe2366b7b098a4cbc5070caf89325",
+        "assertion:1f2429e39c5f9300e5f62ed4e3f03ae0c893daf2d9452d6a80f3efd77f2f2fa0",
+        "assertion:1ffb9293ef4f8644c4918d478e657ec6b18ba406761983fb4c788f01d1bba6ff",
+        "assertion:2bd0b80f4b4c8f539d71e22cb21ca2e749b2f258991012dba5e30aa920b81aae",
+        "assertion:3ae1f072a61aa79659d1f3f851b8f6a766cad236f262523da42667261782f65d"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:005b6c22-2053-51bb-afb9-e51ffc300b92",
+      "evidence_assertion_ids": [
+        "assertion:009f8eda35320c1bd2c6a7ecbc60c8694869a1f993d864fd529359b6a826a288",
+        "assertion:03e5882a65496e9bb200676f0ac69e128726c8f7ba12c834161147dacdca1109",
+        "assertion:044c1a8b076c4d5c9379fec23ff255cc5e59365a8569e60c0e52b00c52db670f",
+        "assertion:114607f4655be64907ca8481817c396e4e0705043eaac554d01764e4210c973f",
+        "assertion:19745a29b7338f4265c6df035296756b6e081d1d4905a1de05e76c3876596857",
+        "assertion:1edf8370457ff73fa930aa9c5ea2651454699969105a210054521a8bbdfaea57",
+        "assertion:1f5748ec834d2ab2d78331781be9b6636f203a846351ffc23b2f81e40c525096",
+        "assertion:2e837782c09e82a5a1aabe8d96c22c2492ff237db8ae74bddf2caeb95deb1202"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:58f7619a-f72f-55f4-88d7-70565373bb1d",
+      "evidence_assertion_ids": [
+        "assertion:067cff4e8bc94c8278decc77f19f1257165cbcb6fece52396e1b7606a5799c67",
+        "assertion:0d11381a4febcd57f5c7c62994dcc651ad86fe2c04bccd05e5b47e75a2260830",
+        "assertion:10a5241cc40f2c9fc60963b0f991472c963975d065895c12929e34c7feb01bb3",
+        "assertion:18c5c03c9d1a8cbe95ef879a4cdec7bcdee385c42db7b0cf1a10d65c77ad4455",
+        "assertion:23202260514ab772a1407462f79d40975be5040c35d7a8cda83f10ebf17f71f5",
+        "assertion:26279cb3d8fc44fb1d6fc5c9030f5554f1d04ae2b571f8877eaf60d892b3ad22",
+        "assertion:2ecbea3278361ecae0368165252e7c2cf3a88c7bddac2af0a5559457bd17dc87",
+        "assertion:3388b9d99fc23ddab47ab7efb17a6d14ff42dd20cd683745d668a9bbd8bdf1f0"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:7ce61893-b59b-5a6d-84c4-876631f9231f",
+      "evidence_assertion_ids": [
+        "assertion:061a41619ebb3a63901bf24a64f61095791ae89f420d0439656713949b417585",
+        "assertion:0c5661f36c4838802d3e2af7c01e9f50e13eee7dae2cdaa067b70f5ef6f42c60",
+        "assertion:0dc08d46ac9e2e9a0f35ba5c28b2267a40d2ecb10d7e9f364775ee36bbb1d033",
+        "assertion:1bee567d528c75f680458c5420e77a4f1d864fb48c3bde7991ec27cec1172e4f",
+        "assertion:23368e4dac5c4b1f1386274b179a8eba5470b8f5c755b80c3d83096121edf53b",
+        "assertion:2b5e300dc006fb49c7c401c2d9711800f0bf7cb22b7072c35ad76d15f2a0fd99",
+        "assertion:2d04db63cc65b2a9fc960e314f78fb9159268e8203f7c9e80fc0cf783e6f881b",
+        "assertion:324a51633a900ca786765dac8e8b3d408c72bae1fa946a034b2b8549426aa60e"
+      ],
+      "runtime_support": "executable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:c5df7e59-5940-5f3b-8b25-81b3ec9d6e73",
+      "evidence_assertion_ids": [
+        "assertion:00ae73ff1432ef61fdae237d1090a06ad57e7c6ccd53dbd1f3d0dc28a55eb655",
+        "assertion:04c3d3d735fa4dac9668c957eaa4fa9bf68eb1775482acc624754535ea5cf66f",
+        "assertion:04ea29ebe01383fcc991421b4d613dbeae551a6ace12ae894245f1651c240421",
+        "assertion:0551c063ea365c939a3437cbf4efe019081f7ac1329b269bf175e2ff2a9874ab",
+        "assertion:0cc81983e22aa4f3f17c640742e10cdf35bd7766e2530c9a579b11c60620040f",
+        "assertion:0e2f7cc8fa0a63bec3cd275e9f11c885e5e0fc50be401fb08b134cfed85f4f3e",
+        "assertion:1698f8b0da8a71424767696ce514512061b527a020ffa1d8028254df59c9ef29",
+        "assertion:270e1b92745e2b7057947a8f42a9a93db8a176a009afc00a002c8d07b0e5f80c"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:9e6eb880-3f29-579a-af3a-0f741892492c",
+      "evidence_assertion_ids": [
+        "assertion:0629b6a890e440bb178c08e21059537ad03d49173d515f7310ec046a899261f0",
+        "assertion:0bb1664896565ef0a47fa3bf8cf1e8329f848824ad13f132cdef19a13c137c51",
+        "assertion:12198dd622b4668fa9eb13d4e79c9cb278bf293a48374b43d88c9fa32786ae87",
+        "assertion:2bf2559246e570b777158bc37918a6f1146c9f8aa73c6bcc13fc0962a9fa2563",
+        "assertion:2c109638b8534f046a77006a86f8bc3ab27910ca496e06578a9970cb6f4b8280",
+        "assertion:317c9be371778bf76e11c29e0d910c5f2a6dfac4ea64ba367438a997c904e67c",
+        "assertion:37e1b247b95e681b8b08210b439c803d732a4bd29afae964b1a05b6a086c006e",
+        "assertion:486ef363c84272658de8af2ec82773aea78a518ca157311e1415ffb13a8c5807"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:ee358065-c1f0-56ed-a382-9a055d8db251",
+      "evidence_assertion_ids": [
+        "assertion:10c61ff6dcd57550104dbadc643564f0cf877526257324b341551d191f9dbffd",
+        "assertion:16ffc30aa6de6e0e3e530e494ea8efaa92476bc0a4b2e9368a096a0ca2f780ea",
+        "assertion:22f78973e8e4d6b60c61d39808d41fff06a111773985964dcd30eccdc6809422",
+        "assertion:2dee5a0a928adbbf37da48a4670313090db0ab87ef06088c53c999bfb6c407b8",
+        "assertion:32eee1af4239fa25fec920fa198baa51466b05ffe8c79dc33ee6fec4d8ea91f0",
+        "assertion:422d8e979e1e002b0e4f2dd20b2b32032ced8b1a5201e90294e49555cc57a252",
+        "assertion:452e51f59eecbd0dbd46f3594504f8c9f92fcf610ad4ca59a5f71960ce72859f",
+        "assertion:4a30ec7a15064078cdbd7cff27bb557d776dc90cdbd1393bdd7e4c00a28419d2"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:2be4ddad-f13e-5216-b90c-6ecf4870d5da",
+      "evidence_assertion_ids": [
+        "assertion:005fe2ce6f843b972fa9835c09af4a9df42f1d6e3aa5682e63e70b9ea01896a3",
+        "assertion:089412c8dc58ecac3610811c6467dd5f6abf8cae089fe1a1ecaa8882abc3c1e1",
+        "assertion:0a1194ced811fe2f64f6c79579a35f912072403eef23f27a6172a7726f165540",
+        "assertion:142dcc8413e9ca7ba3c84f7712208f4a6035bb705d2ad7f2ba97c69ed758704b",
+        "assertion:2229eb771d8e24a07afea6f6075d8c825d93d716baf413f74bed9af38f2e95b6",
+        "assertion:39c88d59c03bbbf99bb3c3662f5df17c3a260765edc20ce107569d213ed34287",
+        "assertion:3da1ffffef6733605d8cd02f1baf1a9fe393813e9df76dce65aa115e63e06efa",
+        "assertion:3f2007658f6f568975a819ac631f8ca40ac4f4b3081c99ce61d155404fe3427e"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:4ac39936-488d-593d-a82f-dbe590a381a2",
+      "evidence_assertion_ids": [
+        "assertion:02c2adbce27b3218c710c44699651af220de4c86dc949d46bacb30ee0c67efd3",
+        "assertion:06081c9d39ac7bd63ecd8bc862f3a790e38cfed8bf16de7c0f3c1bd6afa5aa54",
+        "assertion:072d8887c9b82984e1fda33d6926226f987d98d012a3efeb07446bc02bbce8a1",
+        "assertion:0bad7800881695314619ff691a73eceb29dafb60800b033013c1167366788a8d",
+        "assertion:0f4eb5b86f4c640d7edb9f9db65a14d7399ab6207cd74b76272eb112b9240e2a",
+        "assertion:10d67421de5d14eb209c35aac2edac5c8f318b05bac10810eac0a6d4a0c126bc",
+        "assertion:214ddd034d11be4d91f78a5269d73bde12ffb2b16a232ec3fa2b9d510073658f",
+        "assertion:2d164124c60ad03dcc94167584a3c9a4da4ee20957ac78c6da74c7ec607b6d3f"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:5005d8f4-ac8c-521e-a596-f36002eb0f49",
+      "evidence_assertion_ids": [
+        "assertion:06da3a7728f8c118c8a7b2e030f057baf60de40c06f8cbbfc0205461a5b439bb",
+        "assertion:1189d87dbfec90656b11f91697b7f65ebc67c1fda8fcfbfdde25b6046364cdbe",
+        "assertion:16b240ea9842231052957cbea89dc0a7c0909bcf653183bd42ac13de8a05ebd9",
+        "assertion:179736c941572fd92957b4cc0dc99b0c3a163194bb3a023aed3573861fec5eed",
+        "assertion:1878015ece3382d9f6913e68305c137b40c65b4c9ec06ad1b7106474e4b3d001",
+        "assertion:335ccc8c9bbf3d9ee58234131c383c2a270611693ae468f2b06ed976f1191073",
+        "assertion:37f6fc7e63853703e3991202871741778492cbbd412006aff041c8584db30617",
+        "assertion:3cfb85d9ed59146193813bb315ae98865ae31962d8466904d71eeedfa9ccc07d"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:93662ac9-bcce-5868-8cdc-c5c2d561734e",
+      "evidence_assertion_ids": [
+        "assertion:08dd6fa509476756060357495826424e306f4204473f71ae39d7ec3040f16759",
+        "assertion:1047b793f4eb3de2be7deec7e739f9d1da8d274fb39f9ea393089e3fd1590885",
+        "assertion:1912ae896beb3b03eb6ed7d78a321f78390578a59cf277f0af89f607783cac40",
+        "assertion:1a7a9e376f90641a824754c4a624a57959edefe96ea701c746381a1231ab2822",
+        "assertion:238561031007ff23a4febf52a2aeb1fbd95c97810ca80fb127a244b0bbe3e4c9",
+        "assertion:2a73b78a9c7c14cbbf46c3701549073405c44ccfe9ab7ab2a641884d43b81fc1",
+        "assertion:2ed1d9112e9024b701992a16a69400bdfcbc3402e579be4bf0bfe9dbfca570b7",
+        "assertion:3750141e80211753bc2ae642f3c5fccedc0be33f044e6fd71bcfed5b9c05df63"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:7a822d53-7821-59b2-8418-67216648fd08",
+      "evidence_assertion_ids": [
+        "assertion:004e6e2f1b2e4f5efd4a4eaff26a57a66b7e1b813055b1a8f4bb085c539d9fc2",
+        "assertion:0b7885dece8518031edb7dbafe88e7dd2b142740b9d5947e7f3d1a7946654e77",
+        "assertion:0fceea0b33db6ec14da9ee6c56abfe997a6c3d113ac98c23af06c59b196b0fd0",
+        "assertion:1410d73e83c00858b500539791aaf4bb476eafdda110460e3cb4bb554970dece",
+        "assertion:141677f912fbf68543c3c0faef949ba609cdbe23ea77c34d6df26306d75a14a1",
+        "assertion:1630b8fc721c560a2db9622979557ed85ea074d68b81080d29d0288df07282c4",
+        "assertion:163b0b9393aa841913379f04c24aa6a2a5a966834bce106dded3497888a013ef",
+        "assertion:1fa35b8fa7938df5de560f476524e9505065ba25f75eeab7f44f1c658f9f63a9"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:33988d19-1e9e-58e5-8450-443a06e8e66d",
+      "evidence_assertion_ids": [
+        "assertion:049698a314a6f5a6a5638299ef6db14b153a58fd7bfac0bc0f8a42bdd6f0d2d6",
+        "assertion:10512b30bb412aa5b1316b8462bc69c61f6aa64ad1f2df0de3a212514a6a6700",
+        "assertion:25008d3a28e47f9f33e5f2af8ec0e9fc9f4993cdbbb53403f39f735911da2054",
+        "assertion:3c91ae06db6d0feef6a34b79fb3c03fd7e8be974dac23b60a0cedd0b9c160f28",
+        "assertion:44c8f1a5a857ad99a6dda1fafbb95407c516938c59a611b23b2b22a7bef63547",
+        "assertion:46f81415dfce75b49939855cb0df58d70105a366c6bf61e349bf89662d007ae1",
+        "assertion:4e7d64394323f181bf39c161df63dafb0f1f681e0be645da1b97b420e6f377ad",
+        "assertion:53b5d99a38123c58d6c710ff6755c5d3604cb81bb26bc7b4973b87e82221c3dc"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:612f3ad6-db00-595d-b8a1-006bdf3e4e38",
+      "evidence_assertion_ids": [
+        "assertion:034d4d75c83a805cc5f0b05736f1106e4cfb4db6219680fd0157ec533d0ee9e6",
+        "assertion:037d36e087b8b68fc103e42278770c9ad3b1682a3b9b2a4fd5b36ca469170686",
+        "assertion:05620ff9860068d0b235423e9ec4cb68d0fdf22f955f6ea633babf1aaaf91983",
+        "assertion:18e0aaa34e76a32155a9b996f027648c9ab0dadb0c2ac6eff9323203c6b47f22",
+        "assertion:28a30737f7328457b810f5db41484a47b151d73e2f370ea4c843cffdd67c0703",
+        "assertion:29e094a17c4a8d2eabdfca6e1460dfdb026c875fd65a3610c0ce06eb58d73940",
+        "assertion:2bc6382c4a87844f9863ad60e36f116741818bf87cf2667cef9d049ae7a53f0e",
+        "assertion:3c7ac220d7c4bffe5750b706824485708828a21ad6f21f9222a8ceac2c4097ff"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:78245985-21ca-57e5-b6c6-11a8db9d5d0a",
+      "evidence_assertion_ids": [
+        "assertion:04aa8dbc9e9fa7827570a61144de3eb4e7aef86441a5aa5dbebcc56e670e4a86",
+        "assertion:0ac822fe6968c46448e44daa21364c9837c2df117293203f559ef010f20d1c9d",
+        "assertion:0af5bfaf0862430a73fdc5480825c623cacab509f08d9ee831118728ddd16db6",
+        "assertion:104a8658bb93fab8f09df4dec34a53817b7ac63c7d946c82dd6f9e4e7d4afbca",
+        "assertion:1704601419aac654063df0e2bfb781b52e97885c07376ff064c65d6837175699",
+        "assertion:1df308db3561e8c2fc7ad22659a7077c68fe6fa995fa3d51958318e50f27aebe",
+        "assertion:2eb13c59eb511c38f7837b3cf67052ed091bd8ea4813c80b9dc73d4e2fabb878",
+        "assertion:331ba49754bc6d697db4d857876dafd09130953547dfd5be352a64c1f1de62a0"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:0928960f-3218-5ee3-bc1d-f8f487823ff2",
+      "evidence_assertion_ids": [
+        "assertion:150201435f5a7118106c7ec540b34d18c7da3aceed55cfe23214a345b4991e26",
+        "assertion:1edb395eae63d6d8af7267c6fdfe2b45d6dae34a57e21f3e5db6e48c982a6f45",
+        "assertion:1fcc9b08ce717913355239046fda43466529ea0b42b2623014d8dcbfcbcce5ba",
+        "assertion:20005ab2b2d306baf642e2137bdf44b46967046948267a6eb936fe5cb67ad1fe",
+        "assertion:30aa27ae054034b729b284740ecd866e8c2f8a51d787bd85fa05bfcd4aa13c0d",
+        "assertion:3fd105488fd8665a64dec043a958f5587bd49e64cbad59f8340c11c7c6b823ea",
+        "assertion:4cb702d60cf2b09514b998217b90906d6c5f6b5d535689b48f7a8b3bdd73e3d5",
+        "assertion:4fa73b5e3637c093c417fbe4dfff4febe8466edd7c0b18468238039821ee1d2f"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:9d498f0e-9354-56b8-8b62-92860c804666",
+      "evidence_assertion_ids": [
+        "assertion:002040bf91a00615db8f40d123e0c94e191b652736a06d943670f1db6c7f6aab",
+        "assertion:0bc858f2d6f80153c2eef5c1fb595578f6077f0a10e2dfa7b43450930a9bde49",
+        "assertion:0c12b026dc7586b076fcba7f516362cdfa2d9d3a83cad5025b4c6ae313c875c8",
+        "assertion:1ad9425d15e8b348ebeef3fff7b75e41dbb847cdf5cb178ffa3e3e48f5b8aaec",
+        "assertion:201dc7f75f114e1d87d2a1801ba4f3f27606d16ab7ecfc442f1bddbe23c68678",
+        "assertion:2684149d5495768fe780f6e6d7a16936d63aba823da8ec1efaeec109e4825c19",
+        "assertion:2d89ba0bc97414d130a8dd879b4c9b15136f14e638e4ef2a5c6c4dab47870bcd",
+        "assertion:339ecd2fc2af409a86944afc7f7a63dc55f3f9abecd9e132773ed150cf4f9c0c"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:fdc0371b-a2c0-55fa-80ff-e21a9948b617",
+      "evidence_assertion_ids": [
+        "assertion:072da24494470df0057957c8989229297fd9ce225ae785971426554aa44eccce",
+        "assertion:09465a2dc39ff83ee256672147cfd8a5373b55de72cb0abc2c12b6b9aef2f75e",
+        "assertion:0c31258a26ca4c63685415f9cde81ef2ca1d8dda0f8faff2886ef918b4a03271",
+        "assertion:0f43054d16f17bc100571ff87cf8923c09fb3b87599ba346de99c76f6d044521",
+        "assertion:27c3da121a4162ea2932c18b4fdb70422646bab2cbff212c558125274e90d9d9",
+        "assertion:2e8ca22a595ab61acd916e191b1012bdb063060f1571a0e302eab7c1bdb977b9",
+        "assertion:3b43169183d3258a19857b5a9df5c07dd15b5a251f71c6acf862a0edd0ee1a76",
+        "assertion:3cc974aa2a1202f4a8648b9c57adbe57eadf2d9330e8d27596d25d6326bddbed"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:0ac7ced0-cb4d-5e7b-bd94-e7911bc04ba7",
+      "evidence_assertion_ids": [
+        "assertion:03a70f670065419f4bcbf7dd80b466d1081b0515117fde13f2c36af811a0e623",
+        "assertion:07c8120848b5422022377b6817f09986f06e72f93e2fa39d37c24026c8289d25",
+        "assertion:1682f3ef374318e25b48594e48cc2d32280b70f3aae641ee3bfed6951dcd3531",
+        "assertion:1831893bbb85a96fda22a87a4c7bd0f69abd33c1666ce40453095b4cc3ce8d6b",
+        "assertion:2f06f2833190b8264aa327c3f0370b34365ae2e127807d0a60efe4eb8e54cc03",
+        "assertion:356ab8dfe8330228ac81121e0452e5cef67432fa3efee3742ead05b253b64b8b",
+        "assertion:3c8e9cc297c1df707b85b83de749200435cbbcafc0dca5ac3532d22afea9d95b",
+        "assertion:40b70d42662b8a7f1891606bad223df37a9bb3996f483ed7762b02214ed11b15"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:69b0e68b-2cfb-5b6b-a93b-26f9975f6bc2",
+      "evidence_assertion_ids": [
+        "assertion:054f31c9b5197c1874aed89d83ec2ab0f263de648d53355e61e78ab7c499c229",
+        "assertion:06718da906ff945ab9cf656b5f5cea8e614235b98adcb6ff3a3addfcaef29065",
+        "assertion:12f7add99417331cb63b4116a7e21f8e6b015d8c5992518139df3f74e3ef1db7",
+        "assertion:215b1e3a8d6e0e76af341b28a5ef598c765ede6f6774a6b823d6333d9bdcb5ef",
+        "assertion:22b3f4d9aef67c7ec0625d3eda0288a4826d57b5b7374e363fc6939c0a9fd4fe",
+        "assertion:26b9ab56b13653a065bf61ef4823891b301fe10946ead4b99bec041b8f4f7b9d",
+        "assertion:30ab1c7c1daf7897268f8d3e9f2c10961270f648e1c0241bc7210d7e5b6cb35d",
+        "assertion:3273ce098a7dd32297b7f4d7f5434a9ab52d257b68ecd4f2276fb03f9460d202"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3dbc6df1-9d06-5d46-8b48-ff139ef492cf",
+      "evidence_assertion_ids": [
+        "assertion:024b031663a163c48534868013a5a3595b162c7606e1c5e01ab17fc987c214c3",
+        "assertion:032bbeaa9630929ad0ec6eaba42d43b6b3253b71d4c3c58f0356cdd3315cf95b",
+        "assertion:06b8631b2d549d6bd6c755eecccf57f4498979fd4f9053fb1ea45e409455a88e",
+        "assertion:096c480d11eb4aa15337bd51faf3372a530ec0b3646364be6aed582359ee55f2",
+        "assertion:0ff6b28674d31502efda7664ff1c2b2eaa6b25c58364b9d7a491bb6daa892e88",
+        "assertion:1734397c6e47205104b81d2bfb0e28e06e0fef6402456cdea925892b37be7633",
+        "assertion:174c3d713f2c0db86246ed73dd0f834f7b272803953613baea64d4595f4a8312",
+        "assertion:2354c805f47cbdb403ab1cb03bb2c0c3d97d3df8379f6a9168d49b8e532b7b1e"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:bed4412f-7e86-55d0-ae95-1473ed3c9478",
+      "evidence_assertion_ids": [
+        "assertion:09656ba83c560bf68559e573a0aa1a8e243949faed52aac330b300147055b739",
+        "assertion:09964726c67ce08b2e8b436b10c9108fb86a705e8b56bbdcad354c85e13bc5b1",
+        "assertion:0fba74b73ace0c42a61b76b8ae2019281b19260f169137e1259dee258279c794",
+        "assertion:0fd224553dfa2674efa3e124a70ee40e9e1e166e5e83d75185b7049687072862",
+        "assertion:0fdd60a42eb4c1d3e241cbb101269e15c4290be6cbec619df386be17fb16e2f7",
+        "assertion:1a596f46bf15e01f6f736d3e01cfeebbc8d7ec9371abce9ccb2dfb2bb8fc3481",
+        "assertion:1c6de31d264420a73fe696c2109909b4cbdd93c7f162b6ff9ae07b8b60de9580",
+        "assertion:2e6deae39bbe5adcce06ca7b1594e404c934a09560a627e0ac041898aeb26282"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:23364a87-b361-5891-8875-334bd65c240d",
+      "evidence_assertion_ids": [
+        "assertion:09b13405585d6ab2eb304ef645f169717693a2b407125b40970b39f889ed7140",
+        "assertion:0e723eddfa3feed9ddbaaa52e1820cb791c218e318a49c9b866d0480845238d6",
+        "assertion:145edc39a1d0e6ef71b6efa92bb4b6108ea27fcb405570f942f4284c7f71e7ec",
+        "assertion:161cbd079fbc46c0a94ee602c63ed098f29b173a6c5967fb2ff87e49d4621003",
+        "assertion:24aedf0afe080d8ba5ed625bfb0617f9e76a6c091f1d2b2b30896c6c44efe266",
+        "assertion:2eb5f6c125e71bf586bc55948a81cf29d5c063e4a8e5db45891511fe18e6d0ad",
+        "assertion:2fd160def3461add6c90985feed795a0ef80b1aed52ad24870b9ac48ed178b5e",
+        "assertion:33c8d21b41781c972e5b824a3293ed2dfd2ae85e0177da8e2cdf602c4da4e9fa"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:83244ffe-eef5-5fb9-9417-9ca6704f3a2b",
+      "evidence_assertion_ids": [
+        "assertion:040da1ed05cecfb5157690122cad7a8c1d69c3c2647dce468cec3e119b30ff27",
+        "assertion:04432c1cc2997f481727ffa339a703cab26092eb57a02b94d2a4f92c1b63f199",
+        "assertion:18e812a1394dae6784ea58c952d10a2c0497b91ee527f084c4ca698bb5530c0c",
+        "assertion:1b64c542e0c612db4503f57bdd7d579a3cfdfbe8b79c16886cf4cd16a902fa48",
+        "assertion:1de110e4614e73573f32ee2e0760b2f3e564c3e77c7147980623b6cb6329cadc",
+        "assertion:3836327da31b444a8929e162aa16a88c2ad133b7cc080aac656e1f253f6b689f",
+        "assertion:3d2daf4194e7c83c9e0af0141a07370a0f7728e87de611e9c8b179b2e7ca8468",
+        "assertion:45c43b95997c365436af71977a908751e477e50064e7e54d594c13f4e85f32b1"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:4c7b2f83-5062-5c55-87c0-3685481cebe9",
+      "evidence_assertion_ids": [
+        "assertion:078a3109033f98ff4a7ebfa680a8134d9929a803d12f8331dc58755435d25fa5",
+        "assertion:1bda6347b791385e6f5fd8afa25e87b15a4c202888f29c55ff7468209e3cae4c",
+        "assertion:297711c89187b22f799891d8156c1f769016e15571ba14667fbf8f47fd612d4b",
+        "assertion:396f88761040be74a6ffb71a8355e982b887ad005e5f952678a7f2e8bce85c8a",
+        "assertion:3df57f992615153665ea589246cae78d7434bb3677f4dd7af408c29139cee4f3",
+        "assertion:4743c8b4622928c3835baf07b084154ccec9002a091a4e776e0378b882463537",
+        "assertion:51658f3f84d59d05dd3d777a87eaf2aa1c591f0e1e22fa27eff16b22fb9595cd",
+        "assertion:5e662b1cac165146f32551388956c1e3afde3728013ffbcf491346887c86c5c1"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:a13641fd-321b-5ca4-a6b0-f2a0e301edfd",
+      "evidence_assertion_ids": [
+        "assertion:03570dc823b9e36fc59821ad8af2b879988987db1c63796f1feb3a4d46f6b101",
+        "assertion:14c05528a8a63baa839be8ceb54badcb4faf71ce71a090b5bedc222832c6e7aa",
+        "assertion:16eb8ea31021a2b2dc7b1d4e242d34dbe5f6654590e41537b8367c2c430e41d1",
+        "assertion:1dc805e3228615985fb546ca77f5cb9601844389169e83caf4bb3fd812ce8a5a",
+        "assertion:2af2fb38bd44bde6025ca9844b0bafb02769f5a8d81519829d002c93e126f238",
+        "assertion:2b108a51ab3661659100656323b7d7ed282797856c7d9221dd0616f6bc047cba",
+        "assertion:2dff3e1138a9014f7eb4048f32325e196214b632688627eaef9d5de719d2247c",
+        "assertion:360b920de367a8b9c93f38b7bf6c7d483980f3311c4c73ebf1cc35285b972212"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:45a4478b-ca53-59b2-b9f4-9d71456b5bc9",
+      "evidence_assertion_ids": [
+        "assertion:154a65ac4c5a1cc2f2a57b8e66879258980c4842ffb0a53e30ee3f56ea01c202",
+        "assertion:1b353502e8d6b521bccbb1c2984fcead6ab97fa18131bb1c5405ed8245791552",
+        "assertion:254899407c7d4cda22a351afe3f1eff2d81c56e0a454b77ae7ae6c5b18dc626a",
+        "assertion:26805e4d484f2a6fb4389329a29702aa04a215e50f58bd707208781080e54009",
+        "assertion:282e9d5c6aee22711156b1bc04d054946badc17ba2cf53851ddbf014de37f7b1",
+        "assertion:3e5548b061d3b75189c4b4ab00655e6a54c9234a134835c5a389c1b80e749059",
+        "assertion:3f271166aa56b7d3876e79522dc4ab5effa14892315e3c874ee64065b793aade",
+        "assertion:501e6a00f56f9d10ece5fdc96b42e9f0443e71a7b41dd67c82b416e6cf17262c"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:16d0cf53-2702-5b5c-9e6e-4be64074576a",
+      "evidence_assertion_ids": [
+        "assertion:01d755671024c2179bfd925e29ff2016ea9f7f136595e88ad6a34a779d3b6850",
+        "assertion:184b59422a75f42a73fef6bdf23f13e4ff87d610896d79fb46a9f875e063d619",
+        "assertion:23d03d47dbc0cf2b648533529bc5b92d75ed0b09f6fbe5dce43253a017c3cf7b",
+        "assertion:33c59c3ec33f7581879983d1730154da692b13ca708d49cf2cc62181c1621ee2",
+        "assertion:362569fd6473e7de761583c2471ed5fe9dbbdabe7acddff85b1361d0ae77d9dd",
+        "assertion:46f1b1be78c8fb030c2cc155dcb57613563ce57f09ef6d3374b0e15ccf6e01a8",
+        "assertion:48d3dea2ccca44b6318d59958dcd8eda06a095b2c51a0796a48576c8e6db8123",
+        "assertion:4c1d176fe03773398447cf0a7c4c1cc64100ab7d4e26b2fe6e53e0f7974cb212"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3de0adcc-0e09-58ba-bff5-c3300ae9a937",
+      "evidence_assertion_ids": [
+        "assertion:08b01ec98fc4a1599ca135d5a187d8a5a0d3533016b2ed1865ed17a32d71262d",
+        "assertion:0a57a5c9e0db2331b3879bf330eebf25268f76e4c78b1137009ab5e462418252",
+        "assertion:14f5bd4a9d711e991db56136fd06824e748dc7792ebad7968bff2f2586ed5f6f",
+        "assertion:1a0464d82faa0a27942ce4879c7a482a31aa5878871423306215bab85c6d56b5",
+        "assertion:1fcd566c7e813c5a9815d8745132241ace1c56d9243652dd19a47552b59f8830",
+        "assertion:2a56983b611df36bf5ce95157987415038b4ff1b1e2ddb8225ac166587132ea2",
+        "assertion:3748b246305c19430d4591342fcd1c06fe0a3eadf28b8ff39c89d085ee4af013",
+        "assertion:469c654ac49f430bb68a867d4c7b33c8a2494b9446a69d185f7d23e767f8120d"
+      ],
+      "runtime_support": "executable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:aaecdd7a-6b29-51d5-811d-44f5528c25e7",
+      "evidence_assertion_ids": [
+        "assertion:02c1ee9983cb2969e532553ad0733981b30647217351f4e6eb8485ead3daceb5",
+        "assertion:08707d0264f37fc52e404037e2a1dd219b1acfc1f0f9b9920b7048d3540c83b8",
+        "assertion:09eb21e54c57bbbac176e9a8ef8fdb9d18f5a9e4bca4054588928668a9fb01a4",
+        "assertion:0aeb61c67b893b028f81276de6cd4bf87f7486b56e681dd2481259a0f21d3cdd",
+        "assertion:173f09998c1c4229debb0c1d81da4ec7048b7fcb6db8cf852d6023a9fa7d2f1f",
+        "assertion:1e84cd4f5e3a10bbb96c558453004823467b3ae828fa9ffe27a565661387bb1e",
+        "assertion:27f7de3bf78cd3d74cafabf673f57963ac6ea22546e69c8cd15ff49cb4ca47d1",
+        "assertion:2b6b3b3d42c192f723243956080bb0fecb0fd73629f5fa0e4a98be80bd739b69"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:70fcf1a9-64b7-5d5e-92c7-c5551d1ef0d0",
+      "evidence_assertion_ids": [
+        "assertion:bd885487a876e0c09045e97b31ee9b12cc0d5927c47f2eab66b890d65dddca4e",
+        "assertion:f4ea02df8472402ba677d610e6e2919b5874fa33170dc68cff67a1f3a980ebdf"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:69e153c1-8c3b-5a57-9c1f-dff361150a19",
+      "evidence_assertion_ids": [
+        "assertion:1c65c871723bb350a89a2acc3238e5be48480e7b4792743d1f6a7c3a720df8fb",
+        "assertion:1d779e725465d5cd212746cd0fae1316715745cfb0936b23eb3499384ef83171",
+        "assertion:2421194d65b93a36d3fce43864451853a4734356392df9b8f689d2efbda716cf",
+        "assertion:2617213f06d461801333d03ba139b5935df47c9ea6009158c0bd1c1cb3db0e65",
+        "assertion:2813aeadb90164ec6969c8104878bfd8226b901d5711789d3c199a2fcd81b21a",
+        "assertion:2ec3fae2623e97834ce9b46e63b32eda7efce66641c40b2a6b3c6f642ea5df50",
+        "assertion:427f19e90de250d4417a5838b5761055da62349177fc9cfe1959b98742571087",
+        "assertion:4603c0bf9bc5a342406f07aee27c506020d7d9c8b3ba71a14afd3bfb4f90ef76"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:16855740-726a-5a14-be2c-4a48612d0f74",
+      "evidence_assertion_ids": [
+        "assertion:0077700fe38dd0c9287e019021495954ac56e3f44c1df7b192c222ad69bf8ed7",
+        "assertion:00a6125d2a215e3e1a8ec37c52d39e30d63d054c5ee9fe439039a17bcb2fed08",
+        "assertion:00be1776ccab32cda11ac23caac866b5ebf3ed06b47a41437689a29df23c6f3c",
+        "assertion:06a1c0d96a53ef9ff1807abe58a726528f90d174b6ceb9408bb911fab3dbc5eb",
+        "assertion:0f68601a771d27b9081a9f852e1e399d3b665658dace6f7e75d92c9142e0d534",
+        "assertion:14eff99e010d9bbc05caf9888ea1fa41316cbe76253363314578509ec5753d1b",
+        "assertion:175656e3308316d154e9ad24e228d004321b515d4ea4094a91067424a4218879",
+        "assertion:18ddd1f4fb9b7ab50efac58214882336849b55cec36e04bd4aaff18e5262469c"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:4481c7bf-e669-5af5-adab-6dea6eb7ecdb",
+      "evidence_assertion_ids": [
+        "assertion:0a54dc4b4159770d1ebb3acddbf97991a1f52a878db70c2eba40eb56e80ca4ca",
+        "assertion:1f2b078927c7859d6634b642186c73ec7981651bea44aafcab598e76fde585e8",
+        "assertion:20120f3d684e5cd45e665341bef0beb3d407ab01944451ad16e592fbc20344b6",
+        "assertion:22bbe8ef692870bc0fba0124f36c16547eb9ffafc5921c547fdca18667130edb",
+        "assertion:2ce25eb5544518075edd6a77751faa32502e79285b5d0f83cbc1edb20ee27c40",
+        "assertion:304cde185e1d39b8d5b26da56f10c8a70961d8f66111f213a9ca12bc85016b2b",
+        "assertion:380ee024f939adf79dcac67e3d0624baf3fc5463113736779788720e5d801cc8",
+        "assertion:38924a92e9afc05738c8713b554ab042d12b41c07b1f61e5b0d21f88d03d4bf5"
+      ],
+      "runtime_support": "executable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:861c2db7-aa71-52e5-83d1-74775056f152",
+      "evidence_assertion_ids": [
+        "assertion:0218129ef6752f56180ad7581d353a7718ad5056e247b23c51ea13dd256e175b",
+        "assertion:09b8876c01f34e0c01d3952e3dca6d5700e88fde2f75700c4d0cc51201b1cad1",
+        "assertion:12dee8fa85ed68147586afdf012845ed599761d4da7c2a4407b30faa48af8e54",
+        "assertion:1880e2db7b9097f3c77bc6f19dbb9435ed72323a02dfc8301cd54d15b9a295ce",
+        "assertion:1a6541661c36a61a7060816bc4105b93f79eb6fbd2456e563d192f9e2a0e7507",
+        "assertion:1e860468002a63869547435c1db4f7da1e5c679abdefbe7355b58de2acc23523",
+        "assertion:200cf7ce52d57e5dfbab57848a0ecce9ed760a3fad8d633ac24a1e6164071fe8",
+        "assertion:226a4dd99d783e958ace4b50152ba359526bf90e0ef28b61aed3a07115e41fd2"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:4b95ee55-4f37-563e-abfe-cdef480061eb",
+      "evidence_assertion_ids": [
+        "assertion:05b2698fe4fe6aff7772477ca158e1a0fad42c3115533c24d8a43e219174da06",
+        "assertion:14ee12b97cfc57eaead5567b5032d4ea553330ec477b31f95cf62328bd03ff2f",
+        "assertion:19ee4fe7ec1d0be5fbed8d63da3a21b10a77a8be6170c2bb59b2937ea0c686b6",
+        "assertion:1d77b9ca1af024ff06800c0fba3fd0f7c8fafd38aee6a94b8f801d83e2386ccd",
+        "assertion:22cd3f05c0849de084e3de449ad644cf65e78717b85cd7438462fe508e5d75e5",
+        "assertion:233616a053a77d7821c84d26829f45288b7e838cae41a58e784c2eb026bbfe37",
+        "assertion:2fd44775469b362c03c67598a1b2c39b1d5f47e5db6976eb7ad99949d3430a09",
+        "assertion:3243f62b9f0f559b935f387aa0baba7b4e72ba8219193986a25b56004aca9858"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:399a089b-06b3-5f34-8e2a-66f45e97a29a",
+      "evidence_assertion_ids": [
+        "assertion:036cc0d0e491be733e2091f00bafd5a2697f6e10c814a1011af09b2643e0269c",
+        "assertion:0ab9034db661996ea7d7d0bf164dd9d022e90653ce6fe888dfeb6043a43172fb",
+        "assertion:16482d30d40f41e70ce8488e5182aea0e50ca2c319598ef6fc82fd0e4560ecc3",
+        "assertion:2045c5ca160619e4a85a4d57a08113691971d4aaa3a1f5fc29a810003152f7a3",
+        "assertion:2f61da537ca7d9c80a9331a84aaa9c04b59df4c833aebaf0a08fdb79061697d4",
+        "assertion:32b04408ea7955c5dda6915388d4bf0ab4fa8b2cf6ce481e81e4cbe40660b1f1",
+        "assertion:36362a166378a7be093a06b3f1d45d51d21d708080d916f3faef48f7357553b7",
+        "assertion:3775653620aa12dee21bcb9e1fc2c1d71f1803046d5448d71f12410105bfa95d"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:e876c5f6-b01e-5bcd-a64b-693ee2aaa490",
+      "evidence_assertion_ids": [
+        "assertion:0264b1f68fb2a92b0b9ec24ec1ad00aa9cd7b23146f30784cb05bce0a7220eaf",
+        "assertion:0aa675962c343ca61f27007ef3e0355a630f7f084e156a9619e73d88c9311951",
+        "assertion:0c9af26b1c654eada2b8e055dc18708a7679492fe9450d9e2fdcff48b8f58ad4",
+        "assertion:0d269cd26773afe7765f7611b76a3d0aa74f9910da8a0f93ba66b8df05e6f2b5",
+        "assertion:0e311f54218111301c9f101efb2f5ebeff161d2020867b14db96469dd41da1b8",
+        "assertion:1595943908f31baf5adab412711a791822b5d19653313db7979796399cc61914",
+        "assertion:21e69d13c78b3a1e6e9c377122cf9c997ca586817356b023a6e4383c9828d8a0",
+        "assertion:287507426e8d8144f3f50408795f7a8f2f7a2c3f5bacfc18d81de9b53dd5dfee"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:7f53a39b-efc6-5943-8661-33a6a4c57099",
+      "evidence_assertion_ids": [
+        "assertion:037bad10b675617bff7515b6fbf0feb69c11a1b9ae8ee9183cf497b0fa9d9723",
+        "assertion:0e6c356ee50f1e66d290efefb9bd1f967e2bb9c23370b87a2e852b4d6507ef82",
+        "assertion:1bcb1b9231f3934fb8190b0006282bf4e533c84d71f54bf5b776ac85e418cd5a",
+        "assertion:23e9e6f88d5a47d729840bee63f54dfbf3317b54b654061e3dfe5ebef1747bae",
+        "assertion:24845562d59757ef54813db7f6340179df218ac4bd67675f33a1dcca13727aae",
+        "assertion:273dcdda5ee13fd914537923dca0c028ee3b7860b62253af5cc721799b09e00b",
+        "assertion:3b2fb6a8bdb0d116e7bc17f8c0dbd0ef02f006a2b550d0d3521aa69ab1e56715",
+        "assertion:466fd9ab185aafb73f22acb1c831faaa3e5677b1e7ea4e774db966b61da048df"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:d5049d08-1e65-5b74-972e-1f5e6d7d4c4e",
+      "evidence_assertion_ids": [
+        "assertion:02d57ce542aa82ff84c26360ef9528bb5cc6dc727e06d9a4f954865ed40cf2ee",
+        "assertion:06dd8bd9fcd48718621ef688a10da5abbe3aa13690df59e47281048438725f0c",
+        "assertion:0ef1cdeefecbb18116c509515c7fe23c1bd488591eff4e59fef75e56c68625d7",
+        "assertion:17f8cf586b1154b278afe4f4ab49d45cf1f7864ef2b81e080ecadc7bf4bf5781",
+        "assertion:29c7872690fd1ad3968514679ac45486a3be943272589289268e21457de0460e",
+        "assertion:2aa400b2b1e481b3c31b8ae4260989e9a760c7a49065588f222f3f52b4886a8e",
+        "assertion:2d51ff5abb8aeb8b075cf0ea45eeb45c5011e9d69cedfc4ba1a90e9fbb389c89",
+        "assertion:2d57dbd696ef26e3803fd1704d40570295bb513f445643f2ee7024fc5ad603a7"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:7c11f81c-a8d5-50c0-8c36-6bd2d8c4123c",
+      "evidence_assertion_ids": [
+        "assertion:07c8777c67e3c1faf1036b60c87b0519e5627ce1bbf5023765c3c96144c8160c",
+        "assertion:111535c78bd990d843eef74181374d57029768981192ae8c63419546f1da2ef1",
+        "assertion:1120e4e26d55fa548f2dbb8175d95568d5c6b397f210473f34a4b738faa3b50b",
+        "assertion:11f984992ef0e1740f0608c819678128f41b8114268c7dbade334fd92eba3e89",
+        "assertion:13b1987f274335cf007139883fdaf5ffecfdd2176416e5eedc66bc3a774630b9",
+        "assertion:159efefe2b579e919c29d2299b1d885eafa04bab5c3f40414a046e5f8a830e76",
+        "assertion:1620a3a7b94534e9de616296161bc4d110037c8d8d2775febb558c25f2282cc0",
+        "assertion:179e157ca8b1409ee7e2386ae5a5ebc90a884e2493e1ac190423c132235e9a59"
+      ],
+      "runtime_support": "modeled",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:9af3f953-b23b-54c8-88f0-fe6c5f0f2e2a",
+      "evidence_assertion_ids": [
+        "assertion:0463620cbc80dd678b19788164861af261094840aceb5e4525978e50700531cf",
+        "assertion:0fe4e4965b2312c27fad86a7426b47a3b9d0a340467983c17e95749a5f29e445",
+        "assertion:105da0188a924bc8e5467329eedfefc83fd4698d81a2c979ca737c35020940c2",
+        "assertion:10efe988f35fe2f751a75bec706a10db587c090313df54ff7942c3280a22a996",
+        "assertion:1c1c83b318cf720bc5d42e309d76a55e31cdb5238ed9f7b2edde1ae17427e467",
+        "assertion:285bebc367ee20233002ed0ff0f1966d1243da605520bf4521b89c2ded30ff41",
+        "assertion:3da3d2eb03729d72da88d347603529473df1621db6b5113101d969d3a9c13ab6",
+        "assertion:3ec750fe5459c26c7b63c6effd6ee38b047dd53d8df88c471f527a6fe366c11b"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:6dd38b12-d36c-5f65-953e-820a7e73c714",
+      "evidence_assertion_ids": [
+        "assertion:0f6546c8561e5bd2ff94bbe4bd3652d12e8573b85570b3885aaba0527485a378",
+        "assertion:243f153a31760918a474c6bcd80e766ebda3be5d462cd493648e6b64ac5d7851",
+        "assertion:26f50d58e4f16c7810a4d83df4b854ad2c0f1c22d1e62dbc68b5fbb02273ca44",
+        "assertion:2e63497e5cb9b4a086b4a3a89a2cc7ddb5ce1aa8230993e64381760e2763f901",
+        "assertion:3682e6b97eb7008b351805d02f55d374fde973adc7f345ff643567a60cfefd04",
+        "assertion:421b2937d0c518c3dc8cf2fb2606c38c21c48ccbe7307a7a7aa7578d311c3f1e",
+        "assertion:533312169ab2f5a10c601367a217f416dced5bd528ca3ee412fee8d982f87e41",
+        "assertion:5ec2673ae914311783e7a33b399be841a1974fd03154c4b3a7923ffeabb005c8"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:71a2512b-8fda-5b4d-a607-26ca6c75dcbb",
+      "evidence_assertion_ids": [
+        "assertion:20be80d21e7cd8567ba0dac07098da741acb288f2997ccf475fff7ed1fa36663",
+        "assertion:22c13e8a0d9b2b60bd3258307fdbdba3f05567aa8e8618c1874dee94477ea7eb",
+        "assertion:29ead8ad316d193101de217e3c92dc8b005aa9835eed2f1d1d79a3ac14bfd5ab",
+        "assertion:2b71791ee55ad5a67398b9c564cfa8da33c46eb4c9fae22c02d3ebae9c1ad329",
+        "assertion:2cf73d5c27ef0a8aa0e3760383e83623ab98c7d7fd07ca2669fdde0c3e024f42",
+        "assertion:461c3a641c59a3e4c80e94e74f99e5f5abc5535e6ed8f5592e3ce78293f48391",
+        "assertion:51e464021beb2bffd162a566f759ec8f6c98b0c3072412d873826e161b6fbd53",
+        "assertion:5387145f4451566cc3c03ae37021ee8f6eeb5db79950d8abb238bdba5d65e4bc"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:8a27e4df-165a-53e2-a0b1-413435a55930",
+      "evidence_assertion_ids": [
+        "assertion:0fb28ea8a82f785146679bc290ae2ff290cf89a1adc7a8e94175df4f68e7958f",
+        "assertion:1031039d333b07f196d3bdd26c617f7fa80fb20fc0b94b5e3ebd8ad92fce7d27",
+        "assertion:11800e28860d88a93abcf2a7a79ba76f7035150b1b4cde0bf0c3009768baf97b",
+        "assertion:12dcbfb5f1ddbb2d17089ee54618f1fab814e4eea6c1eaeae0cb23a780981d7c",
+        "assertion:23e309b60eab456bbae52fb41aa0700bd3d681c6ebd979fdba9e49210f9d747d",
+        "assertion:265ef33e9b7590de2b9d6bf5a5ad1d005e4ff82fa87f74a98917c986bf22197e",
+        "assertion:3c7b76ca332ee7fbc0b36f0282e37ecaea7fdc5a086439eb6eda7db9b9fe9b2a",
+        "assertion:3d3e99acf1ac5b358fbe1437b9f64f622d2d3c1695202dbd4d87612c568a1613"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3f46bfe9-4b5b-53b7-bc59-6b6f2c286de3",
+      "evidence_assertion_ids": [
+        "assertion:1daf3d4a18e73d6ec24d304151a63817583db538a9fb9ebbc3df325668cc7bd1",
+        "assertion:2c72cc983450366d8e5de0ca5941cc9be75d947f7a1d125d294764468f1f49b8",
+        "assertion:2f665553a3e28ad4f792f05dc4a6f9e1bb956a4417a7a455df13557af694f2de",
+        "assertion:32fe3ee1758d3726dcb6b95ba04e73bcbea546bd15017d6366171030e0b18c39",
+        "assertion:37cfc13e0896448070adb19f59e4d89138cd684deaa93e8d41b96f51144c2d79",
+        "assertion:3ee98e0d67e19cec135c2c8423cfb4fa3f9b91a69c4986e5d4ef4bbe315d5730",
+        "assertion:40b127b1d134f419cefa8a06ad6402df61c4d51aabbe1358c6c2c33756fbaa4f",
+        "assertion:441d83f6af11fb336e5aec95cc15fe1cec96e9248721d70f9edc4ba974bbcd3c"
+      ],
+      "runtime_support": "executable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:573d178c-4d6f-5e8c-b15a-fdea0cb94b24",
+      "evidence_assertion_ids": [
+        "assertion:01fca2314a8477bb28ff4a5a4cbd1a1f11e93f84c409049f4d958d3aef74762b",
+        "assertion:05b4dff69e6272a633a705a04dd67b9b6414d18223ec3a345405e3bba7a15f69",
+        "assertion:09805a6f216a187a46b906ef251eb2e16b7205c7fd5377f242d6b893366ea8b0",
+        "assertion:135f1889a2bcf88f69f35ff406d32aaf25e60c58330ce0aa5a974f91648a5613",
+        "assertion:1e6e3ac161dd7f88c555ec6ff7ac03e508657b47805257f3f0df697393c5a2b8",
+        "assertion:28b13aa3153bd05d061ce88b62904aedeeaf774bb41e755b6a41f7586b011f3c",
+        "assertion:2ced0bdab3de99a56ebe7cbac5024cf4591eb2ec818c43f0490e41bded95a34e",
+        "assertion:3013188d6dfa7d4a71687e03872dc0ddb6015bfe528122f1575383c0018e8a0d"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:1419c99e-08db-5c1a-8a21-f74dc69e5f97",
+      "evidence_assertion_ids": [
+        "assertion:05a634169791edae8152d268c9ada747ad6732742a360b35cbdf4b097411547f",
+        "assertion:09174d60da11ee4b60b0121181cec28d88d7acace0e2c3e905c0cc5d37018c54",
+        "assertion:0e588c6d322caff3b2ce5c0418b29b0398c07418b172786aefeda3e8a7608216",
+        "assertion:0e75474ba987e816ec17d9f85b98cd3361af69fe2aad3d9766423d2c36d794d1",
+        "assertion:1c56bb16bac15acdbe140d064d4060d7483e3efed919513f14f13ae74abc0c7b",
+        "assertion:1f63c6abf498a47c14be76448c058781ded8b266cc06a3b68a45d30d3529e6a1",
+        "assertion:211fea211f6353026adc5ddc21098475e7ba705798dddf205d32f9697f260a96",
+        "assertion:21aa5708e761112915af33e371549b8e363b29bef28dd8fa75aa2721091824b5"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:43349ba7-6b92-53dd-996c-35a8ab0727c1",
+      "evidence_assertion_ids": [
+        "assertion:0a6d6677d4de6b8ff571c5e1f2316f65f50ba260913ae041a165a2874a0d64a1",
+        "assertion:0bcb8836e974f3dc279f670600edbac518f0b0cc881cc6ad5e2c2e27a39dbfe2",
+        "assertion:11cca650bbaaed23e446a1c8e7745fe390a8671d6abd49f06e1a425d0483cc2a",
+        "assertion:1500e05510c3d879f77f1f49d41910a4d1219ebf8b8c4397e4f2b6686b0478a5",
+        "assertion:2068a1f17e9aeea863b9ae483c9ade788e2c555950e2b63d6b210b20a627e948",
+        "assertion:226316950ce6beb91f5292250d369af17b8143fc23e2d64251c527f695e12e3b",
+        "assertion:228046031061e5e3e9e70d5853958c74998328176b9c68ee4f78218959f9f4b7",
+        "assertion:30a8e4468c77a09197a596f17b62ccb290f0de76aa3421e9e7b4c6b737268a75"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:5dcd6018-7713-5d94-837f-9150b1366e66",
+      "evidence_assertion_ids": [
+        "assertion:06951f44cf358b66556740a4d3cbe0a1a22b3116a553ba6326a2da058c565c90",
+        "assertion:13b1da7773b9baa7feb95c8b0c07319d283ea3e4b3e794f8a7e7359a9859d489",
+        "assertion:1579286769cd5ccf4b1aa77ab83a69f867a94ba49bd852630aa155aa5854a4bb",
+        "assertion:16baa5bde23ea05eef6e92dda978cb836626267b47b825f7f51fa964c265ce1b",
+        "assertion:1b841d5a56c4e742eab1de4fa508b82f83f0c5ec95584411cb99916cebe6dc0b",
+        "assertion:261cd5d5be6d9cbbef2df2be6d4ef87736fe6c531315ad65d954a654740fb208",
+        "assertion:2996cdd91ab4f374f3c5460fa7fab6959390d26e1217412a15bea2ba54a88af9",
+        "assertion:29ca3503424c12c49a3bc0f76b3e561028aebf6fabc357f90522cb1982897dd4"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:b41d91e0-131b-52d8-8b61-64054b54d28f",
+      "evidence_assertion_ids": [
+        "assertion:03b6e10e41f552d3f27ddf1073fe93c4bdf1782dea4a40762648e345a091b734",
+        "assertion:06418140e53cf580c33aa57898c046ed22c2c0f3a899f21e4ca50acec589f81c",
+        "assertion:15ea51997a78567325122351945778d897e08364d1f8bacb0139733f6d1c8ced",
+        "assertion:1705494932f94531f0c58535beadf51596abb0cedb516931dc5b9f73332e5d1d",
+        "assertion:1a074f66da0c399c3d49f799f7a708bbfc6744a1d1f79099a332a18b3869833f",
+        "assertion:1c8aea911e168f6bb147378a6d81f53868b0ab643b16a541a6d585bcd0a7684a",
+        "assertion:235091e4ac5df138bcaa97ccf654695d90be53896274b571e0699ac02b31ead0",
+        "assertion:33c754b97c7acb27427dfdf7a8cfd393da672a36bbd382a36fc01f428d28a006"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:30bcdd96-0b07-5aca-a0b4-a9eecbf0e60b",
+      "evidence_assertion_ids": [
+        "assertion:01a37ae4685a992de29906724892c2db4bb103da79d1381e54bf43b1c0e75b40",
+        "assertion:03571a88b9ea417a08ae5808afda36deebcca19ce3aca1d9e7d49ca4fd903f0b",
+        "assertion:0583a6e178ac9b763ba5ed8f237df8c6bc48698d132cd8a6f5565f5ef60c6e06",
+        "assertion:16de4438d922ac428c2b7d4702bed9c3583c01d48c44574fe74cc3bc80ade16f",
+        "assertion:22862b50a6e52cc2f5d585495dbf545c4ec6c52314998fc773aec1dc7f1958c6",
+        "assertion:278193631c27785931d4cacd754f2995463612d8836eba4f2f274e3e857be532",
+        "assertion:2b2837fbd874030258b215bcf1f3b3c9575409e182c3388001ec287ee237a815",
+        "assertion:2b2fe43607e512094063186a63cedb87f4696fdcb35cf9c902ab243e2c113dc8"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:055edce9-c42c-543b-9238-f26cb4065b8b",
+      "evidence_assertion_ids": [
+        "assertion:08359f0d1cc27cfc899693744ffefa493224a4244629a4a366616115625a108c",
+        "assertion:10803a0c8bf837bba2a18a7fa413cbf1b88b11ed73339133666fd2f5e9d8bb72",
+        "assertion:10ff8620201ab9d0bf102113d3cd11139d2a1b3263270dd229b81c260a17a197",
+        "assertion:157c69f9d7917d5bb65b8e3f697d2b665ab6a6d090f1c2a98795641cb4fca91b",
+        "assertion:1844d9bacd8a957fa0668fc75a258121c0d872ebfe976a5986f937c0944e1c21",
+        "assertion:20c5933bd490b7d14f63c5ec6822c515c18e3fccfdc230dd0973b7f5c90fcef3",
+        "assertion:246d25ae31be63342317c86fc4ec0ecd595b842312f397d90602edf4b6c490d5",
+        "assertion:265cde9c2d79321c698a90b0c4edfa07eec711774187a878c2d6329778805ab3"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:af1a90cc-c406-5577-b30d-d8b4c347a4f2",
+      "evidence_assertion_ids": [
+        "assertion:091fd8f7b8cc76f149f3faa55ee7797fcb2bd9d132255323266a86f6746a039a",
+        "assertion:0b526a45392b5f0d090f90c1e2018f85b465ab74618ab2604563c2e65912af75",
+        "assertion:1441f6d23ce18f7e772b84b4c57e578dfeb88a0d69bdd18593e7051d5f44e506",
+        "assertion:206da3dc9e0bbc30902d5317094c5f089735c89e72afd5da569796408cb64d80",
+        "assertion:22bd0143ffba0e4bb851c2049d3e1be71385ed96560c1be91f3b9b17f6cc3043",
+        "assertion:2b37396e2e7aa808752d258dc5d836966248285990b0bc82e38588f8cd642b1c",
+        "assertion:46cd8b7deeb764d1c6575e9b64cc0ee4f05040a0ac3e32579a1846c21bb38453",
+        "assertion:4963e26c5ea8a9cc65df464a70aa1529ef64d98d1c0554f21708a9c3c483b868"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:97b5b680-93ea-5099-8b9e-3c6755cb7788",
+      "evidence_assertion_ids": [
+        "assertion:0042a69f27dfbffc0da81a9f65d64ccb7c11b6273bb9310c255677cca1aaff37",
+        "assertion:025092ccad91fb31fffd16ac17ce279c73ec287fdac712f530f5f65cc4386678",
+        "assertion:07a4a17ecbac2e764c26df313ac6642cbf9c640315852e31d010857117d6baa6",
+        "assertion:188e3c32055ddf0ef2e9735dd85c91d52ed809c2045f2e9e0f87ee3213132ba4",
+        "assertion:1a65d91cbe575195ad1deafdc74898777e59af34c1cdfe971617d058f1c69e50",
+        "assertion:3e52780259164d331d45003eb90ff3958a6ed7729b12a58987019c7db7f8bd72",
+        "assertion:3f54180e6baef017c0b69aec2d317c2aeacab4cffba8ff64833f9848171ae7ed",
+        "assertion:3ff6c2032138d4eb46fbbb0880f845f3042c6a9542996a965b12e2907f22a608"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:8c694f8f-9357-5f03-8a6e-b60f3f4e32f5",
+      "evidence_assertion_ids": [
+        "assertion:006db8b2d5cc23e4b1cbdbb0652d8b8dc30e9088e6de711c2ca27575aecced94",
+        "assertion:025eddbba010b43db13acb27c23aa80b6adbed87276b426aeb96d62bc97543d4",
+        "assertion:0566249ad5f1bbb253eda650acd8602f7c0b70aa6104e3f937a571cd589c92e0",
+        "assertion:1c3a5887a3b2b5631c26fb8b079fab322998240f478b7ed27be894b89ab74326",
+        "assertion:1fdd9c8e1ceaf509c1942646ce039067514ee2cb5729f199a8c5d90d637bd701",
+        "assertion:26f53d82a0003105235ee74a97e8813b510ebf89cd8db0ac8a9ee986bef465e2",
+        "assertion:27eee8928e1c611eb94e4be0479ec7768eade0c6a56825471bd578cd03907865",
+        "assertion:345d64158fa68ec74412a7a80a272278209ef7ce98bed0a5d88f5f04b4c03f25"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:3c995b66-b94c-5552-984b-7299544fdbc8",
+      "evidence_assertion_ids": [
+        "assertion:0367b4a25c4702bca31b1d74cd6ef46e057689407e0222ec124cda02c48aa4d5",
+        "assertion:0479e9b8091455bfe08f680d1edf3c656e672fd73bc12da127e5c55a2b235b32",
+        "assertion:0a5510cb6fb4793b87cef5854d63d137cec54ef5378cfb99ef79279b203d44eb",
+        "assertion:1a835522a248199378325c585cbe5ad9f5d7ceff83be20d244c9c3e4df57e22f",
+        "assertion:203a66deb565e9aebe6cf92bbcdb517060695cc32bba905fe5d0061b3f6460c0",
+        "assertion:260c76a1e7c00106a78c7b0bc817fe23680b9d399f8b7dc60733d4bdbdb739ad",
+        "assertion:3641b229d32988739b9a9624b25bcd1a305850f3da2bed826551c48ff5c5d79a",
+        "assertion:37e5e82babaa4b1bba4e7eaf9386699ce544bebbc1f851b6911e141c159c5c59"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    },
+    {
+      "entity_id": "skill_card:20311dd4-4ae5-5cc6-9f03-48e4a63617ba",
+      "evidence_assertion_ids": [
+        "assertion:01f1f2960520155e130573fa7723a164cef7d2a98d8084df2a5b8143e74bb52f",
+        "assertion:03c4bb77d0002db2b25fb71127419bf32c7f3567f7615b5f9782c65166d6d794",
+        "assertion:03dbd072c5cfc681105d7585c21cc18215cc07268af0f27770e55e1e59840260",
+        "assertion:0b9c5eed063109850d9689749b1dd293c22cbf54bf0963b829852a093bb5043c",
+        "assertion:0c5f3510e218a3566053ceedcbe813e4830ca70d8ee0f73b06b51b9baa952155",
+        "assertion:0e79e363d69299f9ba9f3e60d4d6f8247b14918d14f27dc25d824de210f710c2",
+        "assertion:103976592e69ea23d8b3b956980306a17b267a70006b76a336d19be25bd4039a",
+        "assertion:1a013eab6a0d9ace09f052039f80549f4e864f8cc878a4cecd6580cf3deb424b"
+      ],
+      "runtime_support": "recognizable",
+      "scenario_available": true
+    }
+  ],
+  "required_semantics": [
+    "drink:センブリソーダ:modeled",
+    "drink:パワフル漢方ドリンク:modeled",
+    "drink:初星黒酢:modeled",
+    "machine_tag:draw:modeled",
+    "machine_tag:extra_play:modeled",
+    "machine_tag:focus:modeled",
+    "machine_tag:good_condition:modeled",
+    "machine_tag:good_condition_grant:modeled",
+    "machine_tag:good_condition_requirement:modeled",
+    "machine_tag:recovery:modeled",
+    "machine_tag:reprise:modeled",
+    "machine_tag:score:modeled",
+    "skill_card:お姉さんの感覚:modeled",
+    "skill_card:アイドル宣言:executable",
+    "skill_card:シュプレヒコール:modeled",
+    "skill_card:仕切り直し:executable",
+    "skill_card:国民的アイドル:modeled",
+    "skill_card:夏夜に咲く思い出:recognizable",
+    "skill_card:天賦の才:executable",
+    "skill_card:始まりの合図:modeled",
+    "skill_card:存在感:modeled",
+    "skill_card:演出計画:recognizable",
+    "skill_card:眠気:recognizable",
+    "skill_card:祝福:recognizable",
+    "skill_card:自然体の魅力:modeled",
+    "skill_card:至高のエンタメ:modeled",
+    "skill_card:話題沸騰:executable",
+    "skill_card:鳴り止まない拍手:recognizable",
+    "skill_card_effect:演出計画:executable",
+    "skill_card_effect:眠気:unsupported",
+    "skill_card_effect:祝福:executable"
+  ],
+  "scenario_code": "hif",
+  "schema_version": "2.0"
+}

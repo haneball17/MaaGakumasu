@@ -1,15 +1,11 @@
-import argparse
-import hashlib
+import sys
 import json
-import urllib.request
-from dataclasses import dataclass
-from datetime import datetime, timezone
-from pathlib import Path
+import hashlib
+import argparse
 from typing import Any
-
-import requests
-from bs4 import BeautifulSoup
-
+from pathlib import Path
+from datetime import datetime, timezone
+from dataclasses import dataclass
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "assets" / "data"
@@ -173,6 +169,8 @@ def extract_idol_song(card_name: str) -> tuple[str, str]:
 
 
 def fetch_support_translation() -> tuple[list[dict[str, Any]], SourceSnapshot]:
+    import urllib.request
+
     with urllib.request.urlopen(SUPPORT_TRANSLATION_URL) as response:
         raw = response.read().decode("utf-8")
     cache_path = cache_text("support_translation.json", raw)
@@ -189,6 +187,11 @@ def fetch_support_translation() -> tuple[list[dict[str, Any]], SourceSnapshot]:
 
 
 def fetch_idol_cards() -> tuple[list[dict[str, Any]], SourceSnapshot]:
+    # 抓取依赖仅在联网路径加载，避免离线 validate/derive/report 因缺少
+    # 开发依赖而无法启动。
+    import requests
+    from bs4 import BeautifulSoup
+
     response = requests.get(IDOL_CARDS_URL, headers=DEFAULT_HEADERS, timeout=30)
     response.encoding = "EUC-JP"
     response.raise_for_status()
@@ -683,6 +686,16 @@ def validate_all() -> list[str]:
     p_items_master = load_json(P_ITEMS_MASTER, {})
     if p_items_master:
         errors.extend(validate_master(p_items_master, "p_item_id", "p_items_master"))
+    catalog_root = DATA_DIR / "catalog" / "canonical"
+    if catalog_root.is_dir():
+        if str(PROJECT_ROOT) not in sys.path:
+            sys.path.insert(0, str(PROJECT_ROOT))
+        from tools.data_catalog.validate import validate_catalog
+
+        errors.extend(
+            f"catalog_v2:{issue['reason_code']}:{issue['location']}:{issue['detail']}"
+            for issue in validate_catalog("ingest")
+        )
     return errors
 
 

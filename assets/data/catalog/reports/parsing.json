@@ -1,0 +1,11 @@
+{
+  "effect_versions": 515,
+  "parse_status": {
+    "complete": 93,
+    "failed": 7,
+    "partial": 415
+  },
+  "schema_version": "2.0",
+  "unknown_nodes": 422,
+  "unmatched_fragments": 422
+}

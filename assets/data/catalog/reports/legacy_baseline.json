@@ -1,0 +1,18 @@
+{
+  "baseline_date": "2026-07-15",
+  "dynamic_metadata_allowlist": [
+    "/updated_at",
+    "/保存时间"
+  ],
+  "files": [
+    {"path": "assets/data/idols_master.json", "records": 136, "sha256": "1b07025316d10f570e635633c881cbd28b14e2233dda89e88b5ab69a5df1e9b5"},
+    {"path": "assets/data/hif/skill_cards_master.json", "records": 122, "sha256": "f9e78fb2ed81ff4a90ca6826a3b6cc0f787d5d71740ccb845ded470a02099ef1"},
+    {"path": "assets/data/hif/skill_cards_zh.json", "records": 121, "sha256": "1aab6b8e1e707592bf3612b2a69b1993fd306cc5b1b140c25c1e8aa691e936da"},
+    {"path": "assets/data/hif/drinks.json", "records": 28, "sha256": "93f2af1bcd78fef880eba52965845c4ea6dccde35d77164ec44acd40bcbd48ad"},
+    {"path": "assets/data/idols_cards.json", "records": 134, "sha256": "d9cdf02df004a26477f6b7af20f8639479d9733df998f8c155ca1b21e032e156"},
+    {"path": "assets/data/support_cards.json", "records": 182, "sha256": "9ee33fb06272c71bbfdab395f8dfa9de684a2184c4a9a6cba4ce1a91b7fd0d07"},
+    {"path": "assets/data/skill_cards_compact.json", "records": 8, "sha256": "1ed1add50e4bf90aa02185ceb8ec2b4c42828511a2416a4cc53243d97c04041a"},
+    {"path": "assets/data/produce_decision_data.json", "records": {"idol_cards": 136, "skill_cards": 8, "p_items": 6}, "sha256": "642b7f041a2ec819a9293c2adefbaca140bac751b06bbaa241e6afb016714d82"}
+  ],
+  "schema_version": "2.0"
+}

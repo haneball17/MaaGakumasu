@@ -1,0 +1,27 @@
+{
+  "$id": "https://maagakumasu.local/schemas/scenario-overlay.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "entries": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "entity_id": { "pattern": "^[a-z_]+:.+", "type": "string" },
+          "evidence_assertion_ids": { "items": { "type": "string" }, "type": "array" },
+          "runtime_support": { "enum": ["display_only", "recognizable", "modeled", "executable", "unsupported"] },
+          "scenario_available": { "type": "boolean" }
+        },
+        "required": ["entity_id", "scenario_available", "runtime_support", "evidence_assertion_ids"],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "required_semantics": { "items": { "type": "string" }, "type": "array", "uniqueItems": true },
+    "scenario_code": { "pattern": "^[a-z0-9_]+$", "type": "string" },
+    "schema_version": { "const": "2.0" }
+  },
+  "required": ["schema_version", "scenario_code", "required_semantics", "entries"],
+  "title": "Scenario overlay",
+  "type": "object"
+}

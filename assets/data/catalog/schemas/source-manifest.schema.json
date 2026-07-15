@@ -1,0 +1,17 @@
+{
+  "$id": "https://maagakumasu.local/schemas/source-manifest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "content_hash": { "pattern": "^sha256:[0-9a-f]{64}$", "type": "string" },
+    "observed_at": { "format": "date-time", "type": "string" },
+    "parser_version": { "minLength": 1, "type": "string" },
+    "schema_version": { "const": "2.0" },
+    "source_id": { "pattern": "^source:.+", "type": "string" },
+    "status": { "enum": ["complete", "partial", "failed"] },
+    "url": { "format": "uri", "type": "string" }
+  },
+  "required": ["schema_version", "source_id", "url", "observed_at", "content_hash", "parser_version", "status"],
+  "title": "Source manifest",
+  "type": "object"
+}

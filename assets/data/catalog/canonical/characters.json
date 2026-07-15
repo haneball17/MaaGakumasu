@@ -1,0 +1,275 @@
+[
+  {
+    "canonical_assertion_ids": [
+      "assertion:935b2bff230d5f1806304a7676f544a0306f3a9319dcc0508c4aebfc9ee90055",
+      "assertion:9a814644d9d9fc4f002e120a204fef1a930043652252907de49c3b84ffac46cc",
+      "assertion:028215190644641f7bea0721d243a91e5ab02b51473c13fe335ce0136112f41b",
+      "assertion:7dadba2d4919e5a29b05a7ec18de90f33c7f5d188c69868da7fcfcaf8bea6888"
+    ],
+    "entity_id": "character:31bfb467-f09d-5a69-8dea-b2d40ec34ca8",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "花海咲季",
+      "zh-CN": "花海咲季"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "花海咲季",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:742cff9be27ba799853ec42f5cb64896701b9974c1a9e47e670eb83d2d7e5e36",
+      "assertion:ef0f72be0e8b759e2f5113853eab9aa1037bf1aeddfe3d8e1674ba9650ecb717",
+      "assertion:c7c5022af075cbaeae053b1f9539f9fda452792ac92591fa0d031bbbb1bd2511",
+      "assertion:29e6a55aa77bc63de05f796ff981a7035ea2d777355244ef40a8f314c69e59d0"
+    ],
+    "entity_id": "character:e357e730-2a94-563d-be87-3ffae401cc4d",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "月村手毬",
+      "zh-CN": "月村手毬"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "月村手毬",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:08068e6c8ef97ed8cd8c218dc57d1cec9d5436ec368227436e6a6ccfdb6a5e1f",
+      "assertion:654a7c0c8e689a471ca8cd576d8178371b6e84200b9cff663d8c14d40f4222f2",
+      "assertion:b3ad96898b96c2b361eaaecdd70e67e15510ace2106eb999d998cc112866a0ee",
+      "assertion:44f7aee0091c18307d426e5b0749a0a8456f76ee62ac1e443e79b4db292bb73e"
+    ],
+    "entity_id": "character:3a3a8859-1fad-5ab1-ac71-562b8ef3e6f7",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "藤田ことね",
+      "zh-CN": "藤田琴音"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "藤田ことね",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:75c1cbead270451a7c2a61aaf597302ba849c6c6fec4cf1afa85f7141e5a9489",
+      "assertion:95354ffdabf8acc3eae598a4a65a114db579ee6256f5743b1d7c324f91ae35bb",
+      "assertion:d1283c2621a3d2f8a295b4bebbad92158891684c3d0bddfa35c48d51d67452ae",
+      "assertion:60851c42bbeca69cf3a5eef11b9bd9b79660894d7fbf895cbf43124135fe189f"
+    ],
+    "entity_id": "character:0850652b-89c3-5179-9f95-06fe2afa369c",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "雨夜燕",
+      "zh-CN": "雨夜燕"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "雨夜燕",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:153d267aa6c1d84f8eb3bfa2df82e4b3afc2f323d63cb4e35c8631c785e00e37",
+      "assertion:d62b82de1c0a9984884af85321a0fd5371d134397df3e717f4b1b89b8300e227",
+      "assertion:0cce6fcb6f3ed29b46ed08806b5f07cec71cb76d763b2fc8c9ac15dd51bf1e61",
+      "assertion:c6ce7f6f97af2dddc696109d388ba5350b96b46903bbbb2fc6711e30e765ee91"
+    ],
+    "entity_id": "character:05483d91-11de-548c-bfd7-b8766cace1fb",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "有村麻央",
+      "zh-CN": "有村麻央"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "有村麻央",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:f965761a6244146fd18da5a8945e0300050d9cdfdfc68342bd05ed37790a9648",
+      "assertion:0a4bc38b6631e0e46553e309090ed04c00d2d27ad0b71a7ed22fc38f85d701b4",
+      "assertion:400dfc2296c14bbf189f0f6c76bd19dfce76efc6d1fea28316d01853aa0a4f26",
+      "assertion:7a7df8aee698ea525b9a02134104c928bc73dafbaf39063f19f3bcac7aceffe6"
+    ],
+    "entity_id": "character:40e66339-a032-5269-b799-f48cf7049222",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "葛城リーリヤ",
+      "zh-CN": "葛城莉莉娅"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "葛城リーリヤ",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:50295fa65a2ab22a703f36aa501ff4badb6c444e1d229ec10bf283fd20d708de",
+      "assertion:43d36809b6295d87b277f303a6e8047e9e835baad053302a08eedd7b2acef627",
+      "assertion:f295350fc328e56ede61b83541a8fc2cb72125cea3f0c118b0eb871604fa9d95",
+      "assertion:c81e64ebc580367dbf05bf5237ceafad9e6947431330ba814592dc690ed8ee18"
+    ],
+    "entity_id": "character:8b944ece-ea92-5c6c-971d-7881d6613f8f",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "倉本千奈",
+      "zh-CN": "仓本千奈"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "倉本千奈",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:f0c3108193fb60b9bb1af443bdc3dc4399f0f804ebb79516568500aad975bbce",
+      "assertion:92bd8facf98c4431a9be4f0922fbbcd00e7cb91f5462539fadd742fb7e079b4a",
+      "assertion:21bc039aaa0d8e391e082ac1c87115955ce77a37c89d9bc9849d7df94bbd2b9d",
+      "assertion:0c9fa46cd5087b89396c5a8f2ebc52487af8824992bb700b78b7fb911a787655"
+    ],
+    "entity_id": "character:99ea4890-1e79-5476-bce3-4db45aed19fa",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "紫雲清夏",
+      "zh-CN": "紫云清夏"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "紫雲清夏",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:e3900368733d08a47d08da790542742df518a5a0005660a3d22405d41d720326",
+      "assertion:a7fa99f07da0c823fd341cc613fa5ef90bfac7f4ca6790a276b0d9b3a70e106e",
+      "assertion:cc311f780b09e9cc4a8c100d85ed56ee992aea85e86d895ebe75849490450d8b",
+      "assertion:29935e9342dd24dc9882df411b620a07b6d4d9f9c940c6beb36d6de230976104"
+    ],
+    "entity_id": "character:a50bea65-e6fc-5920-902d-a35d462813b7",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "篠澤広",
+      "zh-CN": "筱泽广"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "篠澤広",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:c114e23ae45d92be08b256fa69578059944daa1784f3152c3948f47178a9d091",
+      "assertion:0cfb278af09e57222fc17ba1629c253f9fbd639de33d045ad278ec76ad4d1b98",
+      "assertion:f84ccf40aee30164aafba1b21bae5257e759a342944534a62624a4e45c96e75c",
+      "assertion:33e812ba23092195fe1c129b7bf1ab4d9ccdc7f7fa1c92e521ed6d6347a59d00"
+    ],
+    "entity_id": "character:2d4f8d8f-2820-5639-896d-4bc48f38785d",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "十王星南",
+      "zh-CN": "十王星南"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "十王星南",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:18293edc645de2154105dfc5ab9fd8df7279ad8c824d6c06d4b4b828deb36515",
+      "assertion:059060cc0570a8b618a38c9a182ed6a51729165ff343fdbda003fd0f62ab1a84",
+      "assertion:b966cf3eed6799ca26025bc4236c844b45342ba9de855db6b36bc1daa2506275",
+      "assertion:65986b0f7fbc468f815cedbc6532e8ae1c812c1bb166dfcd4722a2ba10c37de5"
+    ],
+    "entity_id": "character:1f274753-c8d5-589b-a988-c347ea4fff03",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "秦谷美鈴",
+      "zh-CN": "秦谷美铃"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "秦谷美鈴",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:64257687fa7090368e70611550147a4d358704b47a792a9bbe724dc138fd53ca",
+      "assertion:04a46bf4e7e536bfcf234acf9bdd9ffe9fd9d391e473264de28bebcf18ac50d8",
+      "assertion:7ce17d309eb4438aae5fc7d15d5752f9f5ce4432108b631d3b0e924ec8ba320d",
+      "assertion:e83135765a7b0d300ff894c3b3ad8856c2f7c685fdf4d2d8c0b92c0111fce22c"
+    ],
+    "entity_id": "character:206582c3-14a9-5676-8579-f7077284a177",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "花海佑芽",
+      "zh-CN": "花海佑芽"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "花海佑芽",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  },
+  {
+    "canonical_assertion_ids": [
+      "assertion:943b23ed99b265578fe21d83a442add2b04f6f94e45b0228d9c631a72e59c827",
+      "assertion:70edb9bd12e6db69f1f6610727efd0c44f2d99404df32729dea22a2e9f65d4f6",
+      "assertion:e5236263f70de53af44914f5f6d85ce21e669a685bcca0575952eeb44fdfebf2",
+      "assertion:6a20b251662fc0180f0ff8a1ffeceb01c7eed070c9e82477b53951bba309ad81"
+    ],
+    "entity_id": "character:ea684ef5-bce1-57c0-a4c4-7e8963228f7d",
+    "legacy_ids": [],
+    "names": {
+      "ja-JP": "姫崎莉波",
+      "zh-CN": "姬崎莉波"
+    },
+    "schema_version": "2.0",
+    "source_keys": [
+      {
+        "key": "姫崎莉波",
+        "source_id": "source:legacy-idols-master-2026-05-18"
+      }
+    ]
+  }
+]

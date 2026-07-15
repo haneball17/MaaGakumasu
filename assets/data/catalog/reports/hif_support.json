@@ -1,0 +1,12 @@
+{
+  "entries": 153,
+  "executable_effect_versions": 9,
+  "required_semantics": 31,
+  "runtime_support": {
+    "display_only": 25,
+    "executable": 6,
+    "modeled": 10,
+    "recognizable": 112
+  },
+  "schema_version": "2.0"
+}

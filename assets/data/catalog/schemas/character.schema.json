@@ -1,0 +1,24 @@
+{
+  "$id": "https://maagakumasu.local/schemas/character.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "sourceKey": {
+      "additionalProperties": false,
+      "properties": { "key": { "minLength": 1, "type": "string" }, "source_id": { "pattern": "^source:.+", "type": "string" } },
+      "required": ["source_id", "key"],
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "canonical_assertion_ids": { "items": { "pattern": "^assertion:.+", "type": "string" }, "type": "array", "uniqueItems": true },
+    "entity_id": { "pattern": "^character:[0-9a-f-]{36}$", "type": "string" },
+    "legacy_ids": { "items": { "type": "string" }, "type": "array", "uniqueItems": true },
+    "names": { "additionalProperties": { "minLength": 1, "type": "string" }, "minProperties": 1, "type": "object" },
+    "schema_version": { "const": "2.0" },
+    "source_keys": { "items": { "$ref": "#/$defs/sourceKey" }, "minItems": 1, "type": "array" }
+  },
+  "required": ["schema_version", "entity_id", "names", "source_keys", "canonical_assertion_ids"],
+  "title": "Character",
+  "type": "object"
+}

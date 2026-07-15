@@ -1,0 +1,22 @@
+{
+  "$id": "https://maagakumasu.local/schemas/skill-card.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "canonical_assertion_ids": { "items": { "type": "string" }, "type": "array" },
+    "compatibility": { "type": "object" },
+    "effect_version_ids": { "items": { "pattern": "^effect_version:.+", "type": "string" }, "minItems": 1, "type": "array" },
+    "entity_id": { "pattern": "^skill_card:[0-9a-f-]{36}$", "type": "string" },
+    "legacy_ids": { "items": { "type": "string" }, "type": "array" },
+    "names": { "additionalProperties": { "type": "string" }, "minProperties": 1, "type": "object" },
+    "plan": { "enum": ["sense", "logic", "anomaly", "free", "unknown"] },
+    "rarity": { "type": "string" },
+    "schema_version": { "const": "2.0" },
+    "source_category": { "enum": ["general", "produce_idol", "support", "scenario", "status", "trouble", "unknown"] },
+    "source_keys": { "items": { "type": "object" }, "minItems": 1, "type": "array" },
+    "tiers": { "items": { "enum": ["base", "+", "++", "+++"] }, "minItems": 1, "type": "array", "uniqueItems": true }
+  },
+  "required": ["schema_version", "entity_id", "names", "source_keys", "source_category", "plan", "tiers", "effect_version_ids", "canonical_assertion_ids"],
+  "title": "Skill card",
+  "type": "object"
+}

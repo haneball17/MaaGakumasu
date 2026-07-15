@@ -1,0 +1,26 @@
+{
+  "$id": "https://maagakumasu.local/schemas/assertion.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "assertion_id": { "pattern": "^assertion:.+", "type": "string" },
+    "content_hash": { "pattern": "^sha256:[0-9a-f]{64}$", "type": "string" },
+    "effective_from": { "type": ["string", "null"] },
+    "entity_id": { "pattern": "^[a-z_]+:.+", "type": "string" },
+    "field_path": { "pattern": "^/", "type": "string" },
+    "observed_at": { "format": "date-time", "type": "string" },
+    "parse_status": { "enum": ["complete", "partial", "failed", "not_applicable"] },
+    "parser_version": { "minLength": 1, "type": "string" },
+    "raw_value": true,
+    "runtime_support": { "enum": ["display_only", "recognizable", "modeled", "executable", "unsupported"] },
+    "schema_version": { "const": "2.0" },
+    "source_confidence": { "minLength": 1, "type": "string" },
+    "source_id": { "pattern": "^source:.+", "type": "string" },
+    "source_locator": { "minLength": 1, "type": "string" },
+    "value": true,
+    "verification_status": { "enum": ["unverified", "corroborated", "in_game_verified", "rejected"] }
+  },
+  "required": ["schema_version", "assertion_id", "entity_id", "field_path", "value", "raw_value", "source_id", "source_locator", "observed_at", "source_confidence", "parse_status", "verification_status", "runtime_support", "parser_version", "content_hash"],
+  "title": "Field assertion",
+  "type": "object"
+}

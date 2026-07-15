@@ -1,0 +1,19 @@
+{
+  "$id": "https://maagakumasu.local/schemas/alias.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "alias_type": { "enum": ["official_name", "translation", "source_variant", "display_variant", "historical_name", "ocr_error", "legacy_key"] },
+    "entity_id": { "pattern": "^alias:[0-9a-f-]{36}$", "type": "string" },
+    "evidence_assertion_ids": { "items": { "pattern": "^assertion:.+", "type": "string" }, "type": "array" },
+    "locale": { "minLength": 1, "type": "string" },
+    "match_key": { "minLength": 1, "type": "string" },
+    "profile": { "type": ["string", "null"] },
+    "schema_version": { "const": "2.0" },
+    "target_entity_id": { "pattern": "^[a-z_]+:.+", "type": "string" },
+    "value": { "minLength": 1, "type": "string" }
+  },
+  "required": ["schema_version", "entity_id", "target_entity_id", "alias_type", "value", "match_key", "locale", "evidence_assertion_ids"],
+  "title": "Typed alias",
+  "type": "object"
+}

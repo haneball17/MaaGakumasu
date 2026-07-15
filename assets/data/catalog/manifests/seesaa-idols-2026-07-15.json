@@ -1,0 +1,9 @@
+{
+  "content_hash": "sha256:82fe5f88c2e047a2a26ded4e03113202ec71158f0d821d9646713496a4874d56",
+  "observed_at": "2026-07-15T15:34:56+00:00",
+  "parser_version": "legacy-data-pipeline/1",
+  "schema_version": "2.0",
+  "source_id": "source:seesaawiki-idol-cards",
+  "status": "complete",
+  "url": "https://seesaawiki.jp/gakumasu/d/%a5%d7%a5%ed%a5%c7%a5%e5%a1%bc%a5%b9%a5%a2%a5%a4%a5%c9%a5%eb%b0%ec%cd%f7"
+}

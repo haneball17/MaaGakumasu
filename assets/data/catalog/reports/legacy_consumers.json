@@ -1,0 +1,12 @@
+{
+  "consumers": [
+    {"component": "agent/custom/action/SupportCards.py", "files": ["assets/data/support_cards.json"], "mode": "direct"},
+    {"component": "agent/hif/catalog.py", "files": ["assets/data/hif/skill_cards_master.json", "assets/data/hif/skill_cards_zh.json", "assets/data/hif/drinks.json", "assets/data/hif/custom_p_items.json", "assets/data/scenarios/hif_schedule.json"], "mode": "direct"},
+    {"component": "agent/hif/simulator.py", "files": ["assets/data/produce_decision_data.json"], "mode": "direct"},
+    {"component": "tools/simulate_hif.py", "files": ["assets/data/produce_decision_data.json"], "mode": "argument_default"},
+    {"component": "tools/sync_cards.py", "files": ["assets/data/idols_cards.json"], "mode": "direct"},
+    {"component": "tools/data_pipeline.py", "files": ["assets/data/idols_master.json", "assets/data/support_cards_master.json", "assets/data/skill_cards_master.json", "assets/data/p_items_master.json", "assets/data/idols_cards.json", "assets/data/support_cards.json", "assets/data/skill_cards_compact.json", "assets/data/produce_decision_data.json"], "mode": "compatibility_facade"}
+  ],
+  "frozen_at": "2026-07-15T00:00:00+08:00",
+  "schema_version": "2.0"
+}

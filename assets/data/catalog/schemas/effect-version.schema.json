@@ -1,0 +1,36 @@
+{
+  "$id": "https://maagakumasu.local/schemas/effect-version.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "node": {
+      "additionalProperties": true,
+      "properties": {
+        "op": { "minLength": 1, "type": "string" },
+        "raw": { "type": "string" },
+        "reason_code": { "type": "string" },
+        "source_span": { "type": "string" }
+      },
+      "required": ["op"],
+      "type": "object",
+      "allOf": [{ "if": { "properties": { "op": { "const": "unknown" } }, "required": ["op"] }, "then": { "required": ["raw", "reason_code"] } }]
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "ast": { "items": { "$ref": "#/$defs/node" }, "type": "array" },
+    "effective_from": { "type": ["string", "null"] },
+    "effective_to": { "type": ["string", "null"] },
+    "entity_id": { "pattern": "^effect_version:[0-9a-f-]{36}$", "type": "string" },
+    "implementation_version": { "type": ["string", "null"] },
+    "parse_status": { "enum": ["complete", "partial", "failed", "not_applicable"] },
+    "parser_version": { "minLength": 1, "type": "string" },
+    "raw_text": { "type": "string" },
+    "runtime_support": { "enum": ["display_only", "recognizable", "modeled", "executable", "unsupported"] },
+    "schema_version": { "const": "2.0" },
+    "source_assertion_ids": { "items": { "pattern": "^assertion:.+", "type": "string" }, "minItems": 1, "type": "array" },
+    "unmatched_fragments": { "items": { "type": "string" }, "type": "array" }
+  },
+  "required": ["schema_version", "entity_id", "raw_text", "ast", "unmatched_fragments", "parse_status", "parser_version", "runtime_support", "source_assertion_ids"],
+  "title": "Effect version",
+  "type": "object"
+}

@@ -1,0 +1,21 @@
+{
+  "$id": "https://maagakumasu.local/schemas/drink.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "canonical_assertion_ids": { "items": { "type": "string" }, "type": "array" },
+    "compatibility": { "type": "object" },
+    "consultation_cost": { "type": ["integer", "null"] },
+    "effect_version_ids": { "items": { "pattern": "^effect_version:.+", "type": "string" }, "minItems": 1, "type": "array" },
+    "entity_id": { "pattern": "^drink:[0-9a-f-]{36}$", "type": "string" },
+    "names": { "additionalProperties": { "type": "string" }, "minProperties": 1, "type": "object" },
+    "plan": { "enum": ["sense", "logic", "anomaly", "free", "unknown"] },
+    "rarity": { "type": "string" },
+    "schema_version": { "const": "2.0" },
+    "source_keys": { "items": { "type": "object" }, "minItems": 1, "type": "array" },
+    "use_cost": { "type": ["integer", "null"] }
+  },
+  "required": ["schema_version", "entity_id", "names", "source_keys", "plan", "consultation_cost", "use_cost", "effect_version_ids", "canonical_assertion_ids"],
+  "title": "Drink",
+  "type": "object"
+}

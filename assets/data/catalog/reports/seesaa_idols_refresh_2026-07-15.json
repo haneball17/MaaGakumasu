@@ -1,0 +1,34 @@
+{
+  "added": 7,
+  "added_provisional_keys": [
+    "姫崎莉波(SUGAR FLAVOR)",
+    "有村麻央(SUGAR FLAVOR)",
+    "篠澤広(ガラクタロード)",
+    "花海佑芽(GO MY WAY!!)",
+    "花海咲季(GO MY WAY!!)",
+    "葛城リーリヤ(ガラクタロード)",
+    "藤田ことね(GO MY WAY!!)"
+  ],
+  "assertions": 1573,
+  "baseline_snapshot": "2026-05-18",
+  "change_counts": {
+    "da_independent_bonus_observed": 136,
+    "vi_independent_bonus_observed": 136,
+    "vo_independent_bonus_observed": 136
+  },
+  "changed_existing_keys": [],
+  "matched": 136,
+  "observed_at": "2026-07-15T15:34:56+00:00",
+  "promotion_status": "deferred",
+  "reason_codes": [
+    "missing_stable_source_id",
+    "new_entries_missing_rarity_context",
+    "manual_identity_review_required"
+  ],
+  "removed": 0,
+  "removed_legacy_keys": [],
+  "schema_version": "2.0",
+  "source_id": "source:seesaawiki-idol-cards",
+  "source_item_count": 143,
+  "warnings": []
+}

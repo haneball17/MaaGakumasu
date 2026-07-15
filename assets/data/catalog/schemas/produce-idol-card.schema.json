@@ -1,0 +1,55 @@
+{
+  "$id": "https://maagakumasu.local/schemas/produce-idol-card.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "stat": {
+      "additionalProperties": false,
+      "properties": { "bonus_percent": { "type": ["number", "null"] }, "value": { "type": "integer" } },
+      "required": ["value", "bonus_percent"],
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "canonical_assertion_ids": { "items": { "type": "string" }, "type": "array" },
+    "compatibility": { "type": "object" },
+    "character_id": { "pattern": "^character:.+", "type": "string" },
+    "entity_id": { "pattern": "^produce_idol_card:[0-9a-f-]{36}$", "type": "string" },
+    "legacy_ids": { "items": { "type": "string" }, "type": "array" },
+    "names": { "additionalProperties": { "type": "string" }, "minProperties": 1, "type": "object" },
+    "p_item_ids": { "items": { "pattern": "^p_item:.+", "type": "string" }, "type": "array" },
+    "rarity": { "minLength": 1, "type": "string" },
+    "schema_version": { "const": "2.0" },
+    "source_keys": { "items": { "type": "object" }, "minItems": 1, "type": "array" },
+    "stat_profiles": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "context": { "minLength": 1, "type": "string" },
+          "da": { "$ref": "#/$defs/stat" },
+          "stamina": { "type": "integer" },
+          "legacy_shared_bonus": {
+            "additionalProperties": false,
+            "properties": {
+              "applies_to": { "items": { "enum": ["vo", "da", "vi"] }, "type": "array", "uniqueItems": true },
+              "evidence_status": { "const": "legacy_shared" },
+              "value": { "type": "number" }
+            },
+            "required": ["value", "applies_to", "evidence_status"],
+            "type": "object"
+          },
+          "vi": { "$ref": "#/$defs/stat" },
+          "vo": { "$ref": "#/$defs/stat" }
+        },
+        "required": ["context", "vo", "da", "vi", "stamina"],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "unique_skill_card_ids": { "items": { "pattern": "^skill_card:.+", "type": "string" }, "type": "array" }
+  },
+  "required": ["schema_version", "entity_id", "character_id", "names", "rarity", "source_keys", "stat_profiles", "canonical_assertion_ids"],
+  "title": "Produce idol card",
+  "type": "object"
+}

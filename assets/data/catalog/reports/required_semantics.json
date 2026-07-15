@@ -1,0 +1,278 @@
+{
+  "generated_from_code": true,
+  "items": [
+    {
+      "key": "センブリソーダ",
+      "required_support": "modeled",
+      "semantic_type": "drink",
+      "sources": [
+        "agent/hif/presets.py:37",
+        "agent/hif/route_planner.py:35"
+      ]
+    },
+    {
+      "key": "パワフル漢方ドリンク",
+      "required_support": "modeled",
+      "semantic_type": "drink",
+      "sources": [
+        "agent/hif/route_planner.py:35",
+        "assets/data/hif/profiles/garakuta_rinami.json"
+      ]
+    },
+    {
+      "key": "初星黒酢",
+      "required_support": "modeled",
+      "semantic_type": "drink",
+      "sources": [
+        "agent/hif/route_planner.py:35",
+        "assets/data/hif/profiles/garakuta_rinami.json"
+      ]
+    },
+    {
+      "key": "draw",
+      "required_support": "modeled",
+      "semantic_type": "machine_tag",
+      "sources": [
+        "agent/hif/route_planner.py:161",
+        "agent/hif/route_planner.py:41",
+        "agent/hif/route_planner.py:53"
+      ]
+    },
+    {
+      "key": "extra_play",
+      "required_support": "modeled",
+      "semantic_type": "machine_tag",
+      "sources": [
+        "agent/hif/route_planner.py:41",
+        "agent/hif/route_planner.py:53"
+      ]
+    },
+    {
+      "key": "focus",
+      "required_support": "modeled",
+      "semantic_type": "machine_tag",
+      "sources": [
+        "agent/hif/route_planner.py:161",
+        "agent/hif/route_planner.py:41",
+        "agent/hif/route_planner.py:53"
+      ]
+    },
+    {
+      "key": "good_condition",
+      "required_support": "modeled",
+      "semantic_type": "machine_tag",
+      "sources": [
+        "agent/hif/route_planner.py:161",
+        "agent/hif/route_planner.py:41",
+        "agent/hif/route_planner.py:53"
+      ]
+    },
+    {
+      "key": "good_condition_grant",
+      "required_support": "modeled",
+      "semantic_type": "machine_tag",
+      "sources": [
+        "agent/hif/route_planner.py:41",
+        "agent/hif/route_planner.py:53"
+      ]
+    },
+    {
+      "key": "good_condition_requirement",
+      "required_support": "modeled",
+      "semantic_type": "machine_tag",
+      "sources": [
+        "agent/hif/route_planner.py:41"
+      ]
+    },
+    {
+      "key": "recovery",
+      "required_support": "modeled",
+      "semantic_type": "machine_tag",
+      "sources": [
+        "agent/hif/route_planner.py:161",
+        "agent/hif/route_planner.py:41",
+        "agent/hif/route_planner.py:53"
+      ]
+    },
+    {
+      "key": "reprise",
+      "required_support": "modeled",
+      "semantic_type": "machine_tag",
+      "sources": [
+        "agent/hif/route_planner.py:41",
+        "agent/hif/route_planner.py:53"
+      ]
+    },
+    {
+      "key": "score",
+      "required_support": "modeled",
+      "semantic_type": "machine_tag",
+      "sources": [
+        "agent/hif/route_planner.py:161",
+        "agent/hif/route_planner.py:41",
+        "agent/hif/route_planner.py:53"
+      ]
+    },
+    {
+      "key": "お姉さんの感覚",
+      "required_support": "modeled",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/route_planner.py:25"
+      ]
+    },
+    {
+      "key": "アイドル宣言",
+      "required_support": "executable",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:14",
+        "agent/hif/decisions/round1_fallback.py:82"
+      ]
+    },
+    {
+      "key": "シュプレヒコール",
+      "required_support": "modeled",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:9",
+        "agent/hif/route_planner.py:25"
+      ]
+    },
+    {
+      "key": "仕切り直し",
+      "required_support": "executable",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:12",
+        "agent/hif/decisions/round1_fallback.py:67"
+      ]
+    },
+    {
+      "key": "国民的アイドル",
+      "required_support": "modeled",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/route_planner.py:25"
+      ]
+    },
+    {
+      "key": "夏夜に咲く思い出",
+      "required_support": "recognizable",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:12"
+      ]
+    },
+    {
+      "key": "天賦の才",
+      "required_support": "executable",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:52",
+        "agent/hif/decisions/round1_fallback.py:9"
+      ]
+    },
+    {
+      "key": "始まりの合図",
+      "required_support": "modeled",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:12",
+        "agent/hif/presets.py:38",
+        "agent/hif/route_planner.py:25"
+      ]
+    },
+    {
+      "key": "存在感",
+      "required_support": "modeled",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:14",
+        "agent/hif/route_planner.py:25"
+      ]
+    },
+    {
+      "key": "演出計画",
+      "required_support": "recognizable",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:14"
+      ]
+    },
+    {
+      "key": "眠気",
+      "required_support": "recognizable",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:14"
+      ]
+    },
+    {
+      "key": "祝福",
+      "required_support": "recognizable",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:14"
+      ]
+    },
+    {
+      "key": "自然体の魅力",
+      "required_support": "modeled",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/route_planner.py:25"
+      ]
+    },
+    {
+      "key": "至高のエンタメ",
+      "required_support": "modeled",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/route_planner.py:25"
+      ]
+    },
+    {
+      "key": "話題沸騰",
+      "required_support": "executable",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:29"
+      ]
+    },
+    {
+      "key": "鳴り止まない拍手",
+      "required_support": "recognizable",
+      "semantic_type": "skill_card",
+      "sources": [
+        "agent/hif/decisions/round1_fallback.py:12"
+      ]
+    },
+    {
+      "key": "演出計画",
+      "required_support": "executable",
+      "semantic_type": "skill_card_effect",
+      "sources": [
+        "agent/hif/route_scoring/catalog.py:39"
+      ]
+    },
+    {
+      "key": "眠気",
+      "required_support": "unsupported",
+      "semantic_type": "skill_card_effect",
+      "sources": [
+        "agent/hif/route_scoring/catalog.py:52"
+      ]
+    },
+    {
+      "key": "祝福",
+      "required_support": "executable",
+      "semantic_type": "skill_card_effect",
+      "sources": [
+        "agent/hif/route_scoring/catalog.py:17",
+        "agent/hif/route_scoring/catalog.py:28"
+      ]
+    }
+  ],
+  "schema_version": "2.0"
+}
