@@ -76,6 +76,7 @@ _ROUND_METRIC_LABELS = {
 }
 
 _TURN_DIGIT_TEMPLATES = {
+    6: "produce/HIF/turn_digits/6.png",
     7: "produce/HIF/turn_digits/7.png",
     8: "produce/HIF/turn_digits/8.png",
     9: "produce/HIF/turn_digits/9.png",
@@ -84,12 +85,12 @@ _TURN_DIGIT_ROI = (13, 43, 120, 128)
 _TURN_DIGIT_MIN_CONFIDENCE = 0.95
 
 
-def _load_numeric_roi() -> dict[str, NumericROI]:
+def _load_numeric_roi() -> dict[str, tuple[NumericROI, ...]]:
     """仅加载实机已校准字段；其余使用零 ROI 并由读取器跳过。"""
 
     calibration = load_hif_roi_calibration()
     return {
-        key: NumericROI(label, calibration.roi_for_exam_numeric(key) or (0, 0, 0, 0))
+        key: tuple(NumericROI(label, roi) for roi in calibration.rois_for_exam_numeric(key))
         for key, label in _NUMERIC_LABELS.items()
     }
 
@@ -128,6 +129,47 @@ class CardDetection:
     confidence: float = 0.0
     card_name_confidence: float = 0.0
     suppressed_reason: str = ""
+    playable: bool | None = None
+    playability_gray_ratio: float | None = None
+    playability_source: str = ""
+
+
+def infer_card_playability(image, detections: list[CardDetection]) -> None:
+    """以当前原始帧的卡面饱和度保守区分灰卡、彩色卡与不确定卡。
+
+    阈值来自 2026-07-15 同一停点六张零输入原始帧：灰色 ``眠気`` 的低饱和
+    像素占比稳定为 0.657，三张彩色卡为 0.166～0.277。中间区间保持
+    ``None``，不能因 YOLO 的 ``cards`` 标签自动取得执行权。
+    """
+
+    height, width = image.shape[:2]
+    for detection in detections:
+        if detection.suppressed_reason:
+            continue
+        if detection.label == "useless":
+            detection.playable = False
+            detection.playability_source = "yolo_useless"
+            continue
+        x, y, box_width, box_height = detection.box
+        left = max(0, x + 15)
+        right = min(width, x + box_width - 15)
+        top = max(0, y + 15)
+        bottom = min(height, y + int(box_height * 0.62))
+        if left >= right or top >= bottom:
+            continue
+        crop = image[top:bottom, left:right, :3].astype("float32")
+        maximum = crop.max(axis=2)
+        minimum = crop.min(axis=2)
+        low_saturation = (maximum == 0) | ((maximum - minimum) * 255 < maximum * 35)
+        gray_ratio = float(low_saturation.mean())
+        detection.playability_gray_ratio = gray_ratio
+        detection.playability_source = "frame_saturation"
+        if gray_ratio >= 0.55:
+            detection.playable = False
+        elif gray_ratio <= 0.35:
+            detection.playable = True
+        else:
+            detection.playable = None
 
 
 class ReadStatus(str, Enum):
@@ -154,6 +196,26 @@ class NumericRead:
     def __post_init__(self) -> None:
         if self.status is None:
             self.status = ReadStatus.OK if self.value is not None or self.flow is not None else ReadStatus.MISSING
+
+
+def _consensus_numeric_reads(key: str, reads: tuple[NumericRead, ...]) -> NumericRead:
+    """多个独立 ROI 至少两个同值才接受；单 ROI 仍使用其内部三读结果。"""
+
+    if len(reads) == 1:
+        return reads[0]
+    values = tuple(read.flow if key == "flow" else read.value for read in reads)
+    candidates = {value for value in values if value is not None}
+    winner = next((value for value in candidates if values.count(value) >= 2), None)
+    samples = tuple(sample for read in reads for sample in (read.samples or (read.raw,)))
+    if winner is None:
+        status = (
+            ReadStatus.CONFLICT
+            if len(candidates) > 1 or any(read.status is ReadStatus.CONFLICT for read in reads)
+            else ReadStatus.MISSING
+        )
+        return NumericRead(key, "", None, status=status, samples=samples)
+    accepted = next(read for read, value in zip(reads, values, strict=True) if value == winner)
+    return NumericRead(key, accepted.raw, accepted.value, accepted.flow, ReadStatus.OK, samples)
 
 
 @dataclass(slots=True)
@@ -387,9 +449,17 @@ class _MaafwOcrAdapter:
     单测时不实例化本类，直接注入 mock OcrPort。
     """
 
-    def __init__(self, context: "Context") -> None:
+    def __init__(self, context: "Context", image: object | None = None) -> None:
         self.context = context
+        self._image = image
         self._card_dict = build_card_name_dict()
+
+    def _current_image(self):
+        """同一个读取器实例只使用一张原始帧，避免动画把多字段拼成伪状态。"""
+
+        if self._image is None:
+            self._image = self.context.tasker.controller.post_screencap().wait().get()
+        return self._image
 
     def run_ocr(self, name: str, expected: list[str], roi: tuple[int, int, int, int]) -> str | None:
         """对指定 ROI 跑 OCR，用 expected 约束候选集。
@@ -408,7 +478,7 @@ class _MaafwOcrAdapter:
         """
 
         candidates: list[tuple[int, float]] = []
-        image = self.context.tasker.controller.post_screencap().wait().get()
+        image = self._current_image()
         for digit, template in _TURN_DIGIT_TEMPLATES.items():
             name = f"HIFTurnDigit{digit}"
             detail = self.context.run_recognition(
@@ -443,7 +513,7 @@ class _MaafwOcrAdapter:
         for attempt in range(3):
             detail = self.context.run_recognition(
                 name,
-                self.context.tasker.controller.post_screencap().wait().get(),
+                self._current_image(),
                 pipeline_override={
                     name: {
                         "recognition": "OCR",
@@ -465,7 +535,7 @@ class _MaafwOcrAdapter:
         复用 MaaGakumasu 已有的 cards.onnx YOLO（NeuralNetworkDetect），
         对每个 box 追加 OCR 读名（run_ocr_for_card_box）。
         """
-        image = self.context.tasker.controller.post_screencap().wait().get()
+        image = self._current_image()
         detail = self.context.run_recognition("ProduceRecognitionCards", image)
         if not detail or not detail.hit:
             return []
@@ -481,6 +551,7 @@ class _MaafwOcrAdapter:
                 label=label,
                 box=box,
                 confidence=float(score) if isinstance(score, (int, float)) else 0.0,
+                playable=False if label == "useless" else None,
             )
             if box[1] < 800:
                 # HIF Round 手牌固定出现在底部；保留 YOLO 原始框供 Journal 审计，
@@ -539,12 +610,13 @@ class ExamStateReader:
         ``ExamStateObservation.missing_fields`` 阻止自动点击。
         """
         numerics: dict[str, NumericRead] = {}
-        for key, roi_spec in _NUMERIC_ROI.items():
-            if all(v == 0 for v in roi_spec.roi):
+        for key, roi_specs in _NUMERIC_ROI.items():
+            if not roi_specs:
                 # 未校准 ROI 跳过，避免把页面其他数字误读成状态。
                 continue
             expected = _NUMERIC_EXPECTED.get(key, [".*\\d+.*"])
-            numerics[key] = self._read_numeric(key, expected, roi_spec.roi)
+            reads = tuple(self._read_numeric(key, expected, roi_spec.roi) for roi_spec in roi_specs)
+            numerics[key] = _consensus_numeric_reads(key, reads)
         return numerics
 
     def read_round_metrics(self) -> RoundMetrics:
@@ -555,7 +627,7 @@ class ExamStateReader:
         for key, roi_spec in _ROUND_METRIC_ROI.items():
             if not any(roi_spec.roi):
                 continue
-            expected = [r"\\d+(?:[,.]\\d+)*(?:\\s*(?:%|％|倍))?"]
+            expected = [r"\d+(?:[,.]\d+)*(?:\s*(?:%|％|倍))?"]
             read = self._read_numeric(key, expected, roi_spec.roi)
             reads[key] = read.raw if read.status is ReadStatus.OK else ""
             if read.status is ReadStatus.CONFLICT:

@@ -19,6 +19,7 @@ class HIFRoiCalibration:
     schema_version: int
     frame_size: tuple[int, int]
     exam_numeric: dict[str, ROI]
+    exam_numeric_candidates: dict[str, tuple[ROI, ...]]
     round_metrics: dict[str, ROI]
     round_metrics_panel: dict[str, ROI]
     settlement_metrics: dict[str, ROI]
@@ -32,6 +33,13 @@ class HIFRoiCalibration:
 
     def roi_for_exam_numeric(self, name: str) -> ROI | None:
         return self.exam_numeric.get(name)
+
+    def rois_for_exam_numeric(self, name: str) -> tuple[ROI, ...]:
+        candidates = self.exam_numeric_candidates.get(name)
+        if candidates:
+            return candidates
+        roi = self.exam_numeric.get(name)
+        return (roi,) if roi is not None else ()
 
     def roi_for_round_metric(self, name: str) -> ROI | None:
         return self.round_metrics.get(name)
@@ -71,6 +79,7 @@ def load_hif_roi_calibration(path: str | Path | None = None) -> HIFRoiCalibratio
     if frame_size != HIF_FRAME_SIZE:
         raise ValueError(f"HIF ROI 校准必须基于 {HIF_FRAME_SIZE}，当前为 {frame_size}")
     regions = _parse_region_map(payload.get("exam_numeric", {}), "exam_numeric")
+    numeric_candidates = _parse_region_candidates(payload.get("exam_numeric_candidates", {}), "exam_numeric_candidates")
     round_metrics = _parse_region_map(payload.get("round_metrics", {}), "round_metrics")
     round_metrics_panel = _parse_region_map(payload.get("round_metrics_panel", {}), "round_metrics_panel")
     settlement_metrics = _parse_region_map(payload.get("settlement_metrics", {}), "settlement_metrics")
@@ -78,6 +87,7 @@ def load_hif_roi_calibration(path: str | Path | None = None) -> HIFRoiCalibratio
         schema_version=1,
         frame_size=frame_size,
         exam_numeric=regions,
+        exam_numeric_candidates=numeric_candidates,
         round_metrics=round_metrics,
         round_metrics_panel=round_metrics_panel,
         settlement_metrics=settlement_metrics,
@@ -99,6 +109,19 @@ def _parse_region_map(raw_regions: object, name: str) -> dict[str, ROI]:
         for key, raw in raw_regions.items()
         if isinstance(key, str) and (roi := _parse_roi(raw)) is not None
     }
+
+
+def _parse_region_candidates(raw_regions: object, name: str) -> dict[str, tuple[ROI, ...]]:
+    if not isinstance(raw_regions, dict):
+        raise ValueError(f"HIF ROI {name} 必须为对象")
+    parsed: dict[str, tuple[ROI, ...]] = {}
+    for key, raw_candidates in raw_regions.items():
+        if not isinstance(key, str) or not isinstance(raw_candidates, list):
+            raise ValueError(f"HIF ROI {name} 字段必须为 ROI 数组")
+        candidates = tuple(roi for raw in raw_candidates if (roi := _parse_roi(raw)) is not None)
+        if candidates:
+            parsed[key] = candidates
+    return parsed
 
 
 def _parse_frame_size(raw: object) -> tuple[int, int]:

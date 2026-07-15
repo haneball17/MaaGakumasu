@@ -375,31 +375,43 @@ def test_start_produce_stops_when_the_confirmation_disappears_without_a_known_ta
     assert records[-1][0][1:3] == ("start_produce", "unverified")
 
 
-def test_card_single_step_declares_the_semantic_hand_postcondition(monkeypatch):
+def test_card_single_step_stays_blocked_until_route_semantic_postcondition_exists(monkeypatch):
     module = _load_action_module()
-    from agent.hif.decisions.state import ActionKind, CardAction
 
     action = module.ProduceCardsHIF()
     records = []
     approvals = []
     tasks = []
+    target = module.CardDetection("cards", (100, 700, 120, 180), "祝福", "祝福+", playable=True)
     observation = SimpleNamespace(
-        state=SimpleNamespace(turn=7, oneesan_used=False, natural_finisher_used=False),
-        detections=[SimpleNamespace(card_name="自然体の魅力", box=(100, 700, 120, 180))],
+        state=None,
+        detections=[target],
+        numerics={},
         missing_fields=(),
         screen_confidence=1.0,
     )
     reader = SimpleNamespace(read_exam_observation=lambda *args: observation)
-    session = SimpleNamespace(card_was_played=lambda *args: False, record_card=lambda *args: None)
+    candidate = SimpleNamespace(
+        target_id="hand-1",
+        title="祝福",
+        upgrade=SimpleNamespace(value="plus"),
+        total_score=1,
+        rejection_code=None,
+        components=(),
+    )
+    decision = SimpleNamespace(
+        status=module.RouteDecisionStatus.SELECTED,
+        selected_target_id="hand-1",
+        rejection_code=None,
+        rejection_detail=None,
+        candidates=(candidate,),
+    )
 
     monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
-    monkeypatch.setattr(module, "get_runtime_hif_session", lambda: session)
     monkeypatch.setattr(module.ExamStateReader, "from_context", classmethod(lambda cls, context: reader))
-    monkeypatch.setattr(
-        module,
-        "GarakutaRinamiStrategy",
-        lambda payload: SimpleNamespace(decide=lambda state: CardAction(ActionKind.PLAY_CARD, "自然体の魅力", "test")),
-    )
+    monkeypatch.setattr(module, "infer_card_playability", lambda *args: None)
+    monkeypatch.setattr(module, "assemble_route_state", lambda *args, **kwargs: SimpleNamespace(state=object(), targets={"hand-1": target}))
+    monkeypatch.setattr(module, "RinamiGarakutaRouteScorer", lambda: SimpleNamespace(decide=lambda state: decision))
     monkeypatch.setattr(
         module,
         "load_hif_roi_calibration",
@@ -412,6 +424,11 @@ def test_card_single_step_declares_the_semantic_hand_postcondition(monkeypatch):
 
     monkeypatch.setattr(module, "approve_card_execution", approve)
     monkeypatch.setattr(action, "_get_screenshot", lambda context: SimpleNamespace(size=(720, 1280)))
+    monkeypatch.setattr(
+        action,
+        "_probe_round_details_metrics",
+        lambda context, image, screen_state, **kwargs: ("116611", "3807%", image),
+    )
     monkeypatch.setattr(action, "_get_health", lambda context, image: None)
     monkeypatch.setattr(action, "_click_box_center", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("不得出牌")))
     context = SimpleNamespace(run_task=lambda task: tasks.append(task))
@@ -420,7 +437,7 @@ def test_card_single_step_declares_the_semantic_hand_postcondition(monkeypatch):
         context,
         SimpleNamespace(custom_action_param='{"preset_id":"rinami_good_condition_safe","round":"round1","execution_mode":"single_step"}'),
     )
-    assert approvals and approvals[0]["postcondition_supported"] is True
+    assert approvals and approvals[0]["postcondition_supported"] is False
     assert tasks == ["ProduceHIFUnknownStop"]
     assert records[-2][1]["details"]["reason"] == "postcondition_not_supported"
 
@@ -684,36 +701,39 @@ def test_round1_detail_map_play_one_only_approves_one_non_grey_topic_card_with_g
     assert reason == "round1_detail_topic_target_not_unique"
 
 
-def test_card_single_step_requires_an_explicit_strategy_target(monkeypatch):
+def test_card_single_step_rejects_a_route_decision_without_unique_target(monkeypatch):
     module = _load_action_module()
-    from agent.hif.decisions.state import ActionKind, CardAction
 
     action = module.ProduceCardsHIF()
     records = []
     stops = []
     observation = SimpleNamespace(
-        state=SimpleNamespace(turn=7, oneesan_used=False, natural_finisher_used=False),
+        state=None,
         detections=[],
+        numerics={},
         missing_fields=(),
         screen_confidence=1.0,
     )
     reader = SimpleNamespace(read_exam_observation=lambda *args: observation)
-    session = SimpleNamespace(card_was_played=lambda *args: False)
+    decision = SimpleNamespace(
+        status=SimpleNamespace(),
+        selected_target_id=None,
+        rejection_code=SimpleNamespace(value="score_tie"),
+        rejection_detail="并列",
+        candidates=(),
+    )
 
     monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
-    monkeypatch.setattr(module, "get_runtime_hif_session", lambda: session)
     monkeypatch.setattr(module.ExamStateReader, "from_context", classmethod(lambda cls, context: reader))
-    monkeypatch.setattr(
-        module,
-        "GarakutaRinamiStrategy",
-        lambda payload: SimpleNamespace(decide=lambda state: CardAction(ActionKind.PLAY_CARD, None, "generic")),
-    )
-    monkeypatch.setattr(
-        module,
-        "load_hif_roi_calibration",
-        lambda: SimpleNamespace(supports_exam_fields=lambda fields: True, device_id="test", updated_at="test"),
-    )
+    monkeypatch.setattr(module, "infer_card_playability", lambda *args: None)
+    monkeypatch.setattr(module, "assemble_route_state", lambda *args, **kwargs: SimpleNamespace(state=object(), targets={}))
+    monkeypatch.setattr(module, "RinamiGarakutaRouteScorer", lambda: SimpleNamespace(decide=lambda state: decision))
     monkeypatch.setattr(action, "_get_screenshot", lambda context: SimpleNamespace(size=(720, 1280)))
+    monkeypatch.setattr(
+        action,
+        "_probe_round_details_metrics",
+        lambda context, image, screen_state, **kwargs: ("116611", "3807%", image),
+    )
     monkeypatch.setattr(action, "_get_health", lambda context, image: None)
     monkeypatch.setattr(action, "_click_box_center", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("不得出牌")))
     monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen_state, reason: stops.append(reason) or True)
@@ -723,8 +743,43 @@ def test_card_single_step_requires_an_explicit_strategy_target(monkeypatch):
         context,
         SimpleNamespace(custom_action_param='{"preset_id":"rinami_good_condition_safe","round":"round1","execution_mode":"single_step"}'),
     )
-    assert stops == ["card_decision_target_not_explicit"]
-    assert records[-1][1]["details"]["target_count"] == 0
+    assert stops == ["route_decision_rejected:score_tie"]
+    assert records[-1][1]["details"]["reason_code"] == "score_tie"
+
+
+def test_card_observe_rejects_incomplete_route_state_without_legacy_defaults(monkeypatch):
+    module = _load_action_module()
+    from agent.hif.round_metrics import build_round_metrics
+
+    action = module.ProduceCardsHIF()
+    records = []
+    observation = SimpleNamespace(
+        state=None,
+        detections=[],
+        numerics={"deck_size": module.NumericRead("deck_size", "", None)},
+        issues=(SimpleNamespace(field="deck_size", code=SimpleNamespace(value="missing"), detail=""),),
+        missing_fields=("deck_size", "hand_playability"),
+        screen_confidence=0.5,
+        round_metrics=build_round_metrics({}),
+    )
+    reader = SimpleNamespace(read_exam_observation=lambda *args: observation)
+
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(module.ExamStateReader, "from_context", classmethod(lambda cls, context: reader))
+    monkeypatch.setattr(module, "infer_card_playability", lambda *args: None)
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: SimpleNamespace(size=(720, 1280)))
+    monkeypatch.setattr(action, "_get_health", lambda context, image: None)
+    monkeypatch.setattr(action, "_finish_observation", lambda context, screen_state: True)
+    context = SimpleNamespace(run_task=lambda task: None)
+
+    assert action.run(
+        context,
+        SimpleNamespace(custom_action_param='{"round":"round1","execution_mode":"observe_and_stop"}'),
+    )
+    assert records[-1][0] == ("round1", "card_decision", "rejected")
+    assert records[-1][1]["details"]["reason"] == "route_state_rejected"
+    issues = records[-1][1]["details"]["route_state_issues"]
+    assert any(issue["field"] == "deck_size" for issue in issues)
 
 
 def test_card_postcondition_requires_target_to_leave_the_hand(monkeypatch):
@@ -1138,7 +1193,25 @@ def test_counter_roi_probe_records_candidates_without_controller_input(monkeypat
     records = []
     clicks = []
     tasks = []
-    values = iter(("40ターン", "40ターン", "40", "集中4", "集中4", "4", "4回", "2回", "ターン内0回"))
+    values = iter(
+        (
+            "40ターン",
+            "40ターン",
+            "40",
+            "集中4",
+            "集中4",
+            "4",
+            "7",
+            "10",
+            "0",
+            "210",
+            "116611",
+            "3807%",
+            "4回",
+            "2回",
+            "ターン内0回",
+        )
+    )
 
     monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
     monkeypatch.setattr(action, "_matches_screen_profile", lambda *args: True)

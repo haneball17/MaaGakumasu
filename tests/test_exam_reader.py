@@ -33,8 +33,31 @@ from agent.hif.adapters.exam_reader import (
     build_exam_state,
     build_hand_summary,
     _hand_card_name_roi,
+    infer_card_playability,
     _suppress_overlapping_card_detections,
 )
+
+
+def test_frame_saturation_playability_keeps_ambiguous_cards_unresolved() -> None:
+    import numpy as np
+
+    image = np.zeros((300, 360, 3), dtype=np.uint8)
+    image[15:124, 15:105] = (180, 180, 180)
+    image[15:124, 135:225] = (20, 80, 220)
+    image[15:124, 255:300] = (180, 180, 180)
+    image[15:124, 300:345] = (20, 80, 220)
+    detections = [
+        CardDetection("cards", (0, 0, 120, 200), "灰"),
+        CardDetection("cards", (120, 0, 120, 200), "彩"),
+        CardDetection("cards", (240, 0, 120, 200), "不确定"),
+    ]
+
+    infer_card_playability(image, detections)
+
+    assert detections[0].playable is False
+    assert detections[1].playable is True
+    assert detections[2].playable is None
+    assert all(detection.playability_source == "frame_saturation" for detection in detections)
 
 # ---------------------------------------------------------------------------
 # card_dict: 词典生成 + 好调卡判定
@@ -378,7 +401,7 @@ def test_reader_only_attempts_fields_with_versioned_rois() -> None:
     """只读取已写入版本化 ROI 的字段，未校准字段继续跳过。"""
     reader = ExamStateReader(_MockOcrPort([]))
     numerics = reader.read_numerics()
-    assert set(numerics) == {"good_condition", "reprise", "focus", "turn", "flow", "deck_size", "stamina"}
+    assert set(numerics) == {"good_condition", "reprise", "focus", "turn", "flow", "stamina"}
     assert all(read.value is None and read.flow is None for read in numerics.values())
     assert "p_drinks" not in numerics
 
@@ -426,7 +449,7 @@ def test_reader_rejects_an_unstable_numeric_read() -> None:
     class _UnstableNumericPort(_MockOcrPort):
         def __init__(self):
             super().__init__([])
-            self.good_condition_reads = iter(("40ターン", "2", "3"))
+            self.good_condition_reads = iter(("40ターン", "2", "3") * 2)
 
         def run_ocr(self, name, expected, roi):
             if name.endswith("good_condition"):
@@ -437,14 +460,14 @@ def test_reader_rejects_an_unstable_numeric_read() -> None:
 
     assert numerics["good_condition"].value is None
     assert numerics["good_condition"].status is ReadStatus.CONFLICT
-    assert numerics["good_condition"].samples == ("40ターン", "2", "3")
+    assert numerics["good_condition"].samples == ("40ターン", "2", "3") * 2
 
 
 def test_reader_accepts_two_matching_numeric_reads_when_the_third_is_empty() -> None:
     class _MostlyStableNumericPort(_MockOcrPort):
         def __init__(self):
             super().__init__([])
-            self.focus_reads = iter(("M4", "", "M4"))
+            self.focus_reads = iter(("M4", "", "M4") * 3)
 
         def run_ocr(self, name, expected, roi):
             if name.endswith("focus"):
@@ -472,16 +495,16 @@ def test_exam_observation_keeps_conflict_distinct_from_missing() -> None:
     class _ConflictPort(_MockOcrPort):
         def __init__(self):
             super().__init__([])
-            self.reads = iter(("21", "22", "23"))
+            self.reads = iter(("21", "22", "23") * 2)
 
         def run_ocr(self, name, expected, roi):
-            if name.endswith("deck_size"):
+            if name.endswith("good_condition"):
                 return next(self.reads)
             return super().run_ocr(name, expected, roi)
 
     observation = ExamStateReader(_ConflictPort()).read_exam_observation(ExamRound.HONSEN_R1, 9, None)
 
-    issue = next(issue for issue in observation.issues if issue.field == "deck_size")
+    issue = next(issue for issue in observation.issues if issue.field == "good_condition")
     assert issue.code is ReadStatus.CONFLICT
     assert observation.state is None
 

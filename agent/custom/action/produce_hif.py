@@ -23,13 +23,20 @@ from agent.hif.reward_pages import (
     detect_skill_reward_reveal_page,
     detect_skill_reward_selected_page,
 )
+from agent.hif.round_metrics import build_round_metrics
 from agent.hif.route_planner import HIFRoutePlanner
-from agent.hif.decisions.play import GarakutaRinamiStrategy
+from agent.hif.route_scoring import RouteDecisionStatus, RinamiGarakutaRouteScorer
 from agent.hif.decisions.state import ExamRound, ActionKind, CardAction
 from agent.hif.screen_profiles import load_hif_screen_profiles
-from agent.hif.decisions.config import ProfilePayload
 from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict, is_good_condition_card
-from agent.hif.adapters.exam_reader import NumericRead, CardDetection, ExamStateReader, build_hand_summary
+from agent.hif.adapters.exam_reader import (
+    NumericRead,
+    CardDetection,
+    ExamStateReader,
+    build_hand_summary,
+    infer_card_playability,
+)
+from agent.hif.adapters.route_state import RouteStateRejected, assemble_route_state
 from agent.hif.adapters.hif_state_reader import HIFStateReader
 from agent.hif.decisions.round1_fallback import (
     choose_observed_round1_recovery_card,
@@ -3792,6 +3799,12 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             "focus_current": (14, 300, 150, 70),
             "focus_label_and_value": (52, 306, 90, 48),
             "focus_value_only": (58, 314, 50, 34),
+            "focus_sweep_40": (40, 300, 80, 60),
+            "focus_sweep_45": (45, 306, 70, 48),
+            "focus_sweep_48": (48, 310, 60, 42),
+            "focus_sweep_50": (50, 314, 55, 36),
+            "current_score": (367, 119, 123, 45),
+            "stage_multiplier": (65, 75, 150, 48),
             "right_skill_card_uses": (580, 235, 110, 75),
             "left_reprise_counter": (12, 638, 150, 100),
             "left_reprise_turn_limit": (8, 674, 180, 70),
@@ -3822,7 +3835,14 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
         )
         return self._finish_observation(context, screen_state)
 
-    def _probe_round_details_metrics(self, context: Context, image, screen_state: str) -> bool:
+    def _probe_round_details_metrics(
+        self,
+        context: Context,
+        image,
+        screen_state: str,
+        *,
+        continue_after: bool = False,
+    ) -> bool | tuple[str, str, Any]:
         """进入已采证的详情面板读取实时分数与倍率，再验证返回同一 Round。
 
         详情入口和关闭按钮均为只读 UI；本动作不触碰手牌、饮料、重抽或任何资源。
@@ -3914,7 +3934,15 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                 before=panel_evidence,
                 after=returned,
             )
+            if continue_after:
+                return (
+                    str(getattr(score_best, "text", "")) if score_best else "",
+                    str(getattr(multiplier_best, "text", "")) if multiplier_best else "",
+                    returned_image,
+                )
             return self._finish_observation(context, screen_state)
+        if continue_after:
+            return self._stop_unsupported(context, screen_state, "round_metrics_panel_not_supported_for_decision")
         # 早期样本中的“手札履历”仍按原契约处理；此处只接受两种已采证页面。
         if self._matches_screen_profile(context, panel_image, "hand_history_view"):
             return self._stop_unsupported(context, "hand_history_view", "legacy_hand_history_metrics_not_supported")
@@ -4648,57 +4676,126 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             )
             return self._stop_unsupported(context, screen_state, "card_strategy_profile_not_supported")
 
+        panel_reads: tuple[str, str] | None = None
+        if mode is not HIFExecutionMode.OBSERVE:
+            panel_result = self._probe_round_details_metrics(context, before_image, screen_state, continue_after=True)
+            if not isinstance(panel_result, tuple):
+                return panel_result
+            score_raw, multiplier_raw, before_image = panel_result
+            panel_reads = (score_raw, multiplier_raw)
+            before = self._capture_evidence(before_image, f"{screen_state}_before_decision")
+
         health = self._get_health(context, before_image)
         observation = ExamStateReader.from_context(context).read_exam_observation(
             round_,
             total_turns,
             health["current"] if health else None,
         )
+        if panel_reads is not None:
+            observation.round_metrics = build_round_metrics(
+                {"current_score": panel_reads[0], "stage_multiplier": panel_reads[1]}
+            )
+        infer_card_playability(before_image, observation.detections)
         if probed_deck_size is not None:
             observation.numerics["deck_size"] = NumericRead("deck_size", str(probed_deck_size), probed_deck_size)
-            observation.state.deck_size = probed_deck_size
+            if observation.state is not None:
+                observation.state.deck_size = probed_deck_size
             observation.missing_fields = tuple(field for field in observation.missing_fields if field != "deck_size")
-        initial_reprise_inferred = self._infer_initial_reprise(observation, total_turns)
-        session = get_runtime_hif_session()
-        reprise_recovery = None
-        if params.get("reprise_recovery") == "after_entertainment_turn8":
-            recovered, reprise_recovery = self._recover_reprise_after_entertainment(observation, session, round_key, total_turns)
-            if not recovered:
-                self._record_journal(
-                    screen_state,
-                    "recover_reprise",
-                    "rejected",
-                    details={"reason": reprise_recovery},
-                    before=before,
-                )
-                return self._stop_unsupported(context, screen_state, reprise_recovery)
-        if not observation.missing_fields:
-            observation.screen_confidence = 1.0
-        observation.state.oneesan_used = session.card_was_played(round_key, "お姉さんの感覚")
-        observation.state.natural_finisher_used = session.card_was_played(round_key, "自然体の魅力")
-        card_action = GarakutaRinamiStrategy(ProfilePayload.default()).decide(observation.state)
-        card_action = self._resolve_initial_default_target(card_action, observation, total_turns)
-        if card_action.kind is ActionKind.PLAY_CARD and not card_action.target_card:
-            fallback = choose_observed_round1_recovery_card(
-                observation.state,
-                [
-                    normalize_card_name(detection.card_name)
-                    for detection in observation.detections
-                    if detection.card_name and not detection.suppressed_reason and detection.label != "useless"
-                ],
+        try:
+            route_state = assemble_route_state(
+                observation,
+                route_id="rinami_garakuta_road",
+                round_key=round_key,
+                total_turns=total_turns,
             )
-            if fallback is not None:
-                card_action = fallback
+        except RouteStateRejected as error:
+            rejection_details = {
+                "mode": mode.value,
+                "round": round_.value,
+                "reason": "route_state_rejected",
+                "route_state_issues": [
+                    {
+                        "field": issue.field,
+                        "code": issue.code.value,
+                        "detail": issue.detail,
+                    }
+                    for issue in error.issues
+                ],
+                "numeric_reads": {
+                    name: {
+                        "raw": reading.raw,
+                        "value": reading.value,
+                        "flow": reading.flow,
+                        "status": reading.status.value if reading.status is not None else None,
+                        "samples": reading.samples,
+                    }
+                    for name, reading in observation.numerics.items()
+                },
+            }
+            self._record_journal(screen_state, "card_decision", "rejected", details=rejection_details, before=before)
+            reason = ",".join(f"{issue.field}:{issue.code.value}" for issue in error.issues)
+            if mode is HIFExecutionMode.OBSERVE:
+                logger.warning(f"HIF {screen_state} 路线状态拒绝: {reason}")
+                return self._finish_observation(context, round_key)
+            return self._stop_unsupported(context, screen_state, f"route_state_rejected:{reason}")
+
+        route_decision = RinamiGarakutaRouteScorer().decide(route_state.state)
+        if route_decision.status is not RouteDecisionStatus.SELECTED or route_decision.selected_target_id is None:
+            reason_code = route_decision.rejection_code.value if route_decision.rejection_code is not None else "unknown"
+            rejection_details = {
+                "mode": mode.value,
+                "round": round_.value,
+                "reason": "route_decision_rejected",
+                "reason_code": reason_code,
+                "reason_detail": route_decision.rejection_detail,
+                "candidates": [
+                    {
+                        "target_id": candidate.target_id,
+                        "title": candidate.title,
+                        "upgrade": candidate.upgrade.value,
+                        "score": candidate.total_score,
+                        "rejection_code": candidate.rejection_code.value if candidate.rejection_code else None,
+                    }
+                    for candidate in route_decision.candidates
+                ],
+            }
+            self._record_journal(screen_state, "card_decision", "rejected", details=rejection_details, before=before)
+            if mode is HIFExecutionMode.OBSERVE:
+                logger.warning(f"HIF {screen_state} 路线评分拒绝: {reason_code}")
+                return self._finish_observation(context, round_key)
+            return self._stop_unsupported(context, screen_state, f"route_decision_rejected:{reason_code}")
+
+        target = route_state.targets[route_decision.selected_target_id]
+        selected_display_name = target.raw_card_name or target.card_name
+        card_action = CardAction(ActionKind.PLAY_CARD, target.card_name, route_decision.rejection_detail or "当前路线确定性评分唯一最高")
         action_details = {
             "mode": mode.value,
             "round": round_.value,
             "decision_kind": card_action.kind.value,
-            "target_card": card_action.target_card,
+            "target_card": selected_display_name,
+            "target_id": route_decision.selected_target_id,
             "reason": card_action.reason,
-            "screen_confidence": observation.screen_confidence,
-            "missing_fields": observation.missing_fields,
-            "initial_reprise_inferred": initial_reprise_inferred,
-            "reprise_recovery": reprise_recovery,
+            "screen_confidence": 1.0,
+            "missing_fields": (),
+            "candidates": [
+                {
+                    "target_id": candidate.target_id,
+                    "title": candidate.title,
+                    "upgrade": candidate.upgrade.value,
+                    "score": candidate.total_score,
+                    "rejection_code": candidate.rejection_code.value if candidate.rejection_code else None,
+                    "components": [
+                        {
+                            "name": component.name,
+                            "raw_value": component.raw_value,
+                            "weight": component.weight,
+                            "value": component.value,
+                        }
+                        for component in candidate.components
+                    ],
+                }
+                for candidate in route_decision.candidates
+            ],
             "detected_cards": [
                 {
                     "label": getattr(detection, "label", "cards"),
@@ -4708,6 +4805,9 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                     "raw_card_name": getattr(detection, "raw_card_name", detection.card_name),
                     "card_name_confidence": getattr(detection, "card_name_confidence", 0.0),
                     "suppressed_reason": getattr(detection, "suppressed_reason", ""),
+                    "playable": detection.playable,
+                    "playability_gray_ratio": detection.playability_gray_ratio,
+                    "playability_source": detection.playability_source,
                 }
                 for detection in observation.detections
             ],
@@ -4719,7 +4819,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
 
         if mode is HIFExecutionMode.OBSERVE:
             self._record_journal(screen_state, "card_decision", "observed", details=action_details, before=before)
-            logger.success(f"HIF {screen_state} 影子决策: {card_action.kind.value} {card_action.target_card or ''} {card_action.reason}")
+            logger.success(f"HIF {screen_state} 影子决策: {card_action.kind.value} {selected_display_name} {card_action.reason}")
             return self._finish_observation(context, round_key)
 
         if mode is HIFExecutionMode.CONTINUOUS:
@@ -4748,24 +4848,12 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             )
             return self._stop_unsupported(context, screen_state, "exam_roi_calibration_not_execution_ready")
 
-        if card_action.kind is ActionKind.PLAY_CARD and not card_action.target_card:
-            approval_reason = "card_decision_target_not_explicit"
-            self._record_journal(
-                screen_state,
-                "card_decision",
-                "rejected",
-                details={**action_details, "reason": approval_reason, "target_count": 0},
-                before=before,
-            )
-            return self._stop_unsupported(context, screen_state, approval_reason)
-
-        targets = self._find_play_card_targets(card_action, observation.detections)
         approval = approve_card_execution(
             mode,
-            screen_confidence=observation.screen_confidence,
-            missing_fields=observation.missing_fields,
-            target_count=len(targets),
-            postcondition_supported=True,
+            screen_confidence=1.0,
+            missing_fields=(),
+            target_count=1,
+            postcondition_supported=False,
         )
         if card_action.kind is not ActionKind.PLAY_CARD:
             approval_reason = f"action_kind_not_supported:{card_action.kind.value}"
@@ -4776,12 +4864,11 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                 screen_state,
                 "card_decision",
                 "rejected",
-                details={**action_details, "reason": approval_reason, "target_count": len(targets)},
+                details={**action_details, "reason": approval_reason, "target_count": 1},
                 before=before,
             )
             return self._stop_unsupported(context, screen_state, approval_reason)
 
-        target = targets[0]
         if not self._click_box_center(context, list(target.box), double=False):
             self._record_journal(
                 screen_state,

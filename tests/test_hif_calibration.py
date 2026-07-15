@@ -9,14 +9,13 @@ def test_default_calibration_only_enables_fields_with_current_mumu_evidence():
     calibration = load_hif_roi_calibration()
 
     assert calibration.frame_size == (720, 1280)
-    assert set(calibration.exam_numeric) == {"good_condition", "reprise", "focus", "turn", "flow", "deck_size", "stamina"}
+    assert set(calibration.exam_numeric) == {"good_condition", "reprise", "focus", "turn", "flow", "stamina"}
     assert calibration.device_id == "mumu12-instance1-127.0.0.1:16416"
     assert calibration.evidence_sha256
-    assert calibration.exam_numeric["deck_size"] == (647, 174, 42, 39)
-    assert calibration.round_metrics == {"current_score": (367, 119, 123, 45), "stage_multiplier": (65, 75, 150, 48)}
+    assert calibration.round_metrics == {"stage_multiplier": (65, 75, 150, 48)}
     assert calibration.round_metrics_panel == {"current_score": (42, 145, 135, 38)}
     assert calibration.settlement_metrics == {"leader_score_pair": (220, 290, 330, 75)}
-    assert calibration.is_exam_execution_ready
+    assert not calibration.is_exam_execution_ready
     assert calibration.supports_exam_fields({"good_condition", "focus", "turn", "flow", "stamina"})
 
 

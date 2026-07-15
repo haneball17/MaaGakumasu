@@ -992,8 +992,8 @@ def test_hif_page_action_defaults_to_observe_and_never_clicks(monkeypatch):
     assert stop_reasons == [("consult_shop", "page_execution_mode_not_single_step")]
 
 
-def test_hif_cards_observe_mode_never_clicks_and_single_step_rejects_incomplete_state(monkeypatch):
-    """Round 出牌入口必须先影子记录；未校准数值时单步模式也不能点击。"""
+def test_hif_cards_observe_and_single_step_both_reject_incomplete_route_state(monkeypatch):
+    """缺失路线字段时观察模式也只能记录拒绝，不能输出伪影子建议。"""
     agent_path = str(Path("agent").resolve())
     sys.path.insert(0, agent_path)
     try:
@@ -1002,7 +1002,7 @@ def test_hif_cards_observe_mode_never_clicks_and_single_step_rejects_incomplete_
         sys.path.remove(agent_path)
 
     from agent.hif.journal import HIFFrameEvidence
-    from agent.hif.decisions.state import ActionKind, CardAction
+    from agent.hif.round_metrics import build_round_metrics
 
     records = []
 
@@ -1015,22 +1015,25 @@ def test_hif_cards_observe_mode_never_clicks_and_single_step_rejects_incomplete_
             records.append((args, kwargs))
 
     observation = SimpleNamespace(
-        state=SimpleNamespace(oneesan_used=False, natural_finisher_used=False),
+        state=None,
         detections=[],
+        numerics={},
+        round_metrics=build_round_metrics({}),
         missing_fields=("hand", "turn", "flow"),
         screen_confidence=0.0,
     )
     reader = SimpleNamespace(read_exam_observation=lambda *args: observation)
     monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _Journal())
     monkeypatch.setattr(module.ExamStateReader, "from_context", classmethod(lambda cls, context: reader))
-    monkeypatch.setattr(
-        module,
-        "GarakutaRinamiStrategy",
-        lambda payload: SimpleNamespace(decide=lambda state: CardAction(ActionKind.PLAY_CARD, "自然体の魅力", "test")),
-    )
+    monkeypatch.setattr(module, "infer_card_playability", lambda *args: None)
 
     action = module.ProduceCardsHIF()
     monkeypatch.setattr(action, "_get_screenshot", lambda context: SimpleNamespace(size=(720, 1280)))
+    monkeypatch.setattr(
+        action,
+        "_probe_round_details_metrics",
+        lambda context, image, screen_state, **kwargs: ("", "", image),
+    )
     monkeypatch.setattr(action, "_get_health", lambda context, image: None)
     tasks = []
     context = SimpleNamespace(run_task=lambda task: tasks.append(task))
@@ -1040,7 +1043,8 @@ def test_hif_cards_observe_mode_never_clicks_and_single_step_rejects_incomplete_
         SimpleNamespace(custom_action_param='{"preset_id":"rinami_good_condition_safe","round":"round1","execution_mode":"observe_and_stop"}'),
     )
     assert tasks == ["ProduceHIFRound1ReachedStop"]
-    assert records[-1][0][2] == "observed"
+    assert records[-1][0][2] == "rejected"
+    assert records[-1][1]["details"]["reason"] == "route_state_rejected"
 
     tasks.clear()
     assert action.run(

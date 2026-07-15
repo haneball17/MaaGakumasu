@@ -4,19 +4,19 @@
 		720,
 		1280
 	],
-	"updated_at": "2026-07-15T21:43:07+08:00",
+	"updated_at": "2026-07-15T22:26:35+08:00",
 	"device_id": "mumu12-instance1-127.0.0.1:16416",
 	"controller_kind": "adb",
 	"game_version": "",
 	"locale": "ja-JP",
-	"evidence_sha256": "5298e1fd625ada686b8257df958cc9b8055693fcff7f2f43170eecd2a0685042",
-	"source": "MuMu 12 ADB 720x1280 Round1 零输入复核帧 hif-mvp-m1-stop-recheck-20260715/before.png",
+	"evidence_sha256": "e87e000cde76916fff62675e0b54b123ab14cfbac75f51ac8a38934f993dc04e",
+	"source": "MuMu 12 ADB 720x1280 Round1 零输入 ROI sweep：hif-mvp-m1-good-condition-sweep-20260715/before.png；牌库数与分数分别只接受详情页读取",
 	"exam_numeric": {
 		"good_condition": [
-			60,
-			255,
-			110,
-			38
+			14,
+			237,
+			160,
+			70
 		],
 		"reprise": [
 			12,
@@ -42,12 +42,7 @@
 			150,
 			85
 		],
-		"deck_size": [
-			647,
-			174,
-			42,
-			39
-		],
+		"deck_size": null,
 		"p_drinks": null,
 		"stamina": [
 			570,
@@ -56,13 +51,46 @@
 			55
 		]
 	},
-	"round_metrics": {
-		"current_score": [
-			367,
-			119,
-			123,
-			45
+	"exam_numeric_candidates": {
+		"good_condition": [
+			[
+				14,
+				237,
+				160,
+				70
+			],
+			[
+				52,
+				245,
+				130,
+				50
+			]
+
 		],
+		"focus": [
+			[
+				14,
+				300,
+				150,
+				70
+			],
+			[
+				45,
+				306,
+				70,
+				48
+			],
+			[
+				52,
+				306,
+				90,
+				48
+			]
+
+		]
+	},
+	"round_metrics": {
+		"current_score": null,
 		"stage_multiplier": [
 			65,
 			75,
