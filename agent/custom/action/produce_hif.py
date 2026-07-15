@@ -4859,6 +4859,56 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                 if post_turn_read is None or post_turn_read.value is None:
                     observation.numerics["turn"] = NumericRead("turn", f"retained_initial={initial_turn}", initial_turn)
                 observation.numerics["deck_size"] = NumericRead("deck_size", str(deck_size), deck_size)
+                self._apply_current_run_hand_detail_names(observation.detections, session)
+                infer_card_playability(returned_image, observation.detections)
+                if params.get("round_probe") == "hand_details_map_deck_observe":
+                    try:
+                        ready = assemble_route_state(
+                            observation,
+                            route_id="rinami_garakuta_road",
+                            round_key=round_key,
+                            total_turns=total_turns,
+                        )
+                    except RouteStateRejected as error:
+                        self._record_journal(
+                            screen_state,
+                            "probe_hand_details_map",
+                            "rejected",
+                            details={
+                                "reason": "detail_map_route_state_rejected",
+                                "issues": [
+                                    {"field": issue.field, "code": issue.code.value, "detail": issue.detail}
+                                    for issue in error.issues
+                                ],
+                            },
+                            before=before,
+                        )
+                        return self._stop_unsupported(context, screen_state, "detail_map_route_state_rejected")
+                    decision = RinamiGarakutaRouteScorer().decide(ready.state)
+                    self._record_journal(
+                        screen_state,
+                        "probe_hand_details_map",
+                        "observed",
+                        details={
+                            "cards": details,
+                            "route_state": {
+                                "turn": ready.state.turn,
+                                "current_score": ready.state.current_score,
+                                "stamina": ready.state.stamina,
+                                "focus": ready.state.focus,
+                                "good_condition": ready.state.good_condition_turns,
+                                "deck_size": ready.state.deck_size,
+                            },
+                            "decision": {
+                                "status": decision.status.value,
+                                "target": decision.selected_title,
+                                "reason": decision.rejection_detail,
+                            },
+                            "controller_inputs": len(details) + 2,
+                        },
+                        before=before,
+                    )
+                    return self._finish_observation(context, round_key)
                 if stamina_for_rebuild is None:
                     return self._stop_unsupported(context, screen_state, "deck_probe_health_unreadable")
                 try:
@@ -4872,9 +4922,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                     )
                 except ExamStateRejected as error:
                     return self._stop_unsupported(context, screen_state, f"deck_probe_state_rebuild_rejected:{len(error.issues)}")
-                observation.missing_fields = tuple(
-                    field for field in observation.missing_fields if field not in {"deck_size", "turn"}
-                )
+                observation.missing_fields = tuple(field for field in observation.missing_fields if field not in {"deck_size", "turn"})
                 active = self._complete_current_run_hand_observation(observation, session)
                 verified_detail_names = [normalize_card_name(str(detail.get("detail_title", ""))) for detail in details]
                 topic_action = choose_high_good_condition_topic_card(observation.state, verified_detail_names)
