@@ -1,0 +1,153 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "battle-action.schema.json",
+	"title": "BattleAction 1.0.0",
+	"oneOf": [
+		{"$ref": "#/$defs/playCard"},
+		{"$ref": "#/$defs/useDrink"},
+		{"$ref": "#/$defs/draw"},
+		{"$ref": "#/$defs/swapHand"},
+		{"$ref": "#/$defs/endTurn"}],
+	"$defs": {
+		"hash": {"type": "string", "pattern": "[0-9a-f]{64}"},
+		"cost": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"resource_id",
+				"amount"
+			],
+			"properties": {
+				"resource_id": {"type": "string", "minLength": 1},
+				"amount": {"type": "integer", "minimum": 0}
+			}
+		},
+		"postcondition": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"deterministic_assertions",
+				"allowed_random_outcomes",
+				"conservation_assertions",
+				"forbidden_outcomes",
+				"verification_timeout_ms"
+			],
+			"properties": {
+				"deterministic_assertions": {"type": "array", "items": {"type": "string"}},
+				"allowed_random_outcomes": {"type": "array", "items": {"type": "string"}},
+				"conservation_assertions": {"type": "array", "items": {"type": "string"}},
+				"forbidden_outcomes": {"type": "array", "items": {"type": "string"}},
+				"verification_timeout_ms": {"type": "integer", "minimum": 1}
+			}
+		},
+		"playCard": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"precondition_state_hash",
+				"resource_costs",
+				"postcondition",
+				"action_key",
+				"card_instance_id",
+				"expected_cost",
+				"action_type"
+			],
+			"properties": {
+				"precondition_state_hash": {"$ref": "#/$defs/hash"},
+				"resource_costs": {"type": "array", "items": {"$ref": "#/$defs/cost"}},
+				"postcondition": {"$ref": "#/$defs/postcondition"},
+				"action_key": {"$ref": "#/$defs/hash"},
+				"card_instance_id": {"type": "string", "minLength": 1},
+				"expected_cost": {"type": "integer", "minimum": 0},
+				"action_type": {"const": "play_card"}
+			}
+		},
+		"useDrink": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"precondition_state_hash",
+				"resource_costs",
+				"postcondition",
+				"action_key",
+				"resource_instance_id",
+				"action_type"
+			],
+			"properties": {
+				"precondition_state_hash": {"$ref": "#/$defs/hash"},
+				"resource_costs": {"type": "array", "items": {"$ref": "#/$defs/cost"}},
+				"postcondition": {"$ref": "#/$defs/postcondition"},
+				"action_key": {"$ref": "#/$defs/hash"},
+				"resource_instance_id": {"type": "string", "minLength": 1},
+				"action_type": {"const": "use_drink"}
+			}
+		},
+		"draw": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"precondition_state_hash",
+				"resource_costs",
+				"postcondition",
+				"action_key",
+				"source_ability_id",
+				"action_type"
+			],
+			"properties": {
+				"precondition_state_hash": {"$ref": "#/$defs/hash"},
+				"resource_costs": {"type": "array", "items": {"$ref": "#/$defs/cost"}},
+				"postcondition": {"$ref": "#/$defs/postcondition"},
+				"action_key": {"$ref": "#/$defs/hash"},
+				"source_ability_id": {"type": "string", "minLength": 1},
+				"action_type": {"const": "draw"}
+			}
+		},
+		"swapHand": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"precondition_state_hash",
+				"resource_costs",
+				"postcondition",
+				"action_key",
+				"source_ability_id",
+				"card_instance_ids",
+				"action_type"
+			],
+			"properties": {
+				"precondition_state_hash": {"$ref": "#/$defs/hash"},
+				"resource_costs": {"type": "array", "items": {"$ref": "#/$defs/cost"}},
+				"postcondition": {"$ref": "#/$defs/postcondition"},
+				"action_key": {"$ref": "#/$defs/hash"},
+				"source_ability_id": {"type": "string", "minLength": 1},
+				"card_instance_ids": {
+					"type": "array",
+					"minItems": 1,
+					"uniqueItems": true,
+					"items": {"type": "string", "minLength": 1}
+				},
+				"action_type": {"const": "swap_hand"}
+			}
+		},
+		"endTurn": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"precondition_state_hash",
+				"resource_costs",
+				"postcondition",
+				"action_key",
+				"reason_code",
+				"action_type"
+			],
+			"properties": {
+				"precondition_state_hash": {"$ref": "#/$defs/hash"},
+				"resource_costs": {"type": "array", "items": {"$ref": "#/$defs/cost"}},
+				"postcondition": {"$ref": "#/$defs/postcondition"},
+				"action_key": {"$ref": "#/$defs/hash"},
+				"reason_code": {"type": "string", "minLength": 1},
+				"action_type": {"const": "end_turn"}
+			}
+		}
+	}
+}

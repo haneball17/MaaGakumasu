@@ -1,0 +1,212 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "planning-result.schema.json",
+	"title": "PlanningResult 1.0.0",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"schema_version",
+		"status",
+		"selected_action",
+		"candidates",
+		"rejected_actions",
+		"search_summary",
+		"trace",
+		"reason_code",
+		"planned_state_hash",
+		"planned_round",
+		"planned_turn",
+		"versions"
+	],
+	"properties": {
+		"schema_version": {"const": "1.0.0"},
+		"status": {"enum": [
+				"selected",
+				"degraded",
+				"stopped"
+			]},
+		"selected_action": {"anyOf": [
+				{"$ref": "battle-action.schema.json"},
+				{"type": "null"}]},
+		"candidates": {"type": "array", "items": {"$ref": "#/$defs/candidate"}},
+		"rejected_actions": {"type": "array", "items": {"$ref": "#/$defs/rejected"}},
+		"search_summary": {"$ref": "#/$defs/searchSummary"},
+		"trace": {"$ref": "#/$defs/trace"},
+		"reason_code": {
+			"anyOf": [
+				{"enum": [
+						"version_mismatch",
+						"soft_budget_reached",
+						"hard_budget_reached",
+						"no_complete_batch",
+						"no_legal_action",
+						"candidate_not_separable",
+						"model_unsupported",
+						"safe_fallback_used",
+						"state_incomplete",
+						"state_conflict"
+					]},
+				{"type": "null"}]
+		},
+		"planned_state_hash": {"$ref": "#/$defs/hash"},
+		"planned_round": {"enum": [
+				"round1",
+				"round2"
+			]},
+		"planned_turn": {"type": "integer", "minimum": 0},
+		"versions": {"$ref": "planning-request.schema.json#/$defs/versions"}
+	},
+	"$defs": {
+		"hash": {"type": "string", "pattern": "[0-9a-f]{64}"},
+		"decimalMetric": {"type": "string", "format": "decimal"},
+		"probability": {"type": "string", "format": "decimal", "pattern": "(?:0(?:\\.\\d{1,6})?|1(?:\\.0{1,6})?)"},
+		"scoreComponent": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"name",
+				"value"
+			],
+			"properties": {"name": {"type": "string", "minLength": 1}, "value": {"$ref": "#/$defs/decimalMetric"}}
+		},
+		"resourceProjection": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"resource_id",
+				"remaining"
+			],
+			"properties": {
+				"resource_id": {"type": "string", "minLength": 1},
+				"remaining": {"type": "integer", "minimum": 0}
+			}
+		},
+		"candidate": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"action",
+				"rank",
+				"scenario_count",
+				"mean",
+				"median",
+				"p10",
+				"cvar10",
+				"win_probability",
+				"failure_probability",
+				"safety_violation_probability",
+				"safety_margin",
+				"confidence_interval",
+				"score_components",
+				"resource_projection",
+				"completed_depth",
+				"status",
+				"reason_code"
+			],
+			"properties": {
+				"action": {"$ref": "battle-action.schema.json"},
+				"rank": {"type": "integer", "minimum": 1},
+				"scenario_count": {"type": "integer", "minimum": 1},
+				"mean": {"$ref": "#/$defs/decimalMetric"},
+				"median": {"$ref": "#/$defs/decimalMetric"},
+				"p10": {"$ref": "#/$defs/decimalMetric"},
+				"cvar10": {"$ref": "#/$defs/decimalMetric"},
+				"win_probability": {"$ref": "#/$defs/probability"},
+				"failure_probability": {"$ref": "#/$defs/probability"},
+				"safety_violation_probability": {"$ref": "#/$defs/probability"},
+				"safety_margin": {"$ref": "#/$defs/decimalMetric"},
+				"confidence_interval": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/decimalMetric"}},
+				"score_components": {"type": "array", "items": {"$ref": "#/$defs/scoreComponent"}},
+				"resource_projection": {"type": "array", "items": {"$ref": "#/$defs/resourceProjection"}},
+				"completed_depth": {"type": "integer", "minimum": 0},
+				"status": {"enum": [
+						"complete",
+						"pruned",
+						"degraded"
+					]},
+				"reason_code": {"anyOf": [
+						{"type": "string", "minLength": 1},
+						{"type": "null"}]}
+			}
+		},
+		"rejected": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"action",
+				"reason_code"
+			],
+			"properties": {
+				"action": {"$ref": "battle-action.schema.json"},
+				"reason_code": {"enum": [
+						"card_disabled",
+						"resource_insufficient",
+						"effect_unsupported",
+						"precondition_failed",
+						"zero_progress"
+					]}
+			}
+		},
+		"batch": {"$ref": "planning-request.schema.json#/$defs/batch"},
+		"searchSummary": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"completed_batches",
+				"completed_depth",
+				"scenario_count",
+				"soft_budget_reached",
+				"hard_budget_reached",
+				"elapsed_ms",
+				"stop_reason"
+			],
+			"properties": {
+				"completed_batches": {"type": "array", "items": {"$ref": "#/$defs/batch"}},
+				"completed_depth": {"type": "integer", "minimum": 0},
+				"scenario_count": {"type": "integer", "minimum": 0},
+				"soft_budget_reached": {"type": "boolean"},
+				"hard_budget_reached": {"type": "boolean"},
+				"elapsed_ms": {"type": "integer", "minimum": 0},
+				"stop_reason": {"type": "string", "minLength": 1}
+			}
+		},
+		"scenarioGeneration": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"generator_version",
+				"namespaces",
+				"deck_hash"
+			],
+			"properties": {
+				"generator_version": {"type": "string", "minLength": 1},
+				"namespaces": {"type": "array", "items": {"type": "string", "minLength": 1}},
+				"deck_hash": {"$ref": "#/$defs/hash"}
+			}
+		},
+		"trace": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"state_hash",
+				"decision_seed",
+				"objective",
+				"versions",
+				"completed_batches",
+				"scenario_generation",
+				"root_action_keys",
+				"records"
+			],
+			"properties": {
+				"state_hash": {"$ref": "#/$defs/hash"},
+				"decision_seed": {"$ref": "#/$defs/hash"},
+				"objective": {"$ref": "objective-snapshot.schema.json"},
+				"versions": {"$ref": "planning-request.schema.json#/$defs/versions"},
+				"completed_batches": {"type": "array", "items": {"$ref": "#/$defs/batch"}},
+				"scenario_generation": {"$ref": "#/$defs/scenarioGeneration"},
+				"root_action_keys": {"type": "array", "items": {"$ref": "#/$defs/hash"}},
+				"records": {"type": "array", "items": {"type": "string"}}
+			}
+		}
+	}
+}

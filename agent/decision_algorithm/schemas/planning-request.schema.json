@@ -1,0 +1,116 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "planning-request.schema.json",
+	"title": "PlanningRequest 1.0.0",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"schema_version",
+		"state",
+		"objective",
+		"budget",
+		"seed_material",
+		"decision_seed",
+		"versions"
+	],
+	"properties": {
+		"schema_version": {"const": "1.0.0"},
+		"state": {"$ref": "battle-state.schema.json"},
+		"objective": {"$ref": "objective-snapshot.schema.json"},
+		"budget": {"oneOf": [
+				{"$ref": "#/$defs/onlineBudget"},
+				{"$ref": "#/$defs/replayBudget"}]},
+		"seed_material": {"$ref": "#/$defs/seedMaterial"},
+		"decision_seed": {"$ref": "#/$defs/hash"},
+		"versions": {"$ref": "#/$defs/versions"}
+	},
+	"$defs": {
+		"hash": {"type": "string", "pattern": "[0-9a-f]{64}"},
+		"batch": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"batch_no",
+				"start_index",
+				"scenario_count",
+				"depth"
+			],
+			"properties": {
+				"batch_no": {"type": "integer", "minimum": 0},
+				"start_index": {"type": "integer", "minimum": 0},
+				"scenario_count": {"type": "integer", "minimum": 1},
+				"depth": {"type": "integer", "minimum": 0}
+			}
+		},
+		"onlineBudget": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"soft_limit_ms",
+				"hard_limit_ms",
+				"initial_scenarios",
+				"base_scenarios",
+				"batch_size",
+				"max_scenarios",
+				"standard_depth",
+				"selective_depth"
+			],
+			"properties": {
+				"soft_limit_ms": {"type": "integer", "minimum": 1},
+				"hard_limit_ms": {"type": "integer", "minimum": 1},
+				"initial_scenarios": {"type": "integer", "minimum": 1},
+				"base_scenarios": {"type": "integer", "minimum": 1},
+				"batch_size": {"type": "integer", "minimum": 1},
+				"max_scenarios": {"type": "integer", "minimum": 1},
+				"standard_depth": {"type": "integer", "minimum": 1},
+				"selective_depth": {"type": "integer", "minimum": 1}
+			}
+		},
+		"replayBudget": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["batches"],
+			"properties": {"batches": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/batch"}}}
+		},
+		"seedMaterial": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"state_hash",
+				"algorithm_version",
+				"rules_version",
+				"config_version",
+				"scenario_generator_version"
+			],
+			"properties": {
+				"state_hash": {"$ref": "#/$defs/hash"},
+				"algorithm_version": {"type": "string", "minLength": 1},
+				"rules_version": {"type": "string", "minLength": 1},
+				"config_version": {"type": "string", "minLength": 1},
+				"scenario_generator_version": {"type": "string", "minLength": 1}
+			}
+		},
+		"versions": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"algorithm",
+				"rules",
+				"card_catalog",
+				"evaluator",
+				"weights",
+				"scenario_generator",
+				"config"
+			],
+			"properties": {
+				"algorithm": {"type": "string", "minLength": 1},
+				"rules": {"type": "string", "minLength": 1},
+				"card_catalog": {"type": "string", "minLength": 1},
+				"evaluator": {"type": "string", "minLength": 1},
+				"weights": {"type": "string", "minLength": 1},
+				"scenario_generator": {"type": "string", "minLength": 1},
+				"config": {"type": "string", "minLength": 1}
+			}
+		}
+	}
+}

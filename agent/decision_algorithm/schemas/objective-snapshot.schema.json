@@ -1,0 +1,44 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "objective-snapshot.schema.json",
+	"title": "ObjectiveSnapshot 1.0.0",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"schema_version",
+		"realtime_target",
+		"realtime_confidence",
+		"realtime_source",
+		"historical_p95",
+		"historical_profile",
+		"historical_sample_count",
+		"base_target",
+		"safety_margin",
+		"safety_target",
+		"cvar_alpha",
+		"score_formula_version"
+	],
+	"properties": {
+		"schema_version": {"const": "1.0.0"},
+		"realtime_target": {"anyOf": [
+				{"type": "integer", "minimum": 0},
+				{"type": "null"}]},
+		"realtime_confidence": {"anyOf": [
+				{"$ref": "#/$defs/probability"},
+				{"type": "null"}]},
+		"realtime_source": {"anyOf": [
+				{"type": "string", "minLength": 1},
+				{"type": "null"}]},
+		"historical_p95": {"type": "integer", "minimum": 0},
+		"historical_profile": {"type": "string", "minLength": 1},
+		"historical_sample_count": {"type": "integer", "minimum": 0},
+		"base_target": {"type": "integer", "minimum": 0},
+		"safety_margin": {"type": "integer", "minimum": 0},
+		"safety_target": {"type": "integer", "minimum": 0},
+		"cvar_alpha": {"$ref": "#/$defs/probability"},
+		"score_formula_version": {"type": "string", "minLength": 1}
+	},
+	"$defs": {
+		"probability": {"type": "string", "format": "decimal", "pattern": "(?:0(?:\\.\\d{1,6})?|1(?:\\.0{1,6})?)"}
+	}
+}

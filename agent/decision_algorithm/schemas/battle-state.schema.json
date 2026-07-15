@@ -1,0 +1,162 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "battle-state.schema.json",
+	"title": "BattleState 1.0.0",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"schema_version",
+		"battle_round",
+		"turn",
+		"remaining_turns",
+		"score",
+		"stage_attribute",
+		"stage_multiplier",
+		"stamina",
+		"focus",
+		"good_condition",
+		"statuses",
+		"hand",
+		"draw_pile",
+		"discard_pile",
+		"exile_pile",
+		"manifest",
+		"usage_counts",
+		"key_card_flags",
+		"drinks",
+		"items",
+		"draw_resources",
+		"swap_resources",
+		"cross_round_resources"
+	],
+	"properties": {
+		"schema_version": {"const": "1.0.0"},
+		"battle_round": {"enum": [
+				"round1",
+				"round2"
+			]},
+		"turn": {"type": "integer", "minimum": 0},
+		"remaining_turns": {"type": "integer", "minimum": 0},
+		"score": {"type": "integer", "minimum": 0},
+		"stage_attribute": {"type": "string", "minLength": 1},
+		"stage_multiplier": {"$ref": "#/$defs/fixedPoint"},
+		"stamina": {"type": "integer", "minimum": 0},
+		"focus": {"type": "integer"},
+		"good_condition": {"type": "integer"},
+		"statuses": {"type": "array", "items": {"$ref": "#/$defs/namedCount"}},
+		"hand": {"type": "array", "items": {"$ref": "#/$defs/cardInstance"}},
+		"draw_pile": {"$ref": "#/$defs/cardCounts"},
+		"discard_pile": {"$ref": "#/$defs/cardCounts"},
+		"exile_pile": {"$ref": "#/$defs/cardCounts"},
+		"manifest": {"$ref": "#/$defs/manifest"},
+		"usage_counts": {"type": "array", "items": {"$ref": "#/$defs/namedCount"}},
+		"key_card_flags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+		"drinks": {"type": "array", "items": {"$ref": "#/$defs/namedCount"}},
+		"items": {"type": "array", "items": {"$ref": "#/$defs/namedCount"}},
+		"draw_resources": {"type": "array", "items": {"$ref": "#/$defs/namedCount"}},
+		"swap_resources": {"type": "array", "items": {"$ref": "#/$defs/namedCount"}},
+		"cross_round_resources": {"type": "array", "items": {"$ref": "#/$defs/namedCount"}}
+	},
+	"$defs": {
+		"fixedPoint": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"value",
+				"scale"
+			],
+			"properties": {"value": {"type": "integer"}, "scale": {"type": "integer", "minimum": 1}}
+		},
+		"namedCount": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"name",
+				"count"
+			],
+			"properties": {"name": {"type": "string", "minLength": 1}, "count": {"type": "integer", "minimum": 0}}
+		},
+		"cardSpec": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"card_id",
+				"upgrade_level",
+				"effect_version"
+			],
+			"properties": {
+				"card_id": {"type": "string", "minLength": 1},
+				"upgrade_level": {"type": "integer", "minimum": 0},
+				"effect_version": {"type": "string", "minLength": 1}
+			}
+		},
+		"cardInstance": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"deck_card_id",
+				"spec",
+				"state"
+			],
+			"properties": {
+				"deck_card_id": {"type": "string", "minLength": 1},
+				"spec": {"$ref": "#/$defs/cardSpec"},
+				"state": {"type": "string", "minLength": 1}
+			}
+		},
+		"cardCount": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"spec",
+				"count"
+			],
+			"properties": {"spec": {"$ref": "#/$defs/cardSpec"}, "count": {"type": "integer", "minimum": 1}}
+		},
+		"cardCounts": {"type": "array", "items": {"$ref": "#/$defs/cardCount"}},
+		"evidence": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"evidence_id",
+				"kind",
+				"path",
+				"sha256"
+			],
+			"properties": {
+				"evidence_id": {"type": "string", "minLength": 1},
+				"kind": {"type": "string", "minLength": 1},
+				"path": {"type": "string", "minLength": 1},
+				"sha256": {"type": "string", "pattern": "[0-9a-f]{64}"}
+			}
+		},
+		"manifestEntry": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"spec",
+				"count",
+				"source",
+				"evidence"
+			],
+			"properties": {
+				"spec": {"$ref": "#/$defs/cardSpec"},
+				"count": {"type": "integer", "minimum": 1},
+				"source": {"type": "string", "minLength": 1},
+				"evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}}
+			}
+		},
+		"manifest": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"total_count",
+				"entries"
+			],
+			"properties": {
+				"total_count": {"type": "integer", "minimum": 1},
+				"entries": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/manifestEntry"}}
+			}
+		}
+	}
+}
