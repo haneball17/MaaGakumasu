@@ -37,6 +37,7 @@ from agent.hif.adapters.exam_reader import (
     infer_card_playability,
 )
 from agent.hif.adapters.route_state import RouteStateRejected, assemble_route_state
+from agent.hif.adapters.active_effects import parse_active_effects
 from agent.hif.adapters.hif_state_reader import HIFStateReader
 from agent.hif.decisions.round1_fallback import (
     choose_observed_round1_recovery_card,
@@ -4053,6 +4054,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                         "box": list(getattr(result, "box", [])),
                     }
                 )
+        active_effects = parse_active_effects(read["text"] for read in list_reads)
         list_before = self._capture_evidence(current_image, "status_effect_list_before_close")
         list_close_roi = [320, 710, 80, 90]
         if not self._click_box_center(context, list_close_roi, double=False):
@@ -4073,6 +4075,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                 "detail_close_box": close_box,
                 "list_close_roi": list_close_roi,
                 "reads": list_reads,
+                "active_effects": active_effects.to_journal(),
                 "controller_inputs": controller_inputs,
             },
             before=list_before,
