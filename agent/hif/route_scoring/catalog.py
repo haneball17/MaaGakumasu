@@ -26,6 +26,17 @@ _SPECS = (
         source=f"{_MASTER_SOURCE}:669",
     ),
     CardSpec(
+        card_id="始まりの合図",
+        title="始まりの合図",
+        upgrade=UpgradeLevel.BASE,
+        stamina_cost=3,
+        focus_cost=0,
+        lesson_once=True,
+        effect_version=_EFFECT_VERSION,
+        effect=CardEffect(good_condition_turns=5),
+        source=f"{_MASTER_SOURCE}:1032",
+    ),
+    CardSpec(
         card_id="祝福",
         title="祝福",
         upgrade=UpgradeLevel.PLUS,
