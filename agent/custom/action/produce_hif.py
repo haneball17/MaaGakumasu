@@ -3917,6 +3917,262 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
         )
         return self._finish_observation(context, screen_state)
 
+    def _probe_status_detail(self, context: Context, image, screen_state: str, slot: int) -> bool:
+        """点击当前证据帧中的一个状态图标，记录 tooltip 后原位关闭。"""
+
+        slot_centers = {3: 378, 4: 440, 5: 503, 6: 566, 7: 629, 8: 691, 9: 754}
+        center_y = slot_centers.get(slot)
+        if center_y is None:
+            return self._stop_unsupported(context, screen_state, "status_detail_slot_not_supported")
+        if not self._matches_screen_profile(context, image, screen_state):
+            return self._stop_unsupported(context, screen_state, "round_page_not_confirmed_before_status_detail")
+        before = self._capture_evidence(image, f"{screen_state}_status_{slot}_before")
+        icon_roi = [15, center_y - 25, 55, 50]
+        if not self._click_box_center(context, icon_roi, double=False):
+            return self._stop_unsupported(context, screen_state, "status_detail_open_click_failed")
+        time.sleep(self.CLICK_DELAY)
+        detail_image = self._get_screenshot_or_stop(context, "status_detail")
+        if detail_image is None:
+            return True
+        detail_evidence = self._capture_evidence(detail_image, f"{screen_state}_status_{slot}_opened")
+        if not frame_changed(before, detail_evidence):
+            return self._stop_unsupported(context, screen_state, "status_detail_not_opened")
+        detail = self._run_ocr(
+            context,
+            detail_image,
+            f"ProduceRecognitionHIFStatusDetail{slot}",
+            [r".*"],
+            [70, 160, 620, 920],
+        )
+        reads = []
+        for result in getattr(detail, "all_results", ()) if detail else ():
+            text = str(getattr(result, "text", "")).strip()
+            if text:
+                reads.append(
+                    {
+                        "text": text,
+                        "score": float(getattr(result, "score", 0.0)),
+                        "box": list(getattr(result, "box", [])),
+                    }
+                )
+        self._record_journal(
+            "status_detail",
+            "probe_status_detail",
+            "observed",
+            details={"slot": slot, "icon_roi": icon_roi, "reads": reads, "controller_inputs": 1},
+            before=before,
+            after=detail_evidence,
+        )
+        close = self._run_ocr(
+            context,
+            detail_image,
+            "ProduceRecognitionHIFStatusDetailClose",
+            [r".*閉じる.*"],
+            [180, 1080, 360, 140],
+        )
+        close_box = list(getattr(getattr(close, "best_result", None), "box", [])) if close and close.hit else []
+        if len(close_box) != 4 or not self._click_box_center(context, close_box, double=False):
+            return self._stop_unsupported(context, "status_detail", "status_detail_close_not_confirmed")
+        time.sleep(self.CLICK_DELAY)
+        returned_image = self._get_screenshot_or_stop(context, screen_state)
+        if returned_image is None:
+            return True
+        returned = self._capture_evidence(returned_image, f"{screen_state}_status_{slot}_returned")
+        if not frame_changed(detail_evidence, returned):
+            return self._stop_unsupported(context, "status_detail", "round_page_not_changed_after_status_detail_close")
+        if not self._matches_screen_profile(context, returned_image, screen_state):
+            return self._close_status_detail(context, returned_image, screen_state)
+        self._record_journal(
+            "status_detail",
+            "close_status_detail",
+            "verified",
+            details={"slot": slot, "icon_roi": icon_roi, "controller_inputs": 2},
+            before=detail_evidence,
+            after=returned,
+        )
+        return self._finish_observation(context, screen_state)
+
+    def _close_status_detail(self, context: Context, image, screen_state: str) -> bool:
+        """从已打开的效果详情弹窗走明确关闭按钮恢复 Round。"""
+
+        title = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFStatusDetailTitleForClose",
+            [r".*効果詳細.*"],
+            [20, 100, 680, 120],
+        )
+        close = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFStatusDetailCloseRecovery",
+            [r".*閉じる.*"],
+            [180, 1080, 360, 140],
+        )
+        close_box = list(getattr(getattr(close, "best_result", None), "box", [])) if close and close.hit else []
+        controller_inputs = 0
+        current_image = image
+        before = self._capture_evidence(image, "status_detail_close_recovery_before")
+        if title and title.hit:
+            if len(close_box) != 4 or not self._click_box_center(context, close_box, double=False):
+                return self._stop_unsupported(context, "status_detail", "status_detail_close_recovery_click_failed")
+            controller_inputs += 1
+            time.sleep(self.CLICK_DELAY)
+            current_image = self._get_screenshot_or_stop(context, "status_effect_list")
+            if current_image is None:
+                return True
+        if self._matches_screen_profile(context, current_image, screen_state):
+            returned = self._capture_evidence(current_image, "status_detail_close_recovery_after")
+            self._record_journal(
+                "status_detail",
+                "close_status_detail_recovery",
+                "verified",
+                details={"close_box": close_box, "controller_inputs": controller_inputs},
+                before=before,
+                after=returned,
+            )
+            return self._finish_observation(context, screen_state)
+
+        list_anchor = self._run_ocr(
+            context,
+            current_image,
+            "ProduceRecognitionHIFStatusEffectList",
+            [r".*お姉さんの感覚.*", r".*発動予約.*", r".*パラメータ上昇量増加.*"],
+            [20, 20, 680, 720],
+        )
+        if not list_anchor or not list_anchor.hit:
+            return self._stop_unsupported(context, "status_detail", "status_effect_list_not_confirmed")
+        list_reads = []
+        for result in getattr(list_anchor, "all_results", ()):
+            text = str(getattr(result, "text", "")).strip()
+            if text:
+                list_reads.append(
+                    {
+                        "text": text,
+                        "score": float(getattr(result, "score", 0.0)),
+                        "box": list(getattr(result, "box", [])),
+                    }
+                )
+        list_before = self._capture_evidence(current_image, "status_effect_list_before_close")
+        list_close_roi = [320, 710, 80, 90]
+        if not self._click_box_center(context, list_close_roi, double=False):
+            return self._stop_unsupported(context, "status_detail", "status_effect_list_close_click_failed")
+        controller_inputs += 1
+        time.sleep(self.CLICK_DELAY)
+        returned_image = self._get_screenshot_or_stop(context, screen_state)
+        if returned_image is None:
+            return True
+        returned = self._capture_evidence(returned_image, "status_effect_list_closed")
+        if not self._matches_screen_profile(context, returned_image, screen_state):
+            return self._stop_unsupported(context, "status_detail", "status_effect_list_close_failed")
+        self._record_journal(
+            "status_detail",
+            "close_status_effect_list",
+            "verified",
+            details={
+                "detail_close_box": close_box,
+                "list_close_roi": list_close_roi,
+                "reads": list_reads,
+                "controller_inputs": controller_inputs,
+            },
+            before=list_before,
+            after=returned,
+        )
+        return self._finish_observation(context, screen_state)
+
+    def _probe_named_status_effect(self, context: Context, image, screen_state: str, effect_name: str) -> bool:
+        """从已确认的状态图标进入效果列表，再按完整名称读取指定效果详情。"""
+
+        if effect_name not in {"消費体力減少"}:
+            return self._stop_unsupported(context, screen_state, "status_effect_name_not_authorized")
+        if not self._matches_screen_profile(context, image, screen_state):
+            return self._stop_unsupported(context, screen_state, "round_page_not_confirmed_before_named_status_probe")
+        icon_roi = [15, 604, 55, 50]
+        if not self._click_box_center(context, icon_roi, double=False):
+            return self._stop_unsupported(context, screen_state, "named_status_initial_detail_open_failed")
+        time.sleep(self.CLICK_DELAY)
+        detail_image = self._get_screenshot_or_stop(context, "status_detail")
+        if detail_image is None:
+            return True
+        close = self._run_ocr(
+            context,
+            detail_image,
+            "ProduceRecognitionHIFNamedStatusInitialClose",
+            [r".*閉じる.*"],
+            [180, 1080, 360, 140],
+        )
+        close_box = list(getattr(getattr(close, "best_result", None), "box", [])) if close and close.hit else []
+        if len(close_box) == 4:
+            if not self._click_box_center(context, close_box, double=False):
+                return self._stop_unsupported(context, "status_detail", "named_status_initial_close_failed")
+            time.sleep(self.CLICK_DELAY)
+            list_image = self._get_screenshot_or_stop(context, "status_effect_list")
+            if list_image is None:
+                return True
+        else:
+            list_anchor = self._run_ocr(
+                context,
+                detail_image,
+                "ProduceRecognitionHIFNamedStatusListAnchor",
+                [r".*お姉さんの感覚.*", r".*発動予約.*", r".*パラメータ上昇量増加.*"],
+                [20, 20, 680, 720],
+            )
+            if not list_anchor or not list_anchor.hit:
+                return self._stop_unsupported(context, "status_effect_list", "named_status_list_not_confirmed")
+            list_image = detail_image
+        target = self._run_ocr(
+            context,
+            list_image,
+            "ProduceRecognitionHIFNamedStatusTarget",
+            [rf".*{re.escape(effect_name)}.*"],
+            [20, 20, 680, 740],
+        )
+        target_box = list(getattr(getattr(target, "best_result", None), "box", [])) if target and target.hit else []
+        icon_target = [50, target_box[1] - 20, 90, 75] if len(target_box) == 4 else []
+        if len(icon_target) != 4 or not self._click_box_center(context, icon_target, double=False):
+            return self._stop_unsupported(context, "status_effect_list", "named_status_target_not_confirmed")
+        time.sleep(self.CLICK_DELAY)
+        named_image = self._get_screenshot_or_stop(context, "status_detail")
+        if named_image is None:
+            return True
+        named_title = self._run_ocr(
+            context,
+            named_image,
+            "ProduceRecognitionHIFNamedStatusDetailTitle",
+            [r".*効果詳細.*"],
+            [20, 100, 680, 120],
+        )
+        if not named_title or not named_title.hit:
+            return self._stop_unsupported(context, "status_effect_list", "named_status_detail_not_opened")
+        named_evidence = self._capture_evidence(named_image, f"status_effect_{effect_name}")
+        detail = self._run_ocr(
+            context,
+            named_image,
+            "ProduceRecognitionHIFNamedStatusDetail",
+            [r".*"],
+            [20, 100, 680, 1000],
+        )
+        reads = []
+        for result in getattr(detail, "all_results", ()) if detail else ():
+            text = str(getattr(result, "text", "")).strip()
+            if text:
+                reads.append(
+                    {
+                        "text": text,
+                        "score": float(getattr(result, "score", 0.0)),
+                        "box": list(getattr(result, "box", [])),
+                    }
+                )
+        self._record_journal(
+            "status_detail",
+            "probe_named_status_effect",
+            "observed",
+            details={"effect_name": effect_name, "reads": reads, "controller_inputs": 3},
+            before=named_evidence,
+        )
+        # 复用双层正式恢复：当前是单项详情，随后自动关闭效果列表。
+        return self._close_status_detail(context, named_image, screen_state)
+
     def _probe_round_details_metrics(
         self,
         context: Context,
@@ -4731,6 +4987,20 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             return self._probe_turn_roi_candidates(context, before_image, screen_state)
         if params.get("round_probe") == "counter_roi_candidates":
             return self._probe_counter_roi_candidates(context, before_image, screen_state)
+        if params.get("round_probe") == "status_detail":
+            probe_mode = parse_execution_mode(params.get("round_probe_execution_mode"))
+            if probe_mode is not HIFExecutionMode.SINGLE_STEP:
+                return self._stop_unsupported(context, screen_state, "status_detail_probe_requires_single_step")
+            return self._probe_status_detail(context, before_image, screen_state, int(params.get("status_slot", 0)))
+        if params.get("round_probe") == "status_detail_close":
+            return self._close_status_detail(context, before_image, screen_state)
+        if params.get("round_probe") == "named_status_effect":
+            probe_mode = parse_execution_mode(params.get("round_probe_execution_mode"))
+            if probe_mode is not HIFExecutionMode.SINGLE_STEP:
+                return self._stop_unsupported(context, screen_state, "named_status_effect_probe_requires_single_step")
+            return self._probe_named_status_effect(
+                context, before_image, screen_state, str(params.get("status_effect_name", ""))
+            )
         if params.get("round_probe") == "details_metrics":
             probe_mode = parse_execution_mode(params.get("round_probe_execution_mode"))
             if probe_mode is not HIFExecutionMode.SINGLE_STEP:

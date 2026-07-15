@@ -88,6 +88,22 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="零点击读取 Round1 再演/使用次数候选区域；仅采证，不恢复状态或出牌",
     )
     parser.add_argument(
+        "--round1-status-detail-slot",
+        type=int,
+        choices=range(3, 10),
+        help="只读打开指定左侧状态行(3-9)的详情，记录 OCR 后原位关闭",
+    )
+    parser.add_argument(
+        "--round1-status-detail-close",
+        action="store_true",
+        help="从已打开的效果详情弹窗点击明确的閉じる并验证恢复 Round1",
+    )
+    parser.add_argument(
+        "--round1-status-effect-probe",
+        choices=("消費体力減少",),
+        help="从效果列表按完整名称打开指定状态详情，记录后逐层关闭",
+    )
+    parser.add_argument(
         "--round1-details-observe",
         action="store_true",
         help="仅打开并关闭已校准的 Round1 详情面板，读取分数/审查基准/倍率；不选牌、不出牌",
@@ -401,6 +417,9 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
             args.round1_selected_card_detail_probe,
             args.round1_turn_roi_probe,
             args.round1_counter_roi_probe,
+            args.round1_status_detail_slot is not None,
+            args.round1_status_detail_close,
+            args.round1_status_effect_probe is not None,
             args.round1_details_observe,
             args.round1_state_observe,
             args.round1_play_one,
@@ -643,6 +662,73 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
                                 "round": "round1",
                                 "execution_mode": "observe_and_stop",
                                 "round_probe": "counter_roi_candidates",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_status_detail_slot is not None:
+        if not args.single_step:
+            raise ValueError("Round1 状态详情探针必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "status_detail",
+                                "round_probe_execution_mode": "single_step",
+                                "status_slot": args.round1_status_detail_slot,
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["[JumpBack]ProduceHIFRound1Flag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_status_detail_close:
+        if not args.single_step:
+            raise ValueError("Round1 状态详情关闭必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "status_detail_close",
+                            }
+                        }
+                    }
+                },
+                "ProduceEntryHIF": {"next": ["ProduceHIFRound1ActionFlag", "ProduceHIFUnknownStop"]},
+            },
+        )
+    if args.round1_status_effect_probe is not None:
+        if not args.single_step:
+            raise ValueError("Round1 指定状态效果探针必须与 --single-step 一起使用")
+        override = _deep_merge(
+            override,
+            {
+                "ProduceHIFRound1ActionFlag": {
+                    "action": {
+                        "param": {
+                            "custom_action_param": {
+                                "preset_id": "rinami_good_condition_safe",
+                                "round": "round1",
+                                "execution_mode": "observe_and_stop",
+                                "round_probe": "named_status_effect",
+                                "round_probe_execution_mode": "single_step",
+                                "status_effect_name": args.round1_status_effect_probe,
                             }
                         }
                     }
@@ -991,6 +1077,9 @@ def main(argv: list[str] | None = None) -> int:
         "round1_selected_card_detail_probe": args.round1_selected_card_detail_probe,
         "round1_turn_roi_probe": args.round1_turn_roi_probe,
         "round1_counter_roi_probe": args.round1_counter_roi_probe,
+        "round1_status_detail_slot": args.round1_status_detail_slot,
+        "round1_status_detail_close": args.round1_status_detail_close,
+        "round1_status_effect_probe": args.round1_status_effect_probe,
         "round1_state_observe": args.round1_state_observe,
         "round1_play_one": args.round1_play_one,
         "round1_confirm_selected": args.round1_confirm_selected,

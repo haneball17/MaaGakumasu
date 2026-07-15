@@ -1237,6 +1237,38 @@ def test_counter_roi_probe_records_candidates_without_controller_input(monkeypat
     assert tasks == ["ProduceHIFRound1ReachedStop"]
 
 
+def test_status_detail_probe_opens_records_and_restores_the_same_round(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceCardsHIF()
+    action.CLICK_DELAY = 0
+    records = []
+    clicks = []
+    tasks = []
+    screenshots = iter((b"detail", b"returned"))
+    ocr = SimpleNamespace(
+        hit=True,
+        best_result=SimpleNamespace(box=[230, 1115, 260, 85]),
+        all_results=(
+            SimpleNamespace(text="スキルカード使用数追加", score=0.99, box=[100, 200, 300, 40]),
+            SimpleNamespace(text="あと1回", score=0.98, box=[100, 250, 200, 40]),
+        )
+    )
+
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(action, "_matches_screen_profile", lambda *args: True)
+    monkeypatch.setattr(action, "_click_box_center", lambda context, roi, **kwargs: clicks.append(roi) or True)
+    monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda *args: next(screenshots))
+    monkeypatch.setattr(action, "_run_ocr", lambda *args, **kwargs: ocr)
+    context = SimpleNamespace(run_task=lambda task: tasks.append(task))
+
+    assert action._probe_status_detail(context, b"round", "round1", 7)
+    assert clicks == [[15, 604, 55, 50], [230, 1115, 260, 85]]
+    assert records[-2][0][1:3] == ("probe_status_detail", "observed")
+    assert records[-2][1]["details"]["reads"][0]["text"] == "スキルカード使用数追加"
+    assert records[-1][0][1:3] == ("close_status_detail", "verified")
+    assert tasks == ["ProduceHIFRound1ReachedStop"]
+
+
 def test_live_skip_mode_is_safe_stop_until_a_target_page_postcondition_is_calibrated(monkeypatch):
     module = _load_action_module()
     action = module.ProduceHIFLiveObserve()
