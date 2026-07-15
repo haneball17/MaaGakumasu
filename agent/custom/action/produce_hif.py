@@ -33,6 +33,8 @@ from agent.hif.adapters.exam_reader import (
     NumericRead,
     CardDetection,
     ExamStateReader,
+    ExamStateRejected,
+    build_exam_state,
     build_hand_summary,
     infer_card_playability,
 )
@@ -4778,13 +4780,17 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             reader = ExamStateReader.from_context(context)
             health = self._get_health(context, before_image)
             observation = reader.read_exam_observation(round_, total_turns, health["current"] if health else None)
-            if observation.state is None:
+            initial_stamina_read = observation.numerics.get("stamina")
+            initial_stamina = initial_stamina_read.value if initial_stamina_read else None
+            initial_turn_read = observation.numerics.get("turn")
+            initial_turn = initial_turn_read.value if initial_turn_read else None
+            if initial_turn is None:
                 self._record_journal(
                     screen_state,
                     "probe_hand_details_map",
                     "rejected",
                     details={
-                        "reason": "round_hand_probe_state_unreadable",
+                        "reason": "round_hand_probe_turn_unreadable",
                         "missing_fields": observation.missing_fields,
                         "issues": [
                             {"field": issue.field, "code": issue.code.value, "detail": issue.detail}
@@ -4793,8 +4799,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                     },
                     before=before,
                 )
-                return self._stop_unsupported(context, screen_state, "round_hand_probe_state_unreadable")
-            initial_turn = observation.state.turn
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_turn_unreadable")
             missing_before = observation.missing_fields
             try:
                 details = self._probe_round_hand_details(
@@ -4817,7 +4822,8 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             if not isinstance(details, list):
                 return True
             session = get_runtime_hif_session()
-            active = self._complete_current_run_hand_observation(observation, session)
+            self._apply_current_run_hand_detail_names(observation.detections, session)
+            active = [detection for detection in observation.detections if not detection.suppressed_reason]
             topic_action = None
             if params.get("round_probe") in {
                 "hand_details_map_deck_observe",
@@ -4842,13 +4848,33 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                 if selected_marker and selected_marker.hit:
                     return self._stop_unsupported(context, screen_state, "deck_probe_did_not_clear_selected_hand")
                 post_health = self._get_health(context, returned_image)
-                observation = reader.read_exam_observation(round_, total_turns, post_health["current"] if post_health else None)
-                if observation.state.turn <= 0 < initial_turn:
-                    observation.state.turn = initial_turn
+                # 本分支只打开/关闭详情页并已确认返回同一 Round；关闭动画期 OCR 失读时，
+                # 可保留同一次运行、同一 Round 的前帧体力，不允许使用跨运行缓存或默认值。
+                health_for_rebuild = post_health or health
+                stamina_for_rebuild = health_for_rebuild["current"] if health_for_rebuild else initial_stamina
+                observation = reader.read_exam_observation(
+                    round_, total_turns, stamina_for_rebuild
+                )
+                post_turn_read = observation.numerics.get("turn")
+                if post_turn_read is None or post_turn_read.value is None:
                     observation.numerics["turn"] = NumericRead("turn", f"retained_initial={initial_turn}", initial_turn)
                 observation.numerics["deck_size"] = NumericRead("deck_size", str(deck_size), deck_size)
-                observation.state.deck_size = deck_size
-                observation.missing_fields = tuple(field for field in observation.missing_fields if field != "deck_size")
+                if stamina_for_rebuild is None:
+                    return self._stop_unsupported(context, screen_state, "deck_probe_health_unreadable")
+                try:
+                    observation.state = build_exam_state(
+                        build_hand_summary(observation.detections),
+                        observation.numerics,
+                        round_,
+                        total_turns,
+                        stamina_for_rebuild,
+                        observation.round_metrics,
+                    )
+                except ExamStateRejected as error:
+                    return self._stop_unsupported(context, screen_state, f"deck_probe_state_rebuild_rejected:{len(error.issues)}")
+                observation.missing_fields = tuple(
+                    field for field in observation.missing_fields if field not in {"deck_size", "turn"}
+                )
                 active = self._complete_current_run_hand_observation(observation, session)
                 verified_detail_names = [normalize_card_name(str(detail.get("detail_title", ""))) for detail in details]
                 topic_action = choose_high_good_condition_topic_card(observation.state, verified_detail_names)
@@ -4977,15 +5003,19 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                     "missing_before": missing_before,
                     "missing_after": observation.missing_fields,
                     "mapped_hand": [normalize_card_name(detection.card_name) for detection in active],
-                    "state": {
-                        "round": observation.state.round.value,
-                        "turn": observation.state.turn,
-                        "good_condition": observation.state.good_condition_turns,
-                        "focus": observation.state.focus,
-                        "stamina": observation.state.stamina,
-                        "reprise": observation.state.reprise_count,
-                        "deck_size": observation.state.deck_size,
-                    },
+                    "state": (
+                        {
+                            "round": observation.state.round.value,
+                            "turn": observation.state.turn,
+                            "good_condition": observation.state.good_condition_turns,
+                            "focus": observation.state.focus,
+                            "stamina": observation.state.stamina,
+                            "reprise": observation.state.reprise_count,
+                            "deck_size": observation.state.deck_size,
+                        }
+                        if observation.state is not None
+                        else None
+                    ),
                     "target_card": topic_action.target_card if topic_action else None,
                     "target_reason": topic_action.reason if topic_action else "",
                     "controller_inputs": len(details),
