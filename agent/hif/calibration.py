@@ -46,7 +46,7 @@ class HIFRoiCalibration:
     def is_exam_execution_ready(self) -> bool:
         """只有全部出牌必需数值均有同一份可追溯校准时才允许自动执行。"""
 
-        required = {"good_condition", "reprise", "focus", "turn", "flow", "deck_size", "p_drinks", "stamina"}
+        required = {"good_condition", "reprise", "focus", "turn", "flow", "deck_size", "stamina"}
         return bool(self.device_id and self.evidence_sha256 and required.issubset(self.exam_numeric))
 
     def supports_exam_fields(self, required: set[str]) -> bool:

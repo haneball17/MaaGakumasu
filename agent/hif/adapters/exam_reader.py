@@ -22,17 +22,13 @@
 from __future__ import annotations
 
 import time
+from enum import Enum
 from typing import TYPE_CHECKING, Protocol
 from dataclasses import dataclass
 
 from agent.hif.calibration import load_hif_roi_calibration
-from agent.hif.round_metrics import RoundMetrics, build_round_metrics
-from agent.hif.decisions.state import (
-    ParamSet,
-    ExamRound,
-    ExamState,
-    HandSummary,
-)
+from agent.hif.round_metrics import RoundMetrics, MetricIssueCode, build_round_metrics
+from agent.hif.decisions.state import ExamRound, ExamState, HandSummary
 from agent.hif.adapters.card_dict import (
     normalize_card_name,
     build_card_name_dict,
@@ -134,6 +130,12 @@ class CardDetection:
     suppressed_reason: str = ""
 
 
+class ReadStatus(str, Enum):
+    OK = "ok"
+    MISSING = "missing"
+    CONFLICT = "conflict"
+
+
 @dataclass(slots=True)
 class NumericRead:
     """单个数值字段的 OCR 读取结果。
@@ -146,6 +148,12 @@ class NumericRead:
     raw: str
     value: int | None
     flow: str | None = None  # 仅 flow 字段使用
+    status: ReadStatus | None = None
+    samples: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if self.status is None:
+            self.status = ReadStatus.OK if self.value is not None or self.flow is not None else ReadStatus.MISSING
 
 
 @dataclass(slots=True)
@@ -157,12 +165,30 @@ class ExamStateObservation:
     未校准的 ROI 当作真实数值。
     """
 
-    state: ExamState
+    state: ExamState | None
     detections: list[CardDetection]
     numerics: dict[str, NumericRead]
     round_metrics: RoundMetrics
     missing_fields: tuple[str, ...]
     screen_confidence: float
+    issues: tuple["ExamStateIssue", ...] = ()
+    grey_cards: tuple[str, ...] = ()
+    unresolved_playability: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class ExamStateIssue:
+    field: str
+    code: ReadStatus
+    detail: str = ""
+
+
+class ExamStateRejected(ValueError):
+    """必需状态缺失或冲突，禁止构造带默认值的决策输入。"""
+
+    def __init__(self, issues: tuple[ExamStateIssue, ...]) -> None:
+        self.issues = issues
+        super().__init__(", ".join(f"{issue.field}:{issue.code.value}" for issue in issues))
 
 
 def _hand_card_name_roi(box: tuple[int, int, int, int]) -> tuple[int, int, int, int]:
@@ -272,19 +298,58 @@ def build_exam_state(
     total_turns: int,
     stamina: int,
     round_metrics: RoundMetrics | None = None,
+    *,
+    cards_played: int | None = None,
+    oneesan_used: bool | None = None,
+    natural_finisher_used: bool | None = None,
 ) -> ExamState:
     """从 HandSummary + 数值字段组装 ExamState（纯逻辑，可单测）。
 
-    numerics 缺失字段回退默认值（0/空），保证降级可用——
-    即便部分数值字段 OCR 失败，决策大脑仍能基于手牌信息出牌。
+    决策输入只在所有直接依赖字段都有可信值时构造。缺失或冲突会类型化
+    拒绝，绝不把 ``0``、默认流或部分 Round 指标伪装成当前状态。
     """
-    def _int(key: str) -> int:
-        v = numerics.get(key)
-        return v.value if v and v.value is not None else 0
+    issues: list[ExamStateIssue] = []
+    for key in _CARD_EXECUTION_NUMERICS:
+        read = numerics.get(key)
+        if read is None:
+            issues.append(ExamStateIssue(key, ReadStatus.MISSING))
+        elif read.status is not ReadStatus.OK:
+            issues.append(ExamStateIssue(key, read.status, repr(read.samples)))
+        elif key == "flow" and read.flow is None:
+            issues.append(ExamStateIssue(key, ReadStatus.MISSING))
+        elif key != "flow" and read.value is None:
+            issues.append(ExamStateIssue(key, ReadStatus.MISSING))
+    if stamina < 0:
+        issues.append(ExamStateIssue("stamina", ReadStatus.MISSING))
+    for field, value in (
+        ("cards_played", cards_played),
+        ("oneesan_used", oneesan_used),
+        ("natural_finisher_used", natural_finisher_used),
+    ):
+        if value is None:
+            issues.append(ExamStateIssue(field, ReadStatus.MISSING, "需要同局已验证账本"))
+    if round_metrics is None:
+        issues.extend(
+            (
+                *(ExamStateIssue(field, ReadStatus.MISSING) for field in ("param_vo", "param_da", "param_vi")),
+                ExamStateIssue("current_score", ReadStatus.MISSING),
+                ExamStateIssue("stage_multiplier", ReadStatus.MISSING),
+            )
+        )
+    else:
+        if round_metrics.params is None:
+            issues.extend(ExamStateIssue(field, ReadStatus.MISSING) for field in ("param_vo", "param_da", "param_vi"))
+        if round_metrics.current_score is None:
+            issues.append(ExamStateIssue("current_score", ReadStatus.MISSING))
+        if round_metrics.stage_multiplier is None:
+            issues.append(ExamStateIssue("stage_multiplier", ReadStatus.MISSING))
+    if issues:
+        raise ExamStateRejected(tuple(issues))
 
-    def _flow() -> str:
-        v = numerics.get("flow")
-        return v.flow if v and v.flow else "Vi"  # 默认 Vi（姫崎莉波バランス 流1）
+    def _int(key: str) -> int:
+        value = numerics[key].value
+        assert value is not None
+        return value
 
     # P ドリンク列表：OCR raw 按逗号分割（实机时由 read_numerics 解析）
     drinks_raw = numerics.get("p_drinks")
@@ -294,20 +359,20 @@ def build_exam_state(
         round=round_,
         turn=_int("turn"),
         total_turns=total_turns,
-        current_flow=_flow(),
+        current_flow=numerics["flow"].flow or "",  # 已由上方完整性检查保证非空
         good_condition_turns=_int("good_condition"),
         focus=_int("focus"),
         stamina=stamina,
         hand=hand,
         reprise_count=_int("reprise"),
-        cards_played=0,  # 本レッスン已出牌数，当前不识别（决策不依赖此字段）
+        cards_played=cards_played,
         deck_size=_int("deck_size"),
-        oneesan_used=False,  # 是否本レッスン已用お姉さん，需跨回合状态（Step4 在 action 内维护）
-        natural_finisher_used=False,  # 同上
+        oneesan_used=oneesan_used,
+        natural_finisher_used=natural_finisher_used,
         available_p_drinks=p_drinks,
-        params=round_metrics.params if round_metrics and round_metrics.is_complete else ParamSet(),
-        current_score=round_metrics.current_score if round_metrics and round_metrics.is_complete else None,
-        stage_multiplier=round_metrics.stage_multiplier if round_metrics and round_metrics.is_complete else None,
+        params=round_metrics.params,
+        current_score=round_metrics.current_score if round_metrics else None,
+        stage_multiplier=round_metrics.stage_multiplier if round_metrics else None,
     )
 
 
@@ -479,46 +544,48 @@ class ExamStateReader:
                 # 未校准 ROI 跳过，避免把页面其他数字误读成状态。
                 continue
             expected = _NUMERIC_EXPECTED.get(key, [".*\\d+.*"])
-            raw = self._read_numeric_raw(key, expected, roi_spec.roi)
-            numerics[key] = _parse_numeric(key, raw)
+            numerics[key] = self._read_numeric(key, expected, roi_spec.roi)
         return numerics
 
     def read_round_metrics(self) -> RoundMetrics:
         """只读取已校准的 Round 参数/分数 ROI；缺项不会猜测或继承旧帧值。"""
 
         reads: dict[str, str] = {}
+        conflicts: set[str] = set()
         for key, roi_spec in _ROUND_METRIC_ROI.items():
             if not any(roi_spec.roi):
                 continue
             expected = [r"\\d+(?:[,.]\\d+)*(?:\\s*(?:%|％|倍))?"]
-            raw = self._read_numeric_raw(key, expected, roi_spec.roi)
-            reads[key] = raw
-        return build_round_metrics(reads)
+            read = self._read_numeric(key, expected, roi_spec.roi)
+            reads[key] = read.raw if read.status is ReadStatus.OK else ""
+            if read.status is ReadStatus.CONFLICT:
+                conflicts.add(key)
+        return build_round_metrics(reads, conflicting_fields=frozenset(conflicts))
 
-    def _read_numeric_raw(self, key: str, expected: list[str], roi: tuple[int, int, int, int]) -> str:
-        """读取单个数值，模板优先修正回合 OCR，普通数值要求三次中至少两次一致。
-
-        HIF 的动态舞台背景会让单次 OCR 偶发把 ``7`` 读为 ``1``、把 ``40``
-        读为 ``2``。一次空读不会抹掉两次同值，但三种不同读数仍会保留为
-        缺失字段并阻止执行，不能向策略层伪造一个看似有效的数值。
-        """
+    def _read_numeric(self, key: str, expected: list[str], roi: tuple[int, int, int, int]) -> NumericRead:
+        """三次读取至少两次一致；多值冲突与纯缺失保持不同类型。"""
 
         if key == "turn":
             template_reader = getattr(self.ocr, "run_turn_digit_template", None)
             if callable(template_reader):
                 template_raw, _ = template_reader()
                 if template_raw:
-                    return template_raw
-        if key == "flow":
-            return self.ocr.run_ocr(f"HIFNumeric_{key}", expected, roi) or ""
+                    parsed = _parse_numeric(key, template_raw)
+                    parsed.samples = (template_raw,)
+                    return parsed
 
-        reads = [self.ocr.run_ocr(f"HIFNumeric_{key}", expected, roi) or "" for _ in range(3)]
-        parsed = [_parse_numeric(key, raw).value for raw in reads]
-        candidates = {value for value in parsed if value is not None}
-        value = next((candidate for candidate in candidates if parsed.count(candidate) >= 2), None)
+        reads = tuple(self.ocr.run_ocr(f"HIFNumeric_{key}", expected, roi) or "" for _ in range(3))
+        parsed = tuple(_parse_numeric(key, raw) for raw in reads)
+        values = tuple(item.flow if key == "flow" else item.value for item in parsed)
+        candidates = {value for value in values if value is not None}
+        value = next((candidate for candidate in candidates if values.count(candidate) >= 2), None)
         if value is None:
-            return ""
-        return next(raw for raw in reads if _parse_numeric(key, raw).value == value)
+            status = ReadStatus.CONFLICT if len(candidates) > 1 else ReadStatus.MISSING
+            return NumericRead(key, "", None, status=status, samples=reads)
+        accepted = next(item for item, parsed_value in zip(parsed, values, strict=True) if parsed_value == value)
+        accepted.status = ReadStatus.OK
+        accepted.samples = reads
+        return accepted
 
     def read_exam_state(
         self,
@@ -527,7 +594,10 @@ class ExamStateReader:
         stamina: int,
     ) -> ExamState:
         """读完整出牌状态：手牌 + 数值 + 组装 ExamState。"""
-        return self.read_exam_observation(round_, total_turns, stamina).state
+        observation = self.read_exam_observation(round_, total_turns, stamina)
+        if observation.state is None:
+            raise ExamStateRejected(observation.issues)
+        return observation.state
 
     def read_exam_observation(
         self,
@@ -541,36 +611,65 @@ class ExamStateReader:
         hand = build_hand_summary(detections)
         numerics = self.read_numerics()
         round_metrics = self.read_round_metrics()
-        missing = []
+        missing: list[str] = []
+        issues: list[ExamStateIssue] = []
         active_detections = [detection for detection in detections if not detection.suppressed_reason]
         if not active_detections:
             missing.append("hand")
+            issues.append(ExamStateIssue("hand", ReadStatus.MISSING))
         elif any(not detection.card_name for detection in active_detections):
             missing.append("hand_names")
+            issues.append(ExamStateIssue("hand_names", ReadStatus.MISSING))
+        unresolved_playability = tuple(
+            detection.card_name for detection in active_detections if detection.label != "useless" and detection.card_name
+        )
+        if unresolved_playability:
+            # 当前实机证据中灰色「眠気」曾被 YOLO 标成普通 cards；因此 cards
+            # 标签只能证明存在，不能证明可打。执行层完成卡片详情/视觉复核前拒绝。
+            missing.append("hand_playability")
+            issues.append(ExamStateIssue("hand_playability", ReadStatus.MISSING, repr(unresolved_playability)))
         for key in _CARD_EXECUTION_NUMERICS:
             read = numerics.get(key)
             if key == "flow":
                 if read is None or read.flow is None:
                     missing.append(key)
+                    issues.append(ExamStateIssue(key, read.status if read and read.status else ReadStatus.MISSING, repr(read.samples) if read else ""))
             elif read is None or read.value is None:
                 missing.append(key)
+                issues.append(ExamStateIssue(key, read.status if read and read.status else ReadStatus.MISSING, repr(read.samples) if read else ""))
         missing.extend(key for key in round_metrics.missing_fields if key not in missing)
+        issues.extend(
+            ExamStateIssue(
+                issue.field,
+                ReadStatus.CONFLICT if issue.code is MetricIssueCode.CONFLICT else ReadStatus.MISSING,
+            )
+            for issue in round_metrics.issues
+        )
         numeric_stamina = numerics.get("stamina")
         resolved_stamina = stamina if stamina is not None else numeric_stamina.value if numeric_stamina else None
         if resolved_stamina is None or resolved_stamina < 0:
             if "stamina" not in missing:
                 missing.append("stamina")
-            resolved_stamina = 0
-        state = build_exam_state(hand, numerics, round_, total_turns, resolved_stamina, round_metrics)
+            resolved_stamina = -1
+        try:
+            state = build_exam_state(hand, numerics, round_, total_turns, resolved_stamina, round_metrics)
+        except ExamStateRejected as error:
+            state = None
+            existing = {issue.field for issue in issues}
+            issues.extend(issue for issue in error.issues if issue.field not in existing)
+            missing.extend(issue.field for issue in error.issues if issue.field not in missing)
         required_count = len(_CARD_EXECUTION_NUMERICS) + len(_ROUND_METRIC_LABELS) + 2  # 完整手牌、体力与局内指标
         confidence = round(max(0, required_count - len(missing)) / required_count, 2)
         return ExamStateObservation(
-                state=state,
-                detections=detections,
-                numerics=numerics,
-                round_metrics=round_metrics,
+            state=state,
+            detections=detections,
+            numerics=numerics,
+            round_metrics=round_metrics,
             missing_fields=tuple(missing),
             screen_confidence=confidence,
+            issues=tuple(issues),
+            grey_cards=tuple(detection.card_name for detection in active_detections if detection.label == "useless" and detection.card_name),
+            unresolved_playability=unresolved_playability,
         )
 
 

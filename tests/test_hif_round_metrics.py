@@ -1,4 +1,5 @@
 from agent.hif.round_metrics import (
+    MetricIssueCode,
     parse_integer,
     build_round_metrics,
     parse_settlement_score,
@@ -33,6 +34,16 @@ def test_round_metrics_do_not_turn_partial_or_ambiguous_ocr_into_a_score() -> No
     assert metrics.stage_multiplier is None
     assert metrics.missing_fields == ("current_score", "stage_multiplier")
     assert not metrics.is_complete
+
+
+def test_round_metrics_preserve_conflict_as_a_typed_issue() -> None:
+    metrics = build_round_metrics(
+        {"stage_multiplier": "3807%"},
+        conflicting_fields=frozenset({"current_score"}),
+    )
+
+    issue = next(issue for issue in metrics.issues if issue.field == "current_score")
+    assert issue.code is MetricIssueCode.CONFLICT
 
 
 def test_settlement_metrics_derives_the_multiplier_from_the_observed_score_pair() -> None:

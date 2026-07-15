@@ -12,7 +12,10 @@
 
 from __future__ import annotations
 
-from agent.hif.decisions.state import ParamSet, ExamRound, HandSummary
+import pytest
+
+from agent.hif.round_metrics import build_round_metrics
+from agent.hif.decisions.state import ExamRound, HandSummary
 from agent.hif.adapters.card_dict import (
     KEY_CARDS,
     normalize_card_name,
@@ -20,9 +23,11 @@ from agent.hif.adapters.card_dict import (
     is_good_condition_card,
 )
 from agent.hif.adapters.exam_reader import (
+    ReadStatus,
     NumericRead,
     CardDetection,
     ExamStateReader,
+    ExamStateRejected,
     ExamStateObservation,
     _parse_numeric,
     build_exam_state,
@@ -209,8 +214,8 @@ def test_parse_numeric_flow() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_exam_state_degrades_on_missing_numerics() -> None:
-    """数值字段缺失时降级为默认值（0/空），决策仍可基于手牌运行。"""
+def test_exam_state_rejects_missing_numerics_instead_of_inventing_zero() -> None:
+    """缺失字段类型化拒绝，不能产生 deck_size=0 或默认 Vi。"""
     hand = HandSummary(
         has_shizen_no_miryoku=True,
         has_oneesan_no_kankaku=False,
@@ -219,14 +224,10 @@ def test_exam_state_degrades_on_missing_numerics() -> None:
         swap_hand_available=False,
         draw_available=False,
     )
-    state = build_exam_state(hand, {}, ExamRound.HONSEN_R1, total_turns=9, stamina=80)
-    assert state.good_condition_turns == 0  # 缺失降级
-    assert state.focus == 0
-    assert state.reprise_count == 0
-    assert state.deck_size == 0
-    assert state.current_flow == "Vi"  # 默认流
-    assert state.hand.has_shizen_no_miryoku is True  # 手牌信息保留
-    assert state.stamina == 80
+    with pytest.raises(ExamStateRejected) as caught:
+        build_exam_state(hand, {}, ExamRound.HONSEN_R1, total_turns=9, stamina=80)
+
+    assert {issue.field for issue in caught.value.issues} >= {"deck_size", "flow", "current_score", "stage_multiplier"}
 
 
 def test_exam_state_parses_numerics() -> None:
@@ -247,7 +248,19 @@ def test_exam_state_parses_numerics() -> None:
         "deck_size": NumericRead("deck_size", "22枚", 22),
         "flow": NumericRead("flow", "Da", None, flow="Da"),
     }
-    state = build_exam_state(hand, numerics, ExamRound.HONSEN_R1, total_turns=9, stamina=60)
+    state = build_exam_state(
+        hand,
+        numerics,
+        ExamRound.HONSEN_R1,
+        total_turns=9,
+        stamina=60,
+        round_metrics=build_round_metrics(
+            {"param_vo": "399277", "param_da": "304099", "param_vi": "111318", "current_score": "116611", "stage_multiplier": "3807%"}
+        ),
+        cards_played=3,
+        oneesan_used=False,
+        natural_finisher_used=False,
+    )
     assert state.good_condition_turns == 12
     assert state.focus == 8
     assert state.reprise_count == 2
@@ -256,13 +269,11 @@ def test_exam_state_parses_numerics() -> None:
     assert state.current_flow == "Da"
 
 
-def test_exam_state_keeps_round_metrics_missing_until_all_calibrated_reads_are_available() -> None:
+def test_exam_state_rejects_missing_round_metrics() -> None:
     hand = HandSummary(False, False, False, 0, False, False)
-    state = build_exam_state(hand, {}, ExamRound.HONSEN_R1, total_turns=9, stamina=60)
-
-    assert state.params == ParamSet()
-    assert state.current_score is None
-    assert state.stage_multiplier is None
+    with pytest.raises(ExamStateRejected) as caught:
+        build_exam_state(hand, {}, ExamRound.HONSEN_R1, total_turns=9, stamina=60)
+    assert {issue.field for issue in caught.value.issues} >= {"current_score", "stage_multiplier"}
 
 
 def test_exam_state_p_drink_parsing() -> None:
@@ -276,9 +287,27 @@ def test_exam_state_p_drink_parsing() -> None:
         draw_available=False,
     )
     numerics = {
+        "good_condition": NumericRead("good_condition", "12", 12),
+        "focus": NumericRead("focus", "8", 8),
+        "reprise": NumericRead("reprise", "2", 2),
+        "turn": NumericRead("turn", "5", 5),
+        "deck_size": NumericRead("deck_size", "22枚", 22),
+        "flow": NumericRead("flow", "Da", None, flow="Da"),
         "p_drinks": NumericRead("p_drinks", "初星黒酢,パワフル漢方ドリンク", None),
     }
-    state = build_exam_state(hand, numerics, ExamRound.HONSEN_R1, total_turns=9, stamina=10)
+    state = build_exam_state(
+        hand,
+        numerics,
+        ExamRound.HONSEN_R1,
+        total_turns=9,
+        stamina=10,
+        round_metrics=build_round_metrics(
+            {"param_vo": "399277", "param_da": "304099", "param_vi": "111318", "current_score": "116611", "stage_multiplier": "3807%"}
+        ),
+        cards_played=3,
+        oneesan_used=False,
+        natural_finisher_used=False,
+    )
     assert "初星黒酢" in state.available_p_drinks
     assert "パワフル漢方ドリンク" in state.available_p_drinks
 
@@ -312,13 +341,23 @@ def test_reader_assembles_state_from_mock_ocr() -> None:
         CardDetection(label="cards", box=(0, 0, 100, 200), card_name="自然体の魅力"),
         CardDetection(label="suggestions", box=(100, 0, 100, 200), card_name="アピールの基礎"),
     ]
-    ocr = _MockOcrPort(cards)
+    ocr = _MockOcrPort(
+        cards,
+        {
+            "good_condition": "47",
+            "reprise": "2",
+            "focus": "10",
+            "turn": "6",
+            "flow": "Vi",
+            "deck_size": "22",
+            "current_score": "116611",
+            "stage_multiplier": "3807%",
+        },
+    )
     reader = ExamStateReader(ocr)
-    state = reader.read_exam_state(ExamRound.HONSEN_R1, total_turns=9, stamina=50)
-    assert state.hand.has_shizen_no_miryoku is True
-    assert state.stamina == 50
-    assert state.round is ExamRound.HONSEN_R1
-    assert state.total_turns == 9
+    with pytest.raises(ExamStateRejected) as caught:
+        reader.read_exam_state(ExamRound.HONSEN_R1, total_turns=9, stamina=50)
+    assert {issue.field for issue in caught.value.issues} >= {"param_vo", "param_da", "param_vi"}
 
 
 def test_reader_read_hand_uses_yolo_then_ocr() -> None:
@@ -339,9 +378,9 @@ def test_reader_only_attempts_fields_with_versioned_rois() -> None:
     """只读取已写入版本化 ROI 的字段，未校准字段继续跳过。"""
     reader = ExamStateReader(_MockOcrPort([]))
     numerics = reader.read_numerics()
-    assert set(numerics) == {"good_condition", "reprise", "focus", "turn", "flow", "stamina"}
+    assert set(numerics) == {"good_condition", "reprise", "focus", "turn", "flow", "deck_size", "stamina"}
     assert all(read.value is None and read.flow is None for read in numerics.values())
-    assert {"deck_size", "p_drinks"}.isdisjoint(numerics)
+    assert "p_drinks" not in numerics
 
 
 def test_reader_prefers_a_verified_turn_template_over_ocr() -> None:
@@ -356,7 +395,8 @@ def test_reader_prefers_a_verified_turn_template_over_ocr() -> None:
 
     numerics = ExamStateReader(_TurnTemplatePort([])).read_numerics()
 
-    assert numerics["turn"] == NumericRead("turn", "7", 7)
+    assert numerics["turn"].value == 7
+    assert numerics["turn"].status is ReadStatus.OK
 
 
 def test_reader_falls_back_to_consistent_turn_ocr_without_template() -> None:
@@ -377,7 +417,8 @@ def test_reader_falls_back_to_consistent_turn_ocr_without_template() -> None:
     port = _TurnTemplatePort()
     numerics = ExamStateReader(port).read_numerics()
 
-    assert numerics["turn"] == NumericRead("turn", "8", 8)
+    assert numerics["turn"].value == 8
+    assert numerics["turn"].status is ReadStatus.OK
     assert port.template_called is True
 
 
@@ -394,7 +435,9 @@ def test_reader_rejects_an_unstable_numeric_read() -> None:
 
     numerics = ExamStateReader(_UnstableNumericPort()).read_numerics()
 
-    assert numerics["good_condition"] == NumericRead("good_condition", "", None)
+    assert numerics["good_condition"].value is None
+    assert numerics["good_condition"].status is ReadStatus.CONFLICT
+    assert numerics["good_condition"].samples == ("40ターン", "2", "3")
 
 
 def test_reader_accepts_two_matching_numeric_reads_when_the_third_is_empty() -> None:
@@ -410,7 +453,8 @@ def test_reader_accepts_two_matching_numeric_reads_when_the_third_is_empty() -> 
 
     numerics = ExamStateReader(_MostlyStableNumericPort()).read_numerics()
 
-    assert numerics["focus"] == NumericRead("focus", "M4", 4)
+    assert numerics["focus"].value == 4
+    assert numerics["focus"].status is ReadStatus.OK
 
 
 def test_exam_observation_exposes_missing_fields_for_execution_gate() -> None:
@@ -418,6 +462,38 @@ def test_exam_observation_exposes_missing_fields_for_execution_gate() -> None:
     observation = ExamStateReader(_MockOcrPort([])).read_exam_observation(ExamRound.HONSEN_R1, total_turns=9, stamina=None)
 
     assert isinstance(observation, ExamStateObservation)
+    assert observation.state is None
     assert {"hand", "stamina", "focus", "turn", "flow"}.issubset(observation.missing_fields)
     assert {"param_vo", "param_da", "param_vi", "current_score", "stage_multiplier"}.issubset(observation.missing_fields)
     assert observation.screen_confidence == 0.0
+
+
+def test_exam_observation_keeps_conflict_distinct_from_missing() -> None:
+    class _ConflictPort(_MockOcrPort):
+        def __init__(self):
+            super().__init__([])
+            self.reads = iter(("21", "22", "23"))
+
+        def run_ocr(self, name, expected, roi):
+            if name.endswith("deck_size"):
+                return next(self.reads)
+            return super().run_ocr(name, expected, roi)
+
+    observation = ExamStateReader(_ConflictPort()).read_exam_observation(ExamRound.HONSEN_R1, 9, None)
+
+    issue = next(issue for issue in observation.issues if issue.field == "deck_size")
+    assert issue.code is ReadStatus.CONFLICT
+    assert observation.state is None
+
+
+def test_exam_observation_reports_grey_cards_separately() -> None:
+    cards = [
+        CardDetection(label="useless", box=(20, 884, 170, 250), card_name="眠気"),
+        CardDetection(label="cards", box=(200, 884, 170, 250), card_name="祝福"),
+    ]
+
+    observation = ExamStateReader(_MockOcrPort(cards)).read_exam_observation(ExamRound.HONSEN_R1, 9, None)
+
+    assert observation.grey_cards == ("眠気",)
+    assert observation.unresolved_playability == ("祝福",)
+    assert "hand_playability" in observation.missing_fields

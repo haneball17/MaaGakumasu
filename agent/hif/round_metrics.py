@@ -8,19 +8,32 @@
 from __future__ import annotations
 
 import re
+from enum import Enum
 from dataclasses import dataclass
 
 from agent.hif.decisions.state import ParamSet
+
+
+class MetricIssueCode(str, Enum):
+    MISSING = "missing"
+    CONFLICT = "conflict"
+
+
+@dataclass(frozen=True, slots=True)
+class MetricIssue:
+    field: str
+    code: MetricIssueCode
 
 
 @dataclass(frozen=True, slots=True)
 class RoundMetrics:
     """Round 画面可用于审计的参数、局内分数和当前倍率。"""
 
-    params: ParamSet
+    params: ParamSet | None
     current_score: int | None
     stage_multiplier: float | None
     missing_fields: tuple[str, ...]
+    issues: tuple[MetricIssue, ...] = ()
 
     @property
     def is_complete(self) -> bool:
@@ -52,7 +65,8 @@ def parse_integer(raw: str) -> int | None:
     compact = raw.replace(",", "").replace("，", "").replace(" ", "")
     if not compact or not re.fullmatch(r"\d+", compact):
         return None
-    return int(compact)
+    value = int(compact)
+    return value if value >= 0 else None
 
 
 def parse_stage_multiplier(raw: str) -> float | None:
@@ -61,28 +75,31 @@ def parse_stage_multiplier(raw: str) -> float | None:
     normalized = raw.replace("％", "%").replace("×", "x").replace(",", "").strip()
     percent = re.fullmatch(r"(\d+(?:\.\d+)?)\s*%", normalized)
     if percent:
-        return float(percent.group(1)) / 100
+        value = float(percent.group(1)) / 100
+        return value if value > 0 else None
     multiple = re.fullmatch(r"(?:x\s*)?(\d+(?:\.\d+)?)\s*倍", normalized)
     if multiple:
-        return float(multiple.group(1))
+        value = float(multiple.group(1))
+        return value if value > 0 else None
     return None
 
 
-def build_round_metrics(reads: dict[str, str]) -> RoundMetrics:
+def build_round_metrics(reads: dict[str, str], *, conflicting_fields: frozenset[str] = frozenset()) -> RoundMetrics:
     """由稳定 OCR 原文构建 Round 指标；缺任一字段即标记为不可完整使用。"""
 
     values = {key: parse_integer(reads.get(key, "")) for key in ("param_vo", "param_da", "param_vi", "current_score")}
     multiplier = parse_stage_multiplier(reads.get("stage_multiplier", ""))
-    missing = tuple(
-        key
-        for key, value in (*values.items(), ("stage_multiplier", multiplier))
-        if value is None
-    )
+    missing = tuple(key for key, value in (*values.items(), ("stage_multiplier", multiplier)) if value is None)
+    param_values = (values["param_vo"], values["param_da"], values["param_vi"])
+    params = ParamSet(*param_values) if all(value is not None for value in param_values) else None
     return RoundMetrics(
-        params=ParamSet(vocal=values["param_vo"] or 0, dance=values["param_da"] or 0, visual=values["param_vi"] or 0),
+        params=params,
         current_score=values["current_score"],
         stage_multiplier=multiplier,
         missing_fields=missing,
+        issues=tuple(
+            MetricIssue(key, MetricIssueCode.CONFLICT if key in conflicting_fields else MetricIssueCode.MISSING) for key in missing
+        ),
     )
 
 

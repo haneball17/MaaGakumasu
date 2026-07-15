@@ -4,13 +4,13 @@
 		720,
 		1280
 	],
-	"updated_at": "2026-07-15T03:31:45+08:00",
+	"updated_at": "2026-07-15T21:43:07+08:00",
 	"device_id": "mumu12-instance1-127.0.0.1:16416",
 	"controller_kind": "adb",
 	"game_version": "",
 	"locale": "ja-JP",
-	"evidence_sha256": "1ca97f085533e2fd33e6bfe923be526f1ecb41da4255b44576618ee6e941e78c",
-	"source": "MuMu 12 ADB 720x1280 Round1 数值实机帧 hif-round1-good-condition-roi-probe-20260715-033138",
+	"evidence_sha256": "5298e1fd625ada686b8257df958cc9b8055693fcff7f2f43170eecd2a0685042",
+	"source": "MuMu 12 ADB 720x1280 Round1 零输入复核帧 hif-mvp-m1-stop-recheck-20260715/before.png",
 	"exam_numeric": {
 		"good_condition": [
 			60,
@@ -42,7 +42,12 @@
 			150,
 			85
 		],
-		"deck_size": null,
+		"deck_size": [
+			647,
+			174,
+			42,
+			39
+		],
 		"p_drinks": null,
 		"stamina": [
 			570,
@@ -52,6 +57,12 @@
 		]
 	},
 	"round_metrics": {
+		"current_score": [
+			367,
+			119,
+			123,
+			45
+		],
 		"stage_multiplier": [
 			65,
 			75,
