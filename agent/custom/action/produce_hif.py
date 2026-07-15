@@ -4054,7 +4054,15 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                         "box": list(getattr(result, "box", [])),
                     }
                 )
-        active_effects = parse_active_effects(read["text"] for read in list_reads)
+        # Maa 的 all_results 不保证阅读顺序；先按画面行坐标还原，再交给严格解析器。
+        ordered_list_reads = sorted(
+            list_reads,
+            key=lambda read: (
+                read["box"][1] if len(read["box"]) == 4 else 10_000,
+                read["box"][0] if len(read["box"]) == 4 else 10_000,
+            ),
+        )
+        active_effects = parse_active_effects(read["text"] for read in ordered_list_reads)
         list_before = self._capture_evidence(current_image, "status_effect_list_before_close")
         list_close_roi = [320, 710, 80, 90]
         if not self._click_box_center(context, list_close_roi, double=False):
@@ -4075,6 +4083,7 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
                 "detail_close_box": close_box,
                 "list_close_roi": list_close_roi,
                 "reads": list_reads,
+                "ordered_reads": ordered_list_reads,
                 "active_effects": active_effects.to_journal(),
                 "controller_inputs": controller_inputs,
             },
