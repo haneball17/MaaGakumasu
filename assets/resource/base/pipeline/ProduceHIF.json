@@ -119,7 +119,6 @@
 			}
 		},
 		"next": [
-			"ProduceExit",
 			"[JumpBack]ProduceHIFStartConfirmFlag",
 			"ProduceHIFFinishedFlag",
 			"ProduceHIFFailedFlag",

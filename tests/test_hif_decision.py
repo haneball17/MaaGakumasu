@@ -348,6 +348,7 @@ def test_rinami_hif_preset_uses_daily_schedule_observed_in_finals_log():
 def test_hif_pipeline_routes_rounds_to_the_dedicated_card_action_not_generic_card_action():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
+    assert "ProduceExit" not in payload["ProduceEntryHIF"]["next"]
     assert payload["ProduceHIFRound1Flag"]["next"] == ["ProduceHIFRound1ActionFlag"]
     assert payload["ProduceHIFRound2Flag"]["next"] == ["ProduceHIFRound2ActionFlag"]
     assert payload["ProduceHIFRound1ActionFlag"]["action"]["param"]["custom_action"] == "ProduceCardsHIF"
