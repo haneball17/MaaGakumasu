@@ -4778,6 +4778,22 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             reader = ExamStateReader.from_context(context)
             health = self._get_health(context, before_image)
             observation = reader.read_exam_observation(round_, total_turns, health["current"] if health else None)
+            if observation.state is None:
+                self._record_journal(
+                    screen_state,
+                    "probe_hand_details_map",
+                    "rejected",
+                    details={
+                        "reason": "round_hand_probe_state_unreadable",
+                        "missing_fields": observation.missing_fields,
+                        "issues": [
+                            {"field": issue.field, "code": issue.code.value, "detail": issue.detail}
+                            for issue in observation.issues
+                        ],
+                    },
+                    before=before,
+                )
+                return self._stop_unsupported(context, screen_state, "round_hand_probe_state_unreadable")
             initial_turn = observation.state.turn
             missing_before = observation.missing_fields
             try:

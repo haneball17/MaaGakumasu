@@ -20,6 +20,7 @@ _最后更新：2026-07-15；M1 启动时完成一次零输入复核。_
 - 最新零输入复核：`debug/hif-live/hif-mvp-m2-zero-input-recheck-20260716.png`。未发送触控、按键或 Pipeline 指令；确认上述 Round1 停点和手牌仍稳定。
 - 状态效果详情探针已随 `a01d5d4 feat(hif): 记录状态效果详情探针` 落地。当前列表的实机证据确认：`参数上升量增加 30% / 1ターン`、`消費体力を50%軽減 5ターン`、`絶好調 / 2ターン` 与 `発動予約 / 1回 1ターン`；其数值必须作为后验输入，禁止回退到固定 `reprise` ROI。
 - `15d9574 feat(hif): 结构化读取活跃效果` 将上述列表转为严格快照。运行 `hif-mvp-m2-active-effects-sorted-close-20260716` 的 Journal `debug/hif-journal/20260716T002051-49616.jsonl` 记录 `execution_ready=true`，并在关闭后回到未选中 Round1；没有手牌、SKIP 或奖励输入。
+- `hif-mvp-m2-post-effects-state-observe-20260716` 的详情映射在不完整 `ExamState` 上触发了旧代码异常并于 45 秒超时停止；结束帧仍为未选中 Round1。已修复为 `round_hand_probe_state_unreadable` 类型化安全停止，禁止该路径重试或继续点击。
 - 分离的稳定后状态证据为：分数 `116611→121485`、体力 `33→31`、好调 `47→49`、集中 `10`、回合 `6`、牌库 `21`、元气 `22`。结构化记录见 `assets/data/hif/observed_cases/blessing_plus_round1_20260715.json`。
 - 实测增量 `+4874/-2/+2` 与卡表基础 `显示3731/体力4/好调1` 不同，证明当前活跃状态存在未建模联动。普通出牌后验已重新关闭；完成状态图标动态定位与联动模型前禁止下一张牌。
 
