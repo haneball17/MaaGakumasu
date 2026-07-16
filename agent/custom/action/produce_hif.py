@@ -4774,6 +4774,8 @@ class ProduceCardsHIF(_ProduceHIFActionBase):
             "hand_details_map_deck_play_one",
             "hand_details_map_deck_select_explicit",
         }:
+            if params.get("round_probe") == "hand_details_map_deck_play_one":
+                return self._stop_unsupported(context, screen_state, "round1_detail_route_execution_not_supported")
             probe_mode = parse_execution_mode(params.get("round_probe_execution_mode"))
             if probe_mode is not HIFExecutionMode.SINGLE_STEP:
                 return self._stop_unsupported(context, screen_state, "round_hand_probe_requires_single_step")
