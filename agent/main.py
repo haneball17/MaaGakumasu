@@ -12,7 +12,10 @@ parent_dir = os.path.dirname(current_dir)
 os.chdir(parent_dir)
 # print(f"设置工作目录为: {parent_dir}")
 
-# 将当前目录添加到路径
+# 以脚本方式启动时，Python 只会把 agent/ 放入 sys.path。
+# HIF 模块使用 from agent... 导入，必须显式保留仓库根目录。
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
@@ -206,11 +209,11 @@ def check_and_install_dependencies():
         logger.info("跳过依赖安装")
 
 
-def read_interface_version(interface_file="./interface.json") -> str:
+def read_interface_version(interface_file: Path | None = None) -> str:
     """
     读取 interface.json 文件中的版本信息
     """
-    interface_path = Path(interface_file)
+    interface_path = interface_file or Path(parent_dir) / "assets" / "interface.json"
 
     if not interface_path.exists():
         logger.warning("interface.json不存在")
@@ -245,7 +248,6 @@ def update_pip_config(version) -> bool:
 def agent():
     try:
         import custom
-        from utils import logger
         from maa.toolkit import Toolkit
         from maa.agent.agent_server import AgentServer
 

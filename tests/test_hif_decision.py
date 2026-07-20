@@ -345,19 +345,48 @@ def test_rinami_hif_preset_uses_daily_schedule_observed_in_finals_log():
     assert choose_schedule_priority(preset, None) is None
 
 
-def test_hif_pipeline_routes_rounds_to_the_dedicated_card_action_not_generic_card_action():
+def test_hif_day1_lesson_option_defaults_to_vo_and_exposes_all_three_courses():
+    for task_path in (Path("assets/tasks/produce.json"), Path("assets/tasks/produce_cn.json")):
+        task_payload = json.loads(task_path.read_text(encoding="utf-8"))
+        option = task_payload["option"]["HIF Day1课程"]
+
+        assert option["default_case"] == "Vo（红）"
+        assert {case["name"] for case in option["cases"]} == {"Vo（红）", "Da（蓝）", "Vi（黄）"}
+        assert {
+            case["pipeline_override"]["ProduceChooseHIFEventFlag"]["action"]["param"]["custom_action_param"]["day1_lesson"]
+            for case in option["cases"]
+        } == {"Vo", "Da", "Vi"}
+        assert {
+            case["pipeline_override"]["HIF_day1_标志"]["next"][0]
+            for case in option["cases"]
+        } == {
+            "HIF_day1_vocal课程选择",
+            "HIF_day1_dance课程选择",
+            "HIF_day1_vision课程选择",
+        }
+
+
+def test_hif_day1_lesson_override_only_applies_when_six_days_remain():
+    action = import_module("agent.custom.action.produce_hif").ProduceChooseHIFEventAuto()
+    args = SimpleNamespace(custom_action_param='{"day1_lesson":"Vo"}')
+
+    assert action._configured_day1_lesson(args, 6) == "Vo"
+    assert action._configured_day1_lesson(args, 5) is None
+    assert action._configured_day1_lesson(SimpleNamespace(custom_action_param='{"day1_lesson":"unknown"}'), 6) is None
+
+
+def test_hif_pipeline_routes_round1_to_observation_then_stop_without_card_input():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
     assert "ProduceExit" not in payload["ProduceEntryHIF"]["next"]
-    assert payload["ProduceHIFRound1Flag"]["next"] == ["ProduceHIFRound1ActionFlag"]
+    assert payload["ProduceHIFRound1Flag"]["next"] == ["ProduceHIFRound1ObserveFlag"]
     assert payload["ProduceHIFRound2Flag"]["next"] == ["ProduceHIFRound2ActionFlag"]
-    assert payload["ProduceHIFRound1ActionFlag"]["action"]["param"]["custom_action"] == "ProduceCardsHIF"
     assert payload["ProduceHIFRound2ActionFlag"]["action"]["param"]["custom_action"] == "ProduceCardsHIF"
-    assert payload["ProduceHIFRound1ActionFlag"]["action"]["param"]["custom_action_param"]["execution_mode"] == "observe_and_stop"
+    assert payload["ProduceHIFRound1ObserveFlag"]["next"] == ["ProduceHIFRound1ReachedStop"]
     assert ".*残りターン.*" in payload["ProduceHIFRound1Flag"]["recognition"]["param"]["expected"]
     assert payload["ProduceHIFRound1Flag"]["recognition"]["param"]["roi"] == [8, 0, 170, 48]
     assert payload["ProduceHIFRound1ReachedStop"]["action"]["type"] == "StopTask"
-    assert "ProduceCardsFlag" not in payload["ProduceHIFRound1Flag"]["next"]
+    assert "ProduceHIFRound1ActionFlag" not in payload["ProduceHIFRound1Flag"]["next"]
 
 
 def test_hif_pipeline_keeps_unknown_overflow_safe_but_routes_supported_interval_and_memory_pages():
@@ -437,8 +466,7 @@ def test_hif_mode_owns_post_selection_route_and_skip_idol_only_overrides_generic
         hif_case = next(case for case in task_payload["option"]["培育难度"]["cases"] if case["name"] == "HIF")
         hif_override = hif_case["pipeline_override"]["ProduceChooseDifficulty"]
 
-        assert hif_override["next"] == ["ProduceAfterChooseDifficulty"]
-        assert hif_case["pipeline_override"]["ProduceAfterChooseDifficulty"]["next"] == ["ProduceLackAP", "ProduceChooseIdolNext"]
+        assert hif_override["next"] == ["ProduceHIFAfterChooseFinalMode"]
         assert hif_case["pipeline_override"]["ProduceChooseIdolNext"]["next"] == [
             "ProduceHIFStartConfirmFlag",
             "ProduceChooseSupport",
@@ -449,6 +477,9 @@ def test_hif_mode_owns_post_selection_route_and_skip_idol_only_overrides_generic
         override = case["pipeline_override"]
         assert "ProduceChooseDifficulty" not in override
         assert "ProduceAfterChooseDifficulty" in override
+
+    hif_pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    assert hif_pipeline["ProduceHIFAfterChooseFinalMode"]["next"] == ["ProduceLackAP", "ProduceChooseIdolNext"]
 
 
 def test_hif_execution_mode_defaults_to_observe_and_exposes_only_single_step_experiment():
@@ -810,6 +841,44 @@ def test_hif_select_change_target_enumerates_slots_then_advances_only_after_exac
     assert audit.verified_execution_count == 5
 
 
+def test_hif_select_change_target_prefers_the_first_configured_good_condition_card():
+    agent_path = str(Path("agent").resolve())
+    sys.path.insert(0, agent_path)
+    try:
+        module = import_module("agent.custom.action.produce_hif")
+    finally:
+        sys.path.remove(agent_path)
+    action = module.ProduceChooseHIFSelectChangeTargetAuto()
+
+    target = action._choose_prioritized_target(
+        [
+            {"target_name": "スポットライト", "slot": "candidate_center"},
+            {"target_name": "始まりの合図", "slot": "candidate_left"},
+        ],
+        ("始まりの合図", "スポットライト"),
+    )
+
+    assert target == {"target_name": "始まりの合図", "slot": "candidate_left"}
+
+
+def test_hif_select_change_target_refuses_duplicate_top_priority_cards():
+    agent_path = str(Path("agent").resolve())
+    sys.path.insert(0, agent_path)
+    try:
+        module = import_module("agent.custom.action.produce_hif")
+    finally:
+        sys.path.remove(agent_path)
+    action = module.ProduceChooseHIFSelectChangeTargetAuto()
+
+    assert action._choose_prioritized_target(
+        [
+            {"target_name": "始まりの合図", "slot": "candidate_left"},
+            {"target_name": "始まりの合図", "slot": "candidate_center"},
+        ],
+        ("始まりの合図", "スポットライト"),
+    ) is None
+
+
 def test_hif_select_change_target_probe_enumerates_once_without_reroll_or_advance(monkeypatch):
     agent_path = str(Path("agent").resolve())
     sys.path.insert(0, agent_path)
@@ -1141,6 +1210,8 @@ def test_hif_source_deck_probe_clicks_only_first_visible_slot_then_stops(monkeyp
     monkeypatch.setattr(action, "_get_screenshot", lambda context: next(screenshots))
     monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen_id: image)
     monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: True)
+    monkeypatch.setattr(action, "_detect_source_deck_occupied_slots", lambda context, image: {slot_id for slot_id, _ in action._visible_source_slots()})
+    monkeypatch.setattr(action, "_source_deck_slot_selection_confirmed", lambda context, image, slot_roi: True)
     monkeypatch.setattr(
         action,
         "_source_detail_snapshot",
@@ -1189,6 +1260,8 @@ def test_hif_source_deck_visible_enumeration_only_clicks_calibrated_visible_slot
     monkeypatch.setattr(action, "_get_screenshot", lambda context: next(screenshots))
     monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen_id: image)
     monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: True)
+    monkeypatch.setattr(action, "_detect_source_deck_occupied_slots", lambda context, image: {slot_id for slot_id, _ in action._visible_source_slots()})
+    monkeypatch.setattr(action, "_source_deck_slot_selection_confirmed", lambda context, image, slot_roi: True)
     monkeypatch.setattr(
         action,
         "_source_detail_snapshot",
@@ -1234,6 +1307,7 @@ def test_hif_source_deck_visible_enumeration_records_an_unreadable_slot_and_cont
     )
     monkeypatch.setattr(action, "_get_screenshot", lambda context: b"after")
     monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: True)
+    monkeypatch.setattr(action, "_source_deck_slot_selection_confirmed", lambda context, image, slot_roi: True)
     monkeypatch.setattr(
         action,
         "_source_detail_snapshot",
@@ -1277,6 +1351,8 @@ def test_hif_source_deck_scroll_enumeration_performs_exactly_one_verified_swipe_
     monkeypatch.setattr(action, "_get_screenshot", lambda context: next(screenshots))
     monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen_id: image)
     monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: True)
+    monkeypatch.setattr(action, "_detect_source_deck_occupied_slots", lambda context, image: {slot_id for slot_id, _ in action._visible_source_slots()})
+    monkeypatch.setattr(action, "_source_deck_slot_selection_confirmed", lambda context, image, slot_roi: True)
     monkeypatch.setattr(
         action,
         "_source_detail_snapshot",
@@ -1335,6 +1411,8 @@ def test_hif_source_deck_confirmation_requires_exact_source_then_completion_text
     monkeypatch.setattr(action, "_get_screenshot", lambda context: next(screenshots))
     monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen_id: image)
     monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: screen_id == "select_change_source_deck")
+    monkeypatch.setattr(action, "_detect_source_deck_occupied_slots", lambda context, image: {slot_id for slot_id, _ in action._visible_source_slots()})
+    monkeypatch.setattr(action, "_source_deck_slot_selection_confirmed", lambda context, image, slot_roi: True)
     monkeypatch.setattr(
         action,
         "_source_detail_snapshot",

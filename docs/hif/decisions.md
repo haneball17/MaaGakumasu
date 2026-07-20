@@ -45,7 +45,7 @@ HIF 当前落地方式是：
 当前必须能做：
 
 - 推荐项优先
-- 星性 / 卡牌 / P 点相关收益区分
+- 星星 / 卡牌 / P 点相关收益区分
 
 ### 2.4 `SelectionSnapshot / SelectionMemoryProfile`
 

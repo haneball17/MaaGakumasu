@@ -26,6 +26,54 @@ def _journal(records):
     )
 
 
+def test_source_deck_yolo_slot_assignment_never_turns_an_empty_slot_into_the_previous_card():
+    module = _load_action_module()
+    action = module.ProduceChooseHIFSelectChangeSourceAuto()
+    slots = action._visible_source_slots()
+    # 实机末行只有三张卡；r3c4 的详情会保留 r3c3，故不能由详情文字反推占用。
+    results = [
+        SimpleNamespace(box=[roi[0] + 18, roi[1] + 18, 82, 82], score=0.91)
+        for slot_id, roi in slots
+        if slot_id != "visible_slot_r3c4"
+    ]
+    results.append(SimpleNamespace(box=[370, 100, 130, 130], score=0.99))  # 顶部对比卡，网格外。
+
+    occupied = action._source_deck_occupied_slots_from_results(results, slots)
+
+    assert len(occupied) == 11
+    assert "visible_slot_r3c3" in occupied
+    assert "visible_slot_r3c4" not in occupied
+
+
+def test_select_change_result_observer_records_verified_result_without_closing_dialog(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFSelectChangeResultObserve()
+    records = []
+    stop_reasons = []
+
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(module, "build_card_name_dict", lambda: {"大胆不敵": object(), "始まりの合図": object()})
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: b"change-result")
+    monkeypatch.setattr(
+        action,
+        "_run_ocr",
+        lambda *args, **kwargs: SimpleNamespace(
+            hit=True,
+            best_result=SimpleNamespace(text="大胆不敵を始まりの合図にチェンジしました", score=0.99, box=[60, 970, 580, 70]),
+            all_results=[SimpleNamespace(text="大胆不敵を始まりの合図にチェンジしました", score=0.99, box=[60, 970, 580, 70])],
+        ),
+    )
+    monkeypatch.setattr(
+        action,
+        "_stop_unsupported",
+        lambda context, screen_state, reason: stop_reasons.append((screen_state, reason)) or True,
+    )
+
+    assert action.run(object(), SimpleNamespace(custom_action_param="{}"))
+    assert records[-1][0][1:3] == ("observe_select_change_result", "verified")
+    assert stop_reasons == [("select_change_result", "select_change_result_observed_stop")]
+
+
 def test_safe_advance_stops_when_the_changed_frame_is_not_a_known_hif_target(monkeypatch):
     module = _load_action_module()
     action = module.ProduceHIFSafeAdvanceAuto()
@@ -133,7 +181,81 @@ def test_schedule_direct_transition_stops_when_the_target_page_is_unknown(monkey
     assert records[-1][0][1:3] == ("select_schedule", "unverified")
 
 
-def test_schedule_confirmation_stops_when_the_target_page_is_unknown(monkeypatch):
+def test_day1_schedule_override_keeps_the_explicit_single_step_mode(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceChooseHIFEventAuto()
+    reading = SimpleNamespace(
+        page_observation=SimpleNamespace(is_unique=True, screen_id="finals_prepare", confidence=1.0),
+        missing_fields=(),
+        state=SimpleNamespace(day_remaining=6),
+    )
+    selected_modes = []
+    events = [
+        {"name": "Vo", "category": "Vo", "box": [0, 0, 1, 1]},
+        {"name": "Da", "category": "Da", "box": [1, 0, 1, 1]},
+        {"name": "Vi", "category": "Vi", "box": [2, 0, 1, 1]},
+    ]
+
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: b"schedule")
+    monkeypatch.setattr(
+        module.HIFStateReader,
+        "from_context",
+        lambda context, image: SimpleNamespace(read_finals_prepare_state=lambda: reading),
+    )
+    monkeypatch.setattr(action, "_get_available_events", lambda context, image: events)
+    monkeypatch.setattr(action, "_record_journal", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        action,
+        "_execute_event",
+        lambda context, image, event: selected_modes.append((action._page_execution_mode, event)) or True,
+    )
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"day1_lesson":"Vo","execution_mode":"single_step"}'))
+    assert selected_modes == [(module.HIFExecutionMode.SINGLE_STEP, events[0])]
+
+
+@pytest.mark.parametrize(
+    "events",
+    [
+        [
+            {"name": "Vo", "category": "Vo", "box": [0, 0, 1, 1]},
+            {"name": "Da", "category": "Da", "box": [1, 0, 1, 1]},
+        ],
+        [
+            {"name": "Vo", "category": "Vo", "box": [0, 0, 1, 1]},
+            {"name": "Da", "category": "Da", "box": [1, 0, 1, 1]},
+            {"name": "Vi", "category": "Vi", "box": [2, 0, 1, 1]},
+            {"name": "Vi", "category": "Vi", "box": [3, 0, 1, 1]},
+        ],
+    ],
+)
+def test_day1_schedule_override_rejects_incomplete_candidates(monkeypatch, events):
+    module = _load_action_module()
+    action = module.ProduceChooseHIFEventAuto()
+    reading = SimpleNamespace(
+        page_observation=SimpleNamespace(is_unique=True, screen_id="finals_prepare", confidence=1.0),
+        missing_fields=(),
+        state=SimpleNamespace(day_remaining=6),
+    )
+    stops = []
+    selected = []
+
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: b"schedule")
+    monkeypatch.setattr(
+        module.HIFStateReader,
+        "from_context",
+        lambda context, image: SimpleNamespace(read_finals_prepare_state=lambda: reading),
+    )
+    monkeypatch.setattr(action, "_get_available_events", lambda context, image: events)
+    monkeypatch.setattr(action, "_stop_unsupported", lambda context, state, reason: stops.append((state, reason)) or True)
+    monkeypatch.setattr(action, "_execute_event", lambda context, image, event: selected.append(event) or True)
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"day1_lesson":"Vo","execution_mode":"single_step"}'))
+    assert stops == [("finals_action_select", "day1_lesson_candidates_incomplete")]
+    assert selected == []
+
+
+def test_schedule_selection_requires_a_new_task_before_confirmation(monkeypatch):
     module = _load_action_module()
     action = module.ProduceChooseHIFEventAuto()
     action.ACTION_DELAY = 0
@@ -141,7 +263,7 @@ def test_schedule_confirmation_stops_when_the_target_page_is_unknown(monkeypatch
     records = []
     stop_reasons = []
     clicks = []
-    screenshots = iter((b"selected", b"unknown"))
+    screenshots = iter((b"selected",))
 
     monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
     monkeypatch.setattr(action, "_get_screenshot", lambda context: next(screenshots))
@@ -155,12 +277,37 @@ def test_schedule_confirmation_stops_when_the_target_page_is_unknown(monkeypatch
     )
 
     assert action._execute_event(object(), b"before", {"name": "差し入れ", "box": [100, 100, 40, 40]})
-    assert clicks == [([100, 100, 40, 40], False), ([100, 100, 40, 40], False)]
-    assert stop_reasons == [("finals_action_select", "schedule_confirm_next_page_not_confirmed")]
-    assert records[-1][0][1:3] == ("confirm_schedule", "unverified")
+    assert clicks == [([100, 100, 40, 40], False)]
+    assert stop_reasons == [("finals_action_select", "schedule_confirmation_requires_new_task")]
+    assert records[-1][0][1:3] == ("select_schedule", "verified")
 
 
-def test_source_confirmation_never_rehydrates_a_missing_target_from_action_parameters(monkeypatch):
+def test_schedule_transition_checks_class_options_as_the_expected_postcondition(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceChooseHIFEventAuto()
+
+    monkeypatch.setattr(action, "_detect_screen_profile", lambda context, image: None)
+    context = SimpleNamespace(
+        run_recognition=lambda name, image: SimpleNamespace(hit=name == "ProduceHIFClassOptionFlag"),
+    )
+
+    assert action._detect_confirmed_hif_transition(context, b"class-options") == "class_options"
+
+
+def test_wait_for_screen_profile_accepts_only_the_same_formal_pipeline_page(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceChooseHIFSelectChangeTargetAuto()
+
+    monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: False)
+    monkeypatch.setattr(action, "_detect_confirmed_hif_transition", lambda context, image: "select_change_target")
+
+    assert action._wait_for_screen_profile(object(), b"target", "select_change_target", attempts=0) == b"target"
+
+    monkeypatch.setattr(action, "_detect_confirmed_hif_transition", lambda context, image: "class_options")
+    assert action._wait_for_screen_profile(object(), b"target", "select_change_target", attempts=0) is None
+
+
+def test_source_confirmation_rehydrates_an_explicitly_authorized_target_from_action_parameters(monkeypatch):
     module = _load_action_module()
     module.reset_runtime_hif_session()
     action = module.ProduceChooseHIFSelectChangeSourceAuto()
@@ -188,8 +335,11 @@ def test_source_confirmation_never_rehydrates_a_missing_target_from_action_param
             )
         ),
     )
-    assert confirmations == []
-    assert stop_reasons == [("select_change_source_deck", "selected_target_card_missing_or_invalid")]
+    assert stop_reasons == []
+    assert len(confirmations) == 1
+    args, kwargs = confirmations[0]
+    assert args[2:4] == ("大胆不敵", "成就")
+    assert kwargs["explicit_source_authorized"] is True
 
 
 def test_drink_overflow_keep_requires_explicit_single_step_permission(monkeypatch):
@@ -348,6 +498,7 @@ def test_start_produce_stops_when_the_confirmation_disappears_without_a_known_ta
     module = _load_action_module()
     action = module.ProduceHIFStartProduceAuto()
     action.ACTION_DELAY = 0
+    action.START_TRANSITION_ATTEMPTS = 0
     records = []
     stop_reasons = []
     clicks = []
@@ -373,6 +524,32 @@ def test_start_produce_stops_when_the_confirmation_disappears_without_a_known_ta
     assert clicks == [([210, 1030, 300, 105], False)]
     assert stop_reasons == [("hif_start_confirm", "start_next_page_not_confirmed")]
     assert records[-1][0][1:3] == ("start_produce", "unverified")
+
+
+def test_start_produce_waits_for_a_known_target_after_loading(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFStartProduceAuto()
+    action.ACTION_DELAY = 0
+    action.CLICK_DELAY = 0
+    records = []
+    clicks = []
+    screenshots = iter((b"before", b"loading", b"known"))
+
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: next(screenshots))
+    monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: image == b"before")
+    monkeypatch.setattr(action, "_detect_confirmed_hif_transition", lambda context, image: "schedule" if image == b"known" else None)
+    monkeypatch.setattr(
+        action,
+        "_find_text_option",
+        lambda context, image, phrases, roi: SimpleNamespace(hit=True, best_result=SimpleNamespace(box=[210, 1030, 300, 105])),
+    )
+    monkeypatch.setattr(action, "_click_box_center", lambda context, box, double=False: clicks.append((list(box), double)) or True)
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"execution_mode":"single_step"}'))
+    assert clicks == [([210, 1030, 300, 105], False)]
+    assert records[-1][0][1:3] == ("start_produce", "verified")
+    assert records[-1][1]["details"] == {"next_screen": "schedule", "transition_attempt": 1}
 
 
 def test_card_single_step_keeps_blessing_plus_closed_without_active_status_model(monkeypatch):

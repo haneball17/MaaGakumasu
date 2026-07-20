@@ -1,0 +1,559 @@
+{
+    "$__mpe_config_TEST_HIF_day1": {
+        "$__mpe_code": {
+            "prefix": "",
+            "coordinateMode": "absolute-v1",
+            "lastSyncTime": 1784548519729,
+            "isModifiedExternally": false,
+            "filePath": "D:\\code\\MaaGakumasu\\assets\\resource\\base\\pipeline\\test\\TEST_HIF_day1.json",
+            "savedViewport": {
+                "x": -6916,
+                "y": -3048,
+                "zoom": 1.14
+            },
+            "filename": "TEST_HIF_day1",
+            "version": "v1.7.4"
+        }
+    },
+    "hif_day1_场景1_标志": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    40,
+                    35,
+                    156,
+                    112
+                ],
+                "template": [
+                    "produce/HIF/hif_day1_flag.png"
+                ]
+            }
+        },
+        "on_error": [
+            "unknownstop"
+        ],
+        "next": [
+            "HIF_day1_vocal课程选择",
+            "HIF_day1_dance课程选择",
+            "HIF_day1_vision课程选择"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3165,
+                "y": 3494
+            }
+        }
+    },
+    "unknownstop": {
+        "$__mpe_code": {
+            "position": {
+                "x": 4637,
+                "y": 4429
+            }
+        }
+    },
+    "HIF_day1_vocal课程选择": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    62,
+                    891,
+                    604,
+                    238
+                ],
+                "template": [
+                    "produce/HIF/hif_授业_vocal.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "HIF_day1_vocal课程确认"
+        ],
+        "on_error": [
+            "unknownstop"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3555,
+                "y": 3048
+            }
+        }
+    },
+    "HIF_day1_dance课程选择": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    62,
+                    891,
+                    604,
+                    238
+                ],
+                "template": [
+                    "produce/HIF/hif_授业_dance.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "on_error": [
+            "unknownstop"
+        ],
+        "next": [
+            "HIF_day1_dance课程确认"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3549,
+                "y": 3348
+            }
+        }
+    },
+    "HIF_day1_vision课程选择": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    62,
+                    891,
+                    604,
+                    238
+                ],
+                "template": [
+                    "produce/HIF/hif_授业_vision.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "on_error": [
+            "unknownstop"
+        ],
+        "next": [
+            "HIF_day1_vision课程确认"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3562,
+                "y": 3668
+            }
+        }
+    },
+    "HIF_day1_vocal课程确认": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    62,
+                    891,
+                    604,
+                    238
+                ],
+                "template": [
+                    "produce/HIF/hif_授业_vocal.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "on_error": [
+            "unknownstop"
+        ],
+        "next": [
+            "hif_day1_场景2_标志"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3951,
+                "y": 3070
+            }
+        }
+    },
+    "HIF_day1_dance课程确认": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    62,
+                    891,
+                    604,
+                    238
+                ],
+                "template": [
+                    "produce/HIF/hif_授业_dance.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "on_error": [
+            "unknownstop"
+        ],
+        "next": [
+            "hif_day1_场景2_标志"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3960,
+                "y": 3374
+            }
+        }
+    },
+    "HIF_day1_vision课程确认": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    62,
+                    891,
+                    604,
+                    238
+                ],
+                "template": [
+                    "produce/HIF/hif_授业_vision.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "on_error": [
+            "unknownstop"
+        ],
+        "next": [
+            "hif_day1_场景2_标志"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 3964,
+                "y": 3646
+            }
+        }
+    },
+    "$__mpe_group_hif_day1_场景1_TEST_HIF_day1": {
+        "$__mpe_code": {
+            "position": {
+                "x": 3126,
+                "y": 2911
+            },
+            "color": "blue",
+            "childrenLabels": [
+                "hif_day1_场景1_标志",
+                "HIF_day1_vocal课程选择",
+                "HIF_day1_dance课程选择",
+                "HIF_day1_vision课程选择",
+                "HIF_day1_vocal课程确认",
+                "HIF_day1_dance课程确认",
+                "HIF_day1_vision课程确认"
+            ],
+            "width": 1266,
+            "height": 1307
+        }
+    },
+    "$__mpe_group_hif_day1_场景2_TEST_HIF_day1": {
+        "$__mpe_code": {
+            "position": {
+                "x": 4609,
+                "y": 2904
+            },
+            "color": "blue",
+            "childrenLabels": [
+                "hif_day1_场景2_好调卡_1",
+                "hif_day1_场景2_标志",
+                "hif_day1_场景2_好调卡_2",
+                "hif_day1_场景2_集中卡_1",
+                "hif_day1_场景2_集中卡_2",
+                "hif_day1_场景2_眠气卡_1",
+                "hif_day1_场景2_眠气卡2"
+            ],
+            "width": 1266,
+            "height": 1307
+        }
+    },
+    "hif_day1_场景2_好调卡_1": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    356,
+                    707,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "hif_day1_场景2_好调卡_2"
+        ],
+        "on_error": [
+            "unknownstop"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 5115,
+                "y": 3111
+            }
+        }
+    },
+    "hif_day1_场景2_标志": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    38,
+                    37,
+                    156,
+                    119
+                ],
+                "template": [
+                    "produce/HIF/hif_day1_场景2_flag.png"
+                ]
+            }
+        },
+        "next": [
+            "hif_day1_场景2_好调卡_1"
+        ],
+        "on_error": [
+            "unknownstop"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 4800,
+                "y": 3108
+            }
+        }
+    },
+    "hif_day1_场景2_好调卡_2": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    356,
+                    707,
+                    1,
+                    1
+                ]
+            }
+        },
+        "on_error": [
+            "unknownstop"
+        ],
+        "next": [
+            "hif_day1_场景3_标志"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 5443,
+                "y": 3122
+            }
+        }
+    },
+    "hif_day1_场景2_集中卡_1": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    340,
+                    809,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "hif_day1_场景2_集中卡_2"
+        ],
+        "on_error": [
+            "unknownstop"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 5110,
+                "y": 3458
+            }
+        }
+    },
+    "hif_day1_场景2_集中卡_2": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    340,
+                    809,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "hif_day1_场景3_标志"
+        ],
+        "on_error": [
+            "unknownstop"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 5451,
+                "y": 3450
+            }
+        }
+    },
+    "$__mpe_group_hif_day1_场景3_TEST_HIF_day1": {
+        "$__mpe_code": {
+            "position": {
+                "x": 6032,
+                "y": 2902
+            },
+            "color": "blue",
+            "childrenLabels": [
+                "hif_day1_场景3_标志",
+                "浏览待选卡牌_点击槽位1",
+                "浏览待选卡牌_点击槽位2",
+                "浏览待选卡牌_点击槽位3"
+            ],
+            "width": 1266,
+            "height": 1307
+        }
+    },
+    "hif_day1_场景3_标志": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    162,
+                    330,
+                    411,
+                    183
+                ],
+                "template": [
+                    "produce/HIF/hif_day1_场景3_flag.png"
+                ]
+            }
+        },
+        "next": [
+            "浏览待选卡牌_点击槽位1"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 6140,
+                "y": 3081
+            }
+        }
+    },
+    "hif_day1_场景2_眠气卡_1": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    340,
+                    809,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "hif_day1_场景2_眠气卡2"
+        ],
+        "on_error": [
+            "unknownstop"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 5092,
+                "y": 3755
+            }
+        }
+    },
+    "hif_day1_场景2_眠气卡2": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    340,
+                    809,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "hif_day1_场景3_标志"
+        ],
+        "on_error": [
+            "unknownstop"
+        ],
+        "$__mpe_code": {
+            "position": {
+                "x": 5434,
+                "y": 3747
+            }
+        }
+    },
+    "浏览待选卡牌_点击槽位1": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    219,
+                    899,
+                    1,
+                    1
+                ]
+            }
+        },
+        "$__mpe_code": {
+            "position": {
+                "x": 6458,
+                "y": 3092
+            }
+        }
+    },
+    "浏览待选卡牌_点击槽位2": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    925,
+                    1,
+                    1
+                ]
+            }
+        },
+        "$__mpe_code": {
+            "position": {
+                "x": 6458,
+                "y": 3340
+            }
+        }
+    },
+    "浏览待选卡牌_点击槽位3": {
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    504,
+                    897,
+                    0,
+                    2
+                ]
+            }
+        },
+        "$__mpe_code": {
+            "position": {
+                "x": 6479,
+                "y": 3617
+            }
+        }
+    }
+}

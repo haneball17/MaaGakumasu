@@ -787,7 +787,7 @@ class SoftGate:
 
         if state.star_value < self.scenario.selection_targets["star_value"] and "star_gain" in candidate.tags:
             bias += 3.2
-            reasons.append("补星性缺口")
+            reasons.append("补星星缺口")
 
         if state.deck_size > self.scenario.selection_targets["deck_size"] and candidate.category in {"consult", "finals_consult"}:
             bias += 1.5
@@ -1497,7 +1497,7 @@ def _build_strengths(
     if finals.finals_readiness_completion >= 1.0:
         strengths.append("本战准备度达标")
     if star.level == "偏高":
-        strengths.append("当前星性处于偏高区间")
+        strengths.append("当前星星处于偏高区间")
     if finals.interval_budget_completion >= 1.0:
         strengths.append("Interval 预算达标")
     return strengths or ["当前样本已形成基础可通关框架"]
@@ -1514,7 +1514,7 @@ def _build_weaknesses(
     if finals.memory_quality_completion < 1.0:
         weaknesses.append("本战记忆质量仍偏低")
     if star.level == "偏低":
-        weaknesses.append("当前星性偏低，后续应提高星性获取效率")
+        weaknesses.append("当前星星偏低，后续应提高星星获取效率")
     if finals.star_completion < 1.0:
-        weaknesses.append("本战阶段星性未达到目标线")
+        weaknesses.append("本战阶段星星未达到目标线")
     return weaknesses or ["当前报表未发现明显硬短板，但仍需实机验证"]

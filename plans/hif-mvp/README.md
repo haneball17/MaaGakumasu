@@ -8,6 +8,8 @@
 - `STATUS.md`：当前阶段、仓库/实机停点、验证结果、阻塞与下一步。每个里程碑必须更新。
 - `DECISIONS.md`：用户逐项确认的范围与工程决策。
 - `HANDOFF.md`：实机操作、Journal、截图、失败证据及恢复信息。
+- `DATA-CATALOG-INTEGRATION.md`：HIF 与统一数据目录 v2 的待确认接入方案；只定义离线/影子数据门禁，不改变执行授权。
+- `MANUAL-TEST-PLAN.md`：HIF 人工探路、证据采集和正式单步验证的分层测试方案。
 
 ## 更新规则
 

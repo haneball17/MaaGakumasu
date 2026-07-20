@@ -798,6 +798,18 @@ def test_source_deck_scroll_enumeration_is_a_separate_explicit_mode():
     assert not args.source_deck_enumerate_visible
 
 
+def test_source_deck_full_enumeration_is_a_separate_explicit_mode():
+    args = hif_live_runner.parse_args(
+        ["--adb", "127.0.0.1:16416", "--adb-path", "D:/MuMu/adb.exe", "--single-step", "--source-deck-enumerate-all"]
+    )
+
+    override = hif_live_runner.runtime_override(args)
+
+    assert override is not None
+    params = override["ProduceHIFSelectChangeSourceFlag"]["action"]["param"]["custom_action_param"]
+    assert params["source_deck_probe"] == "full_grid"
+
+
 def test_source_deck_confirmation_is_explicit_and_binds_the_observed_source_card_name():
     args = hif_live_runner.parse_args(
         ["--adb", "127.0.0.1:16416", "--adb-path", "D:/MuMu/adb.exe", "--single-step", "--source-deck-confirm-target"]
@@ -809,6 +821,32 @@ def test_source_deck_confirmation_is_explicit_and_binds_the_observed_source_card
     assert params["source_deck_probe"] == "confirm_source_card"
     assert params["source_card_name"] == "大胆不敵"
     assert "target_card_name" not in params
+
+
+def test_source_deck_confirmation_resumes_the_source_page_when_a_target_name_is_supplied():
+    args = hif_live_runner.parse_args(
+        [
+            "--adb",
+            "127.0.0.1:16416",
+            "--adb-path",
+            "D:/MuMu/adb.exe",
+            "--single-step",
+            "--source-deck-confirm-target",
+            "--select-change-target-name",
+            "スポットライト",
+            "--source-deck-confirm-name",
+            "大胆不敵",
+            "--source-deck-confirm-slot",
+            "r2c3",
+        ]
+    )
+
+    override = hif_live_runner.runtime_override(args)
+
+    assert override is not None
+    assert override["ProduceEntryHIF"]["next"] == ["[JumpBack]ProduceHIFSelectChangeSourceFlag", "ProduceHIFUnknownStop"]
+    params = override["ProduceHIFSelectChangeSourceFlag"]["action"]["param"]["custom_action_param"]
+    assert params["selected_target_name"] == "スポットライト"
 
 
 def test_explicit_source_card_confirmation_binds_user_selected_target_and_calibrated_slot():
@@ -852,7 +890,7 @@ def test_explicit_select_change_target_is_limited_to_single_step_and_does_not_mu
     target = override["ProduceHIFSelectChangeTargetFlag"]
     params = target["action"]["param"]["custom_action_param"]
     assert params["select_change_target_names"] == ["成就"]
-    assert target["recognition"] == "DirectHit"
+    assert "recognition" not in target
     assert override["ProduceEntryHIF"]["next"] == [
         "[JumpBack]ProduceHIFSelectChangeTargetFlag",
         "ProduceHIFUnknownStop",
@@ -894,8 +932,7 @@ def test_live_runner_loads_the_formal_hif_task_override_for_home_entry():
 
     assert override["ProduceEntryFlag"]["next"] == "ProduceEntryHIF"
     assert override["ProduceChooseDifficulty"]["action"]["param"]["custom_action"] == "ProduceHIFChooseFinalModeAuto"
-    assert override["ProduceChooseDifficulty"]["next"] == ["ProduceAfterChooseDifficulty"]
-    assert override["ProduceAfterChooseDifficulty"]["next"] == ["ProduceLackAP", "ProduceChooseIdolNext"]
+    assert override["ProduceChooseDifficulty"]["next"] == ["ProduceHIFAfterChooseFinalMode"]
     assert override["ProduceChooseIdolNext"]["next"] == ["ProduceHIFStartConfirmFlag", "ProduceChooseSupport"]
 
 

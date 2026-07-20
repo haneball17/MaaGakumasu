@@ -314,3 +314,86 @@ Pipeline 改动还必须按专项技能增加以下门禁：
 - 未提交 `debug/`、Journal、日志、视频、模型或无关文件；
 - 当前限制、未覆盖分支和后续决策核心状态均如实记录；
 - 未经用户确认不 push、不发布。
+
+## 12. Day1 场景3变卡专项设计（测试流程）
+
+_经用户于 2026-07-20 逐项确认。本节仅定义 `TEST_HIF_day1.json` 的 Day1 场景3测试闭环；在取得专项实机证据前，不接入正式 `ProduceHIF.json`。_
+
+### 12.1 范围与入口
+
+- 入口是 `hif_day1_场景3_标志`，仅接受当前日文原版、MuMu 模拟器 12、ADB 原始 `720x1280` 的变卡候选页。
+- 现有测试文件中三个无识别的硬坐标槽位点击仅是历史探索，不可复用为正式页面契约。
+- 正式流程已有 `ProduceChooseHIFSelectChangeTargetAuto`、`ProduceChooseHIFSelectChangeSourceAuto` 和结果观察器；专项实现应复用其截图、OCR、YOLO 网格扫描、来源确认和 Journal 骨架，不另建 Python 编排器。
+- 所有输入只在测试入口、用户已明确授权且执行模式允许时发送。每个不可逆点击仍遵循本计划第 6、7、9、10 节的单击、后验和安全停止要求。
+
+### 12.2 已确认状态机
+
+```text
+hif_day1_场景3_标志
+  -> TestHIFDay1ChangeDeckSnapshot
+  -> TestHIFDay1ChangeCandidatesAndDecision
+  -> TestHIFDay1ChangeSelectTarget
+  -> TestHIFDay1ChangeSourceFlag
+  -> TestHIFDay1ChangeSelectSource
+  -> TestHIFDay1ChangeResultObserve
+  -> unknownstop
+```
+
+1. `TestHIFDay1ChangeDeckSnapshot` 在候选页打开右下角牌库入口，完整浏览来源牌库，关闭后确认已回到同一候选页。该动作是原子的：打开、扫描、关闭或回页任一环节失败，快照作废并进入 `unknownstop`。
+2. `TestHIFDay1ChangeCandidatesAndDecision` 读取再抽次数，依次点击左、中、右三个候选槽位并读取详情，然后一次性做出决策。它绝不点击“再抽选”。
+3. `TestHIFDay1ChangeSelectTarget` 基于当前帧和已落盘决策选中目标候选卡，点击“次へ”，且后态只能是来源牌库页。
+4. `TestHIFDay1ChangeSourceFlag` 以来源页双锚点确认页面和顶部目标预览，禁止沿用候选页坐标。
+5. `TestHIFDay1ChangeSelectSource` 重新扫描并定位来源实例，选中后验证选中态，再单击“チェンジ”。后态只能是变卡结果页。
+6. `TestHIFDay1ChangeResultObserve` OCR 验证“来源卡 -> 目标卡”，记录结果并停在结果页；不关闭弹窗、不继续日程。
+
+页面锚点、唯一目标、执行模式、前后帧或领域后验任一项缺失，均不得猜测下一步，直接安全停止。
+
+### 12.3 牌库、候选与决策契约
+
+牌库扫描必须到达底部。到底由滚动条底部或重复页面签名确认，且有安全页数上限。每张已识别牌记录：`card_id`、规范化日文名、强化状态、详情校验文本、页签名、页码、槽位和置信度。身份由日文名与详情交叉校验映射到本地卡牌字典，不能只靠卡名。
+
+- 未识别卡允许出现在牌库中，快照设置 `deck_complete=false` 并记录 `missing_slots`；决策和点击不得使用未知卡。
+- 同一 `card_id + 强化状态` 的重复卡可互换；最终来源页选择最先重新验证到的实例。
+- 同一槽位最多点击一次；点击后详情 OCR 最多补读一次。仍无法识别时标为未知，不重试点击，不把上一个槽位的详情当作当前卡。
+- 再抽次数仅作为 `ChangeContext.reroll_count` 的决策数据。用户手动再抽后，必须重新确认候选页锚点并只重扫候选卡、重新决策；已有牌库快照保留。未发生再抽时，不做冗余的候选预验证。
+
+决策模块同进程接收 `ChangeContext`，返回一个结构化 `ChangeDecision`：
+
+```text
+kind: preferred_select | forced_fallback | blocked
+target: 候选 card_id + 当前槽位
+source: 已识别来源实例
+reasons: 可审计的评分与并列决策依据
+```
+
+- 不存在“跳过变卡”结果。可识别组合存在时，`forced_fallback` 选择损失最小的组合并在测试模式下提交；候选并列按左、中、右，来源并列按页码小、槽位靠前。
+- 只有没有任何已识别、可提交组合时才返回 `blocked` 并停止。流程完成优先，但未知卡绝不被自动选择。
+
+### 12.4 快照、日志与恢复
+
+- 继续复用 `HIFJournal` 的 `debug/hif-journal/<session_id>.jsonl` 与证据帧；每次读取、点击、滑动、页面切换、决策和停止均写入结构化事件，并向 `debug/maa.log` 写一行人类可读摘要。
+- 每个 session 另写 `debug/hif-snapshots/<session_id>.json`，通过临时文件后原子替换。它是审计和显式恢复记录，不取代当前帧识别或 Maa Pipeline 状态。
+- 快照只保存恢复必需字段：版本、`session_id`、阶段、候选、来源实例、`missing_slots`、`deck_complete`、再抽次数、决策、证据帧引用和更新时间；原始 PNG 仍只由 Journal 保存。
+- 恢复必须显式提供 `resume_session_id`。读取快照后重验当前页面、目标预览和待执行阶段；任何不匹配都停止，不能从旧坐标或旧内存继续点击。
+- `verified` 只用于具有动作前后帧且帧已变化的动作。纯结果读取写为 `observed`，避免现有 Journal 审计把“缺少 after 帧的 verified 记录”误判为成功。
+
+### 12.5 实机证据门槛
+
+下列页面证据尚未完整采集，实施前不得补猜 ROI、模板、按钮坐标或滑动参数：
+
+1. 候选页点击右下角牌库入口后的页面；
+2. 牌库底部及到底判据；
+3. 关闭牌库后重新回到候选页；
+4. 提交“チェンジ”后的结果页，且能读取替换前后卡名。
+
+每张证据需记录游戏版本、日文原版、MuMu、`720x1280`、任务选项、分支/提交和 `session_id`。原始截图、Journal 与 Maa 日志只留在 `debug/`，不提交。
+
+### 12.6 实施与验收顺序
+
+1. 先补齐第 12.5 节的实机页面证据和测试夹具，建立候选页、牌库页、来源页、结果页的明确契约。
+2. 为牌库完整扫描、未知卡排除、重复实例重定位、手动再抽仅重扫候选、快照原子读写与恢复页不匹配分别新增离线失败测试。
+3. 在 `TEST_HIF_day1.json` 落最小状态链和 `on_error: ["unknownstop"]`，再改造已有变卡 CustomAction；不得先接入正式流程。
+4. 运行 HIF 专项 Pipeline/Action 测试、`python -m py_compile agent/custom/action/produce_hif.py`、JSON 检查与 `git diff --check`。
+5. 只在上述门禁通过且用户再次授权实机输入后，执行一次完整测试链路，并用 `tools/hif_journal_audit.py` 审计前后帧、决策、点击和结果页停止。
+
+完成测试闭环后，才更新 `docs/hif/testing.md`、`docs/hif/architecture.md` 及与实机证据对应的 `docs/hif/resources.md` / `docs/hif/observations.md`；在此之前，本节是待实施规格，不把单次观察升级为游戏机制事实。

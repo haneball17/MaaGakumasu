@@ -249,11 +249,19 @@
       ]
     },
     {
+      "key": "始まりの合図",
+      "required_support": "executable",
+      "semantic_type": "skill_card_effect",
+      "sources": [
+        "agent/hif/route_scoring/catalog.py:28"
+      ]
+    },
+    {
       "key": "演出計画",
       "required_support": "executable",
       "semantic_type": "skill_card_effect",
       "sources": [
-        "agent/hif/route_scoring/catalog.py:39"
+        "agent/hif/route_scoring/catalog.py:50"
       ]
     },
     {
@@ -261,7 +269,7 @@
       "required_support": "unsupported",
       "semantic_type": "skill_card_effect",
       "sources": [
-        "agent/hif/route_scoring/catalog.py:52"
+        "agent/hif/route_scoring/catalog.py:63"
       ]
     },
     {
@@ -270,7 +278,7 @@
       "semantic_type": "skill_card_effect",
       "sources": [
         "agent/hif/route_scoring/catalog.py:17",
-        "agent/hif/route_scoring/catalog.py:28"
+        "agent/hif/route_scoring/catalog.py:39"
       ]
     }
   ],

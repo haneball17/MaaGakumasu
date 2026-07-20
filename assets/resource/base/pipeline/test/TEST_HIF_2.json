@@ -1,0 +1,719 @@
+{
+	// HIF 本战 Day1 仅观察入口：先确认页面，不发送任何输入。
+	"test_hif_day1_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day1_schedule_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	// Day1 日数锚点：当前页必须明确显示 6 日，避免把其他本战日误当首日。
+	"test_hif_day1_remaining_days_flag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*6日.*"], "roi": [
+					40,
+					90,
+					150,
+					70
+				]}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"on_error": ["test_hif_observe_stop"]
+	},
+	// Day1 场景闸：HIF 标题和 6 日必须同时命中；通过后仍只观察并停止。
+	"test_hif_day1_schedule_flag": {
+		"recognition": {
+			"type": "And",
+			"param": {"all_of": [
+					"test_hif_day3_title_flag",
+					"test_hif_day1_remaining_days_flag"
+				], "box_index": 0}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	// Day1 单步课程测试入口：仅从当前的本战准备页启动；不会尝试恢复或重复点击。
+	"test_hif_day1_select_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day1_select_schedule_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	// 单步前安全闸：复用 HIF 标题与 Day1 日数锚点，任一缺失就停止。
+	"test_hif_day1_select_schedule_flag": {
+		"recognition": {
+			"type": "And",
+			"param": {"all_of": [
+					"test_hif_day3_title_flag",
+					"test_hif_day1_remaining_days_flag"
+				], "box_index": 0}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day1_select_vo_once"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	// 唯一允许的输入：完整识别 Vo/Da/Vi 后仅选择 Vo 一次；已选态或未知后态均安全停止。
+	"test_hif_day1_select_vo_once": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceChooseHIFEventAuto",
+				"custom_action_param": {"preset_id": "rinami_good_condition_safe", "day1_lesson": "Vo", "execution_mode": "single_step"}
+			}
+		},
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day2_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day2_schedule_flag"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"test_hif_day2_schedule_flag": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {
+				"template": ["produce/HIF/hif_day2_flag_2.png"],
+				"roi": [
+					32,
+					24,
+					200,
+					140
+				]
+			}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day2_no_selection"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"test_hif_day2_no_selection": {
+		"recognition": {
+			"type": "Custom",
+			"param": {"custom_recognition": "HIFPublicLessonPreviewNoSelection"}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"next": ["test_hif_day2_select_vo"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"test_hif_day2_select_vo": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "Click", "param": {"target": [
+					168,
+					1000
+				]}},
+		"post_wait_freezes": 300,
+		"timeout": 5000,
+		"next": ["test_hif_day2_read_vo_preview"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"test_hif_day2_read_vo_preview": {
+		"recognition": {
+			"type": "Custom",
+			"param": {
+				"custom_recognition": "HIFPublicLessonPreviewDetail",
+				"custom_recognition_param": {"candidate": "Vo"}
+			}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 5000,
+		"next": ["test_hif_day2_select_da"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"test_hif_day2_select_da": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "Click", "param": {"target": [
+					360,
+					1000
+				]}},
+		"post_wait_freezes": 300,
+		"timeout": 5000,
+		"next": ["test_hif_day2_read_da_preview"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"test_hif_day2_read_da_preview": {
+		"recognition": {
+			"type": "Custom",
+			"param": {
+				"custom_recognition": "HIFPublicLessonPreviewDetail",
+				"custom_recognition_param": {"candidate": "Da"}
+			}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 5000,
+		"next": ["test_hif_day2_select_vi"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"test_hif_day2_select_vi": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "Click", "param": {"target": [
+					552,
+					1000
+				]}},
+		"post_wait_freezes": 300,
+		"timeout": 5000,
+		"next": ["test_hif_day2_read_vi_preview"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"test_hif_day2_read_vi_preview": {
+		"recognition": {
+			"type": "Custom",
+			"param": {
+				"custom_recognition": "HIFPublicLessonPreviewDetail",
+				"custom_recognition_param": {"candidate": "Vi"}
+			}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"next": ["test_hif_day2_stop"]
+	},
+	"test_hif_day2_stop": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "StopTask", "param": {}}
+	},
+	"test_hif_day3_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day3_schedule_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_title_flag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*H\\.I\\.F本戦まで.*"], "roi": [
+					32,
+					40,
+					200,
+					70
+				]}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_remaining_days_flag": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*4日.*"], "roi": [
+					40,
+					90,
+					150,
+					70
+				]}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_schedule_flag": {
+		"recognition": {
+			"type": "And",
+			"param": {"all_of": [
+					"test_hif_day3_title_flag",
+					"test_hif_day3_remaining_days_flag"
+				], "box_index": 0}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day3_observe_schedule"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_observe_schedule": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceChooseHIFEventAuto",
+				"custom_action_param": {"execution_mode": "observe"}
+			}
+		},
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_gift_select_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day3_gift_schedule_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_gift_schedule_flag": {
+		"recognition": {
+			"type": "And",
+			"param": {"all_of": [
+					"test_hif_day3_title_flag",
+					"test_hif_day3_remaining_days_flag"
+				], "box_index": 0}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day3_gift_select_once"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_gift_select_once": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceChooseHIFEventAuto",
+				"custom_action_param": {"preset_id": "rinami_good_condition_safe", "execution_mode": "single_step"}
+			}
+		},
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_gift_confirm_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day3_gift_selected_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_gift_selected_flag": {
+		"recognition": {
+			"type": "And",
+			"param": {
+				"all_of": [
+					"test_hif_day3_gift_schedule_flag",
+					{
+						"recognition": {"type": "OCR", "param": {"expected": [".*SELEC.*"], "roi": [
+									360,
+									1080,
+									160,
+									70
+								]}}
+					}
+				],
+				"box_index": 0
+			}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day3_gift_confirm_once"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day3_gift_confirm_once": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceChooseHIFEventAuto",
+				"custom_action_param": {"preset_id": "rinami_good_condition_safe", "execution_mode": "single_step"}
+			}
+		},
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day4_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day4_schedule_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day4_remaining_days_flag": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*3日.*"], "roi": [
+					40,
+					90,
+					150,
+					70
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day4_schedule_flag": {
+		"recognition": {"type": "And", "param": {"all_of": [
+					"test_hif_day3_title_flag",
+					"test_hif_day4_remaining_days_flag"
+				], "box_index": 0}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day5_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day5_schedule_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day5_remaining_days_flag": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*2日.*"], "roi": [
+					40,
+					90,
+					150,
+					70
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day5_schedule_flag": {
+		"recognition": {"type": "And", "param": {"all_of": [
+					"test_hif_day3_title_flag",
+					"test_hif_day5_remaining_days_flag"
+				], "box_index": 0}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day6_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_day6_schedule_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day6_remaining_days_flag": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*1日.*"], "roi": [
+					40,
+					90,
+					150,
+					70
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_day6_schedule_flag": {
+		"recognition": {"type": "And", "param": {"all_of": [
+					"test_hif_day3_title_flag",
+					"test_hif_day6_remaining_days_flag"
+				], "box_index": 0}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_ranking_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_ranking_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_ranking_flag": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*タップして次へ.*"], "roi": [
+					245,
+					1140,
+					250,
+					80
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_round1_entry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_round1_flag"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_round1_flag": {
+		"recognition": {"type": "OCR", "param": {"expected": [
+					".*Round\\s*1.*",
+					".*ROUND\\s*1.*",
+					".*1st.*Round.*"
+				], "roi": [
+					8,
+					0,
+					170,
+					48
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_round1_observe"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_round1_observe": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceHIFRound1Observe"}},
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_class_options_observe": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*授業.*"], "roi": [
+					32,
+					36,
+					160,
+					105
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_public_lesson_result_observe": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*公開レッスン.*"], "roi": [
+					20,
+					20,
+					340,
+					140
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_gift_bags_observe": {
+		"recognition": {"type": "TemplateMatch", "param": {"template": ["produce/HIF/flag_hif_gift_bags.png"], "roi": [
+					240,
+					400,
+					240,
+					360
+				], "threshold": 0.8}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_gift_bags_advance_entry": {
+		"recognition": {
+			"type": "TemplateMatch",
+			"param": {"template": ["produce/HIF/flag_hif_gift_bags.png"], "roi": [
+					240,
+					400,
+					240,
+					360
+				], "threshold": 0.8}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceHIFSafeAdvanceAuto",
+				"custom_action_param": {"source": "gift_bags", "execution_mode": "single_step"}
+			}
+		},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_gift_reward_result_observe": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [
+					".*Pドリンク獲得.*",
+					".*スキルカード獲得.*"
+				], "roi": [
+					100,
+					650,
+					520,
+					220
+				]}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_gift_reward_result_advance_entry": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [
+					".*Pドリンク獲得.*",
+					".*スキルカード獲得.*"
+				], "roi": [
+					100,
+					650,
+					520,
+					220
+				]}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceHIFSafeAdvanceAuto",
+				"custom_action_param": {"source": "gift_reward_result", "execution_mode": "single_step"}
+			}
+		},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_reward_observe": {
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "ProduceHIFDrinkRewardPage"}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_reward_preview_left": {
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "ProduceHIFDrinkRewardPage"}},
+		"action": {"type": "Click", "param": {"target": [
+					221,
+					885
+				]}},
+		"post_wait_freezes": 300,
+		"timeout": 10000,
+		"next": ["test_hif_drink_reward_observe"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_reward_preview_center": {
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "ProduceHIFDrinkRewardPage"}},
+		"action": {"type": "Click", "param": {"target": [
+					360,
+					885
+				]}},
+		"post_wait_freezes": 300,
+		"timeout": 10000,
+		"next": ["test_hif_drink_reward_observe"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_reward_preview_right": {
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "ProduceHIFDrinkRewardPage"}},
+		"action": {"type": "Click", "param": {"target": [
+					499,
+					885
+				]}},
+		"post_wait_freezes": 300,
+		"timeout": 10000,
+		"next": ["test_hif_drink_reward_observe"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_reward_reveal_observe": {
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "ProduceHIFDrinkRewardRevealPage"}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_reward_reveal_wait_10s": {
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "ProduceHIFDrinkRewardRevealPage"}},
+		"action": {"type": "DoNothing", "param": {}},
+		"post_delay": 10000,
+		"timeout": 15000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_reward_reveal_wait_entry": {
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "ProduceHIFDrinkRewardRevealPage"}},
+		"action": {
+			"type": "Custom",
+			"param": {
+				"custom_action": "ProduceHIFDrinkRewardRevealAuto",
+				"custom_action_param": {"execution_mode": "single_step"}
+			}
+		},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_reward_reveal_confirm_entry": {
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "ProduceHIFDrinkRewardRevealPage"}},
+		"action": {"type": "Click", "param": {"target": [
+					360,
+					1094
+				]}},
+		"post_wait_freezes": 300,
+		"timeout": 10000,
+		"next": ["test_hif_skill_reward_observe"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_reward_receive_black_vinegar_entry": {
+		"recognition": {
+			"type": "And",
+			"param": {"all_of": [
+					{"recognition": {"type": "OCR", "param": {"expected": [".*初星黒酢.*"], "roi": [
+									118,
+									506,
+									500,
+									230
+								]}}},
+					{"recognition": {"type": "OCR", "param": {"expected": [".*受け取る.*"], "roi": [
+									230,
+									1052,
+									260,
+									84
+								]}}}], "box_index": 0}
+		},
+		"action": {"type": "Click", "param": {"target": [
+					360,
+					1094
+				]}},
+		"post_wait_freezes": 300,
+		"timeout": 10000,
+		"next": ["test_hif_drink_reward_reveal_observe"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_skill_reward_observe": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*受[けは]取るスキルカードを選んでください.*"], "roi": [
+					100,
+					570,
+					540,
+					100
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_drink_overflow_observe": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*[PＰ]ドリンク所持上限.*"], "roi": [
+					40,
+					70,
+					400,
+					100
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_select_change_target_observe": {
+		"recognition": {
+			"type": "OCR",
+			"param": {"expected": [".*チェンジで獲得するスキルカードを選んでください.*"], "roi": [
+					60,
+					260,
+					600,
+					110
+				]}
+		},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_select_change_source_observe": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*チェンジ.*"], "roi": [
+					0,
+					28,
+					285,
+					58
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_consult_observe": {
+		"recognition": {"type": "OCR", "param": {"expected": [".*Pポイントと交換するものを選んでください.*"], "roi": [
+					100,
+					250,
+					520,
+					120
+				]}},
+		"action": {"type": "DoNothing", "param": {}},
+		"timeout": 10000,
+		"next": ["test_hif_observe_stop"],
+		"on_error": ["test_hif_observe_stop"]
+	},
+	"test_hif_observe_stop": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "StopTask", "param": {}}
+	}
+}

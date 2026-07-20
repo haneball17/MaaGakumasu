@@ -21,6 +21,7 @@ __all__ = [
     "ProduceHIFSkillRewardRevealAuto",
     "ProduceChooseHIFSelectChangeTargetAuto",
     "ProduceChooseHIFSelectChangeSourceAuto",
+    "ProduceHIFSelectChangeResultObserve",
     "ProduceHIFConsultAuto",
     "ProduceHIFRewardConfirmAuto",
     "ProduceHIFKnownNextAuto",

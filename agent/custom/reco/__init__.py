@@ -17,4 +17,6 @@ __all__ = [
     "ProduceHIFDrinkRewardRevealPage",
     "ProduceHIFSkillRewardSelectedPage",
     "ProduceHIFSkillRewardRevealPage",
+    "HIFPublicLessonPreviewDetail",
+    "HIFPublicLessonPreviewNoSelection",
 ]

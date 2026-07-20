@@ -45,11 +45,24 @@ def test_hif_nodes_without_next_are_terminal_or_explicit_action_internal_stops()
     assert nextless - stop_tasks == set(manifest["action_internal_stop_nodes"])
 
 
-def test_every_known_interactive_or_result_route_precedes_safe_advance():
+def test_unknown_pages_have_no_input_fallback_after_known_routes():
     pipeline = _pipeline()
     manifest = load_hif_coverage_manifest(MANIFEST_PATH)
     route = pipeline["ProduceEntryHIF"]["next"]
-    safe_index = route.index("ProduceHIFSafeAdvanceFlag")
 
     for node_name in manifest["priority_before_safe_advance"]:
-        assert route.index(node_name) < safe_index, node_name
+        assert route.index(node_name) < route.index("ProduceHIFUnknownStop"), node_name
+
+
+def test_hif_router_stops_unknown_pages_without_safe_advance_input():
+    route = _pipeline()["ProduceEntryHIF"]["next"]
+
+    assert "ProduceHIFSafeAdvanceFlag" not in route
+    assert route[-1] == "ProduceHIFUnknownStop"
+
+
+def test_round1_routes_to_observation_then_stop_without_card_action():
+    pipeline = _pipeline()
+
+    assert pipeline["ProduceHIFRound1Flag"]["next"] == ["ProduceHIFRound1ObserveFlag"]
+    assert pipeline["ProduceHIFRound1ObserveFlag"]["next"] == ["ProduceHIFRound1ReachedStop"]

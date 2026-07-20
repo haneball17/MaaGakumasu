@@ -1,4 +1,18 @@
 {
+	"ProduceHIFAfterChooseFinalMode": {
+		"recognition": {
+			"type": "DirectHit",
+			"param": {}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": [
+			"ProduceLackAP",
+			"ProduceChooseIdolNext"
+		]
+	},
 	"ProduceHIFPreparationEntry": {
 		"recognition": {
 			"type": "DirectHit",
@@ -135,6 +149,7 @@
 			"[JumpBack]ProduceHIFMemoryPhotoConfirmFlag",
 			"[JumpBack]ProduceHIFMemoryFlag",
 			"[JumpBack]ProduceHIFMemoryPreviewFlag",
+			"[JumpBack]ProduceHIFSelectChangeResultFlag",
 			"[JumpBack]ProduceHIFSelectChangeSourceFlag",
 			"[JumpBack]ProduceHIFSelectChangeTargetFlag",
 			"[JumpBack]ProduceHIFDrinkRewardRevealFlag",
@@ -150,7 +165,82 @@
 			"[JumpBack]ProduceHIFConsultFlag",
 			"[JumpBack]ProduceHIFFinalModeFlag",
 			"[JumpBack]ProduceChooseHIFEventFlag",
-			"ProduceHIFSafeAdvanceFlag",
+			"ProduceHIFUnknownStop"
+		]
+	},
+	"ProduceHIFSelectChangeResultText": {
+		"recognition": {
+			"type": "OCR",
+			"param": {
+				"expected": [".*チェンジ.*"],
+				"roi": [55, 945, 610, 150]
+			}
+		},
+		"action": {"type": "DoNothing", "param": {}}
+	},
+	"ProduceHIFSelectChangeResultDialog": {
+		"recognition": {
+			"type": "ColorMatch",
+			"param": {
+				"roi": [45, 935, 630, 185],
+				"method": 40,
+				"lower": [0, 0, 220],
+				"upper": [180, 35, 255],
+				"count": 2000
+			}
+		},
+		"action": {"type": "DoNothing", "param": {}}
+	},
+	"ProduceHIFSelectChangeResultFlag": {
+		"recognition": {
+			"type": "And",
+			"param": {
+				"all_of": [
+					"ProduceHIFSelectChangeResultText",
+					"ProduceHIFSelectChangeResultDialog"
+				],
+				"box_index": 0
+			}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {"custom_action": "ProduceHIFSelectChangeResultObserve"}
+		},
+		"next": ["ProduceHIFUnknownStop"]
+	},
+	"ProduceHIFFinalsPrepareResumeFlag": {
+		"recognition": {
+			"type": "And",
+			"param": {
+				"all_of": [
+					{
+						"recognition": {
+							"type": "OCR",
+							"param": {
+								"expected": [".*H\\.?I\\.?F\\s*本[戦战].*(?:まで|还有|剩余).*"],
+								"roi": [32, 25, 160, 60]
+							}
+						}
+					},
+					{
+						"recognition": {
+							"type": "OCR",
+							"param": {
+								"expected": [".*[1-6]\\s*日.*"],
+								"roi": [55, 85, 110, 75]
+							}
+						}
+					}
+				],
+				"box_index": 0
+			}
+		},
+		"action": {
+			"type": "DoNothing",
+			"param": {}
+		},
+		"next": [
+			"ProduceChooseHIFEventFlag",
 			"ProduceHIFUnknownStop"
 		]
 	},
@@ -250,9 +340,7 @@
 			"type": "DoNothing",
 			"param": {}
 		},
-		"next": [
-			"ProduceHIFRound1ActionFlag"
-		],
+		"next": ["ProduceHIFRound1ObserveFlag"],
 		"focus": {
 			"Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=Round1[/color]"
 		}

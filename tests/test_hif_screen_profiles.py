@@ -1,3 +1,4 @@
+from tools import hif_screen_profile_check
 from agent.hif.observation import observe_hif_page
 from agent.hif.screen_profiles import load_hif_screen_profiles
 
@@ -78,6 +79,22 @@ def test_verified_safe_advance_point_does_not_overlap_known_resource_choice_cont
         for button in profile.buttons.values():
             x, y, width, height = button.roi
             assert not (x <= point[0] < x + width and y <= point[1] < y + height)
+
+
+def test_screen_profile_check_rejects_a_missing_review_section(monkeypatch, capsys):
+    profiles = load_hif_screen_profiles()
+    monkeypatch.setattr(
+        hif_screen_profile_check,
+        "load_hif_screen_profiles",
+        lambda: profiles.__class__(
+            profile_id=profiles.profile_id,
+            review_sections=profiles.review_sections[:-1],
+            profiles=profiles.profiles,
+        ),
+    )
+
+    assert hif_screen_profile_check.main() == 1
+    assert "review_section_count_mismatch:expected=35:actual=34" in capsys.readouterr().out
 
 
 def test_page_observation_requires_a_unique_anchor_match():

@@ -7,6 +7,7 @@
         "培育难度",
         "HIF预设",
         "HIF执行模式",
+        "HIF Day1课程",
         "培育偶像",
         "培育次数",
         "使用体力药",
@@ -60,6 +61,16 @@
             "ProduceEntryFlag": {
               "next": "ProduceEntryHIF"
             },
+            "ProduceLoop": {
+              "next": [
+                "ProduceHIFFinalsPrepareResumeFlag",
+                "ProduceSkipPreparation",
+                "[JumpBack]ProduceStartPopUpButtons",
+                "ProduceHomeFlag",
+                "[JumpBack]ReturnHome",
+                "[JumpBack]BackHome"
+              ]
+            },
             "ProduceChooseDifficulty": {
               "recognition": {
                 "type": "DirectHit",
@@ -71,10 +82,7 @@
                   "custom_action": "ProduceHIFChooseFinalModeAuto"
                 }
               },
-              "next": ["ProduceAfterChooseDifficulty"]
-            },
-            "ProduceAfterChooseDifficulty": {
-              "next": ["ProduceLackAP", "ProduceChooseIdolNext"]
+              "next": ["ProduceHIFAfterChooseFinalMode"]
             },
             "ProduceChooseIdolNext": {
               "next": ["ProduceHIFStartConfirmFlag", "ProduceChooseSupport"]
@@ -234,6 +242,47 @@
       ],
       "label": "$HIF执行模式",
       "description": "$HIF执行模式说明"
+    },
+    "HIF Day1课程": {
+      "type": "select",
+      "default_case": "Vo（红）",
+      "cases": [
+        {
+          "name": "Vo（红）",
+          "pipeline_override": {
+            "ProduceChooseHIFEventFlag": {
+              "action": {"param": {"custom_action_param": {"day1_lesson": "Vo"}}}
+            },
+            "HIF_day1_标志": {
+              "next": ["HIF_day1_vocal课程选择"]
+            }
+          }
+        },
+        {
+          "name": "Da（蓝）",
+          "pipeline_override": {
+            "ProduceChooseHIFEventFlag": {
+              "action": {"param": {"custom_action_param": {"day1_lesson": "Da"}}}
+            },
+            "HIF_day1_标志": {
+              "next": ["HIF_day1_dance课程选择"]
+            }
+          }
+        },
+        {
+          "name": "Vi（黄）",
+          "pipeline_override": {
+            "ProduceChooseHIFEventFlag": {
+              "action": {"param": {"custom_action_param": {"day1_lesson": "Vi"}}}
+            },
+            "HIF_day1_标志": {
+              "next": ["HIF_day1_vision课程选择"]
+            }
+          }
+        }
+      ],
+      "label": "HIF Day1课程",
+      "description": "H.I.F 本战还剩 6 日时的课程选择；课程卡不可见时安全停止。"
     },
     "「初」难度": {
       "type": "select",

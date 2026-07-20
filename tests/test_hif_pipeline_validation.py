@@ -60,6 +60,7 @@ def test_hif_task_overrides_match_between_locales_reference_existing_nodes_and_d
     assert hif["pipeline_override"] == hif_cn["pipeline_override"]
     assert hif["pipeline_override"]["ProduceEntryFlag"]["next"] == "ProduceEntryHIF"
     assert "ProduceHIFStartConfirmFlag" in hif["pipeline_override"]["ProduceChooseIdolNext"]["next"]
+    assert hif["pipeline_override"]["ProduceLoop"]["next"][0] == "ProduceHIFFinalsPrepareResumeFlag"
 
     for node_name in hif["pipeline_override"]:
         assert node_name in all_nodes
@@ -77,11 +78,42 @@ def test_hif_task_overrides_match_between_locales_reference_existing_nodes_and_d
                 assert params["execution_mode"] == "single_step"
 
 
+def test_hif_resume_anchor_only_routes_confirmed_finals_prepare_to_schedule_selection():
+    pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    resume = pipeline["ProduceHIFFinalsPrepareResumeFlag"]
+
+    assert resume["recognition"] == {
+        "type": "And",
+        "param": {
+            "all_of": [
+                {
+                    "recognition": {
+                        "type": "OCR",
+                        "param": {
+                            "expected": [".*H\\.?I\\.?F\\s*本[戦战].*(?:まで|还有|剩余).*"],
+                            "roi": [32, 25, 160, 60],
+                        },
+                    },
+                },
+                {
+                    "recognition": {
+                        "type": "OCR",
+                        "param": {"expected": [".*[1-6]\\s*日.*"], "roi": [55, 85, 110, 75]},
+                    },
+                },
+            ],
+            "box_index": 0,
+        },
+    }
+    assert resume["action"]["type"] == "DoNothing"
+    assert resume["next"] == ["ProduceChooseHIFEventFlag", "ProduceHIFUnknownStop"]
+
+
 def test_hif_formal_router_reachability_keeps_only_declared_legacy_or_dynamic_nodes_outside_the_root_graph():
     pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
     unreachable = find_unreachable_hif_nodes(
         pipeline,
-        entry_nodes=("ProduceEntryHIF", "ProduceHIFStartConfirmFlag"),
+        entry_nodes=("ProduceEntryHIF", "ProduceHIFStartConfirmFlag", "ProduceHIFAfterChooseFinalMode", "ProduceHIFFinalsPrepareResumeFlag"),
         dynamic_targets=("ProduceHIFRound1ReachedStop", "ProduceHIFRound2ReachedStop", "ProduceHIFIntervalReachedStop"),
     )
 
@@ -97,7 +129,8 @@ def test_hif_formal_router_reachability_keeps_only_declared_legacy_or_dynamic_no
         "ProduceHIFButton",
         "ProduceHIFGenerationFlag",
         "ProduceHIFKnownNextButton",
-        "ProduceHIFRound1ObserveFlag",
+        "ProduceHIFRound1ActionFlag",
+        "ProduceHIFSafeAdvanceFlag",
         "ProduceHIFSelectionModeContinueButton",
     }
 
@@ -108,6 +141,138 @@ def test_hif_result_page_clicks_are_routed_through_verified_custom_actions():
     assert pipeline["ProduceHIFRewardConfirmFlag"]["action"]["param"]["custom_action"] == "ProduceHIFRewardConfirmAuto"
     assert pipeline["ProduceHIFKnownNextButton"]["action"]["param"]["custom_action"] == "ProduceHIFKnownNextAuto"
     assert pipeline["ProduceHIFPublicLessonResultFlag"]["action"]["param"]["custom_action"] == "ProduceHIFPublicLessonResultAuto"
+
+
+def test_hif_day2_preview_test_pipeline_records_each_course_with_native_recognition_detail():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_2.json").read_text(encoding="utf-8")))
+
+    schedule = pipeline["test_hif_day2_schedule_flag"]["recognition"]["param"]
+    assert schedule["template"] == ["produce/HIF/hif_day2_flag_2.png"]
+    assert pipeline["test_hif_day2_schedule_flag"]["next"] == ["test_hif_day2_no_selection"]
+    no_selection = pipeline["test_hif_day2_no_selection"]
+    assert no_selection["recognition"]["param"]["custom_recognition"] == "HIFPublicLessonPreviewNoSelection"
+    assert no_selection["next"] == ["test_hif_day2_select_vo"]
+    for candidate, target in (("vo", [168, 1000]), ("da", [360, 1000]), ("vi", [552, 1000])):
+        select = pipeline[f"test_hif_day2_select_{candidate}"]["recognition"]
+        assert select == {"type": "DirectHit", "param": {}}
+        assert pipeline[f"test_hif_day2_select_{candidate}"]["action"]["param"]["target"] == target
+        read = pipeline[f"test_hif_day2_read_{candidate}_preview"]
+        assert read["recognition"]["type"] == "Custom"
+        assert read["recognition"]["param"]["custom_recognition"] == "HIFPublicLessonPreviewDetail"
+        assert read["recognition"]["param"]["custom_recognition_param"] == {"candidate": candidate.title()}
+        assert read["action"]["type"] == "DoNothing"
+
+
+def test_hif_day3_test_entry_observes_the_four_days_schedule_without_clicking():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_2.json").read_text(encoding="utf-8")))
+
+    assert pipeline["test_hif_day3_entry"]["next"] == ["test_hif_day3_schedule_flag"]
+    schedule = pipeline["test_hif_day3_schedule_flag"]["recognition"]
+    assert schedule == {
+        "type": "And",
+        "param": {"all_of": ["test_hif_day3_title_flag", "test_hif_day3_remaining_days_flag"], "box_index": 0},
+    }
+    assert pipeline["test_hif_day3_title_flag"]["recognition"]["param"]["expected"] == [".*H\\.I\\.F本戦まで.*"]
+    assert pipeline["test_hif_day3_remaining_days_flag"]["recognition"]["param"]["expected"] == [".*4日.*"]
+    observe = pipeline["test_hif_day3_observe_schedule"]
+    assert observe["recognition"] == {"type": "DirectHit", "param": {}}
+    assert observe["action"]["param"] == {
+        "custom_action": "ProduceChooseHIFEventAuto",
+        "custom_action_param": {"execution_mode": "observe"},
+    }
+    assert observe["next"] == ["test_hif_observe_stop"]
+
+    gift_select = pipeline["test_hif_day3_gift_select_once"]
+    assert pipeline["test_hif_day3_gift_select_entry"]["next"] == ["test_hif_day3_gift_schedule_flag"]
+    assert gift_select["action"]["param"] == {
+        "custom_action": "ProduceChooseHIFEventAuto",
+        "custom_action_param": {"preset_id": "rinami_good_condition_safe", "execution_mode": "single_step"},
+    }
+    assert gift_select["next"] == ["test_hif_observe_stop"]
+    gift_confirm = pipeline["test_hif_day3_gift_confirm_once"]
+    assert pipeline["test_hif_day3_gift_confirm_entry"]["next"] == ["test_hif_day3_gift_selected_flag"]
+    assert pipeline["test_hif_day3_gift_selected_flag"]["recognition"]["param"]["all_of"][1] == {
+        "recognition": {"type": "OCR", "param": {"expected": [".*SELEC.*"], "roi": [360, 1080, 160, 70]}}
+    }
+    assert gift_confirm["action"]["param"] == gift_select["action"]["param"]
+    assert gift_confirm["next"] == ["test_hif_observe_stop"]
+
+
+def test_hif_finals_day_and_round1_observation_entries_are_zero_input_checkpoints():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_2.json").read_text(encoding="utf-8")))
+
+    for day, remaining_days in ((1, 6), (4, 3), (5, 2), (6, 1)):
+        entry = pipeline[f"test_hif_day{day}_entry"]
+        schedule = pipeline[f"test_hif_day{day}_schedule_flag"]
+        remaining = pipeline[f"test_hif_day{day}_remaining_days_flag"]
+        assert entry["next"] == [f"test_hif_day{day}_schedule_flag"]
+        assert remaining["recognition"]["param"]["expected"] == [f".*{remaining_days}日.*"]
+        assert schedule["recognition"]["param"]["all_of"] == ["test_hif_day3_title_flag", f"test_hif_day{day}_remaining_days_flag"]
+        assert schedule["action"]["type"] == "DoNothing"
+        assert schedule["next"] == ["test_hif_observe_stop"]
+
+    assert pipeline["test_hif_ranking_flag"]["recognition"]["param"] == {
+        "expected": [".*タップして次へ.*"],
+        "roi": [245, 1140, 250, 80],
+    }
+    assert pipeline["test_hif_round1_flag"]["recognition"]["param"]["roi"] == [8, 0, 170, 48]
+    assert pipeline["test_hif_round1_observe"]["action"]["param"]["custom_action"] == "ProduceHIFRound1Observe"
+    for node_name in (
+        "test_hif_class_options_observe",
+        "test_hif_public_lesson_result_observe",
+        "test_hif_gift_bags_observe",
+
+        "test_hif_gift_reward_result_observe",
+        "test_hif_drink_reward_observe",
+        "test_hif_skill_reward_observe",
+        "test_hif_drink_overflow_observe",
+        "test_hif_select_change_target_observe",
+        "test_hif_select_change_source_observe",
+        "test_hif_consult_observe",
+    ):
+        assert pipeline[node_name]["action"]["type"] == "DoNothing"
+        assert pipeline[node_name]["next"] == ["test_hif_observe_stop"]
+    assert pipeline["test_hif_gift_bags_advance_entry"]["action"]["param"] == {
+        "custom_action": "ProduceHIFSafeAdvanceAuto",
+        "custom_action_param": {"source": "gift_bags", "execution_mode": "single_step"},
+    }
+    assert pipeline["test_hif_gift_reward_result_advance_entry"]["action"]["param"] == {
+        "custom_action": "ProduceHIFSafeAdvanceAuto",
+        "custom_action_param": {"source": "gift_reward_result", "execution_mode": "single_step"},
+    }
+    for slot, target in (("left", [221, 885]), ("center", [360, 885]), ("right", [499, 885])):
+        preview = pipeline[f"test_hif_drink_reward_preview_{slot}"]
+        assert preview["recognition"] == {"type": "Custom", "param": {"custom_recognition": "ProduceHIFDrinkRewardPage"}}
+        assert preview["action"]["param"]["target"] == target
+        assert preview["next"] == ["test_hif_drink_reward_observe"]
+    receive = pipeline["test_hif_drink_reward_receive_black_vinegar_entry"]
+    assert receive["recognition"]["param"]["all_of"] == [
+        {"recognition": {"type": "OCR", "param": {"expected": [".*初星黒酢.*"], "roi": [118, 506, 500, 230]}}},
+        {"recognition": {"type": "OCR", "param": {"expected": [".*受け取る.*"], "roi": [230, 1052, 260, 84]}}},
+    ]
+    assert receive["action"]["param"]["target"] == [360, 1094]
+    assert receive["next"] == ["test_hif_drink_reward_reveal_observe"]
+    reveal_wait = pipeline["test_hif_drink_reward_reveal_wait_10s"]
+    assert reveal_wait["action"]["type"] == "DoNothing"
+    assert reveal_wait["post_delay"] == 10000
+    assert pipeline["test_hif_drink_reward_reveal_wait_entry"]["action"]["param"] == {
+        "custom_action": "ProduceHIFDrinkRewardRevealAuto",
+        "custom_action_param": {"execution_mode": "single_step"},
+    }
+    reveal_confirm = pipeline["test_hif_drink_reward_reveal_confirm_entry"]
+    assert reveal_confirm["action"]["param"]["target"] == [360, 1094]
+    assert reveal_confirm["next"] == ["test_hif_skill_reward_observe"]
+    assert pipeline["test_hif_observe_stop"]["action"]["type"] == "StopTask"
+
+    assert (
+        validate_hif_pipeline(
+            pipeline,
+            known_nodes=pipeline,
+            registered_custom_actions=load_registered_custom_actions("agent/custom/action"),
+            registered_custom_recognitions=load_registered_custom_recognitions("agent/custom/reco"),
+        )
+        == ()
+    )
 
 
 def test_hif_drink_reward_flags_route_selected_and_revealed_states_via_registered_custom_recognitions():
@@ -138,7 +303,7 @@ def test_hif_skill_reward_prompt_tolerates_the_observed_single_character_ocr_con
     assert recognition["param"]["roi"] == [100, 570, 540, 100]
 
 
-def test_hif_skill_reward_selected_detail_routes_before_the_safe_advance_fallback():
+def test_hif_skill_reward_selected_detail_routes_before_unknown_stop():
     pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
     selected = pipeline["ProduceHIFSkillRewardSelectedFlag"]
     route = pipeline["ProduceEntryHIF"]["next"]
@@ -149,7 +314,7 @@ def test_hif_skill_reward_selected_detail_routes_before_the_safe_advance_fallbac
     }
     assert selected["action"]["param"]["custom_action"] == "ProduceChooseHIFSkillRewardAuto"
     assert "ProduceHIFSkillRewardSelectedPage" in load_registered_custom_recognitions("agent/custom/reco")
-    assert route.index("[JumpBack]ProduceHIFSkillRewardSelectedFlag") < route.index("ProduceHIFSafeAdvanceFlag")
+    assert route.index("[JumpBack]ProduceHIFSkillRewardSelectedFlag") < route.index("ProduceHIFUnknownStop")
 
 
 def test_hif_incremental_pipeline_routes_actions_back_and_limits_safe_advance():
@@ -157,7 +322,7 @@ def test_hif_incremental_pipeline_routes_actions_back_and_limits_safe_advance():
 
     assert pipeline["ProduceHIFSafeAdvanceFlag"]["action"]["param"]["custom_action"] == "ProduceHIFSafeAdvanceAuto"
     assert pipeline["ProduceHIFStartConfirmFlag"]["action"]["param"]["custom_action"] == "ProduceHIFStartProduceAuto"
-    assert pipeline["ProduceHIFSafeAdvanceFlag"]["max_hit"] == 4
+    assert "ProduceHIFSafeAdvanceFlag" not in pipeline["ProduceEntryHIF"]["next"]
     assert pipeline["ProduceHIFGiftBagsFlag"]["action"]["param"]["custom_action"] == "ProduceHIFSafeAdvanceAuto"
     for node_name in (
         "ProduceChooseHIFEventFlag",
@@ -185,7 +350,7 @@ def test_hif_schedule_route_uses_visible_text_before_the_safe_advance_fallback()
     assert schedule["param"]["roi"] == [84, 920, 552, 196]
 
 
-def test_hif_unknown_lesson_options_are_guarded_before_safe_advance():
+def test_hif_unknown_lesson_options_are_guarded_before_unknown_stop():
     pipeline = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
     class_options = pipeline["ProduceHIFClassOptionFlag"]["recognition"]
 
@@ -193,7 +358,7 @@ def test_hif_unknown_lesson_options_are_guarded_before_safe_advance():
     assert class_options["param"]["expected"] == [".*授業.*"]
     assert class_options["param"]["roi"] == [32, 36, 160, 105]
     assert pipeline["ProduceEntryHIF"]["next"].index("[JumpBack]ProduceHIFClassOptionFlag") < pipeline["ProduceEntryHIF"]["next"].index(
-        "ProduceHIFSafeAdvanceFlag"
+        "ProduceHIFUnknownStop"
     )
 
 

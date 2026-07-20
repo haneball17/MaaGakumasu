@@ -383,12 +383,20 @@
 		{
 			"screen_id": "select_change_target",
 			"risk": "resource_choice",
-			"anchors": [{"id": "prompt", "pattern": "チェンジで獲得するスキルカードを選んでください", "roi": [
-						60,
+			"anchors": [
+				{"id": "next", "pattern": "(?:次へ|チェンジで獲得するスキルカードを選んでください)", "roi": [
+						230,
+						1052,
 						260,
-						600,
-						110
-					]}],
+						84
+					]},
+				{"id": "reroll", "pattern": "(?:再抽選|チェンジで獲得するスキルカードを選んでください)", "roi": [
+						555,
+						1050,
+						112,
+						80
+					]}
+			],
 			"regions": {"target_preview": [
 					407,
 					344,
@@ -674,11 +682,11 @@
 					92
 				]},
 			"buttons": [{"id": "hand_info", "text": "手札情報", "roi": [
-					540,
-					420,
-					170,
-					90
-				]}]
+						540,
+						420,
+						170,
+						90
+					]}]
 		},
 		{
 			"screen_id": "hand_history_view",
@@ -704,11 +712,11 @@
 					145
 				]},
 			"buttons": [{"id": "close", "text": "閉じる", "roi": [
-					225,
-					1110,
-					275,
-					100
-				]}]
+						225,
+						1110,
+						275,
+						100
+					]}]
 		},
 		{
 			"screen_id": "interval_shop",

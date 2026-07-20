@@ -54,7 +54,7 @@
     - HIF 评价体系配置
     - 选拔属性结构
     - 本战权重
-    - 星性相关结构
+    - 星星相关结构
 - `ProduceProfile`
     - 角色卡、路线、支援卡、标签偏好
 
@@ -76,7 +76,7 @@
 - `finals_evaluation`
     - 本战评价报表
 - `star_evaluation`
-    - 星性评价报表
+    - 星星评价报表
 - `overall_assessment`
     - 当前样本复盘结果
 
@@ -96,7 +96,7 @@
 - `HardGate`
     - 处理非法 / 强制 / 低体力禁止项
 - `SoftGate`
-    - 处理 build 偏好、主副属性、P 点缺口、星性缺口等
+    - 处理 build 偏好、主副属性、P 点缺口、星星缺口等
 - `BeamPlanner`
     - 处理 2~3 步浅层前瞻
 

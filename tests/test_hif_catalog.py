@@ -55,6 +55,7 @@ def test_full_catalog_is_used_by_card_name_dictionary():
     names = build_card_name_dict()
 
     assert "シュプレヒコール" in names
+    assert "シュプレヒコール" in names
     assert "至高のエンタメ" in names
     assert "国民的アイドル" in names
 

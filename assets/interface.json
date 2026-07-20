@@ -82,7 +82,7 @@
     }
   ],
   "agent": {
-    "child_exec": "python",
+    "child_exec": "C:/Users/haneball/AppData/Local/Programs/Python/Python312/python.exe",
     "child_args": [
       "-u",
       "./../agent/main.py"

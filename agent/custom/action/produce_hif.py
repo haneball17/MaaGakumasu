@@ -1,5 +1,6 @@
-import re
+import hashlib
 import json
+import re
 import time
 from typing import Any, Dict, List, Optional
 
@@ -56,6 +57,8 @@ class _ProduceHIFActionBase(CustomAction):
     # 这些页面已有正式 Pipeline 识别节点，但尚未形成 OCR screen profile。动作后
     # 只能把它们当作已知过渡目标，绝不能仅因画面变化而继续。
     _KNOWN_TRANSITION_RECOGNITIONS = {
+        # 日程确认后会进入课程选项页；先验证该预期后态，再允许根路由检索其他页面。
+        "class_options": "ProduceHIFClassOptionFlag",
         "gift_bags": "ProduceHIFGiftBagsFlag",
         "gift_reward_result": "ProduceHIFGiftRewardResultFlag",
         "skill_enhanced_result": "ProduceHIFSkillEnhancedResultFlag",
@@ -245,7 +248,9 @@ class _ProduceHIFActionBase(CustomAction):
 
         candidate = image
         for attempt in range(max(1, attempts + 1)):
-            if self._matches_screen_profile(context, candidate, screen_id):
+            # 动作结果先按目标页面的 profile 验证；OCR 分帧不完整时，仅允许同一页面
+            # 已注册的正式 Pipeline 节点作为等价后验，不能把任意已知页当作成功。
+            if self._matches_screen_profile(context, candidate, screen_id) or self._detect_confirmed_hif_transition(context, candidate) == screen_id:
                 return candidate
             if attempt >= attempts:
                 break
@@ -906,6 +911,7 @@ class ProduceHIFFinalsRankingContinueAuto(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceChooseHIFEventAuto")
 class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
+    DAY1_LESSON_CHOICES = frozenset({"Vo", "Da", "Vi"})
     EVENT_CONFIG = {
         "相談": "produce/chat.png",
         "おでかけ": "produce/go_out.png",
@@ -934,6 +940,7 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         logger.success("事件: HIF 选择日程")
+        self._configure_page_execution(argv)
         image = self._get_screenshot(context)
         reading = HIFStateReader.from_context(context, image).read_finals_prepare_state()
         page = reading.page_observation
@@ -946,32 +953,53 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         if not events:
             return self._stop_unsupported(context, "finals_action_select", "no_schedule_candidates")
 
-        preset = self._get_preset(argv)
-        decision = HIFRoutePlanner().choose_schedule(
-            reading.state,
-            [HIFCandidate(event["name"], event["name"], event["category"]) for event in events],
-            preset,
-        )
-        if decision.should_stop:
-            return self._stop_unsupported(context, "finals_action_select", decision.stop_reason or "schedule_decision_unavailable")
-        best_event = next((event for event in events if event["name"] == decision.candidate_id), None)
-        if best_event is None:
-            return self._stop_unsupported(context, "finals_action_select", "selected_schedule_not_visible")
+        configured_day1_lesson = self._configured_day1_lesson(argv, reading.state.day_remaining)
+        if configured_day1_lesson is not None:
+            categories = [event["category"] for event in events]
+            if len(categories) != len(self.DAY1_LESSON_CHOICES) or set(categories) != self.DAY1_LESSON_CHOICES:
+                return self._stop_unsupported(context, "finals_action_select", "day1_lesson_candidates_incomplete")
+            best_event = next((event for event in events if event["category"] == configured_day1_lesson), None)
+            if best_event is None:
+                return self._stop_unsupported(context, "finals_action_select", "configured_day1_lesson_not_visible")
+            reasons = (f"用户配置：Day1课程={configured_day1_lesson}",)
+            confidence = 1.0
+        else:
+            preset = self._get_preset(argv)
+            decision = HIFRoutePlanner().choose_schedule(
+                reading.state,
+                [HIFCandidate(event["name"], event["name"], event["category"]) for event in events],
+                preset,
+            )
+            if decision.should_stop:
+                return self._stop_unsupported(context, "finals_action_select", decision.stop_reason or "schedule_decision_unavailable")
+            best_event = next((event for event in events if event["name"] == decision.candidate_id), None)
+            if best_event is None:
+                return self._stop_unsupported(context, "finals_action_select", "selected_schedule_not_visible")
+            reasons = decision.reasons
+            confidence = decision.confidence
 
-        logger.info(f"HIF 选择事件: {best_event['name']}，理由={' / '.join(decision.reasons)}")
+        logger.info(f"HIF 选择事件: {best_event['name']}，理由={' / '.join(reasons)}")
         self._record_journal(
             "finals_action_select",
             "choose_schedule",
             "selected",
             details={
                 "candidate": best_event["name"],
-                "reasons": decision.reasons,
-                "confidence": decision.confidence,
+                "reasons": reasons,
+                "confidence": confidence,
                 "page": page.screen_id,
                 "page_confidence": page.confidence,
             },
         )
         return self._execute_event(context, image, best_event)
+
+    def _configured_day1_lesson(self, argv: CustomAction.RunArg, day_remaining: int | None) -> str | None:
+        """只在本战首日读取用户课程选择；其余日程仍交由预设规划。"""
+
+        if day_remaining != 6:
+            return None
+        lesson = self._get_action_params(argv).get("day1_lesson")
+        return lesson if lesson in self.DAY1_LESSON_CHOICES else None
 
     def _execute_event(self, context: Context, image, event: dict) -> bool:
         screen_state = "finals_action_select"
@@ -1034,46 +1062,7 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
             before=before,
             after=after_first,
         )
-        if not self._click_box_center(context, event["box"], double=False):
-            return self._stop_unsupported(context, screen_state, "schedule_confirm_click_failed")
-        time.sleep(self.ACTION_DELAY)
-        after_second_image = self._get_screenshot_or_stop(context, screen_state)
-        if after_second_image is None:
-            return True
-        after_second = self._capture_evidence(after_second_image, f"{screen_state}_confirmed")
-        if not frame_changed(after_first, after_second):
-            self._record_journal(
-                screen_state,
-                "confirm_schedule",
-                "unverified",
-                details={"candidate": candidate, "reason": "second_click_frame_unchanged"},
-                before=after_first,
-                after=after_second,
-            )
-            return self._stop_unsupported(context, screen_state, "schedule_confirm_unverified")
-        if self._matches_screen_profile(context, after_second_image, "finals_prepare"):
-            return self._stop_unsupported(context, screen_state, "schedule_confirm_still_on_schedule_page")
-
-        next_screen = self._detect_confirmed_hif_transition(context, after_second_image)
-        if next_screen is None:
-            self._record_journal(
-                screen_state,
-                "confirm_schedule",
-                "unverified",
-                details={"candidate": candidate, "reason": "schedule_confirm_next_page_not_confirmed"},
-                before=after_first,
-                after=after_second,
-            )
-            return self._stop_unsupported(context, screen_state, "schedule_confirm_next_page_not_confirmed")
-        self._record_journal(
-            screen_state,
-            "confirm_schedule",
-            "verified",
-            details={"candidate": candidate, "click_count": 2, "next_screen": next_screen},
-            before=after_first,
-            after=after_second,
-        )
-        return True
+        return self._stop_unsupported(context, screen_state, "schedule_confirmation_requires_new_task")
 
     def _get_available_events(self, context: Context, image) -> List[Dict[str, Any]]:
         """读取日程文字；同为“授業”时以已校准的彩色角标区分属性。"""
@@ -2338,6 +2327,18 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
         )
         return True
 
+    @staticmethod
+    def _choose_prioritized_target(matches: list[dict[str, Any]], target_names: tuple[str, ...]) -> dict[str, Any] | None:
+        """按预设次序消除不同候选间的歧义；同一优先级重复出现仍安全停止。"""
+
+        priority = {name: index for index, name in enumerate(target_names)}
+        ranked = sorted(matches, key=lambda candidate: priority.get(candidate["target_name"], len(priority)))
+        if len(ranked) > 1 and priority.get(ranked[0]["target_name"], len(priority)) == priority.get(
+            ranked[1]["target_name"], len(priority)
+        ):
+            return None
+        return ranked[0]
+
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
         params = self._get_action_params(argv)
@@ -2399,10 +2400,10 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
                 return self._stop_unsupported(context, "select_change_target", "target_candidate_probe_complete_stop")
 
             matches = [candidate for candidate in candidates if candidate["target_name"] is not None]
-            if len(matches) > 1:
-                return self._stop_unsupported(context, "select_change_target", "multiple_target_cards_observed")
-            if len(matches) == 1:
-                target = matches[0]
+            target = self._choose_prioritized_target(matches, target_names) if len(matches) > 1 else matches[0] if matches else None
+            if len(matches) > 1 and target is None:
+                return self._stop_unsupported(context, "select_change_target", "multiple_target_cards_same_priority")
+            if target is not None:
                 if target["slot"] != candidates[-1]["slot"]:
                     target_box = next(box for slot, box in self._slot_boxes() if slot == target["slot"])
                     selected = self._select_and_read_slot(
@@ -2423,7 +2424,12 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
                     "select_change_target",
                     "choose_target_card",
                     "selected",
-                    details={"target": target, "candidates": candidates, "reroll_attempt": reroll_attempt},
+                    details={
+                        "target": target,
+                        "candidates": candidates,
+                        "reroll_attempt": reroll_attempt,
+                        "selection_policy": "configured_priority" if len(matches) > 1 else "only_visible_match",
+                    },
                 )
                 return self._advance_to_source_deck(context, current_image, target, candidates)
 
@@ -2446,6 +2452,7 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
 class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
     """默认只记录牌库；显式探针仅可采样一张卡详情，不能确认或滚动。"""
 
+    MAX_FULL_DECK_PAGES = 8  # 30 张、四列网格的安全上限，并留出重叠页余量。
     FIRST_VISIBLE_SLOT_ROI = [80, 638, 120, 120]
     VISIBLE_SLOT_REGION_IDS = (
         "visible_slot_r1c1",
@@ -2475,7 +2482,14 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         [374, 933, 120, 120],
         [521, 933, 120, 120],
     )
-    DETAIL_NAME_ROI = [190, 270, 410, 44]
+    # 详情面板和顶部的两张对比卡不属于源牌库。只接受真正落在网格槽位内的
+    # Maa YOLO 检测框，空槽绝不通过点击后的详情或帧差反推。
+    SOURCE_DECK_CARD_MIN_SCORE = 0.45
+    SOURCE_DECK_CARD_MIN_SIZE = 48
+    SOURCE_DECK_SELECTION_HSV_LOWER = [5, 140, 170]
+    SOURCE_DECK_SELECTION_HSV_UPPER = [20, 255, 255]
+    # 详情标题会因较长片假名和强化后缀贴近原边界；覆盖完整标题但不进入效果行。
+    DETAIL_NAME_ROI = [180, 260, 470, 62]
     DETAIL_TEXT_ROI = [190, 318, 475, 190]
     COMPLETION_TEXT_ROI = [56, 960, 610, 112]
 
@@ -2524,8 +2538,135 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             for region_id, fallback in zip(self.VISIBLE_SLOT_REGION_IDS, self.VISIBLE_SLOT_FALLBACKS)
         )
 
+    @classmethod
+    def _source_deck_occupied_slots_from_results(cls, results, slots: tuple[tuple[str, list[int]], ...]) -> set[str]:
+        """将 Maa YOLO box 按中心点归属到可见网格槽位。"""
+
+        occupied: set[str] = set()
+        for result in results:
+            box = getattr(result, "box", None)
+            score = getattr(result, "score", 0.0)
+            if not isinstance(box, (list, tuple)) or len(box) < 4:
+                continue
+            if not isinstance(score, (int, float)) or score < cls.SOURCE_DECK_CARD_MIN_SCORE:
+                continue
+            x, y, width, height = box[:4]
+            if not all(isinstance(value, (int, float)) for value in (x, y, width, height)):
+                continue
+            if width < cls.SOURCE_DECK_CARD_MIN_SIZE or height < cls.SOURCE_DECK_CARD_MIN_SIZE:
+                continue
+            center_x, center_y = x + width / 2, y + height / 2
+            for slot_id, (slot_x, slot_y, slot_width, slot_height) in slots:
+                if slot_x <= center_x <= slot_x + slot_width and slot_y <= center_y <= slot_y + slot_height:
+                    occupied.add(slot_id)
+                    break
+        return occupied
+
+    def _detect_source_deck_occupied_slots(self, context: Context, image) -> set[str] | None:
+        """用 Maa NeuralNetworkDetect 确认源牌库的占用槽位。"""
+
+        try:
+            detail = context.run_recognition(
+                "ProduceRecognitionHIFSourceDeckCards",
+                image,
+                pipeline_override={
+                    "ProduceRecognitionHIFSourceDeckCards": {
+                        "recognition": "NeuralNetworkDetect",
+                        "model": "cards.onnx",
+                        "expected": [0, 1, 2],
+                        "roi": self._profile_region("select_change_source_deck", "card_grid", [80, 623, 560, 485]),
+                    }
+                },
+            )
+        except Exception as error:
+            self._stop_unsupported(context, "select_change_source_deck", f"source_deck_card_detector_failed:{error}")
+            return None
+        if not detail or not detail.hit:
+            self._stop_unsupported(context, "select_change_source_deck", "source_deck_card_detector_no_result")
+            return None
+        return self._source_deck_occupied_slots_from_results(getattr(detail, "all_results", ()), self._visible_source_slots())
+
+    def _source_deck_slot_selection_confirmed(self, context: Context, image, slot_roi: list[int]) -> bool:
+        """确认橙色选中角标位于刚点击的槽位，拒绝空槽复用上一张详情。"""
+
+        x, y, _, _ = slot_roi
+        try:
+            detail = context.run_recognition(
+                "ProduceRecognitionHIFSourceDeckSelection",
+                image,
+                pipeline_override={
+                    "ProduceRecognitionHIFSourceDeckSelection": {
+                        "recognition": "ColorMatch",
+                        "roi": [x - 16, y + 18, 52, 52],
+                        "method": 40,
+                        "lower": self.SOURCE_DECK_SELECTION_HSV_LOWER,
+                        "upper": self.SOURCE_DECK_SELECTION_HSV_UPPER,
+                        "count": 20,
+                    }
+                },
+            )
+        except Exception:
+            return False
+        return bool(detail and detail.hit)
+
+    @staticmethod
+    def _source_deck_grid_fingerprint(image) -> str | None:
+        """只比较牌库网格，忽略详情面板和选中态造成的全屏帧变化。"""
+
+        try:
+            grid = image[623:1108, 80:640]
+            return hashlib.blake2b(grid.tobytes(), digest_size=8).hexdigest()
+        except (AttributeError, IndexError, TypeError, ValueError):
+            return None
+
+    def _scroll_source_deck_page(self, context: Context, image, page_index: int):
+        """滑到下一视口；仅在帧不变且牌库锚点仍存在时确认已到底。"""
+
+        before = self._capture_evidence(image, f"select_change_source_deck_page_{page_index}_scroll_before")
+        before_grid = self._source_deck_grid_fingerprint(image)
+        try:
+            context.tasker.controller.post_swipe(360, 1040, 360, 680, duration=300).wait()
+        except Exception as error:
+            self._record_journal(
+                "select_change_source_deck", "scroll_source_deck_page", "failed", details={"page_index": page_index, "reason": f"swipe_failed:{error}"}, before=before
+            )
+            self._stop_unsupported(context, "select_change_source_deck", f"swipe_failed:{error}")
+            return False
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "select_change_source_deck")
+        if after_image is None:
+            return False
+        after = self._capture_evidence(after_image, f"select_change_source_deck_page_{page_index}_scroll_after")
+        after_grid = self._source_deck_grid_fingerprint(after_image)
+        if not self._matches_screen_profile(context, after_image, "select_change_source_deck"):
+            self._stop_unsupported(context, "select_change_source_deck", "source_deck_page_lost_after_full_scan_scroll")
+            return False
+        if before_grid is not None and before_grid == after_grid:
+            self._record_journal(
+                "select_change_source_deck",
+                "deck_bottom_confirmed",
+                "verified",
+                details={"page_index": page_index, "grid_fingerprint": before_grid},
+                before=before,
+                after=after,
+            )
+            return None
+        if not frame_changed(before, after):
+            self._stop_unsupported(context, "select_change_source_deck", "source_deck_scroll_frame_unchanged_with_unavailable_grid_fingerprint")
+            return False
+        self._record_journal(
+            "select_change_source_deck", "scroll_source_deck_page", "verified", details={"page_index": page_index}, before=before, after=after
+        )
+        return after_image
+
     def _probe_source_slot(
-        self, context: Context, image, slot_id: str, slot_roi: list[int], *, allow_unreadable_details: bool = False
+        self,
+        context: Context,
+        image,
+        slot_id: str,
+        slot_roi: list[int],
+        *,
+        allow_unreadable_details: bool = False,
     ):
         before = self._capture_evidence(image, f"select_change_source_deck_{slot_id}_before")
         if not self._click_box_center(context, slot_roi, double=False):
@@ -2536,9 +2677,14 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         if after_image is None:
             return None
         after = self._capture_evidence(after_image, f"select_change_source_deck_{slot_id}_after")
+        if not self._source_deck_slot_selection_confirmed(context, after_image, slot_roi):
+            self._stop_unsupported(context, "select_change_source_deck", "source_deck_slot_selection_not_confirmed")
+            return None
         if not frame_changed(before, after):
             # 允许把已经选中的首卡作为只读样本，但不把无变化的点击当作已验证执行。
             details = self._source_detail_snapshot(context, image)
+            self._last_source_detail_readable = self._source_detail_is_readable(details)
+            self._last_source_detail_name = details.get("matched_name") if self._last_source_detail_readable else None
             if self._source_detail_is_readable(details):
                 self._record_journal(
                     "select_change_source_deck",
@@ -2546,6 +2692,23 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
                     "observed",
                     details={"slot": slot_id, "slot_roi": slot_roi, "selection_already_active": True, **details},
                     before=before,
+                )
+                return image
+            if allow_unreadable_details:
+                self._record_journal(
+                    "select_change_source_deck",
+                    "probe_source_card",
+                    "observed",
+                    details={
+                        "slot": slot_id,
+                        "slot_roi": slot_roi,
+                        "selection_already_active": True,
+                        "name_readable": False,
+                        "reason": "source_deck_probe_detail_unreadable",
+                        **details,
+                    },
+                    before=before,
+                    after=after,
                 )
                 return image
             self._record_journal(
@@ -2562,6 +2725,8 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             self._stop_unsupported(context, "select_change_source_deck", "source_deck_page_lost_after_probe")
             return None
         details = self._source_detail_snapshot(context, after_image)
+        self._last_source_detail_readable = self._source_detail_is_readable(details)
+        self._last_source_detail_name = details.get("matched_name") if self._last_source_detail_readable else None
         if not self._source_detail_is_readable(details):
             if allow_unreadable_details:
                 self._record_journal(
@@ -2637,6 +2802,11 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             source_slot_id,
             [374, 786, 120, 120],
         )
+        occupied_slots = self._detect_source_deck_occupied_slots(context, image)
+        if occupied_slots is None:
+            return True
+        if source_slot_id not in occupied_slots:
+            return self._stop_unsupported(context, "select_change_source_deck", "source_card_confirmation_slot_empty")
         selected = self._probe_source_slot(context, image, "confirm_source", source_slot)
         if selected is None:
             return True
@@ -2771,7 +2941,8 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             if not isinstance(source_name, str) or not source_name:
                 return self._stop_unsupported(context, "select_change_source_deck", "source_card_name_missing")
             pending_change = get_runtime_hif_session().pending_select_change
-            target_name = pending_change.target_name if pending_change is not None else None
+            configured_target_name = params.get("selected_target_name")
+            target_name = pending_change.target_name if pending_change is not None else configured_target_name
             explicit_source_authorized = params.get("explicit_source_authorized") is True
             explicit_target_authorized = params.get("explicit_target_authorized") is True
             if not isinstance(target_name, str) or (
@@ -2830,11 +3001,91 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
                 return self._stop_unsupported(context, "select_change_source_deck", "source_deck_page_lost_after_scroll")
             slots = self._visible_source_slots()
             stop_reason = "source_deck_visible_enumeration_after_scroll_complete_stop"
+        elif probe_mode == "full_grid":
+            current_image = image
+            previous_page_signature: tuple[str, ...] | None = None
+            for page_index in range(self.MAX_FULL_DECK_PAGES):
+                visible_slots = self._visible_source_slots()
+                occupied_slots = self._detect_source_deck_occupied_slots(context, current_image)
+                if occupied_slots is None:
+                    return True
+                page_before = self._capture_evidence(current_image, f"select_change_source_deck_page_{page_index}_before")
+                self._record_journal(
+                    "select_change_source_deck",
+                    "enumerate_source_deck_page",
+                    "observed",
+                    details={
+                        "page_index": page_index,
+                        "slot_count": len(visible_slots),
+                        "occupied_slots": sorted(occupied_slots),
+                        "empty_slots": sorted(slot_id for slot_id, _ in visible_slots if slot_id not in occupied_slots),
+                    },
+                    before=page_before,
+                )
+                page_names: list[str] = []
+                for slot_id, slot_roi in visible_slots:
+                    if slot_id not in occupied_slots:
+                        page_names.append("<empty>")
+                        continue
+                    current_image = self._probe_source_slot(
+                        context,
+                        current_image,
+                        f"page_{page_index}_{slot_id}",
+                        slot_roi,
+                        allow_unreadable_details=True,
+                    )
+                    if current_image is None:
+                        return True
+                    if not getattr(self, "_last_source_detail_readable", False):
+                        self._record_journal(
+                            "select_change_source_deck",
+                            "retry_source_card_detail",
+                            "observed",
+                            details={"page_index": page_index, "slot": slot_id, "max_retries": 1},
+                        )
+                        current_image = self._probe_source_slot(
+                            context, current_image, f"page_{page_index}_{slot_id}_retry_1", slot_roi, allow_unreadable_details=False
+                        )
+                        if current_image is None:
+                            return True
+                    name = getattr(self, "_last_source_detail_name", None)
+                    if not isinstance(name, str) or not name:
+                        return self._stop_unsupported(context, "select_change_source_deck", "source_deck_page_signature_incomplete")
+                    page_names.append(name)
+                page_signature = tuple(page_names)
+                if page_signature == previous_page_signature:
+                    self._record_journal(
+                        "select_change_source_deck",
+                        "deck_bottom_confirmed",
+                        "verified",
+                        details={"page_index": page_index, "method": "repeated_page_signature", "signature": page_signature},
+                    )
+                    return self._stop_unsupported(context, "select_change_source_deck", "source_deck_full_enumeration_complete_stop")
+                previous_page_signature = page_signature
+                next_image = self._scroll_source_deck_page(context, current_image, page_index)
+                if next_image is None:
+                    return self._stop_unsupported(context, "select_change_source_deck", "source_deck_full_enumeration_complete_stop")
+                if next_image is False:
+                    return True
+                current_image = next_image
+            return self._stop_unsupported(context, "select_change_source_deck", "source_deck_full_enumeration_page_limit_reached")
         else:
             return self._stop_unsupported(context, "select_change_source_deck", "source_deck_probe_mode_unsupported")
 
+        occupied_slots = self._detect_source_deck_occupied_slots(context, image)
+        if occupied_slots is None:
+            return True
         current_image = image
         for slot_id, slot_roi in slots:
+            canonical_slot_id = "visible_slot_r1c1" if slot_id == "first_visible" else slot_id
+            if canonical_slot_id not in occupied_slots:
+                self._record_journal(
+                    "select_change_source_deck",
+                    "probe_source_slot_empty",
+                    "observed",
+                    details={"slot": slot_id, "reason": "source_deck_detector_empty"},
+                )
+                continue
             current_image = self._probe_source_slot(
                 context,
                 current_image,
@@ -2845,6 +3096,47 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             if current_image is None:
                 return True
         return self._stop_unsupported(context, "select_change_source_deck", stop_reason)
+
+@AgentServer.custom_action("ProduceHIFSelectChangeResultObserve")
+class ProduceHIFSelectChangeResultObserve(_ProduceHIFActionBase):
+    """只读确认变卡结果页；结果字段不足时绝不关闭对话框或继续流程。"""
+
+    COMPLETION_TEXT_ROI = [55, 945, 610, 150]
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        image = self._get_screenshot_or_stop(context, "select_change_result")
+        if image is None:
+            return True
+        detail = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFSelectChangeResultCompletion",
+            [],
+            self.COMPLETION_TEXT_ROI,
+        )
+        texts = tuple(entry["text"] for entry in self._ocr_text_entries(detail))
+        merged = "".join(texts).replace(" ", "")
+        evidence = self._capture_evidence(image, "select_change_result_observed")
+        completion_match = re.search(r"(?P<source>.+?)を(?P<target>.+?)にチェンジしました", merged)
+        if completion_match is None:
+            self._record_journal(
+                "select_change_result",
+                "observe_select_change_result",
+                "partial",
+                details={"reason": "change_result_sentence_not_readable", "completion_texts": texts},
+                before=evidence,
+            )
+            return self._stop_unsupported(context, "select_change_result", "change_result_partial_stop")
+        source_name = completion_match.group("source")
+        target_name = completion_match.group("target")
+        self._record_journal(
+            "select_change_result",
+            "observe_select_change_result",
+            "verified",
+            details={"completion_texts": texts, "source": source_name, "target": target_name},
+            before=evidence,
+        )
+        return self._stop_unsupported(context, "select_change_result", "select_change_result_observed_stop")
 
 
 @AgentServer.custom_action("ProduceHIFConsultAuto")
@@ -3259,6 +3551,25 @@ class ProduceHIFStartProduceAuto(_ProduceHIFActionBase):
     """仅在已确认的 HIF 开始确认页启动本次培育。"""
 
     START_ROI = [210, 1030, 300, 105]
+    START_TRANSITION_ATTEMPTS = 8
+
+    def _wait_for_confirmed_start_transition(self, context: Context, image):
+        """等待开始后的加载结束；期间只读采帧，不向未知页面发送输入。"""
+
+        candidate = image
+        for attempt in range(self.START_TRANSITION_ATTEMPTS + 1):
+            if self._matches_screen_profile(context, candidate, "hif_start_confirm"):
+                return None, candidate, attempt
+            next_screen = self._detect_confirmed_hif_transition(context, candidate)
+            if next_screen is not None:
+                return next_screen, candidate, attempt
+            if attempt >= self.START_TRANSITION_ATTEMPTS:
+                break
+            time.sleep(self.CLICK_DELAY)
+            candidate = self._get_screenshot_or_stop(context, "hif_start_confirm")
+            if candidate is None:
+                return None, None, attempt
+        return None, candidate, self.START_TRANSITION_ATTEMPTS
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         self._configure_page_execution(argv)
@@ -3298,15 +3609,18 @@ class ProduceHIFStartProduceAuto(_ProduceHIFActionBase):
                 after=after,
             )
             return self._stop_unsupported(context, "hif_start_confirm", "post_start_frame_unchanged")
+        next_screen, after_image, transition_attempt = self._wait_for_confirmed_start_transition(context, after_image)
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "hif_start_confirm_after")
         if self._matches_screen_profile(context, after_image, "hif_start_confirm"):
             return self._stop_unsupported(context, "hif_start_confirm", "start_confirm_page_still_visible")
-        next_screen = self._detect_confirmed_hif_transition(context, after_image)
         if next_screen is None:
             self._record_journal(
                 "hif_start_confirm",
                 "start_produce",
                 "unverified",
-                details={"reason": "start_next_page_not_confirmed"},
+                details={"reason": "start_next_page_not_confirmed", "transition_attempt": transition_attempt},
                 before=before,
                 after=after,
             )
@@ -3315,7 +3629,7 @@ class ProduceHIFStartProduceAuto(_ProduceHIFActionBase):
             "hif_start_confirm",
             "start_produce",
             "verified",
-            details={"next_screen": next_screen},
+            details={"next_screen": next_screen, "transition_attempt": transition_attempt},
             before=before,
             after=after,
         )

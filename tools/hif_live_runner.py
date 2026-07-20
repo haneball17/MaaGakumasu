@@ -150,6 +150,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="仅在 --single-step 下向上滑动一次后枚举可见源卡槽位；不点チェンジ",
     )
     source_probe_group.add_argument(
+        "--source-deck-enumerate-all",
+        action="store_true",
+        help="仅在 --single-step 下分页枚举至牌库到底；不点チェンジ",
+    )
+    source_probe_group.add_argument(
         "--source-deck-confirm-target",
         action="store_true",
         help="仅在 --single-step 下重选已实测的大胆不敵并提交チェンジ；必须通过结果文本后验",
@@ -858,7 +863,6 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
             override,
             {
                 "ProduceHIFSelectChangeTargetFlag": {
-                    "recognition": "DirectHit",
                     "action": {
                         "param": {
                             "custom_action_param": {
@@ -929,6 +933,8 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
     source_probe_mode: bool | str | None = (
         "cancel_to_target"
         if args.source_deck_cancel_to_target
+        else "full_grid"
+        if args.source_deck_enumerate_all
         else "visible_grid_after_one_scroll"
         if args.source_deck_scroll_enumerate_visible
         else "visible_grid"
@@ -971,7 +977,7 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
                     },
                 },
             )
-        elif args.select_change_target_name:
+        elif args.select_change_target_name and not args.source_deck_confirm_target:
             override = _deep_merge(
                 override,
                 {
@@ -983,6 +989,15 @@ def runtime_override(args: argparse.Namespace) -> dict[str, Any] | None:
                             "[JumpBack]ProduceHIFSelectChangeTargetFlag",
                             "ProduceHIFUnknownStop",
                         ]
+                    }
+                },
+            )
+        elif args.source_deck_confirm_target:
+            override = _deep_merge(
+                override,
+                {
+                    "ProduceEntryHIF": {
+                        "next": ["[JumpBack]ProduceHIFSelectChangeSourceFlag", "ProduceHIFUnknownStop"]
                     }
                 },
             )
@@ -1088,6 +1103,7 @@ def main(argv: list[str] | None = None) -> int:
         "source_deck_probe": args.source_deck_probe,
         "source_deck_enumerate_visible": args.source_deck_enumerate_visible,
         "source_deck_scroll_enumerate_visible": args.source_deck_scroll_enumerate_visible,
+        "source_deck_enumerate_all": args.source_deck_enumerate_all,
         "source_deck_confirm_target": args.source_deck_confirm_target,
         "source_deck_cancel_to_target": args.source_deck_cancel_to_target,
         "select_change_target_enumerate": args.select_change_target_enumerate,

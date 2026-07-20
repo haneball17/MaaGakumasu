@@ -4,7 +4,9 @@
 	"route": "rinami_garakuta_road",
 	"entry_nodes": [
 		"ProduceEntryHIF",
-		"ProduceHIFStartConfirmFlag"
+		"ProduceHIFStartConfirmFlag",
+		"ProduceHIFAfterChooseFinalMode",
+		"ProduceHIFFinalsPrepareResumeFlag"
 	],
 	"dynamic_targets": [
 		"ProduceHIFRound1ReachedStop",
@@ -21,15 +23,20 @@
 		"ProduceHIFGenerationFlag",
 		"ProduceHIFButton",
 		"ProduceHIFSelectionModeContinueButton",
-		"ProduceHIFRound1ObserveFlag",
-		"ProduceHIFKnownNextButton"
+		"ProduceHIFRound1ActionFlag",
+		"ProduceHIFSafeAdvanceFlag",
+		"ProduceHIFKnownNextButton",
+		"ProduceHIFSelectChangeResultText",
+		"ProduceHIFSelectChangeResultDialog"
 	],
 	"action_internal_stop_nodes": [
 		"ProduceHIFSelectionObserveFlag",
 		"ProduceHIFButton",
 		"ProduceHIFSelectionModeContinueButton",
 		"ProduceHIFDrinkOverflowObserveFlag",
-		"ProduceHIFLiveFlag"
+		"ProduceHIFLiveFlag",
+		"ProduceHIFSelectChangeResultText",
+		"ProduceHIFSelectChangeResultDialog"
 	],
 	"priority_before_safe_advance": [
 		"[JumpBack]ProduceHIFDrinkRewardRevealFlag",
@@ -67,7 +74,9 @@
 				"ProduceHIFMainEventNextButton",
 				"ProduceHIFProduceStartButton",
 				"ProduceHIFTransitionClick",
-				"ProduceHIFMainEventEntranceFlag"
+				"ProduceHIFMainEventEntranceFlag",
+				"ProduceHIFSelectChangeResultText",
+				"ProduceHIFSelectChangeResultDialog"
 			],
 			"scenarios": {
 				"success": "结构与模板引用可解析",
@@ -83,6 +92,8 @@
 			"nodes": [
 				"ProduceEntryHIF",
 				"ProduceHIFStartConfirmFlag",
+				"ProduceHIFAfterChooseFinalMode",
+				"ProduceHIFFinalsPrepareResumeFlag",
 				"ProduceHIFSelectionModeFlag",
 				"ProduceHIFFinalModeFlag",
 				"ProduceHIFRound1Flag",
@@ -146,7 +157,8 @@
 				"ProduceHIFMemoryPhotoSelectFlag",
 				"ProduceHIFMemoryPhotoConfirmFlag",
 				"ProduceHIFMemoryFlag",
-				"ProduceHIFMemoryPreviewFlag"
+				"ProduceHIFMemoryPreviewFlag",
+				"ProduceHIFSelectChangeResultFlag"
 			],
 			"scenarios": {
 				"success": "唯一已知目标页或已验证文本后验",

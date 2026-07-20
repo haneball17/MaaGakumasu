@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_REVIEW_SECTION_COUNT = 35
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -18,8 +19,11 @@ def main() -> int:
     profiles = load_hif_screen_profiles()
     ui_map = load_hif_ui_map()
     issues: list[str] = []
-    if len(profiles.review_sections) != 34:
-        issues.append(f"review_section_count:{len(profiles.review_sections)}")
+    if len(profiles.review_sections) != EXPECTED_REVIEW_SECTION_COUNT:
+        issues.append(
+            "review_section_count_mismatch:"
+            f"expected={EXPECTED_REVIEW_SECTION_COUNT}:actual={len(profiles.review_sections)}"
+        )
     for profile in profiles.profiles.values():
         for button_id, button in profile.buttons.items():
             if ui_map.button_roi(profile.screen_id, button_id) != button.roi:
