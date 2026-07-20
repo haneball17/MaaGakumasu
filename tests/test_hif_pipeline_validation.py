@@ -163,6 +163,12 @@ def test_hif_day2_preview_test_pipeline_records_each_course_with_native_recognit
         assert read["action"]["type"] == "DoNothing"
 
 
+def test_hif_day1_change_entry_stops_until_the_required_page_evidence_exists():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
+
+    assert pipeline["hif_day1_场景3_标志"]["next"] == ["unknownstop"]
+
+
 def test_hif_day3_test_entry_observes_the_four_days_schedule_without_clicking():
     pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_2.json").read_text(encoding="utf-8")))
 
