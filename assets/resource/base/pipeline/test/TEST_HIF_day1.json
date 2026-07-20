@@ -440,7 +440,7 @@
             }
         },
         "next": [
-            "unknownstop"
+            "TestHIFDay1ChangeDeckEntry"
         ],
         "$__mpe_code": {
             "position": {
@@ -448,6 +448,123 @@
                 "y": 3081
             }
         }
+    },
+    "TestHIFDay1DailyLogClose": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": [
+                                    ".*1日目.*"
+                                ],
+                                "roi": [
+                                    40,
+                                    126,
+                                    150,
+                                    60
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "TemplateMatch",
+                            "param": {
+                                "template": [
+                                    "produce/HIF/hif_day1_daily_log_close.png"
+                                ],
+                                "roi": [
+                                    319,
+                                    1120,
+                                    82,
+                                    82
+                                ],
+                                "threshold": 0.9
+                            }
+                        }
+                    }
+                ],
+                "box_index": 1
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "hif_day1_场景3_标志"
+        ],
+        "on_error": [
+            "unknownstop"
+        ]
+    },
+    "TestHIFDay1ChangeDeckEntry": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "hif_day1_场景3_标志",
+                    {
+                        "recognition": {
+                            "type": "TemplateMatch",
+                            "param": {
+                                "template": [
+                                    "produce/HIF/hif_change_deck_entry.png"
+                                ],
+                                "roi": [
+                                    618,
+                                    1166,
+                                    82,
+                                    82
+                                ],
+                                "threshold": 0.9
+                            }
+                        }
+                    }
+                ],
+                "box_index": 1
+            }
+        },
+        "action": {
+            "type": "Click"
+        },
+        "next": [
+            "TestHIFDay1ChangeDeckObserve"
+        ],
+        "on_error": [
+            "unknownstop"
+        ]
+    },
+    "TestHIFDay1ChangeDeckObserve": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*所持スキルカード.*"
+                ],
+                "roi": [
+                    25,
+                    30,
+                    260,
+                    70
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFDay1ChangeDeckObserve"
+            }
+        },
+        "next": [
+            "unknownstop"
+        ],
+        "on_error": [
+            "unknownstop"
+        ]
     },
     "hif_day1_场景2_眠气卡_1": {
         "action": {

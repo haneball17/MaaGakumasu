@@ -163,10 +163,48 @@ def test_hif_day2_preview_test_pipeline_records_each_course_with_native_recognit
         assert read["action"]["type"] == "DoNothing"
 
 
-def test_hif_day1_change_entry_stops_until_the_required_page_evidence_exists():
+def test_hif_day1_change_entry_uses_the_verified_deck_button_and_stops_on_the_source_page():
     pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
 
-    assert pipeline["hif_day1_场景3_标志"]["next"] == ["unknownstop"]
+    assert pipeline["hif_day1_场景3_标志"]["next"] == ["TestHIFDay1ChangeDeckEntry"]
+    entry = pipeline["TestHIFDay1ChangeDeckEntry"]
+    assert entry["recognition"]["type"] == "And"
+    assert entry["recognition"]["param"]["all_of"][0] == "hif_day1_场景3_标志"
+    assert entry["recognition"]["param"]["all_of"][1]["recognition"]["param"] == {
+        "template": ["produce/HIF/hif_change_deck_entry.png"],
+        "roi": [618, 1166, 82, 82],
+        "threshold": 0.9,
+    }
+    assert entry["action"] == {"type": "Click"}
+    assert entry["next"] == ["TestHIFDay1ChangeDeckObserve"]
+    assert entry["on_error"] == ["unknownstop"]
+
+    observe = pipeline["TestHIFDay1ChangeDeckObserve"]
+    assert observe["recognition"]["param"] == {
+        "expected": [".*所持スキルカード.*"],
+        "roi": [25, 30, 260, 70],
+    }
+    assert observe["action"] == {
+        "type": "Custom",
+        "param": {"custom_action": "ProduceHIFDay1ChangeDeckObserve"},
+    }
+    assert observe["next"] == ["unknownstop"]
+    assert observe["on_error"] == ["unknownstop"]
+
+
+def test_hif_day1_daily_log_recovery_is_template_bound_and_returns_to_change_candidates():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
+
+    close = pipeline["TestHIFDay1DailyLogClose"]
+    assert close["recognition"]["type"] == "And"
+    assert close["recognition"]["param"]["all_of"][1]["recognition"]["param"] == {
+        "template": ["produce/HIF/hif_day1_daily_log_close.png"],
+        "roi": [319, 1120, 82, 82],
+        "threshold": 0.9,
+    }
+    assert close["action"] == {"type": "Click"}
+    assert close["next"] == ["hif_day1_场景3_标志"]
+    assert close["on_error"] == ["unknownstop"]
 
 
 def test_hif_day3_test_entry_observes_the_four_days_schedule_without_clicking():

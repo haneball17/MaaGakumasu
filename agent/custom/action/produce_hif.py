@@ -2087,6 +2087,25 @@ class ProduceChooseHIFSkillRewardAuto(_ProduceHIFRewardChoiceAction):
         return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_selection_not_enabled")
 
 
+@AgentServer.custom_action("ProduceHIFDay1ChangeDeckObserve")
+class ProduceHIFDay1ChangeDeckObserve(_ProduceHIFActionBase):
+    """记录 Day1 变卡候选页打开的所持技能卡牌库，不执行任何选择。"""
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        image = self._get_screenshot_or_stop(context, "day1_change_deck")
+        if image is None:
+            return True
+        evidence = self._capture_evidence(image, "day1_change_deck_observed")
+        self._record_journal(
+            "day1_change_deck",
+            "observe_held_skill_cards",
+            "observed",
+            details={"title": "所持スキルカード", "next_action": "snapshot_not_implemented"},
+            before=evidence,
+        )
+        return self._stop_unsupported(context, "day1_change_deck", "day1_change_deck_observed_stop")
+
+
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeTargetAuto")
 class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
     """逐槽读取变卡目标详情；仅在命中预设目标后进入牌库选择。"""

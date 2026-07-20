@@ -19,6 +19,7 @@ __all__ = [
     "ProduceHIFDrinkRewardRevealAuto",
     "ProduceChooseHIFSkillRewardAuto",
     "ProduceHIFSkillRewardRevealAuto",
+    "ProduceHIFDay1ChangeDeckObserve",
     "ProduceChooseHIFSelectChangeTargetAuto",
     "ProduceChooseHIFSelectChangeSourceAuto",
     "ProduceHIFSelectChangeResultObserve",
