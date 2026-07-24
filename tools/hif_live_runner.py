@@ -7,6 +7,7 @@ import copy
 import json
 import time
 import argparse
+import subprocess
 from typing import Any
 from pathlib import Path
 from datetime import datetime
@@ -26,6 +27,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--adb-path", type=Path, required=True, help="MuMu 自带 adb.exe 的绝对路径")
     parser.add_argument("--task", default="ProduceEntryHIF", help="正式 Pipeline 入口节点")
     parser.add_argument("--seconds", type=float, default=30.0, help="单次运行最长秒数")
+    parser.add_argument(
+        "--agent-mode",
+        choices=("direct", "ipc"),
+        default="direct",
+        help="direct 在当前进程注册 CustomAction；ipc 通过正式 AgentServer 进程执行",
+    )
     parser.add_argument("--single-step", action="store_true", help="仅启用已审阅的 HIF 单步节点；Round 与技能卡领取保持停止")
     parser.add_argument(
         "--round1-deck-probe",
@@ -256,6 +263,46 @@ def load_custom_recognitions() -> dict[str, type]:
     return recognitions
 
 
+def _stop_agent_process(process: subprocess.Popen | None) -> None:
+    if process is None or process.poll() is not None:
+        return
+    process.terminate()
+    try:
+        process.wait(timeout=5)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait()
+
+
+def start_ipc_agent(resource, controller, tasker, *, agent_client_type=None, popen=None):
+    """启动正式 AgentServer，并将 Maa 的三个事件 sink 转发给它。"""
+
+    if agent_client_type is None:
+        from maa.agent_client import AgentClient
+
+        agent_client_type = AgentClient
+    if popen is None:
+        popen = subprocess.Popen
+
+    client = agent_client_type()
+    socket_id = client.identifier
+    if not socket_id:
+        raise RuntimeError("无法获取 AgentClient 标识符")
+    if not client.bind(resource):
+        raise RuntimeError("无法将 AgentClient 绑定到 HIF 资源")
+
+    process = popen([sys.executable, "-u", str(ROOT / "agent" / "main.py"), socket_id], cwd=ROOT)
+    try:
+        if not client.register_sink(resource, controller, tasker):
+            raise RuntimeError("无法注册 AgentClient 事件 sink")
+        if not client.connect():
+            raise RuntimeError("AgentServer 连接失败")
+    except Exception:
+        _stop_agent_process(process)
+        raise
+    return client, process
+
+
 def single_step_override() -> dict[str, dict[str, Any]]:
     """实验模式只授权经实测验证的日程、授業预览、变卡目标、过渡和 P 饮料领取。"""
 
@@ -278,6 +325,8 @@ def single_step_override() -> dict[str, dict[str, Any]]:
             "ProduceHIFDrinkRewardFlag",
             "ProduceHIFDrinkRewardRevealFlag",
             "ProduceHIFRewardConfirmFlag",
+            "TestHIFDay1ChangeDeckEntry",
+            "TestHIFDay1ChangeDeckRecover",
         )
     }
 
@@ -1079,6 +1128,7 @@ def main(argv: list[str] | None = None) -> int:
     manifest: dict[str, Any] = {
         "run_id": run_id,
         "task": task_entry,
+        "agent_mode": args.agent_mode,
         "single_step": args.single_step,
         "round1_deck_probe": args.round1_deck_probe,
         "round1_hand_detail_probe": args.round1_hand_detail_probe,
@@ -1122,34 +1172,44 @@ def main(argv: list[str] | None = None) -> int:
     resource = Resource()
     if not resource.post_bundle(ROOT / "assets" / "resource" / "base").wait().succeeded:
         raise RuntimeError("HIF 资源加载失败")
-    for name, action_type in load_custom_actions().items():
-        if not resource.register_custom_action(name, action_type()):
-            raise RuntimeError(f"注册自定义 Action 失败: {name}")
-    for name, recognition_type in load_custom_recognitions().items():
-        if not resource.register_custom_recognition(name, recognition_type()):
-            raise RuntimeError(f"注册自定义 Recognition 失败: {name}")
+    if args.agent_mode == "direct":
+        for name, action_type in load_custom_actions().items():
+            if not resource.register_custom_action(name, action_type()):
+                raise RuntimeError(f"注册自定义 Action 失败: {name}")
+        for name, recognition_type in load_custom_recognitions().items():
+            if not resource.register_custom_recognition(name, recognition_type()):
+                raise RuntimeError(f"注册自定义 Recognition 失败: {name}")
 
     tasker = Tasker()
     tasker.bind(resource, controller)
     tasker.set_log_dir(evidence_dir)
     tasker.set_recording(True)
     tasker.set_save_on_error(True)
-    job = tasker.post_task(task_entry, pipeline_override=runtime_override(args))
-    deadline = time.monotonic() + args.seconds
-    while not job.done and time.monotonic() < deadline:
-        time.sleep(0.2)
-    if not job.done:
-        tasker.post_stop().wait()
-        manifest["result"] = "timeout_stopped"
-    else:
-        manifest["result"] = "completed"
-        manifest["succeeded"] = job.succeeded
-        manifest["failed"] = job.failed
-    manifest["finished_at"] = datetime.now().isoformat(timespec="seconds")
-    manifest["after"] = _save_frame(controller, evidence_dir / "after.png")
-    (evidence_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps(manifest, ensure_ascii=False, indent=2))
-    return 0 if manifest["result"] == "completed" and not manifest.get("failed") else 1
+    agent_client = None
+    agent_process = None
+    try:
+        if args.agent_mode == "ipc":
+            agent_client, agent_process = start_ipc_agent(resource, controller, tasker)
+        job = tasker.post_task(task_entry, pipeline_override=runtime_override(args))
+        deadline = time.monotonic() + args.seconds
+        while not job.done and time.monotonic() < deadline:
+            time.sleep(0.2)
+        if not job.done:
+            tasker.post_stop().wait()
+            manifest["result"] = "timeout_stopped"
+        else:
+            manifest["result"] = "completed"
+            manifest["succeeded"] = job.succeeded
+            manifest["failed"] = job.failed
+        manifest["finished_at"] = datetime.now().isoformat(timespec="seconds")
+        manifest["after"] = _save_frame(controller, evidence_dir / "after.png")
+        (evidence_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(json.dumps(manifest, ensure_ascii=False, indent=2))
+        return 0 if manifest["result"] == "completed" and not manifest.get("failed") else 1
+    finally:
+        if agent_client is not None:
+            agent_client.disconnect()
+        _stop_agent_process(agent_process)
 
 
 if __name__ == "__main__":

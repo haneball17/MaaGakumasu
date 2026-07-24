@@ -1,0 +1,59 @@
+{
+    "interface_version": 2,
+    "name": "MaaGakumasu HIF 测试",
+    "version": "0.0.0",
+    "agent": {
+        "child_exec": "C:/Users/haneball/AppData/Local/Programs/Python/Python312/python.exe",
+        "child_args": [
+            "-u",
+            "./../agent/main.py"
+        ]
+    },
+    "controller": [
+        {
+            "name": "模拟器",
+            "type": "Adb"
+        }
+    ],
+    "resource": [
+        {
+            "name": "官服",
+            "path": [
+                "./resource/base"
+            ],
+            "controller": [
+                "模拟器"
+            ]
+        }
+    ],
+    "task": [
+        {
+            "name": "HIF Day1 场景 1",
+            "entry": "hif_day1_场景1_标志",
+            "resource": [
+                "官服"
+            ]
+        },
+        {
+            "name": "HIF Day1 场景 2",
+            "entry": "hif_day1_场景2_标志",
+            "resource": [
+                "官服"
+            ]
+        },
+        {
+            "name": "HIF Day1 槽位 1 标题",
+            "entry": "浏览待选卡牌_点击槽位1",
+            "resource": [
+                "官服"
+            ]
+        },
+        {
+            "name": "HIF Day1 牌库入口",
+            "entry": "TestHIFDay1ChangeDeckEntry",
+            "resource": [
+                "官服"
+            ]
+        }
+    ]
+}

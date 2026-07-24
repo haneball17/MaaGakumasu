@@ -79,6 +79,20 @@ python tools/hif_live_runner.py --adb <地址> --adb-path "<MuMu adb.exe>" --tas
 
 2026-07-19 的 `初星黒酢` 领取展示层在两次零输入等待及一次 10 秒等待后仍存在；随后一次 `受け取る` 位置点击也未改变页面。该假设未获证实，当前测试以该帧安全停止，不再尝试其他坐标。后续需从标准截图通道采集唯一有效的确认交互与已知后态，才能扩展正式动作。
 
+## Day1 牌库往返
+
+`TestHIFDay1ChangeDeckEntry` 仅从 Day1 场景3启动。它先确认场景3锚点和牌库入口，再在显式 `single_step` 下打开一次 `所持スキルカード`，采证后点击一次 `閉じる`；只有重新命中场景3锚点才成功结束。任一中间页、关闭按钮或返回锚点不成立时进入 `unknownstop`，不得选卡、换卡或继续日程。
+
+返回锚点必须同时命中场景3模板和牌库入口模板；仅命中场景3模板（例如换卡候选页的误匹配）不视为已恢复。
+
+2026-07-24 已以 MuMu 12 / `127.0.0.1:16416` 实测 `hif-day1-change-deck-roundtrip-20260724-retry`：三帧依次为 Day1 场景3、`所持スキルカード`、原 Day1 场景3。Journal `20260724T214908-2276.jsonl` 记录 `open_skill_deck` 与 `close_skill_deck` 均为 `verified`。原始帧仅保留在 `debug/hif-journal/`。
+
+早期 `hif-day1-change-deck-read-visible-v2-20260724` 以 `cards.onnx` 只枚举出当前视口的 15 张，低于标签总数 `17`；该检测模型漏掉了第二行第四列，不能再作为枚举依据。
+
+2026-07-24 的 IPC 实机回归 `hif-day1-change-deck-full-17-20260724-final` 读取标签 `スキルカード(17)`，按固定 4×4 槽位读取首屏 16 张，验证一次网格内上滑后读取第 17 张，并关闭返回 Day1 场景3。Journal `20260724T230815-24560.jsonl` 记录 `open_skill_deck`、`scroll_skill_deck`、`close_skill_deck` 均为 `verified`，`read_visible_skill_card` 的逻辑序号完整覆盖 `1..17`。原始帧仅保留在 `debug/`。
+
+VS Code 插件测试：以 `hif_test/` 作为工作区打开，执行 `Maa: 执行任务` 并选择 `HIF Day1 牌库完整读取（单步）`。该入口内置 `single_step`，完成后 Agent 日志输出 JSON 汇总（`expected_total`、`read_count`、`cards`、`returned_to`）；同一汇总也写入 Journal 的 `close_skill_deck.details`。只在 Day1 场景3执行；入口或返回锚点不成立时安全停止。
+
 ## 页面能力升级门槛
 
 页面与动作分别升级：同一页面的“结束”通过单步验证，不代表购买、刷新或其他资源消耗动作也获得授权。截图方向须符合 [`resources.md`](resources.md) 的契约；`Round2` 后 Live 是唯一横屏例外，仍从观察级开始。

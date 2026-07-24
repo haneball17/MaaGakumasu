@@ -529,16 +529,98 @@
             }
         },
         "action": {
-            "type": "Click"
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFDay1ChangeDeckRoundTrip"
+            }
         },
         "next": [
-            "TestHIFDay1ChangeDeckObserve"
+            "TestHIFDay1ChangeDeckReturned"
         ],
+        "on_error": [
+            "unknownstop"
+        ],
+        "max_hit": 1
+    },
+    "TestHIFDay1ChangeDeckVSCodeEntry": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "hif_day1_场景3_标志",
+                    {
+                        "recognition": {
+                            "type": "TemplateMatch",
+                            "param": {
+                                "template": [
+                                    "produce/HIF/hif_change_deck_entry.png"
+                                ],
+                                "roi": [
+                                    618,
+                                    1166,
+                                    82,
+                                    82
+                                ],
+                                "threshold": 0.9
+                            }
+                        }
+                    }
+                ],
+                "box_index": 1
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFDay1ChangeDeckRoundTrip",
+                "custom_action_param": {
+                    "execution_mode": "single_step"
+                }
+            }
+        },
+        "next": [
+            "TestHIFDay1ChangeDeckReturned"
+        ],
+        "on_error": [
+            "unknownstop"
+        ],
+        "max_hit": 1
+    },
+    "TestHIFDay1ChangeDeckReturned": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "hif_day1_场景3_标志",
+                    {
+                        "recognition": {
+                            "type": "TemplateMatch",
+                            "param": {
+                                "template": [
+                                    "produce/HIF/hif_change_deck_entry.png"
+                                ],
+                                "roi": [
+                                    618,
+                                    1166,
+                                    82,
+                                    82
+                                ],
+                                "threshold": 0.9
+                            }
+                        }
+                    }
+                ],
+                "box_index": 1
+            }
+        },
+        "action": {
+            "type": "DoNothing"
+        },
         "on_error": [
             "unknownstop"
         ]
     },
-    "TestHIFDay1ChangeDeckObserve": {
+    "TestHIFDay1ChangeDeckRecover": {
         "recognition": {
             "type": "OCR",
             "param": {
@@ -556,15 +638,16 @@
         "action": {
             "type": "Custom",
             "param": {
-                "custom_action": "ProduceHIFDay1ChangeDeckObserve"
+                "custom_action": "ProduceHIFDay1ChangeDeckCloseRecover"
             }
         },
         "next": [
-            "unknownstop"
+            "TestHIFDay1ChangeDeckReturned"
         ],
         "on_error": [
             "unknownstop"
-        ]
+        ],
+        "max_hit": 1
     },
     "hif_day1_场景2_眠气卡_1": {
         "action": {
@@ -628,12 +711,38 @@
                 ]
             }
         },
+        "next": [
+            "TestHIFDay1ChangeCandidateSlot1Title"
+        ],
         "$__mpe_code": {
             "position": {
                 "x": 6458,
                 "y": 3092
             }
         }
+    },
+    "TestHIFDay1ChangeCandidateSlot1Title": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [],
+                "roi": [
+                    180,
+                    500,
+                    360,
+                    60
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing"
+        },
+        "next": [
+            "unknownstop"
+        ],
+        "on_error": [
+            "unknownstop"
+        ]
     },
     "浏览待选卡牌_点击槽位2": {
         "action": {

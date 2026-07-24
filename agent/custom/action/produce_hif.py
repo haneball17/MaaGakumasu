@@ -2087,23 +2087,231 @@ class ProduceChooseHIFSkillRewardAuto(_ProduceHIFRewardChoiceAction):
         return self._stop_unsupported(context, "hif_skill_reward", "skill_reward_selection_not_enabled")
 
 
-@AgentServer.custom_action("ProduceHIFDay1ChangeDeckObserve")
-class ProduceHIFDay1ChangeDeckObserve(_ProduceHIFActionBase):
-    """记录 Day1 变卡候选页打开的所持技能卡牌库，不执行任何选择。"""
+@AgentServer.custom_action("ProduceHIFDay1ChangeDeckRoundTrip")
+class ProduceHIFDay1ChangeDeckRoundTrip(_ProduceHIFActionBase):
+    """从 Day1 场景3打开牌库采证后关闭，且只接受回到同一场景。"""
+
+    SCENE3_TEMPLATE = "produce/HIF/hif_day1_场景3_flag.png"
+    SCENE3_ROI = [162, 330, 411, 183]
+    ENTRY_TEMPLATE = "produce/HIF/hif_change_deck_entry.png"
+    ENTRY_ROI = [618, 1166, 82, 82]
+    CLOSE_ROI = [232, 1119, 256, 82]
+    CARD_GRID_ROI = [48, 390, 624, 610]
+    CARD_NAME_ROI = [200, 105, 350, 55]
+    CARD_COUNT_ROI = [25, 1005, 320, 80]
+    CARD_SLOTS = tuple([48 + column * 160, 406 + row * 154, 142, 142] for row in range(4) for column in range(4))
+    SCROLL_START = (360, 960)
+    SCROLL_END = (360, 520)
+
+    @staticmethod
+    def _deck_grid_fingerprint(image) -> str | None:
+        try:
+            grid = image[390:1000, 48:672]
+            return hashlib.blake2b(grid.tobytes(), digest_size=8).hexdigest()
+        except (AttributeError, IndexError, TypeError, ValueError):
+            return None
+
+    def _read_deck_size(self, context: Context, image) -> int | None:
+        detail = self._run_ocr(context, image, "ProduceRecognitionHIFDay1ChangeDeckCount", [], self.CARD_COUNT_ROI)
+        text = " ".join(entry["text"] for entry in self._ocr_text_entries(detail))
+        match = re.search(r"[（(]\s*(\d+)\s*[）)]", text)
+        if match:
+            return int(match.group(1))
+        self._stop_unsupported(context, "day1_change_deck", "deck_count_unreadable")
+        return None
+
+    def _read_card_slots(self, context: Context, image, boxes: tuple[list[int], ...], start_index: int) -> Any | None:
+        if not hasattr(self, "_read_cards"):
+            self._read_cards = []
+        current_image = image
+        for index, box in enumerate(boxes, start=start_index):
+            before = self._capture_evidence(current_image, f"day1_change_deck_card_{index}_before")
+            if not self._click_box_center(context, box, double=False):
+                self._stop_unsupported(context, "day1_change_deck", "card_click_failed")
+                return None
+            time.sleep(self.ACTION_DELAY)
+            current_image = self._get_screenshot_or_stop(context, "skill_deck_view")
+            if current_image is None:
+                return None
+            after = self._capture_evidence(current_image, f"day1_change_deck_card_{index}_selected")
+            if not frame_changed(before, after) or not self._matches_screen_profile(context, current_image, "skill_deck_view"):
+                self._stop_unsupported(context, "day1_change_deck", "card_selection_not_confirmed")
+                return None
+            name_detail = self._run_ocr(
+                context,
+                current_image,
+                "ProduceRecognitionHIFDay1ChangeDeckCardName",
+                [],
+                self.CARD_NAME_ROI,
+            )
+            name_entries = self._ocr_text_entries(name_detail)
+            raw_name = name_entries[0]["text"] if name_entries else ""
+            name = normalize_card_name(raw_name.rstrip("+").strip()) if raw_name else None
+            if not name:
+                self._stop_unsupported(context, "day1_change_deck", "card_name_unreadable")
+                return None
+            self._record_journal(
+                "day1_change_deck",
+                "read_visible_skill_card",
+                "observed",
+                details={"index": index, "box": box, "name": name, "confidence": name_entries[0]["score"]},
+                before=before,
+                after=after,
+            )
+            self._read_cards.append(name)
+        return current_image
+
+    def _read_visible_cards(self, context: Context, image) -> Any | None:
+        expected_total = self._read_deck_size(context, image)
+        if expected_total is None:
+            return None
+        self._expected_total = expected_total
+        if not 1 <= expected_total <= 20:
+            self._stop_unsupported(context, "day1_change_deck", "deck_count_out_of_calibrated_range")
+            return None
+
+        first_page_count = min(expected_total, len(self.CARD_SLOTS))
+        current_image = self._read_card_slots(context, image, self.CARD_SLOTS[:first_page_count], 1)
+        if current_image is None or expected_total <= len(self.CARD_SLOTS):
+            return current_image
+
+        before_grid = self._deck_grid_fingerprint(current_image)
+        if not self._swipe_with_verification(
+            context,
+            current_image,
+            "day1_change_deck",
+            "scroll_skill_deck",
+            self.SCROLL_START,
+            self.SCROLL_END,
+            duration=300,
+            details={"expected_total": expected_total},
+        ):
+            return None
+        current_image = self._get_screenshot_or_stop(context, "skill_deck_view")
+        if current_image is None or not self._matches_screen_profile(context, current_image, "skill_deck_view"):
+            self._stop_unsupported(context, "day1_change_deck", "skill_deck_view_lost_after_scroll")
+            return None
+        if before_grid == self._deck_grid_fingerprint(current_image):
+            self._stop_unsupported(context, "day1_change_deck", "skill_deck_grid_unchanged_after_scroll")
+            return None
+        if self._read_deck_size(context, current_image) != expected_total:
+            self._stop_unsupported(context, "day1_change_deck", "deck_count_changed_after_scroll")
+            return None
+        return self._read_card_slots(context, current_image, self.CARD_SLOTS[12 : 12 + expected_total - 16], 17)
+
+    def _close_to_scene3(self, context: Context, deck_image, deck) -> Any | None:
+        close = self._find_text_option(context, deck_image, ("閉じる",), self._observed_button_roi("skill_deck_view", "close", self.CLOSE_ROI))
+        if close is None or not self._click_box_center(context, list(close.best_result.box), double=False):
+            self._stop_unsupported(context, "day1_change_deck", "deck_close_not_confirmed")
+            return None
+        time.sleep(self.ACTION_DELAY)
+        returned_image = self._get_screenshot_or_stop(context, "day1_change_deck")
+        if returned_image is None:
+            return None
+        returned = self._capture_evidence(returned_image, "day1_change_deck_returned")
+        scene3_returned = self._run_template(
+            context, returned_image, "ProduceRecognitionHIFDay1Scene3Returned", self.SCENE3_TEMPLATE, self.SCENE3_ROI, 0.7
+        )
+        entry_returned = self._run_template(
+            context, returned_image, "ProduceRecognitionHIFDay1ChangeDeckEntryReturned", self.ENTRY_TEMPLATE, self.ENTRY_ROI, 0.9
+        )
+        if not frame_changed(deck, returned) or not (scene3_returned and scene3_returned.hit and entry_returned and entry_returned.hit):
+            self._stop_unsupported(context, "day1_change_deck", "scene3_not_restored_after_deck_close")
+            return None
+        self._record_journal(
+            "day1_change_deck",
+            "close_skill_deck",
+            "verified",
+            details={
+                "close_box": list(close.best_result.box),
+                "expected_total": self._expected_total,
+                "read_count": len(self._read_cards),
+                "cards": self._read_cards,
+                "returned_to": "day1_scene3",
+            },
+            before=deck,
+            after=returned,
+        )
+        logger.info(
+            "HIF Day1 牌库测试完成: {}",
+            json.dumps(
+                {
+                    "expected_total": self._expected_total,
+                    "read_count": len(self._read_cards),
+                    "cards": self._read_cards,
+                    "returned_to": "day1_scene3",
+                },
+                ensure_ascii=False,
+            ),
+        )
+        return returned_image
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        self._read_cards = []
+        self._expected_total = None
+        mode = self._configure_page_execution(argv)
         image = self._get_screenshot_or_stop(context, "day1_change_deck")
         if image is None:
             return True
-        evidence = self._capture_evidence(image, "day1_change_deck_observed")
+        before = self._capture_evidence(image, "day1_change_deck_before")
+        if mode is not HIFExecutionMode.SINGLE_STEP:
+            self._record_journal(
+                "day1_change_deck",
+                "open_and_close_deck",
+                "observed",
+                details={"reason": "page_execution_mode_not_single_step", "mode": mode.value},
+                before=before,
+            )
+            return self._stop_unsupported(context, "day1_change_deck", "page_execution_mode_not_single_step")
+
+        scene3 = self._run_template(context, image, "ProduceRecognitionHIFDay1Scene3", self.SCENE3_TEMPLATE, self.SCENE3_ROI, 0.7)
+        entry = self._run_template(context, image, "ProduceRecognitionHIFDay1ChangeDeckEntry", self.ENTRY_TEMPLATE, self.ENTRY_ROI, 0.9)
+        if not (scene3 and scene3.hit and entry and entry.hit):
+            return self._stop_unsupported(context, "day1_change_deck", "scene3_or_deck_entry_not_confirmed")
+        if not self._click_box_center(context, list(entry.best_result.box), double=False):
+            return self._stop_unsupported(context, "day1_change_deck", "deck_entry_click_failed")
+
+        time.sleep(self.ACTION_DELAY)
+        deck_image = self._get_screenshot_or_stop(context, "skill_deck_view")
+        if deck_image is None:
+            return True
+        deck = self._capture_evidence(deck_image, "day1_change_deck_opened")
+        if not frame_changed(before, deck) or not self._matches_screen_profile(context, deck_image, "skill_deck_view"):
+            return self._stop_unsupported(context, "day1_change_deck", "skill_deck_view_not_confirmed")
         self._record_journal(
             "day1_change_deck",
-            "observe_held_skill_cards",
-            "observed",
-            details={"title": "所持スキルカード", "next_action": "snapshot_not_implemented"},
-            before=evidence,
+            "open_skill_deck",
+            "verified",
+            details={"entry_box": list(entry.best_result.box)},
+            before=before,
+            after=deck,
         )
-        return self._stop_unsupported(context, "day1_change_deck", "day1_change_deck_observed_stop")
+
+        deck_image = self._read_visible_cards(context, deck_image)
+        if deck_image is None:
+            recovery_image = self._get_screenshot_or_stop(context, "skill_deck_view")
+            if recovery_image is not None and self._matches_screen_profile(context, recovery_image, "skill_deck_view"):
+                self._close_to_scene3(context, recovery_image, deck)
+            return True
+        self._close_to_scene3(context, deck_image, deck)
+        return True
+
+
+@AgentServer.custom_action("ProduceHIFDay1ChangeDeckCloseRecover")
+class ProduceHIFDay1ChangeDeckCloseRecover(ProduceHIFDay1ChangeDeckRoundTrip):
+    """仅恢复已确认的 Day1 牌库弹窗，重新回到场景3。"""
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        if self._configure_page_execution(argv) is not HIFExecutionMode.SINGLE_STEP:
+            return self._stop_unsupported(context, "day1_change_deck", "page_execution_mode_not_single_step")
+        deck_image = self._get_screenshot_or_stop(context, "skill_deck_view")
+        if deck_image is None:
+            return True
+        deck = self._capture_evidence(deck_image, "day1_change_deck_recovery_before")
+        if not self._matches_screen_profile(context, deck_image, "skill_deck_view"):
+            return self._stop_unsupported(context, "day1_change_deck", "skill_deck_view_not_confirmed_for_recovery")
+        self._close_to_scene3(context, deck_image, deck)
+        return True
 
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeTargetAuto")

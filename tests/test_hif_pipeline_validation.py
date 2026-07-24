@@ -163,7 +163,7 @@ def test_hif_day2_preview_test_pipeline_records_each_course_with_native_recognit
         assert read["action"]["type"] == "DoNothing"
 
 
-def test_hif_day1_change_entry_uses_the_verified_deck_button_and_stops_on_the_source_page():
+def test_hif_day1_change_entry_round_trips_to_scene3_before_stopping():
     pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
 
     assert pipeline["hif_day1_场景3_标志"]["next"] == ["TestHIFDay1ChangeDeckEntry"]
@@ -175,21 +175,41 @@ def test_hif_day1_change_entry_uses_the_verified_deck_button_and_stops_on_the_so
         "roi": [618, 1166, 82, 82],
         "threshold": 0.9,
     }
-    assert entry["action"] == {"type": "Click"}
-    assert entry["next"] == ["TestHIFDay1ChangeDeckObserve"]
+    assert entry["action"] == {"type": "Custom", "param": {"custom_action": "ProduceHIFDay1ChangeDeckRoundTrip"}}
+    assert entry["next"] == ["TestHIFDay1ChangeDeckReturned"]
     assert entry["on_error"] == ["unknownstop"]
-
-    observe = pipeline["TestHIFDay1ChangeDeckObserve"]
-    assert observe["recognition"]["param"] == {
-        "expected": [".*所持スキルカード.*"],
-        "roi": [25, 30, 260, 70],
+    assert entry["max_hit"] == 1
+    assert pipeline["TestHIFDay1ChangeDeckReturned"] == {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "hif_day1_场景3_标志",
+                    {
+                        "recognition": {
+                            "type": "TemplateMatch",
+                            "param": {
+                                "template": ["produce/HIF/hif_change_deck_entry.png"],
+                                "roi": [618, 1166, 82, 82],
+                                "threshold": 0.9,
+                            },
+                        }
+                    },
+                ],
+                "box_index": 1,
+            },
+        },
+        "action": {"type": "DoNothing"},
+        "on_error": ["unknownstop"],
     }
-    assert observe["action"] == {
+    assert pipeline["TestHIFDay1ChangeDeckRecover"]["action"] == {
         "type": "Custom",
-        "param": {"custom_action": "ProduceHIFDay1ChangeDeckObserve"},
+        "param": {"custom_action": "ProduceHIFDay1ChangeDeckCloseRecover"},
     }
-    assert observe["next"] == ["unknownstop"]
-    assert observe["on_error"] == ["unknownstop"]
+    assert pipeline["TestHIFDay1ChangeDeckVSCodeEntry"]["action"]["param"] == {
+        "custom_action": "ProduceHIFDay1ChangeDeckRoundTrip",
+        "custom_action_param": {"execution_mode": "single_step"},
+    }
 
 
 def test_hif_day1_daily_log_recovery_is_template_bound_and_returns_to_change_candidates():
@@ -205,6 +225,22 @@ def test_hif_day1_daily_log_recovery_is_template_bound_and_returns_to_change_can
     assert close["action"] == {"type": "Click"}
     assert close["next"] == ["hif_day1_场景3_标志"]
     assert close["on_error"] == ["unknownstop"]
+
+
+def test_hif_day1_candidate_slot_one_observes_its_title_before_stopping():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
+
+    assert pipeline["浏览待选卡牌_点击槽位1"]["action"] == {
+        "type": "Click",
+        "param": {"target": [219, 899, 1, 1]},
+    }
+    assert pipeline["浏览待选卡牌_点击槽位1"]["next"] == ["TestHIFDay1ChangeCandidateSlot1Title"]
+    assert pipeline["TestHIFDay1ChangeCandidateSlot1Title"] == {
+        "recognition": {"type": "OCR", "param": {"expected": [], "roi": [180, 500, 360, 60]}},
+        "action": {"type": "DoNothing"},
+        "next": ["unknownstop"],
+        "on_error": ["unknownstop"],
+    }
 
 
 def test_hif_day3_test_entry_observes_the_four_days_schedule_without_clicking():

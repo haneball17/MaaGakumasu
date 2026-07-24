@@ -9,7 +9,97 @@ def test_live_runner_defaults_to_the_formal_hif_router_and_requires_adb_contract
     args = hif_live_runner.parse_args(["--adb", "127.0.0.1:16416", "--adb-path", "D:/MuMu/adb.exe"])
 
     assert args.task == "ProduceEntryHIF"
+    assert args.agent_mode == "direct"
     assert not args.single_step
+
+
+def test_ipc_agent_uses_the_formal_agent_entry_and_registers_all_sinks():
+    class FakeClient:
+        identifier = "agent-socket"
+
+        def __init__(self):
+            self.calls = []
+
+        def bind(self, resource):
+            self.calls.append(("bind", resource))
+            return True
+
+        def register_sink(self, resource, controller, tasker):
+            self.calls.append(("register_sink", resource, controller, tasker))
+            return True
+
+        def connect(self):
+            self.calls.append(("connect",))
+            return True
+
+    class FakeProcess:
+        def poll(self):
+            return None
+
+    spawned = []
+
+    def fake_popen(command, *, cwd):
+        spawned.append((command, cwd))
+        return FakeProcess()
+
+    resource, controller, tasker = object(), object(), object()
+    client, process = hif_live_runner.start_ipc_agent(
+        resource,
+        controller,
+        tasker,
+        agent_client_type=FakeClient,
+        popen=fake_popen,
+    )
+
+    assert isinstance(client, FakeClient)
+    assert isinstance(process, FakeProcess)
+    assert spawned == [
+        ([hif_live_runner.sys.executable, "-u", str(hif_live_runner.ROOT / "agent" / "main.py"), "agent-socket"], hif_live_runner.ROOT)
+    ]
+    assert client.calls == [
+        ("bind", resource),
+        ("register_sink", resource, controller, tasker),
+        ("connect",),
+    ]
+
+
+def test_ipc_agent_connection_failure_stops_the_child_process():
+    class FakeClient:
+        identifier = "agent-socket"
+
+        def bind(self, resource):
+            return True
+
+        def register_sink(self, resource, controller, tasker):
+            return True
+
+        def connect(self):
+            return False
+
+    class FakeProcess:
+        terminated = False
+
+        def poll(self):
+            return None
+
+        def terminate(self):
+            self.terminated = True
+
+        def wait(self, *, timeout=None):
+            return 0
+
+    process = FakeProcess()
+
+    with pytest.raises(RuntimeError, match="AgentServer 连接失败"):
+        hif_live_runner.start_ipc_agent(
+            object(),
+            object(),
+            object(),
+            agent_client_type=FakeClient,
+            popen=lambda *_args, **_kwargs: process,
+        )
+
+    assert process.terminated
 
 
 def test_live_runner_single_step_override_excludes_round_and_skill_card_actions():
@@ -25,6 +115,8 @@ def test_live_runner_single_step_override_excludes_round_and_skill_card_actions(
     assert "ProduceHIFSkillEnhancedResultFlag" in override
     assert "ProduceHIFSelectChangeTargetFlag" in override
     assert "ProduceHIFConsultFlag" in override
+    assert "TestHIFDay1ChangeDeckEntry" in override
+    assert "TestHIFDay1ChangeDeckRecover" in override
     assert override["ProduceHIFFinalsRankingFlag"]["action"]["param"]["custom_action_param"] == {
         "preset_id": "rinami_good_condition_safe",
         "execution_mode": "single_step",

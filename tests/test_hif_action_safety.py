@@ -1580,3 +1580,120 @@ def test_memory_photo_next_stops_when_the_changed_frame_is_not_the_confirm_page(
     assert action.run(object(), SimpleNamespace(custom_action_param='{"execution_mode":"single_step"}'))
     assert stop_reasons == [("memory_photo_select", "photo_next_next_page_not_confirmed")]
     assert records[-1][0][1:3] == ("photo_next", "unverified")
+
+
+def test_day1_change_deck_round_trip_returns_to_scene3(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1ChangeDeckRoundTrip()
+    action.ACTION_DELAY = 0
+    records = []
+    clicks = []
+    screenshots = iter((b"scene3", b"deck", b"scene3-returned"))
+    template_results = iter(
+        (
+            SimpleNamespace(hit=True, best_result=SimpleNamespace(box=[162, 330, 23, 46])),
+            SimpleNamespace(hit=True, best_result=SimpleNamespace(box=[618, 1166, 82, 82])),
+            SimpleNamespace(hit=True, best_result=SimpleNamespace(box=[162, 330, 23, 46])),
+            SimpleNamespace(hit=True, best_result=SimpleNamespace(box=[618, 1166, 82, 82])),
+        )
+    )
+
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: next(screenshots))
+    monkeypatch.setattr(action, "_run_template", lambda *args, **kwargs: next(template_results))
+    monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: image == b"deck" and screen_id == "skill_deck_view")
+    monkeypatch.setattr(action, "_read_visible_cards", lambda context, image: image)
+    monkeypatch.setattr(action, "_find_text_option", lambda *args, **kwargs: SimpleNamespace(best_result=SimpleNamespace(box=[232, 1119, 256, 82])))
+    monkeypatch.setattr(action, "_click_box_center", lambda context, box, **kwargs: clicks.append(list(box)) or True)
+    monkeypatch.setattr(module, "frame_changed", lambda before, after: True)
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"execution_mode":"single_step"}'))
+    assert clicks == [[618, 1166, 82, 82], [232, 1119, 256, 82]]
+    assert [record[0][1] for record in records] == ["open_skill_deck", "close_skill_deck"]
+
+
+def test_day1_change_deck_uses_the_calibrated_sixteen_card_slots():
+    module = _load_action_module()
+    action = module.ProduceHIFDay1ChangeDeckRoundTrip()
+
+    assert len(action.CARD_SLOTS) == 16
+    assert action.CARD_SLOTS[0] == [48, 406, 142, 142]
+    assert action.CARD_SLOTS[-1] == [528, 868, 142, 142]
+
+
+def test_day1_change_deck_reads_an_hif_only_card_name_without_the_common_card_dictionary(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1ChangeDeckRoundTrip()
+    action.ACTION_DELAY = 0
+    records = []
+    screenshots = iter((b"selected",))
+
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: next(screenshots))
+    monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: image == b"selected" and screen_id == "skill_deck_view")
+    monkeypatch.setattr(action, "_click_box_center", lambda *args, **kwargs: True)
+    monkeypatch.setattr(module, "frame_changed", lambda before, after: True)
+    monkeypatch.setattr(
+        action,
+        "_run_ocr",
+        lambda *args, **kwargs: SimpleNamespace(
+            hit=True,
+            filtered_results=(SimpleNamespace(text="心・技・体", box=[210, 115, 180, 42], score=0.96),),
+            all_results=(),
+        ),
+    )
+
+    assert action._read_card_slots(object(), b"deck", ([48, 406, 142, 142],), 1) == b"selected"
+    assert records[-1][1]["details"]["name"] == "心・技・体"
+
+
+def test_day1_change_deck_reads_seventeen_slots_after_one_verified_scroll(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1ChangeDeckRoundTrip()
+    slot_reads = []
+
+    monkeypatch.setattr(action, "_read_deck_size", lambda context, image: 17)
+    monkeypatch.setattr(action, "_read_card_slots", lambda context, image, boxes, start: slot_reads.append((tuple(boxes), start)) or image)
+    monkeypatch.setattr(action, "_deck_grid_fingerprint", lambda image: {b"first": "a", b"scrolled": "b"}[image])
+    monkeypatch.setattr(action, "_swipe_with_verification", lambda *args, **kwargs: True)
+    monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen_id: b"scrolled")
+    monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: screen_id == "skill_deck_view")
+
+    assert action._read_visible_cards(object(), b"first") == b"scrolled"
+    assert [start for _, start in slot_reads] == [1, 17]
+    assert len(slot_reads[0][0]) == 16
+    assert slot_reads[1][0] == (action.CARD_SLOTS[12],)
+
+
+def test_day1_change_deck_round_trip_stops_when_close_does_not_restore_scene3(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1ChangeDeckRoundTrip()
+    action.ACTION_DELAY = 0
+    records = []
+    stop_reasons = []
+    screenshots = iter((b"scene3", b"deck", b"unknown"))
+    template_results = iter(
+        (
+            SimpleNamespace(hit=True, best_result=SimpleNamespace(box=[162, 330, 23, 46])),
+            SimpleNamespace(hit=True, best_result=SimpleNamespace(box=[618, 1166, 82, 82])),
+            SimpleNamespace(hit=False, best_result=None),
+            SimpleNamespace(hit=False, best_result=None),
+        )
+    )
+
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: next(screenshots))
+    monkeypatch.setattr(action, "_run_template", lambda *args, **kwargs: next(template_results))
+    monkeypatch.setattr(action, "_matches_screen_profile", lambda context, image, screen_id: image == b"deck" and screen_id == "skill_deck_view")
+    monkeypatch.setattr(action, "_read_visible_cards", lambda context, image: image)
+    monkeypatch.setattr(action, "_find_text_option", lambda *args, **kwargs: SimpleNamespace(best_result=SimpleNamespace(box=[232, 1119, 256, 82])))
+    monkeypatch.setattr(action, "_click_box_center", lambda *args, **kwargs: True)
+    monkeypatch.setattr(module, "frame_changed", lambda before, after: True)
+    monkeypatch.setattr(
+        action,
+        "_stop_unsupported",
+        lambda context, screen_state, reason: stop_reasons.append((screen_state, reason)) or True,
+    )
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"execution_mode":"single_step"}'))
+    assert stop_reasons == [("day1_change_deck", "scene3_not_restored_after_deck_close")]
