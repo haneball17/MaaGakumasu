@@ -93,6 +93,13 @@ python tools/hif_live_runner.py --adb <地址> --adb-path "<MuMu adb.exe>" --tas
 
 VS Code 插件测试：以 `hif_test/` 作为工作区打开，执行 `Maa: 执行任务` 并选择 `HIF Day1 牌库完整读取（单步）`。该入口内置 `single_step`，完成后 Agent 日志输出 JSON 汇总（`expected_total`、`read_count`、`cards`、`returned_to`）；同一汇总也写入 Journal 的 `close_skill_deck.details`。只在 Day1 场景3执行；入口或返回锚点不成立时安全停止。
 
+### 实现经验与边界
+
+- `cards.onnx` 只可辅助识别，不能决定牌库枚举数量；本页以总数标签、固定 `4×4` 槽位和逻辑序号为准，同名卡不得去重。
+- 当前已校准范围是 `1..20` 张：首屏最多 16 张，超过 16 张只允许一次网格内上滑；滑动后必须同时确认牌库标题、网格指纹与总数不变。超过范围或任一后验失败时关闭并安全停止，不能猜测分页。
+- Maa 任务“完成”不等于动作闭环成功。验收必须同时检查 Agent 汇总的 `read_count == expected_total`、Journal 的 `open_skill_deck / scroll_skill_deck / close_skill_deck` 结果，以及 `after` 帧已回到 Day1 场景3。
+- `hif_test/interface.json` 的 `agent.child_args` 只保留 Python 参数和 `agent/main.py`；Maa VS Code 插件会自行追加 Agent UUID。手工加入 UUID 占位符会导致 Agent IPC 连接超时。
+
 ## 页面能力升级门槛
 
 页面与动作分别升级：同一页面的“结束”通过单步验证，不代表购买、刷新或其他资源消耗动作也获得授权。截图方向须符合 [`resources.md`](resources.md) 的契约；`Round2` 后 Live 是唯一横屏例外，仍从观察级开始。
