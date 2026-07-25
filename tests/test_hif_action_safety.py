@@ -45,6 +45,90 @@ def test_source_deck_yolo_slot_assignment_never_turns_an_empty_slot_into_the_pre
     assert "visible_slot_r3c4" not in occupied
 
 
+def test_day1_change_pair_stops_at_the_visible_change_confirmation(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1SelectChangePair()
+    records = []
+    stop_reasons = []
+    target = {"target_name": "始まりの合図", "slot": "candidate_left"}
+    source = {"matched_name": "大胆不敵", "effect_texts": ("効果",), "name_confidence": 0.99, "effect_confidence": 0.99}
+
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen_id: b"target")
+    monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen_id: image)
+    monkeypatch.setattr(
+        action,
+        "_select_pair_target",
+        lambda context, image, slot_id, slot_roi: (target, b"target-selected", SimpleNamespace(), SimpleNamespace()),
+    )
+    monkeypatch.setattr(action, "_advance_pair_to_source", lambda context, image, selected: b"source")
+    monkeypatch.setattr(action, "_detect_source_deck_occupied_slots", lambda context, image: {"visible_slot_r1c1", "visible_slot_r1c2"})
+    monkeypatch.setattr(action, "_probe_source_slot", lambda context, image, slot_id, slot_roi: b"source-selected")
+    monkeypatch.setattr(action, "_source_detail_snapshot", lambda context, image: source)
+    monkeypatch.setattr(action, "_result_anchor_confirmed", lambda context, image: True)
+    monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen, reason: stop_reasons.append((screen, reason)) or True)
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"execution_mode":"single_step"}'))
+    assert stop_reasons == []
+    details = records[-1][1]["details"]
+    assert details["candidate_title"] == "始まりの合図"
+    assert details["source_title"] == "大胆不敵"
+    assert details["controller_click_sequence"] == ["candidate", "next", "source"]
+    assert details["change_click_count"] == 0
+
+
+def test_day1_change_pair_never_selects_a_card_without_single_step(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1SelectChangePair()
+    stops = []
+
+    monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda *args: (_ for _ in ()).throw(AssertionError("不得截图或点击")))
+    monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen, reason: stops.append((screen, reason)) or True)
+
+    assert not action.run(object(), SimpleNamespace(custom_action_param="{}"))
+    assert stops == [("select_change_target", "page_execution_mode_not_single_step")]
+
+
+def test_day1_change_pair_exposes_the_target_detail_roi_required_by_the_reused_reader():
+    module = _load_action_module()
+    action = module.ProduceHIFDay1SelectChangePair()
+
+    assert action._detail_name_roi() == action._target_detail_name_roi()
+
+
+def test_day1_change_pair_uses_the_calibrated_change_button_roi(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1SelectChangePair()
+    captured = {}
+
+    def observed_button_roi(screen_id, button_id, fallback):
+        captured.update(screen_id=screen_id, button_id=button_id, fallback=fallback)
+        return fallback
+
+    monkeypatch.setattr(action, "_observed_button_roi", observed_button_roi)
+    monkeypatch.setattr(action, "_find_text_option", lambda context, image, expected, roi: object())
+
+    assert action._result_anchor_confirmed(object(), b"confirmation")
+    assert captured == {
+        "screen_id": "select_change_source_deck",
+        "button_id": "change",
+        "fallback": [373, 1119, 255, 82],
+    }
+
+
+def test_day1_change_pair_accepts_a_readable_candidate_missing_from_the_catalog(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1SelectChangePair()
+
+    monkeypatch.setattr(
+        module.ProduceChooseHIFSelectChangeTargetAuto,
+        "_read_target_details",
+        lambda *args: {"name": "頂点へ", "target_name": None},
+    )
+
+    assert action._read_pair_target_details(object(), b"candidate")["target_name"] == "頂点へ"
+
+
 def test_select_change_result_observer_records_verified_result_without_closing_dialog(monkeypatch):
     module = _load_action_module()
     action = module.ProduceHIFSelectChangeResultObserve()

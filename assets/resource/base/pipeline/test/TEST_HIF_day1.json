@@ -781,5 +781,38 @@
                 "y": 3617
             }
         }
+    },
+    "TestHIFDay1SelectChangePairEntry": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*チェンジで獲得するスキルカードを選んでください.*"
+                ],
+                "roi": [60, 260, 600, 110]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFDay1SelectChangePair",
+                "custom_action_param": {"execution_mode": "single_step"}
+            }
+        },
+        "next": ["TestHIFDay1SelectChangePairReady"],
+        "on_error": ["unknownstop"],
+        "max_hit": 1
+    },
+    "TestHIFDay1SelectChangePairReady": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [".*チェンジ.*"],
+                "roi": [373, 1119, 255, 82]
+            }
+        },
+        "action": {"type": "DoNothing"},
+        "on_error": ["unknownstop"],
+        "max_hit": 1
     }
 }

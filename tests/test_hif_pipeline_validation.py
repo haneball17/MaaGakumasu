@@ -212,6 +212,27 @@ def test_hif_day1_change_entry_round_trips_to_scene3_before_stopping():
     }
 
 
+def test_hif_day1_change_pair_test_entry_is_isolated_and_stops_before_change():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
+
+    entry = pipeline["TestHIFDay1SelectChangePairEntry"]
+    assert entry["recognition"]["type"] == "OCR"
+    assert entry["action"]["param"] == {
+        "custom_action": "ProduceHIFDay1SelectChangePair",
+        "custom_action_param": {"execution_mode": "single_step"},
+    }
+    assert entry["next"] == ["TestHIFDay1SelectChangePairReady"]
+    assert entry["on_error"] == ["unknownstop"]
+    assert entry["max_hit"] == 1
+    ready = pipeline["TestHIFDay1SelectChangePairReady"]
+    assert ready["recognition"] == {
+        "type": "OCR",
+        "param": {"expected": [".*チェンジ.*"], "roi": [373, 1119, 255, 82]},
+    }
+    assert ready["action"] == {"type": "DoNothing"}
+    assert ready["max_hit"] == 1
+
+
 def test_hif_day1_daily_log_recovery_is_template_bound_and_returns_to_change_candidates():
     pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
 

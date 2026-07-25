@@ -40,6 +40,7 @@ from agent.hif.adapters.exam_reader import (
     infer_card_playability,
 )
 from agent.hif.adapters.route_state import RouteStateRejected, assemble_route_state
+from agent.hif.decisions.change_pair import choose_change_pair
 from agent.hif.adapters.active_effects import parse_active_effects
 from agent.hif.adapters.hif_state_reader import HIFStateReader
 from agent.hif.decisions.round1_fallback import (
@@ -3323,6 +3324,183 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             if current_image is None:
                 return True
         return self._stop_unsupported(context, "select_change_source_deck", stop_reason)
+
+
+@AgentServer.custom_action("ProduceHIFDay1SelectChangePair")
+class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
+    """单步测试：选候选卡、进入牌库、选源卡，停在 ``チェンジ`` 前。"""
+
+    TARGET_SLOT_REGION_IDS = ProduceChooseHIFSelectChangeTargetAuto.SLOT_REGION_IDS
+    TARGET_SLOT_FALLBACKS = ProduceChooseHIFSelectChangeTargetAuto.SLOT_FALLBACKS
+    TARGET_DETAIL_NAME_FALLBACK = ProduceChooseHIFSelectChangeTargetAuto.DETAIL_NAME_FALLBACK
+    NEXT_ROI = ProduceChooseHIFSelectChangeTargetAuto.NEXT_ROI
+
+    def _target_slot_boxes(self) -> tuple[tuple[str, list[int]], ...]:
+        profile = load_hif_screen_profiles().get("select_change_target")
+        return tuple(
+            (
+                slot_id,
+                list(profile.regions[slot_id]) if profile and slot_id in profile.regions else list(fallback),
+            )
+            for slot_id, fallback in zip(self.TARGET_SLOT_REGION_IDS, self.TARGET_SLOT_FALLBACKS)
+        )
+
+    def _target_detail_name_roi(self) -> list[int]:
+        return self._profile_region("select_change_target", "detail_name", self.TARGET_DETAIL_NAME_FALLBACK)
+
+    _detail_name_roi = _target_detail_name_roi
+
+    def _stop_pair(self, context: Context, screen_state: str, reason: str) -> bool:
+        self._stop_unsupported(context, screen_state, reason)
+        return False
+
+    def _read_pair_target_details(self, context: Context, image) -> dict[str, Any] | None:
+        details = ProduceChooseHIFSelectChangeTargetAuto._read_target_details(
+            self,
+            context,
+            image,
+            load_hif_catalog().skill_names,
+        )
+        if details and not details["target_name"]:
+            details["target_name"] = details["name"]
+        return details
+
+    def _select_pair_target(self, context: Context, image, slot_id: str, slot_roi: list[int]):
+        before = self._capture_evidence(image, "day1_select_change_pair_target_before")
+        if not self._click_box_center(context, slot_roi, double=False):
+            self._stop_unsupported(context, "select_change_target", "pair_target_click_failed")
+            return None
+        time.sleep(self.ACTION_DELAY)
+        selected = self._get_screenshot_or_stop(context, "select_change_target")
+        if selected is None:
+            return None
+        after = self._capture_evidence(selected, "day1_select_change_pair_target_after")
+        if not frame_changed(before, after) or not self._matches_screen_profile(context, selected, "select_change_target"):
+            self._stop_unsupported(context, "select_change_target", "pair_target_selection_unverified")
+            return None
+        details = self._read_pair_target_details(context, selected)
+        if details is None or not details.get("target_name"):
+            self._stop_unsupported(context, "select_change_target", "pair_target_name_unreadable")
+            return None
+        details["slot"] = slot_id
+        return details, selected, before, after
+
+    def _advance_pair_to_source(self, context: Context, image, target: dict[str, Any]) -> Any | None:
+        next_button = self._find_text_option(
+            context,
+            image,
+            ("次へ",),
+            self._observed_button_roi("select_change_target", "next", self.NEXT_ROI),
+        )
+        if not next_button:
+            self._stop_unsupported(context, "select_change_target", "pair_next_button_not_found")
+            return None
+        before = self._capture_evidence(image, "day1_select_change_pair_next_before")
+        if not self._click_box_center(context, next_button.best_result.box, double=False):
+            self._stop_unsupported(context, "select_change_target", "pair_next_click_failed")
+            return None
+        time.sleep(self.ACTION_DELAY)
+        source_image = self._get_screenshot_or_stop(context, "select_change_source_deck")
+        if source_image is None:
+            return None
+        after = self._capture_evidence(source_image, "day1_select_change_pair_next_after")
+        if not frame_changed(before, after) or self._wait_for_screen_profile(context, source_image, "select_change_source_deck") is None:
+            self._stop_unsupported(context, "select_change_target", "pair_source_deck_not_confirmed_after_next")
+            return None
+        self._record_journal(
+            "select_change_target",
+            "select_change_pair_next",
+            "verified",
+            details={"candidate_title": target["target_name"], "candidate_slot": target["slot"]},
+            before=before,
+            after=after,
+        )
+        return source_image
+
+    def _result_anchor_confirmed(self, context: Context, image) -> bool:
+        return bool(
+            self._find_text_option(
+                context,
+                image,
+                ("チェンジ",),
+                self._observed_button_roi("select_change_source_deck", "change", [373, 1119, 255, 82]),
+            )
+        )
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        if self._configure_page_execution(argv) is not HIFExecutionMode.SINGLE_STEP:
+            return self._stop_pair(context, "select_change_target", "page_execution_mode_not_single_step")
+        image = self._get_screenshot_or_stop(context, "select_change_target")
+        if image is None:
+            return False
+        if self._wait_for_screen_profile(context, image, "select_change_target") is None:
+            return self._stop_pair(context, "select_change_target", "pair_target_page_not_confirmed")
+
+        target_slots = self._target_slot_boxes()
+        target_plan = choose_change_pair((slot_id for slot_id, _ in target_slots), ("pending_source",))
+        if target_plan is None:
+            return self._stop_pair(context, "select_change_target", "pair_target_slots_empty")
+        target_roi = dict(target_slots)[target_plan.candidate_slot]
+        selected_target = self._select_pair_target(context, image, target_plan.candidate_slot, target_roi)
+        if selected_target is None:
+            return False
+        target, selected_image, target_before, target_after = selected_target
+        self._record_journal(
+            "select_change_target",
+            "receive_change_pair_target_decision",
+            "verified",
+            details={"candidate_title": target["target_name"], "candidate_slot": target["slot"], "tie_break_fallback": target_plan.tie_break_fallback},
+            before=target_before,
+            after=target_after,
+        )
+        source_image = self._advance_pair_to_source(context, selected_image, target)
+        if source_image is None:
+            return False
+
+        occupied = self._detect_source_deck_occupied_slots(context, source_image)
+        if not occupied:
+            return self._stop_pair(context, "select_change_source_deck", "pair_source_slots_empty_or_unreadable")
+        visible_slots = self._visible_source_slots()
+        source_plan = choose_change_pair((target["slot"],), (slot_id for slot_id, _ in visible_slots if slot_id in occupied))
+        if source_plan is None:
+            return self._stop_pair(context, "select_change_source_deck", "pair_source_decision_unavailable")
+        source_roi = dict(visible_slots)[source_plan.source_slot]
+        self._record_journal(
+            "select_change_source_deck",
+            "receive_change_pair_decision",
+            "received",
+            details={
+                "candidate_title": target["target_name"],
+                "candidate_slot": target["slot"],
+                "source_slot": source_plan.source_slot,
+                "tie_break_fallback": source_plan.tie_break_fallback,
+            },
+        )
+        selected_source = self._probe_source_slot(context, source_image, source_plan.source_slot, source_roi)
+        if selected_source is None:
+            return False
+        source = self._source_detail_snapshot(context, selected_source)
+        if not self._source_detail_is_readable(source):
+            return self._stop_pair(context, "select_change_source_deck", "pair_source_name_unreadable")
+        if not self._result_anchor_confirmed(context, selected_source):
+            return self._stop_pair(context, "select_change_source_deck", "pair_change_confirmation_anchor_not_found")
+        evidence = self._capture_evidence(selected_source, "day1_select_change_pair_confirmation")
+        self._record_journal(
+            "select_change_source_deck",
+            "select_change_pair_ready",
+            "verified",
+            details={
+                "candidate_title": target["target_name"],
+                "candidate_slot": target["slot"],
+                "source_title": source["matched_name"],
+                "source_slot": source_plan.source_slot,
+                "change_visible": True,
+                "change_click_count": 0,
+                "controller_click_sequence": ["candidate", "next", "source"],
+            },
+            after=evidence,
+        )
+        return True
 
 @AgentServer.custom_action("ProduceHIFSelectChangeResultObserve")
 class ProduceHIFSelectChangeResultObserve(_ProduceHIFActionBase):

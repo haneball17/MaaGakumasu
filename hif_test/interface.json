@@ -61,6 +61,13 @@
             "resource": [
                 "官服"
             ]
+        },
+        {
+            "name": "HIF Day1 换卡配对选择（单步）",
+            "entry": "TestHIFDay1SelectChangePairEntry",
+            "resource": [
+                "官服"
+            ]
         }
     ]
 }

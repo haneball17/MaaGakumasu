@@ -100,6 +100,16 @@ VS Code 插件测试：以 `hif_test/` 作为工作区打开，执行 `Maa: 执�
 - Maa 任务“完成”不等于动作闭环成功。验收必须同时检查 Agent 汇总的 `read_count == expected_total`、Journal 的 `open_skill_deck / scroll_skill_deck / close_skill_deck` 结果，以及 `after` 帧已回到 Day1 场景3。
 - `hif_test/interface.json` 的 `agent.child_args` 只保留 Python 参数和 `agent/main.py`；Maa VS Code 插件会自行追加 Agent UUID。手工加入 UUID 占位符会导致 Agent IPC 连接超时。
 
+## Day1 换卡配对选择
+
+`HIF Day1 换卡配对选择（单步）` 是隔离的 VS Code 测试任务。仅从 Day1 换卡候选页、且未选中候选卡时启动；它不属于正式 `Produce` 路由。
+
+动作固定只发送三次单步点击：候选卡、`次へ`、牌库源卡。候选位按从左到右、源牌按已确认占用的逻辑槽位升序决定；并列会写入 `tie_break_fallback`。动作不重抽、不滚动、不恢复中间状态，也绝不点击 `チェンジ`。
+
+成功时，Agent 日志与 Journal 的 `select_change_pair_ready` 包含候选卡与源卡标题、槽位、`controller_click_sequence: [candidate, next, source]`、`change_visible: true` 和 `change_click_count: 0`。测试任务随后只识别确认页的 `チェンジ` 锚点并结束；任一页面、OCR、源槽位或确认锚点不成立时进入 `unknownstop` 并停在原地。
+
+使用方式：以 `hif_test/` 打开 VS Code 测试工作区，先手动到达 Day1 换卡候选页，再在 `Maa: 执行任务` 中选择该任务。运行前确保没有候选卡已被选中；该任务不会提交换卡，若需要继续游戏请由人工决定是否点击 `チェンジ` 或返回。
+
 ## 页面能力升级门槛
 
 页面与动作分别升级：同一页面的“结束”通过单步验证，不代表购买、刷新或其他资源消耗动作也获得授权。截图方向须符合 [`resources.md`](resources.md) 的契约；`Round2` 后 Live 是唯一横屏例外，仍从观察级开始。
