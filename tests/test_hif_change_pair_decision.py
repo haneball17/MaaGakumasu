@@ -1,4 +1,10 @@
-from agent.hif.decisions.change_pair import choose_change_pair
+from agent.hif.decisions.change_pair import (
+    ObservedSourceCard,
+    ObservedChangeCandidate,
+    choose_change_pair,
+    decide_change_source,
+    decide_change_target,
+)
 
 
 def test_change_pair_decision_uses_stable_slot_order_for_ties():
@@ -16,3 +22,44 @@ def test_change_pair_decision_uses_stable_slot_order_for_ties():
 def test_change_pair_decision_rejects_an_empty_side():
     assert choose_change_pair((), ("visible_slot_r1c1",)) is None
     assert choose_change_pair(("candidate_left",), ()) is None
+
+
+def test_change_target_decision_requires_complete_metadata_and_a_unique_score():
+    decision = decide_change_target(
+        (
+            ObservedChangeCandidate("candidate_left", "頂点へ", metadata_known=False),
+            ObservedChangeCandidate("candidate_center", "タフネス", metadata_known=True, score=1.0),
+        )
+    )
+
+    assert not decision.accepted
+    assert decision.reason == "unknown_change_candidate"
+    assert decision.unknown_factors == ("頂点へ",)
+
+
+def test_change_target_decision_returns_explicit_unique_candidate_only():
+    decision = decide_change_target(
+        (
+            ObservedChangeCandidate("candidate_left", "低分卡", metadata_known=True, score=0.0),
+            ObservedChangeCandidate("candidate_center", "高分卡", metadata_known=True, score=1.0),
+        )
+    )
+
+    assert decision.accepted
+    assert (decision.candidate_slot, decision.candidate_name, decision.reason) == (
+        "candidate_center",
+        "高分卡",
+        "unique_highest_score",
+    )
+
+
+def test_change_source_decision_keeps_same_name_cards_distinct_by_slot_and_rejects_ties():
+    decision = decide_change_source(
+        (
+            ObservedSourceCard("page_1_slot_r1c1", "始まりの合図", metadata_known=True, score=1.0),
+            ObservedSourceCard("page_1_slot_r1c2", "始まりの合図", metadata_known=True, score=1.0),
+        )
+    )
+
+    assert not decision.accepted
+    assert decision.reason == "change_source_score_tied"

@@ -68,6 +68,34 @@
             "resource": [
                 "官服"
             ]
+        },
+        {
+            "name": "HIF Day1 读取全部换卡候选（单步）",
+            "entry": "TestHIFDay1SelectChangeTargetEnumerateEntry",
+            "resource": [
+                "官服"
+            ]
+        },
+        {
+            "name": "HIF Day1 根据决策选择换卡候选（单步）",
+            "entry": "TestHIFDay1SelectChangeByDecisionEntry",
+            "resource": [
+                "官服"
+            ]
+        },
+        {
+            "name": "HIF Day1 暂定换卡对推进（单步）",
+            "entry": "TestHIFDay1TemporaryChangePairEntry",
+            "resource": [
+                "官服"
+            ]
+        },
+        {
+            "name": "HIF Day1 暂定换卡对完整流程（单步）",
+            "entry": "TestHIFDay1TemporaryChangePairFullEntry",
+            "resource": [
+                "官服"
+            ]
         }
     ]
 }

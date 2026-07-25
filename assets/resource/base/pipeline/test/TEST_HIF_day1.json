@@ -814,5 +814,168 @@
         "action": {"type": "DoNothing"},
         "on_error": ["unknownstop"],
         "max_hit": 1
+    },
+    "TestHIFDay1SelectChangeTargetEnumerateEntry": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*チェンジで獲得するスキルカードを選んでください.*"
+                ],
+                "roi": [
+                    60,
+                    260,
+                    600,
+                    110
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFSelectChangeTargetAuto",
+                "custom_action_param": {
+                    "execution_mode": "single_step",
+                    "select_change_target_probe": "enumerate_candidates"
+                }
+            }
+        },
+        "on_error": ["unknownstop"],
+        "max_hit": 1
+    },
+    "TestHIFDay1SelectChangeByDecisionEntry": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*チェンジで獲得するスキルカードを選んでください.*"
+                ],
+                "roi": [
+                    60,
+                    260,
+                    600,
+                    110
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFDay1SelectChangeByDecision",
+                "custom_action_param": {"execution_mode": "single_step"}
+            }
+        },
+        "on_error": ["unknownstop"],
+        "max_hit": 1
+    },
+    "TestHIFDay1TemporaryChangePairEntry": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*チェンジで獲得するスキルカードを選んでください.*"
+                ],
+                "roi": [
+                    60,
+                    260,
+                    600,
+                    110
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFDay1SelectChangePair",
+                "custom_action_param": {
+                    "execution_mode": "single_step",
+                    "temporary_target_name": "頂点へ",
+                    "temporary_source_name": "夏夜に咲く思い出"
+                }
+            }
+        },
+        "next": ["TestHIFDay1SelectChangePairReady"],
+        "on_error": ["unknownstop"],
+        "max_hit": 1
+    },
+    "TestHIFDay1TemporaryChangePairFullEntry": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*チェンジで獲得するスキルカードを選んでください.*"
+                ],
+                "roi": [
+                    60,
+                    260,
+                    600,
+                    110
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFDay1SelectChangePair",
+                "custom_action_param": {
+                    "execution_mode": "single_step",
+                    "temporary_target_name": "頂点へ",
+                    "temporary_source_name": "夏夜に咲く思い出"
+                }
+            }
+        },
+        "next": ["TestHIFDay1TemporaryChangePairCommit"],
+        "on_error": ["unknownstop"],
+        "max_hit": 1
+    },
+    "TestHIFDay1TemporaryChangePairCommit": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [".*チェンジ.*"],
+                "roi": [
+                    373,
+                    1119,
+                    255,
+                    82
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFDay1TemporaryChangeCommit",
+                "custom_action_param": {
+                    "execution_mode": "single_step",
+                    "temporary_target_name": "頂点へ",
+                    "temporary_source_name": "夏夜に咲く思い出"
+                }
+            }
+        },
+        "next": ["TestHIFDay1TemporaryChangePairResultReturn"],
+        "on_error": ["unknownstop"],
+        "max_hit": 1
+    },
+    "TestHIFDay1TemporaryChangePairResultReturn": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "ProduceHIFSelectChangeResultText",
+                    "ProduceHIFSelectChangeResultDialog"
+                ],
+                "box_index": 0
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFDay1TemporaryChangeResultReturn",
+                "custom_action_param": {"execution_mode": "single_step"}
+            }
+        },
+        "next": ["TestHIFDay1ChangeDeckReturned"],
+        "on_error": ["unknownstop"],
+        "max_hit": 1
     }
 }

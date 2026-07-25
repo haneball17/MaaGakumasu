@@ -233,6 +233,71 @@ def test_hif_day1_change_pair_test_entry_is_isolated_and_stops_before_change():
     assert ready["max_hit"] == 1
 
 
+def test_hif_day1_change_target_enumeration_entry_is_single_step_and_cannot_advance():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
+
+    entry = pipeline["TestHIFDay1SelectChangeTargetEnumerateEntry"]
+    assert entry["recognition"]["type"] == "OCR"
+    assert entry["action"]["param"] == {
+        "custom_action": "ProduceChooseHIFSelectChangeTargetAuto",
+        "custom_action_param": {
+            "execution_mode": "single_step",
+            "select_change_target_probe": "enumerate_candidates",
+        },
+    }
+    assert "next" not in entry
+    assert entry["on_error"] == ["unknownstop"]
+    assert entry["max_hit"] == 1
+
+
+def test_hif_day1_change_target_decision_entry_is_isolated_and_cannot_advance():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
+
+    entry = pipeline["TestHIFDay1SelectChangeByDecisionEntry"]
+    assert entry["recognition"]["type"] == "OCR"
+    assert entry["action"]["param"] == {
+        "custom_action": "ProduceHIFDay1SelectChangeByDecision",
+        "custom_action_param": {"execution_mode": "single_step"},
+    }
+    assert "next" not in entry
+    assert entry["on_error"] == ["unknownstop"]
+    assert entry["max_hit"] == 1
+
+
+def test_hif_day1_temporary_change_pair_entry_verifies_the_fixed_pair_before_advancing():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
+
+    entry = pipeline["TestHIFDay1TemporaryChangePairEntry"]
+    assert entry["action"]["param"] == {
+        "custom_action": "ProduceHIFDay1SelectChangePair",
+        "custom_action_param": {
+            "execution_mode": "single_step",
+            "temporary_target_name": "頂点へ",
+            "temporary_source_name": "夏夜に咲く思い出",
+        },
+    }
+    assert entry["next"] == ["TestHIFDay1SelectChangePairReady"]
+    assert entry["on_error"] == ["unknownstop"]
+
+
+def test_hif_day1_temporary_change_pair_full_entry_is_test_only_and_returns_to_scene3():
+    pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
+
+    entry = pipeline["TestHIFDay1TemporaryChangePairFullEntry"]
+    assert entry["action"]["param"]["custom_action"] == "ProduceHIFDay1SelectChangePair"
+    assert entry["next"] == ["TestHIFDay1TemporaryChangePairCommit"]
+    commit = pipeline["TestHIFDay1TemporaryChangePairCommit"]
+    assert commit["action"]["param"]["custom_action"] == "ProduceHIFDay1TemporaryChangeCommit"
+    assert commit["next"] == ["TestHIFDay1TemporaryChangePairResultReturn"]
+    returned = pipeline["TestHIFDay1TemporaryChangePairResultReturn"]
+    assert returned["action"]["param"] == {
+        "custom_action": "ProduceHIFDay1TemporaryChangeResultReturn",
+        "custom_action_param": {"execution_mode": "single_step"},
+    }
+    assert returned["next"] == ["TestHIFDay1ChangeDeckReturned"]
+    assert all("TemporaryChange" not in json.dumps(node) for node in json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8")).values())
+
+
 def test_hif_day1_daily_log_recovery_is_template_bound_and_returns_to_change_candidates():
     pipeline = json.loads(_remove_jsonc_trivia(Path("assets/resource/base/pipeline/test/TEST_HIF_day1.json").read_text(encoding="utf-8")))
 

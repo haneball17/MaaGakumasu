@@ -40,6 +40,17 @@ def test_journal_audit_rejects_verified_action_without_changed_frames(tmp_path):
     assert audit.failures == ("entry#1:round1/play_card:verified_without_changed_frame",)
 
 
+def test_journal_audit_ignores_a_terminal_observation_without_a_before_frame(tmp_path):
+    journal = HIFJournal(root=tmp_path, session_id="case", now=lambda: datetime(2026, 7, 11, 12, 0, 0))
+    ready = journal.capture(b"ready", "ready")
+    journal.record("select_change_source_deck", "select_change_pair_ready", "observed", after=ready)
+
+    audit = audit_hif_journal(load_hif_journal(journal.path))
+
+    assert audit.ok
+    assert audit.verified_execution_count == 0
+
+
 def test_card_execution_never_clicks_for_observation_or_incomplete_state():
     assert parse_execution_mode("bad-value") is HIFExecutionMode.OBSERVE
     assert not approve_card_execution(

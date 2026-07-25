@@ -40,7 +40,7 @@ from agent.hif.adapters.exam_reader import (
     infer_card_playability,
 )
 from agent.hif.adapters.route_state import RouteStateRejected, assemble_route_state
-from agent.hif.decisions.change_pair import choose_change_pair
+from agent.hif.decisions.change_pair import ObservedChangeCandidate, choose_change_pair, decide_change_target
 from agent.hif.adapters.active_effects import parse_active_effects
 from agent.hif.adapters.hif_state_reader import HIFStateReader
 from agent.hif.decisions.round1_fallback import (
@@ -2676,6 +2676,115 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
         return self._stop_unsupported(context, "select_change_target", "target_reroll_loop_exhausted")
 
 
+@AgentServer.custom_action("ProduceHIFDay1SelectChangeByDecision")
+class ProduceHIFDay1SelectChangeByDecision(ProduceChooseHIFSelectChangeTargetAuto):
+    """隔离测试：以纯决策选择候选换入卡，复核后停在候选页。"""
+
+    def _stop_decision(self, context: Context, reason: str) -> bool:
+        self._stop_unsupported(context, "select_change_target", reason)
+        return False
+
+    @staticmethod
+    def _candidate_score(candidate: dict[str, Any]) -> float | None:
+        """仅给已有结构化元数据的候选评分；未知卡绝不猜测。"""
+
+        target_name = candidate.get("target_name")
+        if not isinstance(target_name, str):
+            return None
+        card = load_hif_catalog().skill_cards.get(target_name)
+        if card is None:
+            return None
+        return 1.0 if "good_condition" in card.tags else 0.0
+
+    def _observed_candidate(self, candidate: dict[str, Any]) -> ObservedChangeCandidate:
+        name = candidate.get("name")
+        target_name = candidate.get("target_name")
+        metadata_known = isinstance(target_name, str) and target_name in load_hif_catalog().skill_cards
+        return ObservedChangeCandidate(
+            slot=str(candidate["slot"]),
+            name=str(target_name or name or ""),
+            metadata_known=metadata_known,
+            score=self._candidate_score(candidate),
+        )
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        if self._configure_page_execution(argv) is not HIFExecutionMode.SINGLE_STEP:
+            return self._stop_decision(context, "page_execution_mode_not_single_step")
+        image = self._get_screenshot_or_stop(context, "select_change_target")
+        if image is None:
+            return False
+        if self._wait_for_screen_profile(context, image, "select_change_target") is None:
+            return self._stop_decision(context, "decision_target_page_not_confirmed")
+
+        current_image = image
+        candidates: list[dict[str, Any]] = []
+        for slot, box in self._slot_boxes():
+            selected = self._select_and_read_slot(
+                context,
+                current_image,
+                slot,
+                box,
+                load_hif_catalog().skill_names,
+                "enumerate_decision_target_candidate",
+            )
+            if selected is None:
+                return False
+            candidate, current_image = selected
+            candidates.append(candidate)
+
+        decision = decide_change_target(self._observed_candidate(candidate) for candidate in candidates)
+        decision_details = {
+            "candidate_slot": decision.candidate_slot,
+            "candidate_name": decision.candidate_name,
+            "reason": decision.reason,
+            "rejected_reasons": decision.rejected_reasons,
+            "unknown_factors": decision.unknown_factors,
+            "candidates": candidates,
+        }
+        if not decision.accepted:
+            self._record_journal("select_change_target", "receive_change_target_decision", "rejected", details=decision_details)
+            return self._stop_decision(context, decision.reason)
+
+        target = next((candidate for candidate in candidates if candidate["slot"] == decision.candidate_slot), None)
+        if target is None or target.get("name") != decision.candidate_name:
+            return self._stop_decision(context, "decision_target_snapshot_mismatch")
+        if target["slot"] == candidates[-1]["slot"]:
+            confirmed_target = self._read_target_details(context, current_image, load_hif_catalog().skill_names)
+            if confirmed_target is None:
+                return self._stop_decision(context, "decision_target_reverify_unreadable")
+            confirmed_target["slot"] = target["slot"]
+        else:
+            target_box = dict(self._slot_boxes())[target["slot"]]
+            selected = self._select_and_read_slot(
+                context,
+                current_image,
+                target["slot"],
+                target_box,
+                load_hif_catalog().skill_names,
+                "reselect_decision_target_candidate",
+            )
+            if selected is None:
+                return False
+            confirmed_target, current_image = selected
+        if confirmed_target.get("name") != decision.candidate_name or confirmed_target.get("slot") != decision.candidate_slot:
+            return self._stop_decision(context, "decision_target_reverify_mismatch")
+        evidence = self._capture_evidence(current_image, "day1_select_change_decision_target_ready")
+        self._record_journal(
+            "select_change_target",
+            "select_change_decision_target_ready",
+            "verified",
+            details={
+                **decision_details,
+                "confirmed_target": confirmed_target,
+                "controller_click_sequence": ["candidate_left", "candidate_center", "candidate_right", "reselect_target"],
+                "next_click_count": 0,
+                "change_click_count": 0,
+            },
+            after=evidence,
+        )
+        return True
+
+
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeSourceAuto")
 class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
     """默认只记录牌库；显式探针仅可采样一张卡详情，不能确认或滚动。"""
@@ -3365,7 +3474,14 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
             details["target_name"] = details["name"]
         return details
 
-    def _select_pair_target(self, context: Context, image, slot_id: str, slot_roi: list[int]):
+    def _select_pair_target(
+        self,
+        context: Context,
+        image,
+        slot_id: str,
+        slot_roi: list[int],
+        expected_target_name: str | None = None,
+    ):
         before = self._capture_evidence(image, "day1_select_change_pair_target_before")
         if not self._click_box_center(context, slot_roi, double=False):
             self._stop_unsupported(context, "select_change_target", "pair_target_click_failed")
@@ -3375,12 +3491,15 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
         if selected is None:
             return None
         after = self._capture_evidence(selected, "day1_select_change_pair_target_after")
-        if not frame_changed(before, after) or not self._matches_screen_profile(context, selected, "select_change_target"):
+        if not self._matches_screen_profile(context, selected, "select_change_target"):
             self._stop_unsupported(context, "select_change_target", "pair_target_selection_unverified")
             return None
         details = self._read_pair_target_details(context, selected)
         if details is None or not details.get("target_name"):
             self._stop_unsupported(context, "select_change_target", "pair_target_name_unreadable")
+            return None
+        if not frame_changed(before, after) and details["target_name"] != expected_target_name:
+            self._stop_unsupported(context, "select_change_target", "pair_target_selection_unverified")
             return None
         details["slot"] = slot_id
         return details, selected, before, after
@@ -3430,6 +3549,13 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         if self._configure_page_execution(argv) is not HIFExecutionMode.SINGLE_STEP:
             return self._stop_pair(context, "select_change_target", "page_execution_mode_not_single_step")
+        params = self._get_action_params(argv)
+        temporary_target = params.get("temporary_target_name")
+        temporary_source = params.get("temporary_source_name")
+        if (temporary_target is None) != (temporary_source is None) or any(
+            not isinstance(name, str) or not name for name in (temporary_target, temporary_source) if name is not None
+        ):
+            return self._stop_pair(context, "select_change_target", "temporary_change_pair_invalid")
         image = self._get_screenshot_or_stop(context, "select_change_target")
         if image is None:
             return False
@@ -3441,15 +3567,28 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
         if target_plan is None:
             return self._stop_pair(context, "select_change_target", "pair_target_slots_empty")
         target_roi = dict(target_slots)[target_plan.candidate_slot]
-        selected_target = self._select_pair_target(context, image, target_plan.candidate_slot, target_roi)
+        selected_target = self._select_pair_target(
+            context,
+            image,
+            target_plan.candidate_slot,
+            target_roi,
+            expected_target_name=temporary_target,
+        )
         if selected_target is None:
             return False
         target, selected_image, target_before, target_after = selected_target
+        if temporary_target is not None and target["target_name"] != temporary_target:
+            return self._stop_pair(context, "select_change_target", "temporary_target_name_mismatch")
         self._record_journal(
             "select_change_target",
             "receive_change_pair_target_decision",
             "verified",
-            details={"candidate_title": target["target_name"], "candidate_slot": target["slot"], "tie_break_fallback": target_plan.tie_break_fallback},
+            details={
+                "candidate_title": target["target_name"],
+                "candidate_slot": target["slot"],
+                "tie_break_fallback": target_plan.tie_break_fallback,
+                "temporary_target_name": temporary_target,
+            },
             before=target_before,
             after=target_after,
         )
@@ -3482,13 +3621,15 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
         source = self._source_detail_snapshot(context, selected_source)
         if not self._source_detail_is_readable(source):
             return self._stop_pair(context, "select_change_source_deck", "pair_source_name_unreadable")
+        if temporary_source is not None and source["matched_name"] != temporary_source:
+            return self._stop_pair(context, "select_change_source_deck", "temporary_source_name_mismatch")
         if not self._result_anchor_confirmed(context, selected_source):
             return self._stop_pair(context, "select_change_source_deck", "pair_change_confirmation_anchor_not_found")
         evidence = self._capture_evidence(selected_source, "day1_select_change_pair_confirmation")
         self._record_journal(
             "select_change_source_deck",
             "select_change_pair_ready",
-            "verified",
+            "observed",
             details={
                 "candidate_title": target["target_name"],
                 "candidate_slot": target["slot"],
@@ -3497,10 +3638,143 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
                 "change_visible": True,
                 "change_click_count": 0,
                 "controller_click_sequence": ["candidate", "next", "source"],
+                "temporary_pair": (
+                    {"target_name": temporary_target, "source_name": temporary_source} if temporary_target is not None else None
+                ),
             },
             after=evidence,
         )
         return True
+
+
+@AgentServer.custom_action("ProduceHIFDay1TemporaryChangeCommit")
+class ProduceHIFDay1TemporaryChangeCommit(ProduceChooseHIFSelectChangeSourceAuto):
+    """测试专用：在已核验的固定卡对确认页提交一次チェンジ。"""
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        if self._configure_page_execution(argv) is not HIFExecutionMode.SINGLE_STEP:
+            return self._stop_unsupported(context, "select_change_source_deck", "page_execution_mode_not_single_step")
+        params = self._get_action_params(argv)
+        target_name = params.get("temporary_target_name")
+        source_name = params.get("temporary_source_name")
+        if not isinstance(target_name, str) or not target_name or not isinstance(source_name, str) or not source_name:
+            return self._stop_unsupported(context, "select_change_source_deck", "temporary_change_pair_invalid")
+        image = self._get_screenshot_or_stop(context, "select_change_source_deck")
+        if image is None:
+            return True
+        if self._wait_for_screen_profile(context, image, "select_change_source_deck") is None:
+            return self._stop_unsupported(context, "select_change_source_deck", "temporary_change_source_page_not_confirmed")
+        source = self._source_detail_snapshot(context, image)
+        if source["matched_name"] != source_name or source["name_confidence"] < 0.98:
+            return self._stop_unsupported(context, "select_change_source_deck", "temporary_source_name_mismatch")
+        change_button = self._find_text_option(
+            context,
+            image,
+            ("チェンジ",),
+            self._observed_button_roi("select_change_source_deck", "change", [373, 1119, 255, 82]),
+        )
+        if not change_button:
+            return self._stop_unsupported(context, "select_change_source_deck", "change_button_not_found")
+        before = self._capture_evidence(image, "day1_temporary_change_commit_before")
+        if not self._click_box_center(context, change_button.best_result.box, double=False):
+            return self._stop_unsupported(context, "select_change_source_deck", "change_button_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        result_image = self._get_screenshot_or_stop(context, "select_change_result")
+        if result_image is None:
+            return True
+        after = self._capture_evidence(result_image, "day1_temporary_change_commit_after")
+        if not frame_changed(before, after):
+            return self._stop_unsupported(context, "select_change_result", "change_confirmation_frame_unchanged")
+        communication_error = self._run_ocr(
+            context,
+            result_image,
+            "ProduceRecognitionHIFCommunicationError",
+            [".*通信エラー.*"],
+            [20, 870, 680, 250],
+        )
+        if communication_error and communication_error.hit:
+            self._record_journal(
+                "select_change_result",
+                "confirm_temporary_select_change",
+                "unverified",
+                details={"source": source_name, "target": target_name, "reason": "communication_error", "change_click_count": 1},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "select_change_result", "communication_error_after_change")
+        completion_texts = self._read_change_completion_texts(context, result_image)
+        if not self._is_change_completion(completion_texts, source_name, target_name):
+            self._record_journal(
+                "select_change_result",
+                "confirm_temporary_select_change",
+                "unverified",
+                details={"source": source_name, "target": target_name, "reason": "change_completion_text_not_confirmed", "change_click_count": 1},
+                before=before,
+                after=after,
+            )
+            return self._stop_unsupported(context, "select_change_result", "change_completion_text_not_confirmed")
+        self._record_journal(
+            "select_change_result",
+            "confirm_temporary_select_change",
+            "verified",
+            details={"source": source_name, "target": target_name, "completion_texts": completion_texts, "change_click_count": 1},
+            before=before,
+            after=after,
+        )
+        return True
+
+
+@AgentServer.custom_action("ProduceHIFDay1TemporaryChangeResultReturn")
+class ProduceHIFDay1TemporaryChangeResultReturn(_ProduceHIFActionBase):
+    """测试专用：关闭已确认的变卡结果并验证回到 Day1 场景3。"""
+
+    RESULT_ADVANCE_TARGET = [341, 204, 0, 3]
+    SCENE3_TEMPLATE = ProduceHIFDay1ChangeDeckRoundTrip.SCENE3_TEMPLATE
+    SCENE3_ROI = ProduceHIFDay1ChangeDeckRoundTrip.SCENE3_ROI
+    ENTRY_TEMPLATE = ProduceHIFDay1ChangeDeckRoundTrip.ENTRY_TEMPLATE
+    ENTRY_ROI = ProduceHIFDay1ChangeDeckRoundTrip.ENTRY_ROI
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        if self._configure_page_execution(argv) is not HIFExecutionMode.SINGLE_STEP:
+            return self._stop_unsupported(context, "select_change_result", "page_execution_mode_not_single_step")
+        image = self._get_screenshot_or_stop(context, "select_change_result")
+        if image is None:
+            return True
+        before = self._capture_evidence(image, "day1_temporary_change_result_before")
+        completion = self._run_ocr(
+            context,
+            image,
+            "ProduceRecognitionHIFDay1TemporaryChangeResult",
+            [".*チェンジしました.*"],
+            [55, 945, 610, 150],
+        )
+        if not completion or not completion.hit:
+            return self._stop_unsupported(context, "select_change_result", "change_result_page_not_confirmed")
+        if not self._click_box_center(context, self.RESULT_ADVANCE_TARGET, double=False):
+            return self._stop_unsupported(context, "select_change_result", "change_result_close_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        returned_image = self._get_screenshot_or_stop(context, "day1_change_deck")
+        if returned_image is None:
+            return True
+        after = self._capture_evidence(returned_image, "day1_temporary_change_result_returned")
+        scene3 = self._run_template(
+            context, returned_image, "ProduceRecognitionHIFDay1Scene3Returned", self.SCENE3_TEMPLATE, self.SCENE3_ROI, 0.7
+        )
+        entry = self._run_template(
+            context, returned_image, "ProduceRecognitionHIFDay1ChangeDeckEntryReturned", self.ENTRY_TEMPLATE, self.ENTRY_ROI, 0.9
+        )
+        if not frame_changed(before, after) or not (scene3 and scene3.hit and entry and entry.hit):
+            return self._stop_unsupported(context, "select_change_result", "day1_scene3_not_restored_after_change")
+        self._record_journal(
+            "select_change_result",
+            "return_after_temporary_select_change",
+            "verified",
+            details={"target": self.RESULT_ADVANCE_TARGET, "returned_to": "day1_scene3"},
+            before=before,
+            after=after,
+        )
+        return True
+
 
 @AgentServer.custom_action("ProduceHIFSelectChangeResultObserve")
 class ProduceHIFSelectChangeResultObserve(_ProduceHIFActionBase):

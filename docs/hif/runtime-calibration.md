@@ -69,10 +69,12 @@ python tools/hif_roi_calibration.py --image <原始截图.png> --field focus --r
 
 不要提交 `debug/` 下的运行日志和截图。
 
-运行后可离线审计 Journal，确认每一条标记为 `verified` 的动作都具有不同的前后帧指纹：
+运行后可离线审计 Journal，确认每一条标记为 `verified` 的执行事件都具有不同的前后帧指纹。终态页面的纯观察应标记为 `observed`，不以帧变化作为执行证明：
 
 ```powershell
 python tools/hif_journal_audit.py debug/hif-journal/<session>.jsonl
 ```
+
+VS Code Agent 若将截图传为不可导出句柄，Journal 会缺少帧指纹，默认必须停止。仅隔离的临时固定卡对首次选择可在页面锚点仍成立、点击后 OCR 精确匹配预先绑定名称时，用该 OCR 作为一次选择后验；记录 `image_type` 与例外原因。此例外不得用于 `次へ`、源牌选择、`チェンジ`、正式决策或连续流程；需要完整端到端证据时使用 IPC 实机运行器。
 
 审计失败代表证据不足，不能作为开放连续执行的依据。
