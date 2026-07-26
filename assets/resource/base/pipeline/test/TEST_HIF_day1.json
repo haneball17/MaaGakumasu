@@ -889,8 +889,8 @@
                 "custom_action": "ProduceHIFDay1SelectChangePair",
                 "custom_action_param": {
                     "execution_mode": "single_step",
-                    "temporary_target_name": "頂点へ",
-                    "temporary_source_name": "夏夜に咲く思い出"
+                    "temporary_target_name": "始まりの合図",
+                    "temporary_source_name": "スリリング+"
                 }
             }
         },
@@ -919,8 +919,8 @@
                 "custom_action": "ProduceHIFDay1SelectChangePair",
                 "custom_action_param": {
                     "execution_mode": "single_step",
-                    "temporary_target_name": "頂点へ",
-                    "temporary_source_name": "夏夜に咲く思い出"
+                    "temporary_target_name": "始まりの合図",
+                    "temporary_source_name": "スリリング+"
                 }
             }
         },
@@ -947,8 +947,8 @@
                 "custom_action": "ProduceHIFDay1TemporaryChangeCommit",
                 "custom_action_param": {
                     "execution_mode": "single_step",
-                    "temporary_target_name": "頂点へ",
-                    "temporary_source_name": "夏夜に咲く思い出"
+                    "temporary_target_name": "始まりの合図",
+                    "temporary_source_name": "スリリング+"
                 }
             }
         },

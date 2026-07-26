@@ -1,4 +1,4 @@
-from agent.hif.session import HIFRunSession
+from agent.hif.session import HIFRunSession, HIFSelectChangeSlot
 
 
 def test_hif_session_keeps_only_confirmed_cross_page_facts():
@@ -31,6 +31,24 @@ def test_hif_session_tracks_pending_reward_and_stops_safe_advance_frame_cycles()
     assert session.pending_reward is None
     assert session.pending_select_change is None
     assert session.safe_advance_count == 0
+
+
+def test_hif_session_keeps_change_snapshots_only_until_the_pending_change_is_cleared():
+    session = HIFRunSession()
+    target = HIFSelectChangeSlot("candidate_center", (297, 837, 127, 128), "始まりの合図", 0.99, "target-frame")
+    source = HIFSelectChangeSlot("visible_slot_r2c1", (80, 786, 120, 120), "スリリング+", 0.98, "source-frame", page_index=1)
+
+    session.set_select_change_target_snapshot((target,))
+    session.set_select_change_source_snapshot((source,))
+    session.set_pending_select_change(target.name, target.slot_id, target.slot_roi)
+
+    assert session.pending_select_change is not None
+    assert session.pending_select_change.target_slot == "candidate_center"
+    assert session.select_change_target_snapshot == (target,)
+    assert session.select_change_source_snapshot == (source,)
+    session.clear_pending_select_change()
+    assert session.select_change_target_snapshot == ()
+    assert session.select_change_source_snapshot == ()
 
 
 def test_hif_session_keeps_verified_hand_detail_titles_only_for_the_current_run():

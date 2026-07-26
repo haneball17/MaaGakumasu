@@ -19,6 +19,29 @@ class HIFPendingSelectChange:
     """已验证进入源卡牌库前实际选中的目标卡。"""
 
     target_name: str
+    target_slot: str | None = None
+    target_slot_roi: tuple[int, int, int, int] | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class HIFSelectChangeSlot:
+    """换卡页面经 OCR 与选中后验确认的一个可点击槽位。"""
+
+    slot_id: str
+    slot_roi: tuple[int, int, int, int]
+    name: str
+    confidence: float
+    frame_fingerprint: str | None
+    page_index: int | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class HIFSelectChangePage:
+    """源牌库一个已完整读取页面的稳定身份。"""
+
+    page_index: int
+    signature: tuple[tuple[str, str], ...]
+    slots: tuple[HIFSelectChangeSlot, ...]
 
 
 @dataclass(slots=True)
@@ -29,6 +52,9 @@ class HIFRunSession:
     played_cards: dict[str, set[str]] = field(default_factory=dict)
     pending_reward: HIFPendingReward | None = None
     pending_select_change: HIFPendingSelectChange | None = None
+    select_change_target_snapshot: tuple[HIFSelectChangeSlot, ...] = ()
+    select_change_source_snapshot: tuple[HIFSelectChangeSlot, ...] = ()
+    select_change_source_pages: tuple[HIFSelectChangePage, ...] = ()
     safe_advance_count: int = 0
     safe_advance_fingerprints: set[str] = field(default_factory=set)
     round_hand_probe_started: bool = False
@@ -53,11 +79,34 @@ class HIFRunSession:
     def clear_pending_reward(self) -> None:
         self.pending_reward = None
 
-    def set_pending_select_change(self, target_name: str) -> None:
-        self.pending_select_change = HIFPendingSelectChange(target_name=target_name)
+    def set_pending_select_change(
+        self,
+        target_name: str,
+        target_slot: str | None = None,
+        target_slot_roi: tuple[int, int, int, int] | None = None,
+    ) -> None:
+        self.pending_select_change = HIFPendingSelectChange(
+            target_name=target_name,
+            target_slot=target_slot,
+            target_slot_roi=target_slot_roi,
+        )
 
     def clear_pending_select_change(self) -> None:
         self.pending_select_change = None
+        self.select_change_target_snapshot = ()
+        self.select_change_source_snapshot = ()
+        self.select_change_source_pages = ()
+
+    def set_select_change_target_snapshot(self, slots: tuple[HIFSelectChangeSlot, ...]) -> None:
+        self.select_change_target_snapshot = slots
+
+    def set_select_change_source_snapshot(
+        self,
+        slots: tuple[HIFSelectChangeSlot, ...],
+        pages: tuple[HIFSelectChangePage, ...] = (),
+    ) -> None:
+        self.select_change_source_snapshot = slots
+        self.select_change_source_pages = pages
 
     def record_safe_advance(self, fingerprint: str | None) -> bool:
         """记录一次空白推进；重复帧代表路由已经陷入循环。"""

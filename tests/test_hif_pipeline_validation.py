@@ -272,8 +272,8 @@ def test_hif_day1_temporary_change_pair_entry_verifies_the_fixed_pair_before_adv
         "custom_action": "ProduceHIFDay1SelectChangePair",
         "custom_action_param": {
             "execution_mode": "single_step",
-            "temporary_target_name": "頂点へ",
-            "temporary_source_name": "夏夜に咲く思い出",
+            "temporary_target_name": "始まりの合図",
+            "temporary_source_name": "スリリング+",
         },
     }
     assert entry["next"] == ["TestHIFDay1SelectChangePairReady"]

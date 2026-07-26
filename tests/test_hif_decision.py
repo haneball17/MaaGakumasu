@@ -836,6 +836,14 @@ def test_hif_select_change_target_enumerates_slots_then_advances_only_after_exac
     assert tasks == []
     assert get_runtime_hif_session().pending_select_change is not None
     assert get_runtime_hif_session().pending_select_change.target_name == "始まりの合図"
+    assert get_runtime_hif_session().pending_select_change.target_slot == "candidate_center"
+    assert get_runtime_hif_session().pending_select_change.target_slot_roi == (297, 837, 127, 128)
+    assert [slot.name for slot in get_runtime_hif_session().select_change_target_snapshot] == [
+        "静かな意志",
+        "始まりの合図",
+        "大声援",
+    ]
+    assert get_runtime_hif_session().select_change_target_snapshot[1].slot_roi == (297, 837, 127, 128)
     audit = audit_hif_journal(load_hif_journal(journal.path))
     assert audit.ok
     assert audit.verified_execution_count == 5

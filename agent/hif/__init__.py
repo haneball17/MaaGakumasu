@@ -3,7 +3,7 @@ from .ui_map import HIFUiMap, HIFUiButton, load_hif_ui_map
 from .catalog import HIFDrink, HIFCatalog, HIFSkillCard, HIFCustomPItem, HIFScheduleDay, load_hif_catalog
 from .runtime import HIF_FRAME_SIZE, HIFFrameTransform, HIFFrameValidation, get_image_size, validate_hif_frame, propose_hif_frame_transforms
 from .screens import HIFScreenState, HIFScreenObservation, classify_hif_screen
-from .session import HIFRunSession, get_runtime_hif_session, reset_runtime_hif_session
+from .session import HIFRunSession, HIFSelectChangePage, HIFSelectChangeSlot, get_runtime_hif_session, reset_runtime_hif_session
 from .interval import HIFIntervalPolicy, HIFIntervalPlanner
 from .simulator import (
     DecisionResult,
@@ -89,6 +89,8 @@ __all__ = [
     "HIFScreenState",
     "classify_hif_screen",
     "HIFRunSession",
+    "HIFSelectChangePage",
+    "HIFSelectChangeSlot",
     "get_runtime_hif_session",
     "reset_runtime_hif_session",
     "HIFUiButton",

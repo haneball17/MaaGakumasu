@@ -15,7 +15,7 @@ from agent.hif.catalog import load_hif_catalog
 from agent.hif.journal import HIFFrameEvidence, frame_changed, get_runtime_hif_journal
 from agent.hif.presets import HIFPreset, parse_hif_preset
 from agent.hif.runtime import validate_hif_frame
-from agent.hif.session import get_runtime_hif_session, reset_runtime_hif_session
+from agent.hif.session import HIFSelectChangePage, HIFSelectChangeSlot, get_runtime_hif_session, reset_runtime_hif_session
 from agent.hif.execution import HIFExecutionMode, parse_execution_mode, approve_card_execution
 from agent.hif.calibration import load_hif_roi_calibration
 from agent.hif.reward_pages import (
@@ -40,7 +40,7 @@ from agent.hif.adapters.exam_reader import (
     infer_card_playability,
 )
 from agent.hif.adapters.route_state import RouteStateRejected, assemble_route_state
-from agent.hif.decisions.change_pair import ObservedChangeCandidate, choose_change_pair, decide_change_target
+from agent.hif.decisions.change_pair import ObservedChangeCandidate, decide_change_target
 from agent.hif.adapters.active_effects import parse_active_effects
 from agent.hif.adapters.hif_state_reader import HIFStateReader
 from agent.hif.decisions.round1_fallback import (
@@ -2397,6 +2397,8 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
             self._stop_unsupported(context, "select_change_target", "target_detail_name_unreadable")
             return None
         candidate["slot"] = slot
+        candidate["slot_roi"] = list(box)
+        candidate["frame_fingerprint"] = after.fingerprint
         self._record_journal(
             "select_change_target",
             event,
@@ -2406,6 +2408,46 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
             after=after,
         )
         return candidate, after_image
+
+    @staticmethod
+    def _snapshot_slots(candidates: list[dict[str, Any]]) -> tuple[HIFSelectChangeSlot, ...]:
+        """将当前页面的已验证 OCR 观察转为同次运行可消费的槽位快照。"""
+
+        snapshots: list[HIFSelectChangeSlot] = []
+        for candidate in candidates:
+            slot_roi = candidate.get("slot_roi")
+            if not isinstance(slot_roi, list) or len(slot_roi) != 4:
+                continue
+            snapshots.append(
+                HIFSelectChangeSlot(
+                    slot_id=str(candidate["slot"]),
+                    slot_roi=tuple(int(value) for value in slot_roi),
+                    name=str(candidate.get("target_name") or candidate.get("name") or ""),
+                    confidence=float(candidate.get("confidence", 0.0)),
+                    frame_fingerprint=candidate.get("frame_fingerprint"),
+                )
+            )
+        return tuple(snapshots)
+
+    def _remember_target_snapshot(self, candidates: list[dict[str, Any]], reroll_attempt: int) -> None:
+        snapshot = self._snapshot_slots(candidates)
+        get_runtime_hif_session().set_select_change_target_snapshot(snapshot)
+        details = {
+            "reroll_attempt": reroll_attempt,
+            "candidates": candidates,
+            "snapshot": [
+                {
+                    "slot_id": item.slot_id,
+                    "slot_roi": list(item.slot_roi),
+                    "name": item.name,
+                    "confidence": item.confidence,
+                    "frame_fingerprint": item.frame_fingerprint,
+                }
+                for item in snapshot
+            ],
+        }
+        logger.info("HIF 换卡候选快照: {}", details["snapshot"])
+        self._record_journal("select_change_target", "store_target_snapshot", "observed", details=details)
 
     def _read_reroll_count(self, context: Context, image) -> int | None:
         detail = self._run_ocr(
@@ -2544,7 +2586,12 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
         if self._wait_for_screen_profile(context, after_image, "select_change_source_deck") is None:
             return self._stop_unsupported(context, "select_change_target", "source_deck_page_not_confirmed_after_next")
         # 源卡确认必须使用本轮真实枚举并二次确认过的目标，绝不能回退到预设首选。
-        get_runtime_hif_session().set_pending_select_change(str(target["target_name"]))
+        target_roi = target.get("slot_roi")
+        get_runtime_hif_session().set_pending_select_change(
+            str(target["target_name"]),
+            str(target["slot"]),
+            tuple(target_roi) if isinstance(target_roi, list) and len(target_roi) == 4 else None,
+        )
         self._record_journal(
             "select_change_target",
             "advance_select_change",
@@ -2601,6 +2648,7 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
         if image is None:
             return self._stop_unsupported(context, "select_change_target", "target_page_not_confirmed")
 
+        get_runtime_hif_session().clear_pending_select_change()
         current_image = image
         for reroll_attempt in range(preset.reroll_limit + 1):
             candidates: list[dict[str, Any]] = []
@@ -2618,6 +2666,8 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
                 candidate, current_image = selected
                 candidates.append(candidate)
 
+            self._remember_target_snapshot(candidates, reroll_attempt)
+
             if target_probe == "enumerate_candidates":
                 self._record_journal(
                     "select_change_target",
@@ -2633,7 +2683,7 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
                 return self._stop_unsupported(context, "select_change_target", "multiple_target_cards_same_priority")
             if target is not None:
                 if target["slot"] != candidates[-1]["slot"]:
-                    target_box = next(box for slot, box in self._slot_boxes() if slot == target["slot"])
+                    target_box = list(target["slot_roi"])
                     selected = self._select_and_read_slot(
                         context,
                         current_image,
@@ -2716,6 +2766,7 @@ class ProduceHIFDay1SelectChangeByDecision(ProduceChooseHIFSelectChangeTargetAut
         if self._wait_for_screen_profile(context, image, "select_change_target") is None:
             return self._stop_decision(context, "decision_target_page_not_confirmed")
 
+        get_runtime_hif_session().clear_pending_select_change()
         current_image = image
         candidates: list[dict[str, Any]] = []
         for slot, box in self._slot_boxes():
@@ -2731,6 +2782,8 @@ class ProduceHIFDay1SelectChangeByDecision(ProduceChooseHIFSelectChangeTargetAut
                 return False
             candidate, current_image = selected
             candidates.append(candidate)
+
+        self._remember_target_snapshot(candidates, reroll_attempt=0)
 
         decision = decide_change_target(self._observed_candidate(candidate) for candidate in candidates)
         decision_details = {
@@ -2754,7 +2807,7 @@ class ProduceHIFDay1SelectChangeByDecision(ProduceChooseHIFSelectChangeTargetAut
                 return self._stop_decision(context, "decision_target_reverify_unreadable")
             confirmed_target["slot"] = target["slot"]
         else:
-            target_box = dict(self._slot_boxes())[target["slot"]]
+            target_box = list(target["slot_roi"])
             selected = self._select_and_read_slot(
                 context,
                 current_image,
@@ -2849,7 +2902,7 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         name_entries = self._ocr_text_entries(name_detail)
         effect_entries = self._ocr_text_entries(effect_detail)
         best_name = getattr(name_detail, "best_result", None) if name_detail and name_detail.hit else None
-        matched_name = normalize_card_name(str(getattr(best_name, "text", "")).rstrip("+").strip()) if best_name else None
+        matched_name = normalize_card_name(str(getattr(best_name, "text", "")).strip()) if best_name else None
         return {
             "name_texts": tuple(entry["text"] for entry in name_entries),
             "matched_name": matched_name,
@@ -3502,6 +3555,8 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
             self._stop_unsupported(context, "select_change_target", "pair_target_selection_unverified")
             return None
         details["slot"] = slot_id
+        details["slot_roi"] = list(slot_roi)
+        details["frame_fingerprint"] = after.fingerprint
         return details, selected, before, after
 
     def _advance_pair_to_source(self, context: Context, image, target: dict[str, Any]) -> Any | None:
@@ -3526,6 +3581,12 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
         if not frame_changed(before, after) or self._wait_for_screen_profile(context, source_image, "select_change_source_deck") is None:
             self._stop_unsupported(context, "select_change_target", "pair_source_deck_not_confirmed_after_next")
             return None
+        target_roi = target.get("slot_roi")
+        get_runtime_hif_session().set_pending_select_change(
+            str(target["target_name"]),
+            str(target["slot"]),
+            tuple(target_roi) if isinstance(target_roi, list) and len(target_roi) == 4 else None,
+        )
         self._record_journal(
             "select_change_target",
             "select_change_pair_next",
@@ -3546,38 +3607,244 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
             )
         )
 
+    def _remember_pair_target_snapshot(self, candidates: list[dict[str, Any]]) -> None:
+        snapshot = ProduceChooseHIFSelectChangeTargetAuto._snapshot_slots(candidates)
+        get_runtime_hif_session().set_select_change_target_snapshot(snapshot)
+        details = {
+            "candidates": candidates,
+            "snapshot": [
+                {
+                    "slot_id": item.slot_id,
+                    "slot_roi": list(item.slot_roi),
+                    "name": item.name,
+                    "confidence": item.confidence,
+                    "frame_fingerprint": item.frame_fingerprint,
+                }
+                for item in snapshot
+            ],
+        }
+        logger.info("HIF 测试换卡候选快照: {}", details["snapshot"])
+        self._record_journal("select_change_target", "store_target_snapshot", "observed", details=details)
+
+    def _enumerate_pair_targets(self, context: Context, image) -> tuple[list[dict[str, Any]], Any] | None:
+        candidates: list[dict[str, Any]] = []
+        current_image = image
+        for slot_id, slot_roi in self._target_slot_boxes():
+            selected = self._select_pair_target(context, current_image, slot_id, slot_roi)
+            if selected is None:
+                return None
+            candidate, current_image, _, _ = selected
+            candidates.append(candidate)
+        self._remember_pair_target_snapshot(candidates)
+        return candidates, current_image
+
+    @staticmethod
+    def _pair_target_matches(target_name: str) -> tuple[HIFSelectChangeSlot, ...]:
+        return tuple(slot for slot in get_runtime_hif_session().select_change_target_snapshot if slot.name == target_name)
+
+    @staticmethod
+    def _source_page_signature(slots: list[HIFSelectChangeSlot]) -> tuple[tuple[str, str], ...]:
+        return tuple((slot.slot_id, slot.name) for slot in slots)
+
+    def _remember_pair_source_snapshot(self, slots: list[HIFSelectChangeSlot], pages: list[HIFSelectChangePage]) -> None:
+        snapshot = tuple(slots)
+        get_runtime_hif_session().set_select_change_source_snapshot(snapshot, tuple(pages))
+        details = {
+            "sources": [
+                {
+                    "page_index": item.page_index,
+                    "slot_id": item.slot_id,
+                    "slot_roi": list(item.slot_roi),
+                    "name": item.name,
+                    "confidence": item.confidence,
+                    "frame_fingerprint": item.frame_fingerprint,
+                }
+                for item in snapshot
+            ],
+            "pages": [
+                {"page_index": page.page_index, "signature": list(page.signature), "slot_count": len(page.slots)} for page in pages
+            ],
+        }
+        logger.info("HIF 测试换卡源牌快照: {}", details["sources"])
+        self._record_journal("select_change_source_deck", "store_source_snapshot", "observed", details=details)
+
+    def _enumerate_pair_source_page(self, context: Context, image, page_index: int) -> tuple[list[HIFSelectChangeSlot], Any] | None:
+        occupied = self._detect_source_deck_occupied_slots(context, image)
+        if not occupied:
+            self._stop_pair(context, "select_change_source_deck", "pair_source_slots_empty_or_unreadable")
+            return None
+        current_image = image
+        page_slots: list[HIFSelectChangeSlot] = []
+        for slot_id, slot_roi in self._visible_source_slots():
+            if slot_id not in occupied:
+                continue
+            selected = self._probe_source_slot(context, current_image, f"page_{page_index}_{slot_id}", slot_roi)
+            if selected is None:
+                return None
+            current_image = selected
+            details = self._source_detail_snapshot(context, current_image)
+            if not self._source_detail_is_readable(details):
+                self._stop_pair(context, "select_change_source_deck", "pair_source_name_unreadable")
+                return None
+            evidence = self._capture_evidence(current_image, f"select_change_source_deck_page_{page_index}_{slot_id}_snapshot")
+            page_slots.append(
+                HIFSelectChangeSlot(
+                    slot_id=slot_id,
+                    slot_roi=tuple(slot_roi),
+                    name=str(details["matched_name"]),
+                    confidence=float(details["name_confidence"]),
+                    frame_fingerprint=evidence.fingerprint,
+                    page_index=page_index,
+                )
+            )
+        return page_slots, current_image
+
+    def _browse_full_pair_source_deck(self, context: Context, image) -> Any | None:
+        current_image = image
+        observed: list[HIFSelectChangeSlot] = []
+        pages: list[HIFSelectChangePage] = []
+        seen_signatures: set[tuple[tuple[str, str], ...]] = set()
+        for page_index in range(self.MAX_FULL_DECK_PAGES):
+            enumerated = self._enumerate_pair_source_page(context, current_image, page_index)
+            if enumerated is None:
+                return None
+            page_slots, current_image = enumerated
+            signature = self._source_page_signature(page_slots)
+            if signature in seen_signatures:
+                self._record_journal(
+                    "select_change_source_deck",
+                    "source_snapshot_complete",
+                    "observed",
+                    details={"reason": "repeated_page_signature", "page_index": page_index, "signature": signature},
+                )
+                return current_image
+            seen_signatures.add(signature)
+            page = HIFSelectChangePage(page_index=page_index, signature=signature, slots=tuple(page_slots))
+            pages.append(page)
+            observed.extend(page_slots)
+            self._remember_pair_source_snapshot(observed, pages)
+            next_image = self._scroll_source_deck_page(context, current_image, page_index)
+            if next_image is False:
+                return None
+            if next_image is None:
+                self._record_journal(
+                    "select_change_source_deck",
+                    "source_snapshot_complete",
+                    "observed",
+                    details={"reason": "deck_bottom_confirmed", "page_index": page_index, "signature": signature},
+                )
+                return current_image
+            current_image = next_image
+        self._stop_pair(context, "select_change_source_deck", "source_deck_full_enumeration_page_limit_reached")
+        return None
+
+    def _cancel_pair_source_deck(self, context: Context, image) -> Any | None:
+        cancel = self._find_text_option(context, image, ("キャンセル",), [70, 1100, 300, 110])
+        if not cancel:
+            self._stop_pair(context, "select_change_source_deck", "pair_source_cancel_button_not_found")
+            return None
+        before = self._capture_evidence(image, "day1_select_change_pair_cancel_before")
+        if not self._click_box_center(context, cancel.best_result.box, double=False):
+            self._stop_pair(context, "select_change_source_deck", "pair_source_cancel_click_failed")
+            return None
+        time.sleep(self.ACTION_DELAY)
+        target_image = self._get_screenshot_or_stop(context, "select_change_target")
+        if target_image is None:
+            return None
+        after = self._capture_evidence(target_image, "day1_select_change_pair_cancel_after")
+        if not frame_changed(before, after) or self._wait_for_screen_profile(context, target_image, "select_change_target") is None:
+            self._stop_pair(context, "select_change_source_deck", "pair_target_page_not_confirmed_after_cancel")
+            return None
+        return target_image
+
+    @staticmethod
+    def _pair_source_matches(source_name: str) -> tuple[HIFSelectChangeSlot, ...]:
+        return tuple(slot for slot in get_runtime_hif_session().select_change_source_snapshot if slot.name == source_name)
+
+    def _replay_pair_source_page(self, context: Context, image, source: HIFSelectChangeSlot) -> tuple[dict[str, Any], Any] | None:
+        pages = get_runtime_hif_session().select_change_source_pages
+        if source.page_index is None or source.page_index >= len(pages):
+            self._stop_pair(context, "select_change_source_deck", "source_snapshot_page_missing")
+            return None
+        current_image = image
+        for expected_page in pages[: source.page_index + 1]:
+            enumerated = self._enumerate_pair_source_page(context, current_image, expected_page.page_index)
+            if enumerated is None:
+                return None
+            page_slots, current_image = enumerated
+            if self._source_page_signature(page_slots) != expected_page.signature:
+                self._stop_pair(context, "select_change_source_deck", "source_snapshot_page_mismatch")
+                return None
+            if expected_page.page_index == source.page_index:
+                selected = self._probe_source_slot(context, current_image, source.slot_id, list(source.slot_roi))
+                if selected is None:
+                    return None
+                details = self._source_detail_snapshot(context, selected)
+                if details.get("matched_name") != source.name or not self._source_detail_is_readable(details):
+                    self._stop_pair(context, "select_change_source_deck", "source_snapshot_reverify_mismatch")
+                    return None
+                return details, selected
+            next_image = self._scroll_source_deck_page(context, current_image, expected_page.page_index)
+            if next_image is False or next_image is None:
+                self._stop_pair(context, "select_change_source_deck", "source_snapshot_navigation_failed")
+                return None
+            current_image = next_image
+        self._stop_pair(context, "select_change_source_deck", "source_snapshot_navigation_failed")
+        return None
+
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         if self._configure_page_execution(argv) is not HIFExecutionMode.SINGLE_STEP:
             return self._stop_pair(context, "select_change_target", "page_execution_mode_not_single_step")
         params = self._get_action_params(argv)
         temporary_target = params.get("temporary_target_name")
         temporary_source = params.get("temporary_source_name")
-        if (temporary_target is None) != (temporary_source is None) or any(
-            not isinstance(name, str) or not name for name in (temporary_target, temporary_source) if name is not None
-        ):
+        if not isinstance(temporary_target, str) or not temporary_target or not isinstance(temporary_source, str) or not temporary_source:
             return self._stop_pair(context, "select_change_target", "temporary_change_pair_invalid")
+        get_runtime_hif_session().clear_pending_select_change()
         image = self._get_screenshot_or_stop(context, "select_change_target")
         if image is None:
             return False
         if self._wait_for_screen_profile(context, image, "select_change_target") is None:
             return self._stop_pair(context, "select_change_target", "pair_target_page_not_confirmed")
 
-        target_slots = self._target_slot_boxes()
-        target_plan = choose_change_pair((slot_id for slot_id, _ in target_slots), ("pending_source",))
-        if target_plan is None:
-            return self._stop_pair(context, "select_change_target", "pair_target_slots_empty")
-        target_roi = dict(target_slots)[target_plan.candidate_slot]
+        enumerated = self._enumerate_pair_targets(context, image)
+        if enumerated is None:
+            return False
+        candidates, selected_image = enumerated
+        provisional_target = candidates[-1]
+        source_image = self._advance_pair_to_source(context, selected_image, provisional_target)
+        if source_image is None:
+            return False
+        source_browse_end = self._browse_full_pair_source_deck(context, source_image)
+        if source_browse_end is None:
+            return False
+        target_image = self._cancel_pair_source_deck(context, source_browse_end)
+        if target_image is None:
+            return False
+
+        target_matches = self._pair_target_matches(temporary_target)
+        if not target_matches:
+            return self._stop_pair(context, "select_change_target", "temporary_target_name_not_found")
+        if len(target_matches) != 1:
+            return self._stop_pair(context, "select_change_target", "temporary_target_name_ambiguous")
+        source_matches = self._pair_source_matches(temporary_source)
+        if not source_matches:
+            return self._stop_pair(context, "select_change_source_deck", "temporary_source_name_not_found")
+        if len(source_matches) != 1:
+            return self._stop_pair(context, "select_change_source_deck", "temporary_source_name_ambiguous")
+        target = target_matches[0]
+        source_slot = source_matches[0]
         selected_target = self._select_pair_target(
             context,
-            image,
-            target_plan.candidate_slot,
-            target_roi,
+            target_image,
+            target.slot_id,
+            list(target.slot_roi),
             expected_target_name=temporary_target,
         )
         if selected_target is None:
             return False
         target, selected_image, target_before, target_after = selected_target
-        if temporary_target is not None and target["target_name"] != temporary_target:
+        if target["target_name"] != temporary_target:
             return self._stop_pair(context, "select_change_target", "temporary_target_name_mismatch")
         self._record_journal(
             "select_change_target",
@@ -3586,7 +3853,7 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
             details={
                 "candidate_title": target["target_name"],
                 "candidate_slot": target["slot"],
-                "tie_break_fallback": target_plan.tie_break_fallback,
+                "candidate_slot_roi": target["slot_roi"],
                 "temporary_target_name": temporary_target,
             },
             before=target_before,
@@ -3595,34 +3862,10 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
         source_image = self._advance_pair_to_source(context, selected_image, target)
         if source_image is None:
             return False
-
-        occupied = self._detect_source_deck_occupied_slots(context, source_image)
-        if not occupied:
-            return self._stop_pair(context, "select_change_source_deck", "pair_source_slots_empty_or_unreadable")
-        visible_slots = self._visible_source_slots()
-        source_plan = choose_change_pair((target["slot"],), (slot_id for slot_id, _ in visible_slots if slot_id in occupied))
-        if source_plan is None:
-            return self._stop_pair(context, "select_change_source_deck", "pair_source_decision_unavailable")
-        source_roi = dict(visible_slots)[source_plan.source_slot]
-        self._record_journal(
-            "select_change_source_deck",
-            "receive_change_pair_decision",
-            "received",
-            details={
-                "candidate_title": target["target_name"],
-                "candidate_slot": target["slot"],
-                "source_slot": source_plan.source_slot,
-                "tie_break_fallback": source_plan.tie_break_fallback,
-            },
-        )
-        selected_source = self._probe_source_slot(context, source_image, source_plan.source_slot, source_roi)
-        if selected_source is None:
+        source_selection = self._replay_pair_source_page(context, source_image, source_slot)
+        if source_selection is None:
             return False
-        source = self._source_detail_snapshot(context, selected_source)
-        if not self._source_detail_is_readable(source):
-            return self._stop_pair(context, "select_change_source_deck", "pair_source_name_unreadable")
-        if temporary_source is not None and source["matched_name"] != temporary_source:
-            return self._stop_pair(context, "select_change_source_deck", "temporary_source_name_mismatch")
+        source, selected_source = source_selection
         if not self._result_anchor_confirmed(context, selected_source):
             return self._stop_pair(context, "select_change_source_deck", "pair_change_confirmation_anchor_not_found")
         evidence = self._capture_evidence(selected_source, "day1_select_change_pair_confirmation")
@@ -3634,13 +3877,22 @@ class ProduceHIFDay1SelectChangePair(ProduceChooseHIFSelectChangeSourceAuto):
                 "candidate_title": target["target_name"],
                 "candidate_slot": target["slot"],
                 "source_title": source["matched_name"],
-                "source_slot": source_plan.source_slot,
+                "source_slot": source_slot.slot_id,
+                "source_slot_roi": list(source_slot.slot_roi),
+                "source_page_index": source_slot.page_index,
                 "change_visible": True,
                 "change_click_count": 0,
-                "controller_click_sequence": ["candidate", "next", "source"],
-                "temporary_pair": (
-                    {"target_name": temporary_target, "source_name": temporary_source} if temporary_target is not None else None
-                ),
+                "controller_click_sequence": [
+                    "enumerate_target_slots",
+                    "provisional_next",
+                    "enumerate_source_deck",
+                    "cancel_to_target",
+                    "reselect_target",
+                    "next",
+                    "replay_source_pages",
+                    "reselect_source",
+                ],
+                "temporary_pair": {"target_name": temporary_target, "source_name": temporary_source},
             },
             after=evidence,
         )

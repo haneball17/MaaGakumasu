@@ -104,9 +104,9 @@ VS Code 插件测试：以 `hif_test/` 作为工作区打开，执行 `Maa: 执�
 
 `HIF Day1 换卡配对选择（单步）` 是隔离的 VS Code 测试任务。仅从 Day1 换卡候选页、且未选中候选卡时启动；它不属于正式 `Produce` 路由。
 
-动作固定只发送三次单步点击：候选卡、`次へ`、牌库源卡。候选位按从左到右、源牌按已确认占用的逻辑槽位升序决定；并列会写入 `tie_break_fallback`。动作不重抽、不滚动、不恢复中间状态，也绝不点击 `チェンジ`。
+动作先完整枚举左、中、右候选槽位，将卡名、OCR 置信度、`slot_roi` 与帧指纹存入本次 `HIFRunSession`。为浏览完整源牌库，动作会临时选中最后一个候选并点击 `次へ`；源牌逐页枚举所有占用槽位，记录名称、`slot_roi`、帧指纹、`page_index` 与页面签名，直至验证到达底部。随后点击 `キャンセル` 返回候选页，按测试预设精确匹配并重新选择候选、再次进入牌库、回放记录的源牌页和槽位。名称缺失、任何同名歧义、页面签名变化、OCR 复核失败或导航失败都会安全停止，绝不回退到左槽或首个源牌槽，也绝不点击 `チェンジ`。
 
-成功时，Agent 日志与 Journal 的 `select_change_pair_ready` 包含候选卡与源卡标题、槽位、`controller_click_sequence: [candidate, next, source]`、`change_visible: true` 和 `change_click_count: 0`。测试任务随后只识别确认页的 `チェンジ` 锚点并结束；任一页面、OCR、源槽位或确认锚点不成立时进入 `unknownstop` 并停在原地。
+成功时，Agent 日志与 Journal 会先输出 `store_target_snapshot` 和 `store_source_snapshot`，其中包含每个槽位的名称与坐标；最终 `select_change_pair_ready` 包含候选卡与源卡标题、槽位、`controller_click_sequence: [enumerate_target_slots, provisional_next, enumerate_source_deck, cancel_to_target, reselect_target, next, replay_source_pages, reselect_source]`、`change_visible: true` 和 `change_click_count: 0`。测试任务随后只识别确认页的 `チェンジ` 锚点并结束；任一页面、OCR、源槽位或确认锚点不成立时进入 `unknownstop` 并停在原地。
 
 使用方式：以 `hif_test/` 打开 VS Code 测试工作区，先手动到达 Day1 换卡候选页，再在 `Maa: 执行任务` 中选择该任务。运行前确保没有候选卡已被选中；该任务不会提交换卡，若需要继续游戏请由人工决定是否点击 `チェンジ` 或返回。
 
@@ -118,13 +118,15 @@ VS Code 插件测试：以 `hif_test/` 作为工作区打开，执行 `Maa: 执�
 
 当前实测的 `頂点へ / タフネス / プライド` 尚不在 `skill_cards_master.json`。该入口的预期结果是枚举后记录 `receive_change_target_decision`，并以 `unknown_change_candidate` 安全停止；这不是已选择或已换卡。待候选卡元数据和完整源牌枚举都具备后，才可单独评审进入源牌阶段。
 
-为推进页面链路测试，`HIF Day1 暂定换卡对推进（单步）` 临时固定 `頂点へ -> 夏夜に咲く思い出`。它复用已验证的三点击链路，并在候选与源牌详情分别 OCR 匹配该名称后才进入 `チェンジ` 前的确认页；名称不符即以 `temporary_target_name_mismatch` 或 `temporary_source_name_mismatch` 停止。该入口不是决策模块，也不会点击 `チェンジ`；最终换卡仍由人工确认。
+此前为推进页面链路测试，`HIF Day1 暂定换卡对推进（单步）` 曾临时固定 `頂点へ -> 夏夜に咲く思い出`，当时采用三点击链路。当前入口已改为快照驱动的 `始まりの合図 -> スリリング+`：候选与源牌均先枚举，再按名称定位实际槽位并复核；名称不符即停止。该入口不是正式决策模块，也不会点击 `チェンジ`；最终换卡仍由人工确认。
 
-VS Code Agent 可能将截图以不可导出句柄传给 Python，导致 Journal 没有帧指纹。临时固定卡对的候选首击仅在该帧指纹缺失且点击后详情精确 OCR 为 `頂点へ` 时，使用该详情作为选择后验；其他配对与决策入口仍要求可比较的帧变化，不能由此放宽。
+VS Code Agent 可能将截图以不可导出句柄传给 Python，导致 Journal 没有帧指纹。临时固定卡对的候选首击仅在该帧指纹缺失且点击后详情精确 OCR 为配置的候选卡时，使用该详情作为选择后验；其他配对与决策入口仍要求可比较的帧变化，不能由此放宽。
 
-2026-07-25 已在 MuMu 12 / `127.0.0.1:16416` 实测 `20260725T204612-35336`：候选 `頂点へ`、源牌 `夏夜に咲く思い出` 均与临时配置精确匹配，`controller_click_sequence` 为 `[candidate, next, source]`，确认 `チェンジ` 可见且 `change_click_count=0`。该任务仅到达确认页，未提交换卡。该 Journal 在事件语义修正前把终态观察误记为 `verified`，因此离线审计报 `select_change_pair_ready:verified_without_changed_frame`；它仅证明页面链路到达确认页，不构成审计通过记录。修正后该终态以 `observed` 记录。
+2026-07-25 已在 MuMu 12 / `127.0.0.1:16416` 实测 `20260725T204612-35336`：候选 `頂点へ`、源牌 `夏夜に咲く思い出` 均与当时临时配置精确匹配，旧实现的 `controller_click_sequence` 为 `[candidate, next, source]`，确认 `チェンジ` 可见且 `change_click_count=0`。该任务仅到达确认页，未提交换卡。该 Journal 在事件语义修正前把终态观察误记为 `verified`，因此离线审计报 `select_change_pair_ready:verified_without_changed_frame`；它仅证明旧页面链路到达确认页，不构成审计通过记录。修正后终态以 `observed` 记录。
 
 `HIF Day1 暂定换卡对完整流程（单步）` 在上述固定卡对基础上依次执行提交和结果关闭，只有结果 OCR 精确确认换卡文案后才尝试返回 Day1 场景3。2026-07-25 IPC 实测 `20260725T212327-37252` 在点击 `チェンジ` 后出现“通信エラー：别的终端登录或访问令牌过期”，未确认换卡、未关闭弹窗、未返回场景3；Journal 审计通过其已验证的候选选择与 `次へ` 点击。当前实现会将该后态记为 `communication_error_after_change`，不自动重试或关闭；重新登录并回到候选页后才能重新测试。
+
+2026-07-25 当前测试配置已切换为 `始まりの合図 -> スリリング+`：候选卡必须精确匹配 `始まりの合図`，牌库源卡必须精确匹配 `スリリング+`，不匹配即停止。该配置仅用于当前莉波 `ガラクタロード` Day1 测试入口，不是正式决策策略。
 
 ## 页面能力升级门槛
 

@@ -50,12 +50,25 @@ def test_day1_change_pair_stops_at_the_visible_change_confirmation(monkeypatch):
     action = module.ProduceHIFDay1SelectChangePair()
     records = []
     stop_reasons = []
-    target = {"target_name": "始まりの合図", "slot": "candidate_left"}
+    target = {"target_name": "始まりの合図", "slot": "candidate_center", "slot_roi": [297, 837, 127, 128]}
     source = {"matched_name": "大胆不敵", "effect_texts": ("効果",), "name_confidence": 0.99, "effect_confidence": 0.99}
+    source_slot = module.HIFSelectChangeSlot(
+        slot_id="visible_slot_r1c2",
+        slot_roi=(227, 638, 120, 120),
+        name="大胆不敵",
+        confidence=0.99,
+        frame_fingerprint="source",
+        page_index=0,
+    )
 
     monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
     monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen_id: b"target")
     monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen_id: image)
+    def enumerate_targets(context, image):
+        action._remember_pair_target_snapshot([target])
+        return [target], b"target-enumerated"
+
+    monkeypatch.setattr(action, "_enumerate_pair_targets", enumerate_targets)
     monkeypatch.setattr(
         action,
         "_select_pair_target",
@@ -67,19 +80,38 @@ def test_day1_change_pair_stops_at_the_visible_change_confirmation(monkeypatch):
         ),
     )
     monkeypatch.setattr(action, "_advance_pair_to_source", lambda context, image, selected: b"source")
-    monkeypatch.setattr(action, "_detect_source_deck_occupied_slots", lambda context, image: {"visible_slot_r1c1", "visible_slot_r1c2"})
-    monkeypatch.setattr(action, "_probe_source_slot", lambda context, image, slot_id, slot_roi: b"source-selected")
-    monkeypatch.setattr(action, "_source_detail_snapshot", lambda context, image: source)
+    def browse_source_deck(context, image):
+        page = module.HIFSelectChangePage(page_index=0, signature=((source_slot.slot_id, source_slot.name),), slots=(source_slot,))
+        module.get_runtime_hif_session().set_select_change_source_snapshot((source_slot,), (page,))
+        return b"source-browse-end"
+
+    monkeypatch.setattr(action, "_browse_full_pair_source_deck", browse_source_deck)
+    monkeypatch.setattr(action, "_cancel_pair_source_deck", lambda context, image: b"target-after-cancel")
+    monkeypatch.setattr(action, "_replay_pair_source_page", lambda context, image, slot: (source, b"source-selected"))
     monkeypatch.setattr(action, "_result_anchor_confirmed", lambda context, image: True)
     monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen, reason: stop_reasons.append((screen, reason)) or True)
 
-    assert action.run(object(), SimpleNamespace(custom_action_param='{"execution_mode":"single_step"}'))
+    assert action.run(
+        object(),
+        SimpleNamespace(custom_action_param='{"execution_mode":"single_step","temporary_target_name":"始まりの合図","temporary_source_name":"大胆不敵"}'),
+    )
     assert stop_reasons == []
     details = records[-1][1]["details"]
     assert records[-1][0][2] == "observed"
     assert details["candidate_title"] == "始まりの合図"
     assert details["source_title"] == "大胆不敵"
-    assert details["controller_click_sequence"] == ["candidate", "next", "source"]
+    assert details["candidate_slot"] == "candidate_center"
+    assert details["source_slot"] == "visible_slot_r1c2"
+    assert details["controller_click_sequence"] == [
+        "enumerate_target_slots",
+        "provisional_next",
+        "enumerate_source_deck",
+        "cancel_to_target",
+        "reselect_target",
+        "next",
+        "replay_source_pages",
+        "reselect_source",
+    ]
     assert details["change_click_count"] == 0
 
 
@@ -102,26 +134,143 @@ def test_day1_temporary_change_pair_does_not_advance_when_the_candidate_name_dif
 
     monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen: b"target")
     monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen: image)
-    monkeypatch.setattr(
-        action,
-        "_select_pair_target",
-        lambda context, image, slot_id, slot_roi, expected_target_name=None: (
-            {"target_name": "タフネス", "slot": slot_id},
-            b"selected",
-            SimpleNamespace(),
-            SimpleNamespace(),
-        ),
-    )
-    monkeypatch.setattr(action, "_advance_pair_to_source", lambda *args: (_ for _ in ()).throw(AssertionError("不得点击次へ")))
+    candidates = [{"target_name": "タフネス", "slot": "candidate_left", "slot_roi": [158, 837, 127, 128], "confidence": 0.99}]
+
+    def enumerate_targets(context, image):
+        action._remember_pair_target_snapshot(candidates)
+        return candidates, b"selected"
+
+    monkeypatch.setattr(action, "_enumerate_pair_targets", enumerate_targets)
+    calls = []
+    monkeypatch.setattr(action, "_advance_pair_to_source", lambda *args: calls.append("next") or b"source")
+    monkeypatch.setattr(action, "_browse_full_pair_source_deck", lambda *args: calls.append("browse") or b"source-browse-end")
+    monkeypatch.setattr(action, "_cancel_pair_source_deck", lambda *args: calls.append("cancel") or b"target-after-cancel")
     monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen, reason: stops.append((screen, reason)) or True)
 
     assert not action.run(
         object(),
         SimpleNamespace(
-            custom_action_param='{"execution_mode":"single_step","temporary_target_name":"頂点へ","temporary_source_name":"夏夜に咲く思い出"}'
+            custom_action_param='{"execution_mode":"single_step","temporary_target_name":"始まりの合図","temporary_source_name":"スリリング+"}'
         ),
     )
-    assert stops == [("select_change_target", "temporary_target_name_mismatch")]
+    assert stops == [("select_change_target", "temporary_target_name_not_found")]
+    assert calls == ["next", "browse", "cancel"]
+
+
+def test_day1_temporary_change_pair_stops_when_the_target_name_is_ambiguous(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1SelectChangePair()
+    stops = []
+
+    monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen: b"target")
+    monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen: image)
+    candidates = [
+        {"target_name": "始まりの合図", "slot": "candidate_left", "slot_roi": [158, 837, 127, 128], "confidence": 0.99},
+        {"target_name": "始まりの合図", "slot": "candidate_center", "slot_roi": [297, 837, 127, 128], "confidence": 0.99},
+    ]
+
+    def enumerate_targets(context, image):
+        action._remember_pair_target_snapshot(candidates)
+        return candidates, b"enumerated"
+
+    monkeypatch.setattr(action, "_enumerate_pair_targets", enumerate_targets)
+    calls = []
+    monkeypatch.setattr(action, "_advance_pair_to_source", lambda *args: calls.append("next") or b"source")
+    monkeypatch.setattr(action, "_browse_full_pair_source_deck", lambda *args: calls.append("browse") or b"source-browse-end")
+    monkeypatch.setattr(action, "_cancel_pair_source_deck", lambda *args: calls.append("cancel") or b"target-after-cancel")
+    monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen, reason: stops.append((screen, reason)) or True)
+
+    assert not action.run(
+        object(),
+        SimpleNamespace(
+            custom_action_param='{"execution_mode":"single_step","temporary_target_name":"始まりの合図","temporary_source_name":"スリリング+"}'
+        ),
+    )
+    assert stops == [("select_change_target", "temporary_target_name_ambiguous")]
+    assert calls == ["next", "browse", "cancel"]
+
+
+def test_day1_source_snapshot_browses_all_pages_then_replays_a_later_page_slot(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1SelectChangePair()
+    records = []
+    stops = []
+    slots = (("visible_slot_r1c1", [80, 638, 120, 120]),)
+    probes = iter((b"page0-selected", b"page1-selected", b"page0-replay", b"page1-replay", b"page1-confirmed"))
+    details = {
+        b"page0-selected": {"matched_name": "大胆不敵", "effect_texts": ("効果",), "name_confidence": 0.99, "effect_confidence": 0.99},
+        b"page1-selected": {"matched_name": "スリリング+", "effect_texts": ("効果",), "name_confidence": 0.99, "effect_confidence": 0.99},
+        b"page0-replay": {"matched_name": "大胆不敵", "effect_texts": ("効果",), "name_confidence": 0.99, "effect_confidence": 0.99},
+        b"page1-replay": {"matched_name": "スリリング+", "effect_texts": ("効果",), "name_confidence": 0.99, "effect_confidence": 0.99},
+        b"page1-confirmed": {"matched_name": "スリリング+", "effect_texts": ("効果",), "name_confidence": 0.99, "effect_confidence": 0.99},
+    }
+
+    module.reset_runtime_hif_session()
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(action, "_visible_source_slots", lambda: slots)
+    monkeypatch.setattr(action, "_detect_source_deck_occupied_slots", lambda context, image: {"visible_slot_r1c1"})
+    monkeypatch.setattr(action, "_probe_source_slot", lambda context, image, slot_id, slot_roi: next(probes))
+    monkeypatch.setattr(action, "_source_detail_snapshot", lambda context, image: details[image])
+    monkeypatch.setattr(action, "_capture_evidence", lambda image, label: SimpleNamespace(fingerprint=str(image)))
+    monkeypatch.setattr(action, "_scroll_source_deck_page", lambda context, image, page_index: b"page1" if page_index == 0 else None)
+    monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen, reason: stops.append((screen, reason)) or True)
+
+    assert action._browse_full_pair_source_deck(object(), b"page0") == b"page1-selected"
+    source_slot = next(slot for slot in module.get_runtime_hif_session().select_change_source_snapshot if slot.name == "スリリング+")
+    selected = action._replay_pair_source_page(object(), b"page0", source_slot)
+
+    assert selected is not None
+    source, _ = selected
+    assert source["matched_name"] == "スリリング+"
+    assert source_slot.slot_id == "visible_slot_r1c1"
+    assert source_slot.page_index == 1
+    assert [item.name for item in module.get_runtime_hif_session().select_change_source_snapshot] == ["大胆不敵", "スリリング+"]
+    assert stops == []
+
+
+def test_day1_source_snapshot_stops_on_duplicate_name_without_reselecting_or_change(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceHIFDay1SelectChangePair()
+    stops = []
+    slots = (
+        ("visible_slot_r1c1", [80, 638, 120, 120]),
+        ("visible_slot_r1c2", [227, 638, 120, 120]),
+    )
+    details = {
+        b"first": {"matched_name": "スリリング+", "effect_texts": ("効果",), "name_confidence": 0.99, "effect_confidence": 0.99},
+        b"second": {"matched_name": "スリリング+", "effect_texts": ("効果",), "name_confidence": 0.99, "effect_confidence": 0.99},
+    }
+
+    duplicate_slots = tuple(
+        module.HIFSelectChangeSlot(slot_id=slot_id, slot_roi=tuple(slot_roi), name="スリリング+", confidence=0.99, frame_fingerprint=slot_id, page_index=0)
+        for slot_id, slot_roi in slots
+    )
+    page = module.HIFSelectChangePage(
+        page_index=0,
+        signature=tuple((slot.slot_id, slot.name) for slot in duplicate_slots),
+        slots=duplicate_slots,
+    )
+    candidates = [{"target_name": "始まりの合図", "slot": "candidate_left", "slot_roi": [158, 837, 127, 128], "confidence": 0.99}]
+
+    monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen: b"target")
+    monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen: image)
+    monkeypatch.setattr(action, "_enumerate_pair_targets", lambda context, image: (action._remember_pair_target_snapshot(candidates) or (candidates, b"target-enumerated")))
+    monkeypatch.setattr(action, "_advance_pair_to_source", lambda *args: b"source")
+    monkeypatch.setattr(
+        action,
+        "_browse_full_pair_source_deck",
+        lambda context, image: module.get_runtime_hif_session().set_select_change_source_snapshot(duplicate_slots, (page,)) or b"source-browse-end",
+    )
+    monkeypatch.setattr(action, "_cancel_pair_source_deck", lambda context, image: b"target-after-cancel")
+    monkeypatch.setattr(action, "_select_pair_target", lambda *args: (_ for _ in ()).throw(AssertionError("不得重选候选卡")))
+    monkeypatch.setattr(action, "_replay_pair_source_page", lambda *args: (_ for _ in ()).throw(AssertionError("不得回放源牌页")))
+    monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen, reason: stops.append((screen, reason)) or True)
+
+    assert not action.run(
+        object(),
+        SimpleNamespace(custom_action_param='{"execution_mode":"single_step","temporary_target_name":"始まりの合図","temporary_source_name":"スリリング+"}'),
+    )
+    assert stops == [("select_change_source_deck", "temporary_source_name_ambiguous")]
 
 
 def test_day1_temporary_change_pair_accepts_opaque_frame_only_after_exact_target_ocr(monkeypatch):
@@ -200,17 +349,17 @@ def test_day1_temporary_change_commit_requires_the_expected_completion_text(monk
     monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
     monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen: b"source" if screen == "select_change_source_deck" else b"result")
     monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen: image)
-    monkeypatch.setattr(action, "_source_detail_snapshot", lambda context, image: {"matched_name": "夏夜に咲く思い出", "name_confidence": 0.99})
+    monkeypatch.setattr(action, "_source_detail_snapshot", lambda context, image: {"matched_name": "スリリング+", "name_confidence": 0.99})
     monkeypatch.setattr(action, "_find_text_option", lambda *args: SimpleNamespace(best_result=SimpleNamespace(box=[373, 1119, 255, 82])))
     monkeypatch.setattr(action, "_click_box_center", lambda context, box, double=False: clicks.append(list(box)) or True)
     monkeypatch.setattr(action, "_run_ocr", lambda *args: SimpleNamespace(hit=False))
-    monkeypatch.setattr(action, "_read_change_completion_texts", lambda context, image: ("夏夜に咲く思い出を頂点へにチェンジしました",))
+    monkeypatch.setattr(action, "_read_change_completion_texts", lambda context, image: ("スリリング+を始まりの合図にチェンジしました",))
     monkeypatch.setattr(module, "frame_changed", lambda before, after: True)
 
     assert action.run(
         object(),
         SimpleNamespace(
-            custom_action_param='{"execution_mode":"single_step","temporary_target_name":"頂点へ","temporary_source_name":"夏夜に咲く思い出"}'
+            custom_action_param='{"execution_mode":"single_step","temporary_target_name":"始まりの合図","temporary_source_name":"スリリング+"}'
         ),
     )
     assert clicks == [[373, 1119, 255, 82]]
@@ -227,7 +376,7 @@ def test_day1_temporary_change_commit_stops_on_communication_error(monkeypatch):
     monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
     monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen: b"source" if screen == "select_change_source_deck" else b"error")
     monkeypatch.setattr(action, "_wait_for_screen_profile", lambda context, image, screen: image)
-    monkeypatch.setattr(action, "_source_detail_snapshot", lambda context, image: {"matched_name": "夏夜に咲く思い出", "name_confidence": 0.99})
+    monkeypatch.setattr(action, "_source_detail_snapshot", lambda context, image: {"matched_name": "スリリング+", "name_confidence": 0.99})
     monkeypatch.setattr(action, "_find_text_option", lambda *args: SimpleNamespace(best_result=SimpleNamespace(box=[373, 1119, 255, 82])))
     monkeypatch.setattr(action, "_click_box_center", lambda *args, **kwargs: True)
     monkeypatch.setattr(action, "_run_ocr", lambda *args: SimpleNamespace(hit=True))
@@ -237,7 +386,7 @@ def test_day1_temporary_change_commit_stops_on_communication_error(monkeypatch):
     assert action.run(
         object(),
         SimpleNamespace(
-            custom_action_param='{"execution_mode":"single_step","temporary_target_name":"頂点へ","temporary_source_name":"夏夜に咲く思い出"}'
+            custom_action_param='{"execution_mode":"single_step","temporary_target_name":"始まりの合図","temporary_source_name":"スリリング+"}'
         ),
     )
     assert stops == [("select_change_result", "communication_error_after_change")]
