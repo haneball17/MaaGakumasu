@@ -128,6 +128,8 @@ VS Code Agent 可能将截图以不可导出句柄传给 Python，导致 Journal
 
 2026-07-25 当前测试配置已切换为 `始まりの合図 -> スリリング+`：候选卡必须精确匹配 `始まりの合図`，牌库源卡必须精确匹配 `スリリング+`，不匹配即停止。该配置仅用于当前莉波 `ガラクタロード` Day1 测试入口，不是正式决策策略。
 
+VS Code 测试该入口时，Journal 或 Agent 日志必须依次出现 `store_target_snapshot`、`store_source_snapshot` 和 `select_change_pair_ready`；后者的 `controller_click_sequence` 应为 `enumerate_target_slots`、`provisional_next`、`enumerate_source_deck`、`cancel_to_target`、`reselect_target`、`next`、`replay_source_pages`、`reselect_source`，且 `change_click_count=0`。任一快照、回放或名称复核缺失都不是成功到达确认页。
+
 ## 页面能力升级门槛
 
 页面与动作分别升级：同一页面的“结束”通过单步验证，不代表购买、刷新或其他资源消耗动作也获得授权。截图方向须符合 [`resources.md`](resources.md) 的契约；`Round2` 后 Live 是唯一横屏例外，仍从观察级开始。
