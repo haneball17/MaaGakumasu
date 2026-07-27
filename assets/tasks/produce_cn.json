@@ -7,6 +7,7 @@
         "培育难度",
         "HIF预设",
         "HIF执行模式",
+        "HIF公开课动作",
         "HIF Day1课程",
         "培育偶像-zh_CN",
         "培育次数",
@@ -242,6 +243,35 @@
       ],
       "label": "$HIF执行模式",
       "description": "$HIF执行模式说明"
+    },
+    "HIF公开课动作": {
+      "type": "select",
+      "default_case": "关闭（默认）",
+      "cases": [
+        {
+          "name": "关闭（默认）"
+        },
+        {
+          "name": "浏览并决定（固定Da测试）",
+          "pipeline_override": {
+            "ProduceHIFPublicLessonBrowseFlag": {
+              "enabled": true,
+              "action": {"param": {"custom_action_param": {"public_lesson_action": "browse_fixed_da_test"}}}
+            }
+          }
+        },
+        {
+          "name": "执行已记录决策",
+          "pipeline_override": {
+            "ProduceHIFPublicLessonExecuteFlag": {
+              "enabled": true,
+              "action": {"param": {"custom_action_param": {"public_lesson_action": "execute_pending_test"}}}
+            }
+          }
+        }
+      ],
+      "label": "$HIF公开课动作",
+      "description": "$HIF公开课动作说明"
     },
     "HIF Day1课程": {
       "type": "select",

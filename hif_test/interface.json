@@ -42,6 +42,20 @@
             ]
         },
         {
+            "name": "HIF Day2 浏览公开课（固定Da）",
+            "entry": "TestHIFDay2BrowsePublicLessonEntry",
+            "resource": [
+                "官服"
+            ]
+        },
+        {
+            "name": "HIF Day2 执行已记录公开课",
+            "entry": "TestHIFDay2ExecutePublicLessonEntry",
+            "resource": [
+                "官服"
+            ]
+        },
+        {
             "name": "HIF Day1 槽位 1 标题",
             "entry": "浏览待选卡牌_点击槽位1",
             "resource": [

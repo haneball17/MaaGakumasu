@@ -13,6 +13,8 @@ __all__ = [
     "ProduceChooseEventAuto",
     "ProduceChooseNIAEventAuto",
     "ProduceChooseHIFEventAuto",
+    "ProduceBrowseHIFPublicLessonAuto",
+    "ProduceExecuteHIFPublicLessonAuto",
     "ProduceChooseHIFPItemAuto",
     "ProduceChooseHIFClassOptionAuto",
     "ProduceChooseHIFDrinkRewardAuto",

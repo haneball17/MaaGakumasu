@@ -7,6 +7,7 @@ from importlib import import_module
 
 import pytest
 
+from agent.hif.domain import HIFPublicLessonPreview
 from agent.hif.session import HIFRunSession
 
 
@@ -24,6 +25,99 @@ def _journal(records):
         capture=lambda image, label: SimpleNamespace(fingerprint=f"{label}:{image}"),
         record=lambda *args, **kwargs: records.append((args, kwargs)),
     )
+
+
+def _public_lesson_preview(candidate: str) -> HIFPublicLessonPreview:
+    return HIFPublicLessonPreview(
+        candidate,
+        -8,
+        30,
+        {"vo": 120 if candidate == "Vo" else 20 if candidate == "Da" else 0, "da": 120 if candidate == "Da" else 20, "vi": 120 if candidate == "Vi" else 0},
+        {"vo": 321, "da": 549, "vi": 430},
+        {"star": 30, "vo": 158 if candidate == "Vo" else 26 if candidate == "Da" else 0, "da": 185 if candidate == "Da" else 30, "vi": 171 if candidate == "Vi" else 0},
+        True,
+    )
+
+
+def _public_lesson_reading():
+    return SimpleNamespace(
+        state=SimpleNamespace(day_remaining=5),
+        page_observation=SimpleNamespace(is_unique=True, screen_id="finals_prepare"),
+    )
+
+
+def test_public_lesson_browse_stops_after_vi_without_reselecting_da(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceBrowseHIFPublicLessonAuto()
+    session = HIFRunSession()
+    selected = []
+    previews = {candidate: _public_lesson_preview(candidate) for candidate in ("Vo", "Da", "Vi")}
+
+    monkeypatch.setattr(module, "get_runtime_hif_session", lambda: session)
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: b"initial")
+    monkeypatch.setattr(module.HIFStateReader, "from_context", lambda context, image: SimpleNamespace(read_finals_prepare_state=_public_lesson_reading))
+    monkeypatch.setattr(action, "_is_unselected", lambda context, image: True)
+    monkeypatch.setattr(action, "_select_and_read", lambda context, image, candidate, **kwargs: (candidate.encode(), selected.append(candidate) or previews[candidate]))
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"public_lesson_action":"browse_fixed_da_test"}'))
+
+    assert selected == ["Vo", "Da", "Vi"]
+    assert session.pending_public_lesson is not None
+    assert session.pending_public_lesson.candidate_id == "Da"
+
+
+def test_public_lesson_execute_restores_da_from_vi_then_submits(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceExecuteHIFPublicLessonAuto()
+    action.ACTION_DELAY = 0
+    session = HIFRunSession()
+    previews = tuple(_public_lesson_preview(candidate) for candidate in ("Vo", "Da", "Vi"))
+    session.set_pending_public_lesson("Da", 5, previews)
+    clicks, records, tasks = [], [], []
+    screenshots = iter((b"da", b"result"))
+
+    monkeypatch.setattr(module, "get_runtime_hif_session", lambda: session)
+    monkeypatch.setattr(module, "get_runtime_hif_journal", lambda: _journal(records))
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: b"vi")
+    monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen_state: next(screenshots))
+    monkeypatch.setattr(module.HIFStateReader, "from_context", lambda context, image: SimpleNamespace(read_finals_prepare_state=_public_lesson_reading))
+    monkeypatch.setattr(action, "_is_candidate_selected", lambda context, image, candidate: False)
+    monkeypatch.setattr(action, "_read_preview", lambda context, image, candidate: previews[1])
+    monkeypatch.setattr(action, "_click_box_center", lambda context, box, double=False: clicks.append(list(box)) or True)
+    monkeypatch.setattr(module, "frame_changed", lambda before, after: True)
+    context = SimpleNamespace(run_recognition=lambda name, image: SimpleNamespace(hit=True), run_task=lambda task: tasks.append(task))
+
+    assert action.run(context, SimpleNamespace(custom_action_param='{"public_lesson_action":"execute_pending_test"}'))
+
+    assert clicks == [[360, 1000, 1, 1], [360, 1000, 1, 1]]
+    assert session.pending_public_lesson is None
+    assert tasks == []
+
+
+def test_public_lesson_execute_submits_once_when_da_is_already_selected(monkeypatch):
+    module = _load_action_module()
+    action = module.ProduceExecuteHIFPublicLessonAuto()
+    action.ACTION_DELAY = 0
+    session = HIFRunSession()
+    previews = tuple(_public_lesson_preview(candidate) for candidate in ("Vo", "Da", "Vi"))
+    session.set_pending_public_lesson("Da", 5, previews)
+    clicks, tasks = [], []
+
+    monkeypatch.setattr(module, "get_runtime_hif_session", lambda: session)
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: b"da")
+    monkeypatch.setattr(action, "_get_screenshot_or_stop", lambda context, screen_state: b"result")
+    monkeypatch.setattr(module.HIFStateReader, "from_context", lambda context, image: SimpleNamespace(read_finals_prepare_state=_public_lesson_reading))
+    monkeypatch.setattr(action, "_is_candidate_selected", lambda context, image, candidate: True)
+    monkeypatch.setattr(action, "_read_preview", lambda context, image, candidate: previews[1])
+    monkeypatch.setattr(action, "_click_box_center", lambda context, box, double=False: clicks.append(list(box)) or True)
+    monkeypatch.setattr(module, "frame_changed", lambda before, after: True)
+    context = SimpleNamespace(run_recognition=lambda name, image: SimpleNamespace(hit=True), run_task=lambda task: tasks.append(task))
+
+    assert action.run(context, SimpleNamespace(custom_action_param='{"public_lesson_action":"execute_pending_test"}'))
+
+    assert clicks == [[360, 1000, 1, 1]]
+    assert session.pending_public_lesson is None
+    assert tasks == []
 
 
 def test_source_deck_yolo_slot_assignment_never_turns_an_empty_slot_into_the_previous_card():

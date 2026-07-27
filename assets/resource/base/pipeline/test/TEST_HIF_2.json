@@ -78,6 +78,48 @@
 		"next": ["test_hif_day2_schedule_flag"],
 		"on_error": ["test_hif_day2_stop"]
 	},
+	"TestHIFDay2BrowsePublicLessonEntry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"next": ["TestHIFDay2BrowsePublicLessonFlag"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"TestHIFDay2BrowsePublicLessonFlag": {
+		"recognition": {
+			"type": "And",
+			"param": {
+				"all_of": [
+					"test_hif_day3_title_flag",
+					"test_hif_day2_schedule_flag",
+					{
+						"recognition": {"type": "Custom", "param": {"custom_recognition": "HIFPublicLessonPreviewNoSelection"}}
+					}
+				],
+				"box_index": 0
+			}
+		},
+		"action": {
+			"type": "Custom",
+			"param": {"custom_action": "ProduceBrowseHIFPublicLessonAuto", "custom_action_param": {"public_lesson_action": "browse_fixed_da_test"}}
+		},
+		"next": ["test_hif_day2_stop"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"TestHIFDay2ExecutePublicLessonEntry": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "DoNothing", "param": {}},
+		"next": ["TestHIFDay2ExecutePublicLessonFlag"],
+		"on_error": ["test_hif_day2_stop"]
+	},
+	"TestHIFDay2ExecutePublicLessonFlag": {
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "HIFPublicLessonPendingDecision"}},
+		"action": {
+			"type": "Custom",
+			"param": {"custom_action": "ProduceExecuteHIFPublicLessonAuto", "custom_action_param": {"public_lesson_action": "execute_pending_test"}}
+		},
+		"next": ["test_hif_day2_stop"],
+		"on_error": ["test_hif_day2_stop"]
+	},
 	"test_hif_day2_schedule_flag": {
 		"recognition": {
 			"type": "TemplateMatch",

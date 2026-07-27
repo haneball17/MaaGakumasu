@@ -2,14 +2,16 @@ import re
 import json
 import time
 import hashlib
+from types import SimpleNamespace
 from typing import Any, Dict, List, Optional
+from dataclasses import asdict
 
 from utils import logger
 from maa.context import Context
 from maa.custom_action import CustomAction
 from maa.agent.agent_server import AgentServer
 
-from agent.hif.domain import HIFCandidate
+from agent.hif.domain import HIFCandidate, HIFPublicLessonPreview
 from agent.hif.ui_map import load_hif_ui_map
 from agent.hif.catalog import load_hif_catalog
 from agent.hif.journal import HIFFrameEvidence, frame_changed, get_runtime_hif_journal
@@ -1199,6 +1201,166 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         if best[1] < total * 0.25 or best[1] == next_best[1]:
             return None
         return best[0]
+
+
+@AgentServer.custom_action("ProduceBrowseHIFPublicLessonAuto")
+class ProduceBrowseHIFPublicLessonAuto(_ProduceHIFActionBase):
+    """在无提交边界内收集三张公开课预览，并停在决策目标。"""
+
+    CANDIDATES = ("Vo", "Da", "Vi")
+    TARGETS = {"Vo": [168, 1000, 1, 1], "Da": [360, 1000, 1, 1], "Vi": [552, 1000, 1, 1]}
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        if self._get_action_params(argv).get("public_lesson_action") != "browse_fixed_da_test":
+            return self._stop_unsupported(context, "public_lesson_browse", "public_lesson_browse_not_enabled")
+        image = self._get_screenshot(context)
+        reading = HIFStateReader.from_context(context, image).read_finals_prepare_state()
+        if not (reading.page_observation and reading.page_observation.is_unique and reading.page_observation.screen_id == "finals_prepare"):
+            return self._stop_unsupported(context, "public_lesson_browse", "finals_prepare_page_not_confirmed")
+        if reading.state.day_remaining != 5:
+            return self._stop_unsupported(context, "public_lesson_browse", "public_lesson_day_not_supported")
+        if not self._is_unselected(context, image):
+            return self._stop_unsupported(context, "public_lesson_browse", "public_lesson_already_selected")
+
+        previews: list[HIFPublicLessonPreview] = []
+        for candidate in self.CANDIDATES:
+            image, preview = self._select_and_read(context, image, candidate)
+            if image is None or preview is None:
+                return True
+            previews.append(preview)
+        decision = HIFRoutePlanner().choose_public_lesson(previews, "fixed_da_test")
+        if decision.should_stop:
+            return self._stop_unsupported(context, "public_lesson_browse", decision.stop_reason or "public_lesson_decision_unavailable")
+        get_runtime_hif_session().set_pending_public_lesson(decision.candidate_id, 5, tuple(previews))
+        self._record_journal(
+            "public_lesson_browse",
+            "decision_selected",
+            "verified",
+            details={"candidate": decision.candidate_id, "reasons": decision.reasons, "previews": [asdict(preview) for preview in previews]},
+        )
+        return True
+
+    def _is_unselected(self, context: Context, image) -> bool:
+        from agent.custom.reco.hif import HIFPublicLessonPreviewNoSelection
+
+        return HIFPublicLessonPreviewNoSelection().analyze(context, SimpleNamespace(image=image)).box is not None
+
+    def _select_and_read(
+        self,
+        context: Context,
+        image,
+        candidate: str,
+        *,
+        read_preview: bool = True,
+        screen_state: str = "public_lesson_browse",
+        event: str = "preview_candidate",
+    ):
+        before = self._capture_evidence(image, f"public_lesson_{candidate.lower()}_before")
+        if not self._click_box_center(context, self.TARGETS[candidate], double=False):
+            self._stop_unsupported(context, screen_state, "public_lesson_click_failed")
+            return None, None
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, screen_state)
+        if after_image is None:
+            return None, None
+        after = self._capture_evidence(after_image, f"public_lesson_{candidate.lower()}_selected")
+        if not frame_changed(before, after):
+            self._stop_unsupported(context, screen_state, "public_lesson_preview_frame_unchanged")
+            return None, None
+        if not read_preview:
+            return after_image, None
+        preview = self._read_preview(context, after_image, candidate)
+        if preview is None:
+            self._stop_unsupported(context, screen_state, "public_lesson_preview_unreadable")
+            return None, None
+        self._record_journal(
+            screen_state,
+            event,
+            "verified",
+            details={"candidate": candidate, "preview": asdict(preview)},
+            before=before,
+            after=after,
+        )
+        return after_image, preview
+
+    @staticmethod
+    def _is_candidate_selected(context: Context, image, candidate: str) -> bool:
+        from agent.custom.reco.hif import HIFPublicLessonPreviewDetail
+
+        return HIFPublicLessonPreviewDetail()._is_selected(context, image, candidate)
+
+    @staticmethod
+    def _read_preview(context: Context, image, candidate: str) -> HIFPublicLessonPreview | None:
+        from agent.custom.reco.hif import HIFPublicLessonPreviewDetail
+
+        result = HIFPublicLessonPreviewDetail().analyze(
+            context,
+            SimpleNamespace(custom_recognition_param=json.dumps({"candidate": candidate}), image=image),
+        )
+        detail = result.detail if result and isinstance(result.detail, dict) else {}
+        if result.box is None or not detail.get("verified"):
+            return None
+        try:
+            return HIFPublicLessonPreview(
+                candidate,
+                int(detail["stamina"]),
+                int(detail["star"]),
+                {key: int(detail[key]) for key in ("vo", "da", "vi")},
+                {key: int(detail["bonus_per_mille"][key]) for key in ("vo", "da", "vi")},
+                {key: int(detail["final_gain"][key]) for key in ("star", "vo", "da", "vi")},
+            )
+        except (KeyError, TypeError, ValueError):
+            return None
+
+
+@AgentServer.custom_action("ProduceExecuteHIFPublicLessonAuto")
+class ProduceExecuteHIFPublicLessonAuto(ProduceBrowseHIFPublicLessonAuto):
+    """独立提交浏览阶段已验证的公开课决策。"""
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        if self._get_action_params(argv).get("public_lesson_action") != "execute_pending_test":
+            return self._stop_unsupported(context, "public_lesson_execute", "public_lesson_execute_not_enabled")
+        pending = get_runtime_hif_session().pending_public_lesson
+        if pending is None:
+            return self._stop_unsupported(context, "public_lesson_execute", "public_lesson_pending_decision_missing")
+        image = self._get_screenshot(context)
+        reading = HIFStateReader.from_context(context, image).read_finals_prepare_state()
+        if not (reading.page_observation and reading.page_observation.is_unique and reading.page_observation.screen_id == "finals_prepare"):
+            return self._stop_unsupported(context, "public_lesson_execute", "finals_prepare_page_not_confirmed")
+        if reading.state.day_remaining != pending.day_remaining:
+            return self._stop_unsupported(context, "public_lesson_execute", "public_lesson_pending_day_changed")
+        decision = HIFRoutePlanner().choose_public_lesson(pending.previews, "fixed_da_test")
+        if decision.should_stop or decision.candidate_id != pending.candidate_id:
+            return self._stop_unsupported(context, "public_lesson_execute", "public_lesson_pending_decision_invalid")
+        expected = next((item for item in pending.previews if item.candidate_id == pending.candidate_id), None)
+        if self._is_candidate_selected(context, image, pending.candidate_id):
+            preview = self._read_preview(context, image, pending.candidate_id)
+        else:
+            image, preview = self._select_and_read(
+                context,
+                image,
+                pending.candidate_id,
+                screen_state="public_lesson_execute",
+                event="restore_pending_candidate",
+            )
+            if image is None:
+                return True
+        if preview is None or preview != expected:
+            return self._stop_unsupported(context, "public_lesson_execute", "public_lesson_pending_preview_changed")
+        before = self._capture_evidence(image, "public_lesson_execute_before")
+        if not self._click_box_center(context, self.TARGETS[pending.candidate_id], double=False):
+            return self._stop_unsupported(context, "public_lesson_execute", "public_lesson_execute_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        after_image = self._get_screenshot_or_stop(context, "public_lesson_execute")
+        if after_image is None:
+            return True
+        after = self._capture_evidence(after_image, "public_lesson_execute_after")
+        result = context.run_recognition("ProduceHIFPublicLessonResultFlag", after_image)
+        if not frame_changed(before, after) or not (result and result.hit):
+            return self._stop_unsupported(context, "public_lesson_execute", "public_lesson_result_not_confirmed")
+        get_runtime_hif_session().clear_pending_public_lesson()
+        self._record_journal("public_lesson_execute", "commit_public_lesson", "verified", details={"candidate": pending.candidate_id}, before=before, after=after)
+        return True
 
 
 @AgentServer.custom_action("ProduceChooseHIFPItemAuto")

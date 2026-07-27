@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from dataclasses import field, dataclass
 
+from agent.hif.domain import HIFPublicLessonPreview
+
 
 @dataclass(frozen=True, slots=True)
 class HIFPendingReward:
@@ -21,6 +23,15 @@ class HIFPendingSelectChange:
     target_name: str
     target_slot: str | None = None
     target_slot_roi: tuple[int, int, int, int] | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class HIFPendingPublicLesson:
+    """已浏览并选中、等待独立提交的公开课。"""
+
+    candidate_id: str
+    day_remaining: int
+    previews: tuple[HIFPublicLessonPreview, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,6 +63,7 @@ class HIFRunSession:
     played_cards: dict[str, set[str]] = field(default_factory=dict)
     pending_reward: HIFPendingReward | None = None
     pending_select_change: HIFPendingSelectChange | None = None
+    pending_public_lesson: HIFPendingPublicLesson | None = None
     select_change_target_snapshot: tuple[HIFSelectChangeSlot, ...] = ()
     select_change_source_snapshot: tuple[HIFSelectChangeSlot, ...] = ()
     select_change_source_pages: tuple[HIFSelectChangePage, ...] = ()
@@ -96,6 +108,17 @@ class HIFRunSession:
         self.select_change_target_snapshot = ()
         self.select_change_source_snapshot = ()
         self.select_change_source_pages = ()
+
+    def set_pending_public_lesson(
+        self,
+        candidate_id: str,
+        day_remaining: int,
+        previews: tuple[HIFPublicLessonPreview, ...],
+    ) -> None:
+        self.pending_public_lesson = HIFPendingPublicLesson(candidate_id, day_remaining, previews)
+
+    def clear_pending_public_lesson(self) -> None:
+        self.pending_public_lesson = None
 
     def set_select_change_target_snapshot(self, slots: tuple[HIFSelectChangeSlot, ...]) -> None:
         self.select_change_target_snapshot = slots

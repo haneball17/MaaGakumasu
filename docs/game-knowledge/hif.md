@@ -19,5 +19,6 @@
 | `HIF-K09` | 星星是 HIF 的重要核心资源，而非普通附属分；其精确倍率与最终评价权重仍未知。                                                                     | 中可信机制定位；[`evaluation.md`](../hif/evaluation.md) §5、[`research.md`](../hif/research.md) §1、§2。                          | 显式状态字段与高优先级评分项；不使用虚构精确公式。                  |
 | `HIF-K10` | `HIFボーナス` 会影响资源与路线节奏，与 `カスタムPアイテム` 同属重要输入层；具体数值表尚未稳定接入。                                             | 攻略站共识与工程现状；[`summary.md`](../hif/summary.md) §5、[`evaluation.md`](../hif/evaluation.md) §5。                          | 保留数据模型入口与待采集字段；不按社区优先级自动购买/解锁。         |
 | `HIF-K11` | HIF 是固定骨架上的局部随机：公开课收益、支援事件、奖励候选和抽牌顺序存在不确定性。                                                              | 固定骨架与抽牌/事件随机较可信；候选池分布待验证；[`randomness.md`](../hif/randomness.md) 全文。                                   | 将确定骨架与随机变量分开建模；不假设未采集的概率分布。              |
+| `HIF-K12` | 公开课预览中的属性基础收益按对应属性加成率结算；当前样本符合向下取整，仍需以实机结果页继续校验。                                                   | 2026-07-26 MuMu 预览与既有结果页样本；详见 [`day2-lesson-retrospective.md`](../hif/day2-lesson-retrospective.md)。             | 公开课候选快照与实验决策输入；不得据此跳过当前帧识别与结果页验证。 |
 
 实机截图可补强这些条目，但单次观察先进入 [`../hif/observations.md`](../hif/observations.md)，而不是直接提高可信度或开放点击。

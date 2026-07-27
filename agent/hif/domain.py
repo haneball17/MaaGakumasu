@@ -28,6 +28,19 @@ class HIFCandidate:
     confidence: float = 1.0
 
 
+@dataclass(frozen=True, slots=True)
+class HIFPublicLessonPreview:
+    """一个已选中公开课的可审计收益快照。"""
+
+    candidate_id: str
+    stamina: int
+    star: int
+    base_gain: dict[str, int]
+    bonus_per_mille: dict[str, int]
+    final_gain: dict[str, int]
+    verified: bool = True
+
+
 @dataclass(slots=True)
 class HIFRuntimeState:
     """一次单步决策所需的最小可信状态。

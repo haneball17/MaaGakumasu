@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Mapping, Iterable
 from dataclasses import dataclass
 
-from agent.hif.domain import HIFPhase, HIFDecision, HIFCandidate, HIFRuntimeState
+from agent.hif.domain import HIFPhase, HIFDecision, HIFCandidate, HIFRuntimeState, HIFPublicLessonPreview
 from agent.hif.catalog import HIFCatalog, load_hif_catalog
 from agent.hif.presets import HIFPreset, choose_first_matching, choose_schedule_priority
 
@@ -142,6 +142,22 @@ class HIFRoutePlanner:
                 "fixed_schedule_candidate_missing",
             )
         return HIFDecision(selected.candidate_id, 0.8, (f"命中本战第 {schedule.day_index} 日固定日程",))
+
+    @staticmethod
+    def choose_public_lesson(
+        previews: Iterable[HIFPublicLessonPreview],
+        strategy_id: str,
+    ) -> HIFDecision:
+        """首版仅接受完整快照后的固定 Da 测试决策。"""
+
+        observed = tuple(previews)
+        if strategy_id != "fixed_da_test":
+            return HIFDecision(None, 0.0, ("公开课策略未实现",), stop_reason="unsupported_public_lesson_strategy")
+        if len(observed) != 3 or {preview.candidate_id for preview in observed} != {"Vo", "Da", "Vi"}:
+            return HIFDecision(None, 0.0, ("公开课候选不完整",), stop_reason="public_lesson_candidates_incomplete")
+        if not all(preview.verified for preview in observed):
+            return HIFDecision(None, 0.0, ("公开课收益未验证",), stop_reason="public_lesson_preview_unverified")
+        return HIFDecision("Da", 1.0, ("测试配置：固定选择Da公开课",))
 
     def reward_search_order(self, reward_kind: str, preset: HIFPreset, limit: int = 12) -> tuple[HIFRankedName, ...]:
         """返回可供 OCR 逐项查找的奖励优先顺序。

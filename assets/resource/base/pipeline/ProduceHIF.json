@@ -164,6 +164,8 @@
 			"[JumpBack]ProduceHIFPublicLessonResultFlag",
 			"[JumpBack]ProduceHIFConsultFlag",
 			"[JumpBack]ProduceHIFFinalModeFlag",
+			"[JumpBack]ProduceHIFPublicLessonExecuteFlag",
+			"[JumpBack]ProduceHIFPublicLessonBrowseFlag",
 			"[JumpBack]ProduceChooseHIFEventFlag",
 			"ProduceHIFUnknownStop"
 		]
@@ -556,6 +558,45 @@
 			"[JumpBack]ProduceEntryHIF",
 			"ProduceHIFUnknownStop"
 		]
+	},
+	"ProduceHIFPublicLessonBrowseFlag": {
+		"enabled": false,
+		"recognition": {
+			"type": "And",
+			"param": {
+				"all_of": [
+					"ProduceHIFFinalsPrepareResumeFlag",
+					{
+						"recognition": {
+							"type": "OCR",
+							"param": {"expected": [".*5日.*"], "roi": [55, 85, 110, 75]}
+						}
+					},
+					{
+						"recognition": {
+							"type": "OCR",
+							"param": {"expected": [".*公開レッスン.*"], "roi": [84, 920, 552, 196]}
+						}
+					},
+					{
+						"recognition": {"type": "Custom", "param": {"custom_recognition": "HIFPublicLessonPreviewNoSelection"}}
+					}
+				],
+				"box_index": 0
+			}
+		},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceBrowseHIFPublicLessonAuto"}},
+		"next": ["ProduceHIFPublicLessonBrowseStop", "ProduceHIFUnknownStop"]
+	},
+	"ProduceHIFPublicLessonBrowseStop": {
+		"recognition": {"type": "DirectHit", "param": {}},
+		"action": {"type": "StopTask", "param": {}}
+	},
+	"ProduceHIFPublicLessonExecuteFlag": {
+		"enabled": false,
+		"recognition": {"type": "Custom", "param": {"custom_recognition": "HIFPublicLessonPendingDecision"}},
+		"action": {"type": "Custom", "param": {"custom_action": "ProduceExecuteHIFPublicLessonAuto"}},
+		"next": ["[JumpBack]ProduceEntryHIF", "ProduceHIFUnknownStop"]
 	},
 	"ProduceChooseHIFPItemFlag": {
 		"recognition": {

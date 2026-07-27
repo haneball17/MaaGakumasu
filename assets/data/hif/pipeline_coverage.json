@@ -176,6 +176,8 @@
 			"evidence": "observed",
 			"nodes": [
 				"ProduceChooseHIFEventFlag",
+				"ProduceHIFPublicLessonBrowseFlag",
+				"ProduceHIFPublicLessonExecuteFlag",
 				"ProduceChooseHIFPItemFlag",
 				"ProduceHIFClassOptionFlag",
 				"ProduceHIFDrinkRewardFlag",
@@ -207,7 +209,7 @@
 		{
 			"category": "terminal",
 			"evidence": "derived",
-			"nodes": ["ProduceHIFUnknownStop"],
+			"nodes": ["ProduceHIFUnknownStop", "ProduceHIFPublicLessonBrowseStop"],
 			"scenarios": {
 				"success": "所有拒绝路径可到达该终止节点",
 				"refusal": {"na": "StopTask 无动作输入"},
