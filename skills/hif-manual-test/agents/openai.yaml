@@ -1,0 +1,4 @@
+interface:
+  display_name: "HIF 手动测试流程"
+  short_description: "安全复用 HIF 单步测试与取证流程"
+  default_prompt: "使用 $hif-manual-test 设计并执行 HIF 单步测试。"

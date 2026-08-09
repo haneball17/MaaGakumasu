@@ -22,6 +22,13 @@ MaaGakumasu 是基于 MaaFramework 的《学園アイドルマスター》自动
 - 自动培育处于测试阶段，支持初 `REGULAR/PRO/MASTER`、NIA `PRO/MASTER`、指定偶像、自动选择、体力药、道具、卡片选择优先级、跟随老师建议、初流程失败重试和中断继续。
 - Mirror 酱更新、插件版汉化、DMM 版适配、支援卡库存识别、i18n 繁体适配。
 
+HIF（学祭，即学園祭本战）培育为当前活跃开发分支（`feat/hif`），状态为**首版预设执行**：
+
+- 首版目标：从 HIF 入口推进到 Round1 初始出牌画面并停在观察状态，**不出牌、不猜测点击**。
+- 不在首版实现：Interval、饮料上限、セレクトチェンジ、回忆卡评分、Round2、结算、整局自动培育。
+- 离线模拟器（`agent/hif/`）只服务 observed case、页面规范和回归数据，**首版不接入实机决策**。
+- 设计依据与验收边界见 `docs/superpowers/specs/2026-07-10-hif-basic-pipeline-design.md`，流程依据见 `docs/hif/finals-daily-log.md`。
+
 近期自动培育重点更新：
 
 - NIA 培育流程已上线，任务配置中通过 `培育难度` 选择 `初` 或 `NIA`。
@@ -45,13 +52,16 @@ MaaGakumasu 是基于 MaaFramework 的《学園アイドルマスター》自动
 
 - `agent/`：Python 自定义逻辑扩展，供 MaaFramework 的 Custom recognition/action 调用。
 - `agent/custom/action/produce.py`：自动培育事件、商店、选项等自定义动作逻辑，近期改动集中在行动优先级和 NIA 选择策略。
-- `assets/resource/base/pipeline/`：MaaFramework 任务流水线。自动培育通用核心逻辑在 `Produce.json`，NIA 相关流程在 `ProduceNIA.json`，共用节点在 `ProduceUtils.json`。
+- `agent/custom/action/produce_hif.py`：HIF 培育自定义动作，从 `custom_action_param` 读取用户预设，识别候选后执行单步点击；未覆盖页面调用 `ProduceHIFUnknownStop` 停止。
+- `agent/hif/`：HIF 离线模拟器与决策模块。`simulator.py` 提供 `replay_hif_case`、`simulate_hif_route` 等；`adapters/exam_reader.py` 是 YOLO+OCR→ExamState 适配层；`decisions/play.py` 是出牌决策；`presets.py` 定义 HIF 预设结构。
+- `assets/resource/base/pipeline/`：MaaFramework 任务流水线。自动培育通用核心逻辑在 `Produce.json`，NIA 相关流程在 `ProduceNIA.json`，HIF 相关流程在 `ProduceHIF.json`，共用节点在 `ProduceUtils.json`。
 - `assets/resource/base/image/` 或相邻资源目录：模板匹配、图像识别所需素材。
 - `assets/data/`：结构化数据，例如偶像卡片数据 `idols_cards.json`。
 - `assets/tasks/`：MFA/MaaFramework 任务入口与选项定义。培育任务入口在 `assets/tasks/produce.json`，中文任务配置在 `produce_cn.json`。
 - `assets/lang/`：界面与任务选项翻译。新增任务选项时同步 `zh-CN` 和 `zh-Hant` 等已有语言。
 - `assets/resource/Changelog.md`：发布给用户看的资源更新公告；当前内容已进入 v1.4.0 说明。
 - `docs/zh_cn/`：中文用户与开发文档。
+- `docs/hif/`：HIF 实机流程日志与模拟器设计文档，是 HIF 管线和候选识别的首要依据。
 - `tools/`：维护脚本，例如 README 中提到的偶像素材或卡片数据更新脚本。
 - `debug/`：运行日志和调试输出，不应作为功能改动的一部分提交。
 - `deps/`、`install/`：依赖和打包相关内容，修改时需确认发布影响。
@@ -78,7 +88,7 @@ npx maa-tools check
 
 ## 代码与格式约定
 
-- Python 代码遵循 `pyproject.toml` 中 Ruff 配置：目标版本 `py312`，行宽 `144`，启用 import 排序规则。
+- Python 代码遵循 `pyproject.toml` 中 Ruff 配置：目标版本 `py312`，行宽 `144`，仅启用 `I`（isort）规则且开启 `length-sort`/`length-sort-straight`（按 import 长度排序）。改 import 时注意这一点。
 - JSON/YAML 使用 Prettier 配置：默认缩进 4 空格，YAML 缩进 2 空格，JSON 覆盖配置使用 tab。
 - Markdown 文档遵循 `docs/.markdownlint.yaml`，但根目录 `AGENTS.md` 主要服务代理协作，优先清晰准确。
 - 修改 JSON、JSONC 或流水线文件时保持原有排序、注释风格和缩进风格；不要做无关格式化。
@@ -100,6 +110,15 @@ npx maa-tools check
   - 失败处理：初流程的 `ProduceFailedFlag` 可根据 `启用培育失败重试` 跳转到重试或停止流程；NIA 流程使用 `ProduceNIAFailedFlag`，当前失败后停止任务。
   - NIA 事件参数：每张卡片通过 `ProduceChooseNIAEventFlag.custom_action_param` 设置 `effect`、`first`、`second`，字段顺序和语义都要保持一致。
   - 弹窗和通用按钮处理：不要扩大 ROI 到容易误触的位置。
+
+HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动时严格分层：
+
+- `ProduceHIF.json` 只负责高置信模板/OCR 路由页面，定义顺序、超时、回跳和安全停止；`ProduceEntryHIF` 是唯一入口。
+- `agent/custom/action/produce_hif.py` 负责读 `custom_action_param` 中的用户预设，识别候选后执行明确单步点击。
+- 候选未命中、预设字段无效、候选并列无法消歧时，必须调用 `ProduceHIFUnknownStop` 停止并输出状态，**禁止猜测性点击**。
+- `ProduceHIFRound1ReachedStop` 是首版到达 Round1 后的观察终止节点，不要接入出牌逻辑。
+- 准备阶段循环子流程用 `[JumpBack]` 返回路由根节点；每个状态节点设置 `focus` 日志（页面名、预设 ID、匹配证据、下一动作）。
+- 模拟器（`agent/hif/`）与实机决策解耦，不要为了实机闭环把未验证的评分逻辑接到管线里。
 
 ## 任务配置规则
 
@@ -123,6 +142,7 @@ npx maa-tools check
 改动完成后，根据影响范围选择验证：
 
 - Python 自定义逻辑：至少运行 `python -m py_compile agent`，有测试时运行 `python -m pytest`。
+- HIF 决策/模拟器：运行 `python -m pytest tests/test_hif_decision.py tests/test_play_decision.py tests/test_exam_reader.py`，这三个文件覆盖 `agent/hif/` 的决策、出牌和 ExamState 适配层。
 - 流水线或资源：运行 `npx maa-tools check`，并在可能时进行实际 MaaFramework 调试。
 - JSON/YAML：运行 Prettier 检查或格式化。
 - 自动培育：需要真实设备或模拟器长流程验证；如果无法运行，必须在交付说明中明确未做实机验证。
