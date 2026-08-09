@@ -14,13 +14,13 @@
 ### 生成单个节点
 
 ```bash
-python skills/pipeline-generate/generate_node.py "目标文字" NodeName path/to/pipeline.json --expand 20 --overwrite
+python .agents/skills/pipeline-generate/generate_node.py "目标文字" NodeName path/to/pipeline.json --expand 20 --overwrite
 ```
 
 ### 扫描 expand 值
 
 ```bash
-python skills/pipeline-generate/generate_sweep.py "目标文字" "x,y,w,h" 0,5,10,15,20,25,30
+python .agents/skills/pipeline-generate/generate_sweep.py "目标文字" "x,y,w,h" 0,5,10,15,20,25,30
 ```
 
 ## 说明

@@ -21,7 +21,7 @@ from pathlib import Path
 # 默认基准分辨率（竖屏 720p：宽 720，高 1280）
 DEFAULT_SCREEN_W, DEFAULT_SCREEN_H = 720, 1280
 
-# 项目根目录：脚本位于 skills/pipeline-generate/
+# 项目根目录：脚本位于 .agents/skills/pipeline-generate/
 PROJECT_ROOT = None
 
 def find_project_root() -> Path:
@@ -147,7 +147,7 @@ def main():
     print(f"  run_pipeline(pipeline_path='{output_path}', entry='Sweep_{target_text}_e20', ...)")
     print()
     print("测试后选最佳 expand, 然后从项目根目录运行:")
-    print(f"  python skills/pipeline-generate/generate_node.py \"{target_text}\" <NodeName> <target_pipeline> --expand <best> --overwrite")
+    print(f"  python .agents/skills/pipeline-generate/generate_node.py \"{target_text}\" <NodeName> <target_pipeline> --expand <best> --overwrite")
 
 
 if __name__ == "__main__":

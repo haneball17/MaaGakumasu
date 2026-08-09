@@ -28,7 +28,7 @@ if sys.platform == "win32":
 # 默认基准分辨率（竖屏 720p：宽 720，高 1280）
 DEFAULT_SCREEN_W, DEFAULT_SCREEN_H = 720, 1280
 
-# 项目根目录：脚本位于 skills/pipeline-generate/generate_node.py
+# 项目根目录：脚本位于 .agents/skills/pipeline-generate/generate_node.py
 PROJECT_ROOT = None
 
 def find_project_root() -> Path:
