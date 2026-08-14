@@ -15,6 +15,9 @@ os.chdir(parent_dir)
 # 将当前目录添加到路径
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
+# 仓库根也加入路径，使 `from agent.hif...` 等绝对导入在正式启动方式下可用
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
 try:
     from utils import logger
@@ -245,7 +248,6 @@ def update_pip_config(version) -> bool:
 def agent():
     try:
         import custom
-        from utils import logger
         from maa.toolkit import Toolkit
         from maa.agent.agent_server import AgentServer
 
@@ -259,7 +261,7 @@ def agent():
         AgentServer.shut_down()
         logger.info("AgentServer 关闭")
     except Exception as e:
-        logger.exception("Agent 运行过程中发生异常")
+        logger.exception(f"Agent 运行过程中发生异常: {e}")
         raise
 
 

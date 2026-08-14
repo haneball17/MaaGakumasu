@@ -269,8 +269,9 @@ def test_hif_pipeline_routes_round1_to_observe_stop_not_generic_card_action():
 def test_hif_pipeline_sends_unsupported_pages_to_safe_stop():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
-    assert payload["ProduceHIFDrinkOverflowFlag"]["next"] == ["ProduceHIFUnknownStop"]
     assert payload["ProduceHIFIntervalFlag"]["next"] == ["ProduceHIFUnknownStop"]
+    assert payload["ProduceHIFScoreSettlementFlag"]["next"] == ["ProduceHIFUnknownStop"]
+    assert payload["ProduceHIFMemoryFlag"]["next"] == ["ProduceHIFUnknownStop"]
 
 
 def test_hif_preset_option_injects_the_same_preset_into_round1_and_event_actions():
@@ -304,13 +305,67 @@ def test_hif_selection_mode_does_not_fall_back_to_generic_button():
 
 def test_hif_idol_select_flag_routes_before_selection_mode_to_avoid_misrouting():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
-    routing = payload["ProduceEntryHIF"]["next"]
+    prep_routing = payload["ProduceHIFPrepRoot"]["next"]
 
-    assert routing.index("[JumpBack]ProduceHIFIdolSelectFlag") < routing.index("[JumpBack]ProduceHIFSelectionModeFlag")
+    assert prep_routing.index("[JumpBack]ProduceHIFIdolSelectFlag") < prep_routing.index("[JumpBack]ProduceHIFSelectionModeFlag")
     flag = payload["ProduceHIFIdolSelectFlag"]
     assert flag["recognition"]["param"]["expected"] == [".*アイドル選択.*"]
     assert flag["action"]["param"]["custom_action"] == "ProduceHIFChooseIdolAuto"
-    assert flag["next"] == ["[JumpBack]ProduceEntryHIF"]
+
+
+def test_hif_pipeline_uses_segmented_roots_with_error_chaining():
+    payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+
+    main_root = payload["ProduceEntryHIF"]["next"]
+    assert "[JumpBack]ProduceHIFPrepRoot" in main_root
+    assert "ProduceHIFUnknownStop" not in main_root
+    assert "ProduceHIFButton" not in payload
+    assert "ProduceHIFGenerationFlag" not in payload
+
+    prep_root = payload["ProduceHIFPrepRoot"]
+    assert prep_root["on_error"] == ["ProduceHIFScheduleRoot"]
+    schedule_root = payload["ProduceHIFScheduleRoot"]
+    assert schedule_root["on_error"] == ["ProduceHIFUnknownStop"]
+    assert schedule_root["timeout"] >= 30000
+
+    schedule_next = schedule_root["next"]
+    assert schedule_next[0] == "[JumpBack]ProduceHIFRound1Flag"
+    assert "[JumpBack]ProduceHIFSelectChangeDoneFlag" in schedule_next
+    assert "ProduceHIFUnknownStop" not in schedule_next
+
+
+def test_hif_round1_flag_anchors_on_remaining_turn_counter():
+    payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+
+    flag = payload["ProduceHIFRound1Flag"]["recognition"]["param"]
+    assert flag["expected"] == [".*残りターン.*"]
+    assert flag["roi"] == [13, 43, 120, 128]
+
+
+def test_hif_event_flag_includes_hif_lesson_templates():
+    payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+
+    templates = payload["ProduceChooseHIFEventFlag"]["recognition"]["param"]["template"]
+    assert "produce/hif_lesson_vo.png" in templates
+    assert "produce/hif_lesson_da.png" in templates
+    assert "produce/hif_lesson_vi.png" in templates
+
+
+def test_hif_drink_overflow_and_select_change_done_have_live_actions():
+    payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+
+    assert payload["ProduceHIFDrinkOverflowFlag"]["action"]["param"]["custom_action"] == "ProduceChooseHIFDrinkOverflowAuto"
+    assert payload["ProduceHIFDrinkOverflowFlag"].get("next") is None
+    done = payload["ProduceHIFSelectChangeDoneFlag"]
+    assert done["action"]["param"]["custom_action"] == "ProduceHIFSelectChangeDoneAuto"
+    assert done["recognition"]["param"]["expected"] == [".*チェンジしました.*"]
+
+
+def test_hif_preset_splits_reroll_limits_by_scene():
+    from agent.hif.presets import SAFE_DEFAULT_PRESET
+
+    assert SAFE_DEFAULT_PRESET.select_change_reroll_limit == 3
+    assert SAFE_DEFAULT_PRESET.reward_reroll_limit == 2
 
 
 def test_hif_pipeline_ocr_patterns_are_valid_regular_expressions():

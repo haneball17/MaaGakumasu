@@ -21,7 +21,8 @@ class HIFPreset:
     skill_reward_names: tuple[str, ...]
     select_change_target_names: tuple[str, ...]
     select_change_source_names: tuple[str, ...]
-    reroll_limit: int
+    select_change_reroll_limit: int
+    reward_reroll_limit: int
     consult_policy: str
     entry_mode: str
     round1_mode: str
@@ -38,7 +39,9 @@ SAFE_DEFAULT_PRESET = HIFPreset(
     skill_reward_names=("始まりの合図",),
     select_change_target_names=("始まりの合図",),
     select_change_source_names=("大胆不敵", "始まりの合図"),
-    reroll_limit=2,
+    # 実機観察: 変卡(授業場景)重抽上限 3 回、差し入れ/P item 奖励重抽上限 2 回,兩場景次數不同
+    select_change_reroll_limit=3,
+    reward_reroll_limit=2,
     consult_policy="finish_without_purchase",
     entry_mode="finals",
     round1_mode="observe_and_stop",
@@ -62,7 +65,8 @@ RINAMI_GOOD_CONDITION_SAFE = HIFPreset(
     skill_reward_names=SAFE_DEFAULT_PRESET.skill_reward_names,
     select_change_target_names=SAFE_DEFAULT_PRESET.select_change_target_names,
     select_change_source_names=SAFE_DEFAULT_PRESET.select_change_source_names,
-    reroll_limit=SAFE_DEFAULT_PRESET.reroll_limit,
+    select_change_reroll_limit=SAFE_DEFAULT_PRESET.select_change_reroll_limit,
+    reward_reroll_limit=SAFE_DEFAULT_PRESET.reward_reroll_limit,
     consult_policy=SAFE_DEFAULT_PRESET.consult_policy,
     entry_mode=SAFE_DEFAULT_PRESET.entry_mode,
     round1_mode=SAFE_DEFAULT_PRESET.round1_mode,

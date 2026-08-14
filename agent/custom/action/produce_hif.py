@@ -73,7 +73,12 @@ class _ProduceHIFActionBase(CustomAction):
 
     @staticmethod
     def _get_health(context: Context, image) -> Optional[dict]:
-        reco_detail = context.run_recognition("ProduceRecognitionHealth", image)
+        # HIF 本战为竖屏 720x1280,体力在顶部中央 [285,16,150,85];不复用初培育横屏 ROI
+        reco_detail = context.run_recognition(
+            "ProduceRecognitionHealth",
+            image,
+            pipeline_override={"ProduceRecognitionHealth": {"roi": [285, 16, 150, 85]}},
+        )
         if not (reco_detail and reco_detail.hit):
             return None
 
@@ -115,9 +120,9 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         "おでかけ": "produce/go_out.png",
         "课程": "produce/lesson.png",
         "活动": "produce/event.png",
-        "Vo": "produce/Vo.png",
-        "Da": "produce/Da.png",
-        "Vi": "produce/Vi.png",
+        "Vo": ["produce/Vo.png", "produce/hif_lesson_vo.png"],
+        "Da": ["produce/Da.png", "produce/hif_lesson_da.png"],
+        "Vi": ["produce/Vi.png", "produce/hif_lesson_vi.png"],
     }
     EVENT_PRESET_KEYS = {
         "相談": "consult",
@@ -325,7 +330,7 @@ class ProduceChooseHIFSkillRewardAuto(_ProduceHIFRewardChoiceAction):
         chosen = self._choose_named_reward(
             context,
             preset.skill_reward_names,
-            reroll_limit=preset.reroll_limit,
+            reroll_limit=preset.reward_reroll_limit,
             screen_state="hif_skill_reward",
         )
         return chosen or self._stop_unsupported(context, "hif_skill_reward", "preset_skill_not_found")
@@ -342,7 +347,7 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
         if not self._choose_named_reward(
             context,
             preset.select_change_target_names,
-            reroll_limit=preset.reroll_limit,
+            reroll_limit=preset.select_change_reroll_limit,
             screen_state="select_change_target",
         ):
             return self._stop_unsupported(context, "select_change_target", "preset_target_card_not_found")
@@ -406,21 +411,89 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
         return True
 
 
+@AgentServer.custom_action("ProduceChooseHIFDrinkOverflowAuto")
+class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
+    """P 饮料持有上限取舍:保持默认勾选,按剩余数补勾列表项后点「残す」。
+
+    首版保守策略(SC-430 场景卡):新获得饮料默认已勾选;读「あとN個選択」,
+    N>0 时点击手持列表首项补勾,N==0 时点「残す」提交。勾选交互细节待实机校准。
+    """
+
+    REMAIN_ROI = [260, 1180, 200, 50]
+    KEEP_ROI = [210, 1090, 300, 110]
+    HAND_LIST_ROI = [54, 660, 612, 420]
+    MAX_PICKS = 4
+    PICK_ROW_OFFSETS = (0, 150)
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        for pick_index in range(self.MAX_PICKS + 1):
+            image = self._get_screenshot(context)
+            remain_text = self._read_digits_text(context, image)
+            if remain_text is None:
+                return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_not_found")
+
+            if remain_text == 0:
+                keep = self._find_text_option(context, image, ("残す",), self.KEEP_ROI)
+                if not keep:
+                    return self._stop_unsupported(context, "hif_drink_overflow", "keep_button_not_found")
+                if not self._click_box_center(context, keep.best_result.box, double=False):
+                    return self._stop_unsupported(context, "hif_drink_overflow", "keep_button_click_failed")
+                logger.success(f"HIF 饮料上限:取舍完成(补勾 {pick_index} 项)")
+                time.sleep(self.ACTION_DELAY)
+                return True
+
+            if pick_index >= self.MAX_PICKS:
+                return self._stop_unsupported(context, "hif_drink_overflow", f"pick_limit_exceeded: remain={remain_text}")
+
+            row = pick_index % len(self.PICK_ROW_OFFSETS)
+            pick_x = self.HAND_LIST_ROI[0] + self.HAND_LIST_ROI[2] // 2
+            pick_y = self.HAND_LIST_ROI[1] + 60 + self.PICK_ROW_OFFSETS[row]
+            logger.info(f"HIF 饮料上限:remain={remain_text},点击列表项 ({pick_x},{pick_y})")
+            context.tasker.controller.post_click(pick_x, pick_y).wait()
+            time.sleep(self.ACTION_DELAY)
+
+        return self._stop_unsupported(context, "hif_drink_overflow", "unreachable")
+
+    def _read_digits_text(self, context: Context, image) -> Optional[int]:
+        reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFDrinkRemain", [".*あと[0-9０-９]+個.*"], self.REMAIN_ROI)
+        if not (reco_detail and reco_detail.hit):
+            return None
+        digits = "".join(char for char in reco_detail.best_result.text if char.isdigit())
+        return int(digits) if digits else None
+
+
+@AgentServer.custom_action("ProduceHIFSelectChangeDoneAuto")
+class ProduceHIFSelectChangeDoneAuto(_ProduceHIFActionBase):
+    """変卡完成提示页:点空白处推进(页面无按钮,日志确认为空白点击)。"""
+
+    BLANK_TAP = (360, 640)
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        logger.info(f"HIF 変卡完成:点空白 ({self.BLANK_TAP[0]},{self.BLANK_TAP[1]}) 推进")
+        context.tasker.controller.post_click(*self.BLANK_TAP).wait()
+        time.sleep(self.ACTION_DELAY)
+        return True
+
+
 @AgentServer.custom_action("ProduceHIFChooseIdolAuto")
 class ProduceHIFChooseIdolAuto(_ProduceHIFActionBase):
-    """HIF 偶像选择页：校验当前选中偶像与预设一致后点击「次へ」。"""
+    """HIF 偶像选择页(步骤1)：校验当前选中偶像与预设一致后点击「プロデュース開始」。"""
 
-    TRUE_END_ROI = [430, 34, 266, 48]
-    IDOL_NAME_ROI_TRUE_END = [440, 128, 280, 64]
+    # ROI 实机校准自 MuMu 720x1280 偶像选择页(MaaFW OCR box: True End y76-96/名字 y154-211/卡名 y119-150)
+    TRUE_END_ROI = [430, 70, 266, 35]
+    IDOL_NAME_ROI_TRUE_END = [440, 140, 280, 80]
     IDOL_NAME_ROI_DEFAULT = [400, 98, 320, 64]
-    SONG_NAME_ROI_TRUE_END = [380, 90, 320, 45]
+    SONG_NAME_ROI_TRUE_END = [380, 112, 320, 42]
     SONG_NAME_ROI_DEFAULT = [340, 60, 380, 45]
     NEXT_BUTTON_ROI = [150, 1000, 420, 200]
     IDOL_SIMILARITY_THRESHOLD = 0.9
     SONG_SIMILARITY_THRESHOLD = 0.7
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        # MaaFW 对未定义 custom_action_param 的节点传 "null" 字符串,loads 结果需兜底为空 dict
         params: Dict[str, Any] = json.loads(argv.custom_action_param) if argv.custom_action_param else {}
+        if not isinstance(params, dict):
+            params = {}
         expected_idol = params.get("idol_name", "")
         expected_song = params.get("song_name", "")
 
@@ -449,7 +522,8 @@ class ProduceHIFChooseIdolAuto(_ProduceHIFActionBase):
                         context, "hif_idol_select", f"song_mismatch: got={recognized_song}, want={expected_song}, ratio={similarity:.2f}"
                     )
 
-        next_button = self._find_text_option(context, image, ("次へ",), self.NEXT_BUTTON_ROI)
+        # 底部中央大按钮实机 OCR 为「プロデュース開始」(box 约 [247,1059,225,33]),非「次へ」
+        next_button = self._find_text_option(context, image, ("プロデュース開始",), self.NEXT_BUTTON_ROI)
         if not next_button:
             return self._stop_unsupported(context, "hif_idol_select", "next_button_not_found")
         if not self._click_box_center(context, next_button.best_result.box, double=False):
@@ -461,6 +535,24 @@ class ProduceHIFChooseIdolAuto(_ProduceHIFActionBase):
         if not (reco_detail and reco_detail.hit):
             return ""
         return "".join(item.text for item in reco_detail.all_results).replace(" ", "")
+
+
+@AgentServer.custom_action("ProduceHIFStartConfirmAuto")
+class ProduceHIFStartConfirmAuto(_ProduceHIFActionBase):
+    """HIF 開始確認页(步骤2)：直接以页面默认编成点击「プロデュース開始」开始培育。"""
+
+    START_BUTTON_ROI = [150, 1000, 420, 200]
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        image = self._get_screenshot(context)
+        start_button = self._find_text_option(context, image, ("プロデュース開始",), self.START_BUTTON_ROI)
+        if not start_button:
+            return self._stop_unsupported(context, "hif_start_confirm", "start_button_not_found")
+        if not self._click_box_center(context, start_button.best_result.box, double=False):
+            return self._stop_unsupported(context, "hif_start_confirm", "start_button_click_failed")
+        logger.success("HIF 開始確認：以默认编成开始培育")
+        time.sleep(self.ACTION_DELAY)
+        return True
 
 
 @AgentServer.custom_action("ProduceHIFChooseFinalModeAuto")

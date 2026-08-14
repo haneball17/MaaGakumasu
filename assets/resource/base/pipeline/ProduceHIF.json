@@ -1,493 +1,769 @@
 {
-  "ProduceEntryHIF": {
-    "recognition": {
-      "type": "DirectHit",
-      "param": {}
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceExit",
-      "ProduceHIFFinishedFlag",
-      "ProduceHIFFailedFlag",
-      "[JumpBack]ProduceHIFIdolSelectFlag",
-      "[JumpBack]ProduceChooseHIFPItemFlag",
-      "[JumpBack]ProduceHIFSelectionModeFlag",
-      "[JumpBack]ProduceHIFRound1Flag",
-      "[JumpBack]ProduceHIFRound2Flag",
-      "[JumpBack]ProduceHIFIntervalFlag",
-      "[JumpBack]ProduceHIFDrinkOverflowFlag",
-      "[JumpBack]ProduceHIFScoreSettlementFlag",
-      "[JumpBack]ProduceHIFMemoryFlag",
-      "[JumpBack]ProduceHIFSelectChangeSourceFlag",
-      "[JumpBack]ProduceHIFSelectChangeTargetFlag",
-      "[JumpBack]ProduceHIFDrinkRewardFlag",
-      "[JumpBack]ProduceHIFSkillRewardFlag",
-      "[JumpBack]ProduceHIFClassOptionFlag",
-      "[JumpBack]ProduceHIFPublicLessonResultFlag",
-      "[JumpBack]ProduceHIFConsultFlag",
-      "[JumpBack]ProduceHIFFinalModeFlag",
-      "[JumpBack]ProduceChooseHIFEventFlag",
-      "ProduceHIFUnknownStop"
-    ]
-  },
-  "ProduceHIFSelectionModeFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*選抜試験モード.*",
-          ".*選抜試験.*"
+    "ProduceEntryHIF": {
+        "recognition": {
+            "type": "DirectHit",
+            "param": {}
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceExit",
+            "ProduceHIFFinishedFlag",
+            "ProduceHIFFailedFlag",
+            "[JumpBack]ProduceHIFRound1Flag",
+            "[JumpBack]ProduceHIFRound2Flag",
+            "[JumpBack]ProduceHIFPrepRoot"
         ],
-        "roi": [
-          40,
-          40,
-          640,
-          220
+        "focus": {
+            "Node.Action.Succeeded": "[color:LimeGreen]HIF: 进入路由主根[/color]"
+        }
+    },
+    "ProduceHIFPrepRoot": {
+        "recognition": {
+            "type": "DirectHit",
+            "param": {}
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "[JumpBack]ProduceHIFIdolSelectFlag",
+            "[JumpBack]ProduceHIFStartConfirmFlag",
+            "[JumpBack]ProduceChooseHIFPItemFlag",
+            "[JumpBack]ProduceHIFSelectionModeFlag",
+            "[JumpBack]ProduceHIFFinalModeFlag"
+        ],
+        "timeout": 20000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "[color:LimeGreen]HIF: 准备段路由(偶像选择/開始確認/PItem)[/color]"
+        }
+    },
+    "ProduceHIFScheduleRoot": {
+        "recognition": {
+            "type": "DirectHit",
+            "param": {}
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "[JumpBack]ProduceHIFRound1Flag",
+            "[JumpBack]ProduceHIFIntervalFlag",
+            "[JumpBack]ProduceHIFScoreSettlementFlag",
+            "[JumpBack]ProduceHIFMemoryFlag",
+            "[JumpBack]ProduceChooseHIFEventFlag",
+            "[JumpBack]ProduceHIFClassOptionFlag",
+            "[JumpBack]ProduceHIFPublicLessonResultFlag",
+            "[JumpBack]ProduceHIFDrinkRewardFlag",
+            "[JumpBack]ProduceHIFSkillRewardFlag",
+            "[JumpBack]ProduceHIFRewardConfirmFlag",
+            "[JumpBack]ProduceHIFDrinkOverflowFlag",
+            "[JumpBack]ProduceHIFSelectChangeTargetFlag",
+            "[JumpBack]ProduceHIFSelectChangeSourceFlag",
+            "[JumpBack]ProduceHIFSelectChangeDoneFlag",
+            "[JumpBack]ProduceHIFConsultFlag"
+        ],
+        "timeout": 40000,
+        "on_error": [
+            "ProduceHIFUnknownStop"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "[color:LimeGreen]HIF: 日程段路由(Day1-Day6+変卡+奖励+相談)[/color]"
+        }
+    },
+    "ProduceHIFSelectionModeFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*選抜試験モード.*",
+                    ".*選抜試験.*"
+                ],
+                "roi": [
+                    40,
+                    40,
+                    640,
+                    220
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceChooseHIFEventFlag",
+            "ProduceHIFSelectionModeContinueButton",
+            "ProduceHIFUnknownStop"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 選抜試験モード页(文案未取证,疑似不存在)[/color]"
+        }
+    },
+    "ProduceHIFFinalModeFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*本戦モード.*",
+                    ".*本戦.*"
+                ],
+                "roi": [
+                    40,
+                    40,
+                    640,
+                    220
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceChooseHIFEventFlag",
+            "ProduceHIFUnknownStop"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 本戦モード页(文案未取证,疑似不存在)[/color]"
+        }
+    },
+    "ProduceHIFRound1Flag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*残りターン.*"
+                ],
+                "roi": [
+                    13,
+                    43,
+                    120,
+                    128
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFRound1ObserveFlag"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=Round1对局(残りターン盘锚)[/color]"
+        }
+    },
+    "ProduceHIFRound2Flag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*Round\\s*2.*",
+                    ".*ROUND\\s*2.*",
+                    ".*2nd.*Round.*"
+                ],
+                "roi": [
+                    40,
+                    40,
+                    640,
+                    220
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFUnknownStop"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: Round2(首版外,记录后停止)[/color]"
+        }
+    },
+    "ProduceHIFFinishedFlag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/finished.png"
+                ],
+                "threshold": 0.9
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceFinished"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 培育完成[/color]"
+        }
+    },
+    "ProduceHIFUnknownStop": {
+        "recognition": {
+            "type": "DirectHit",
+            "param": {}
+        },
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Action.Succeeded": {
+                "content": "⚠️ HIF 遇到未覆盖页面,已安全停止(无猜测性点击)",
+                "display": [
+                    "log",
+                    "notification"
+                ]
+            }
+        }
+    },
+    "ProduceChooseHIFEventFlag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/hif_lesson_vo.png",
+                    "produce/hif_lesson_da.png",
+                    "produce/hif_lesson_vi.png",
+                    "produce/Da.png",
+                    "produce/Vi.png",
+                    "produce/Vo.png",
+                    "produce/chat.png",
+                    "produce/lesson.png",
+                    "produce/event.png",
+                    "produce/go_out.png"
+                ],
+                "roi": [
+                    0,
+                    800,
+                    720,
+                    320
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFEventAuto"
+            }
+        }
+    },
+    "ProduceChooseHIFPItemFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*カスタムPアイテム.*",
+                    ".*Pアイテム.*"
+                ],
+                "roi": [
+                    40,
+                    40,
+                    640,
+                    220
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFPItemAuto"
+            }
+        },
+        "post_delay": 300,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: PItem选择页(存在性未取证)[/color]"
+        }
+    },
+    "ProduceHIFSelectionModeContinueButton": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "next.png",
+                    "produce/decide.png"
+                ],
+                "order_by": "Score",
+                "roi": [
+                    200,
+                    1000,
+                    320,
+                    160
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target_offset": [
+                    0,
+                    0,
+                    0,
+                    -10
+                ]
+            }
+        },
+        "pre_delay": 100,
+        "post_delay": 150
+    },
+    "ProduceHIFFailedFlag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/exam_failed.png"
+                ],
+                "roi": [
+                    0,
+                    700,
+                    720,
+                    250
+                ],
+                "threshold": 0.9
+            }
+        },
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": {
+                "content": "❌ HIF 考试失败",
+                "display": [
+                    "log",
+                    "notification"
+                ]
+            }
+        }
+    },
+    "ProduceHIFRound1ObserveFlag": {
+        "recognition": {
+            "type": "DirectHit",
+            "param": {}
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFRound1Observe"
+            }
+        },
+        "next": [
+            "ProduceHIFRound1ReachedStop"
         ]
-      }
     },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
+    "ProduceHIFRound1ReachedStop": {
+        "recognition": {
+            "type": "DirectHit",
+            "param": {}
+        },
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Action.Succeeded": {
+                "content": "✅ HIF 已安全到达 Round1，首版观察任务结束",
+                "display": [
+                    "log",
+                    "notification"
+                ]
+            }
+        }
     },
-    "next": [
-      "ProduceChooseHIFEventFlag",
-      "ProduceHIFSelectionModeContinueButton",
-      "ProduceHIFUnknownStop"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=????[/color]"
+    "ProduceHIFClassOptionFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*余裕です！.*",
+                    ".*長い道のりでした.*",
+                    ".*必ず勝ちます.*",
+                    ".*不安です.*",
+                    ".*勝ってきます.*",
+                    ".*楽しんできます.*"
+                ],
+                "roi": [
+                    40,
+                    620,
+                    640,
+                    360
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFClassOptionAuto"
+            }
+        }
+    },
+    "ProduceHIFDrinkRewardFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*受け取るPドリンクを選んでください.*"
+                ],
+                "roi": [
+                    80,
+                    560,
+                    560,
+                    180
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFDrinkRewardAuto"
+            }
+        }
+    },
+    "ProduceHIFSkillRewardFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*受け取るスキルカードを選んでください.*"
+                ],
+                "roi": [
+                    80,
+                    560,
+                    560,
+                    180
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFSkillRewardAuto"
+            }
+        }
+    },
+    "ProduceHIFRewardConfirmFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*受け取る.*"
+                ],
+                "roi": [
+                    200,
+                    1000,
+                    320,
+                    150
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 500
+    },
+    "ProduceHIFSelectChangeTargetFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*チェンジで獲得するスキルカードを選んでください.*"
+                ],
+                "roi": [
+                    60,
+                    260,
+                    600,
+                    110
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFSelectChangeTargetAuto"
+            }
+        }
+    },
+    "ProduceHIFSelectChangeSourceFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*チェンジするスキルカードを選択してください.*"
+                ],
+                "roi": [
+                    80,
+                    540,
+                    560,
+                    110
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFSelectChangeSourceAuto"
+            }
+        }
+    },
+    "ProduceHIFSelectChangeDoneFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*チェンジしました.*"
+                ],
+                "roi": [
+                    56,
+                    940,
+                    610,
+                    140
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFSelectChangeDoneAuto"
+            }
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 変卡完成,点空白推进[/color]"
+        }
+    },
+    "ProduceHIFConsultFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*Pポイントと交換するものを選んでください.*"
+                ],
+                "roi": [
+                    100,
+                    250,
+                    520,
+                    120
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFConsultAuto"
+            }
+        }
+    },
+    "ProduceHIFPublicLessonResultFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*公開レッスン.*"
+                ],
+                "roi": [
+                    20,
+                    20,
+                    340,
+                    140
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFKnownNextButton",
+            "ProduceHIFUnknownStop"
+        ]
+    },
+    "ProduceHIFKnownNextButton": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "next.png",
+                    "produce/continue.png"
+                ],
+                "roi": [
+                    180,
+                    1000,
+                    360,
+                    180
+                ],
+                "threshold": 0.8
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 500
+    },
+    "ProduceHIFDrinkOverflowFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*Pドリンク所持上限.*"
+                ],
+                "roi": [
+                    40,
+                    70,
+                    400,
+                    100
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFDrinkOverflowAuto"
+            }
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 饮料上限取舍(保持默认+补勾+残す)[/color]"
+        }
+    },
+    "ProduceHIFIntervalFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*インターバル.*"
+                ],
+                "roi": [
+                    20,
+                    20,
+                    360,
+                    150
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFUnknownStop"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF 未覆盖：Interval[/color]"
+        }
+    },
+    "ProduceHIFScoreSettlementFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*優勝.*"
+                ],
+                "roi": [
+                    20,
+                    20,
+                    240,
+                    160
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFUnknownStop"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF 未覆盖：结算[/color]"
+        }
+    },
+    "ProduceHIFMemoryFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*MEMORY.*",
+                    ".*メモリー.*"
+                ],
+                "roi": [
+                    20,
+                    120,
+                    680,
+                    220
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFUnknownStop"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF 未覆盖：Memory[/color]"
+        }
+    },
+    "ProduceHIFIdolSelectFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*アイドル選択.*"
+                ],
+                "roi": [
+                    0,
+                    0,
+                    720,
+                    80
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFChooseIdolAuto"
+            }
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=偶像选择，校验当前偶像后点击下一步[/color]"
+        }
+    },
+    "ProduceHIFStartConfirmFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*選択中の選抜試験.*"
+                ],
+                "roi": [
+                    0,
+                    530,
+                    720,
+                    80
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFStartConfirmAuto"
+            }
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=開始確認(步骤2)，点击プロデュース開始[/color]"
+        }
     }
-  },
-  "ProduceHIFFinalModeFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*本戦モード.*",
-          ".*本戦.*"
-        ],
-        "roi": [
-          40,
-          40,
-          640,
-          220
-        ]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceChooseHIFEventFlag",
-      "ProduceHIFUnknownStop"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=??[/color]"
-    }
-  },
-  "ProduceHIFRound1Flag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*Round\\s*1.*",
-          ".*ROUND\\s*1.*",
-          ".*1st.*Round.*"
-        ],
-        "roi": [
-          40,
-          40,
-          640,
-          220
-        ]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceHIFRound1ObserveFlag"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=Round1[/color]"
-    }
-  },
-  "ProduceHIFRound2Flag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*Round\\s*2.*",
-          ".*ROUND\\s*2.*",
-          ".*2nd.*Round.*"
-        ],
-        "roi": [
-          40,
-          40,
-          640,
-          220
-        ]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceHIFUnknownStop"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=Round2[/color]"
-    }
-  },
-  "ProduceHIFGenerationFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*メモリー生成.*"
-        ],
-        "roi": [
-          260,
-          900,
-          200,
-          120
-        ]
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceGeneration"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=????[/color]"
-    }
-  },
-  "ProduceHIFFinishedFlag": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": [
-          "produce/finished.png"
-        ],
-        "threshold": 0.9
-      }
-    },
-    "action": {
-      "type": "DoNothing",
-      "param": {}
-    },
-    "next": [
-      "ProduceFinished"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:LimeGreen]??: HIF ????=?????[/color]"
-    }
-  },
-  "ProduceHIFUnknownStop": {
-    "recognition": {
-      "type": "DirectHit",
-      "param": {}
-    },
-    "action": {
-      "type": "StopTask",
-      "param": {}
-    },
-    "focus": {
-      "Node.Action.Succeeded": {
-        "content": "? HIF ???????????????????",
-        "display": [
-          "log",
-          "notification"
-        ]
-      }
-    }
-  },
-  "ProduceChooseHIFEventFlag": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": [
-          "produce/Da.png",
-          "produce/Vi.png",
-          "produce/Vo.png",
-          "produce/chat.png",
-          "produce/lesson.png",
-          "produce/event.png",
-          "produce/go_out.png"
-        ],
-        "roi": [
-          0,
-          800,
-          720,
-          320
-        ]
-      }
-    },
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ProduceChooseHIFEventAuto"
-      }
-    }
-  },
-  "ProduceChooseHIFPItemFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {
-        "expected": [
-          ".*カスタムPアイテム.*",
-          ".*Pアイテム.*"
-        ],
-        "roi": [
-          40,
-          40,
-          640,
-          220
-        ]
-      }
-    },
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ProduceChooseHIFPItemAuto"
-      }
-    },
-    "post_delay": 300
-  },
-  "ProduceHIFButton": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": [
-          "next.png",
-          "produce/retry.png",
-          "produce/decide.png",
-          "produce/skip_confirm.png",
-          "produce/drink_no.png",
-          "produce/close.png",
-          "produce/yes.png",
-          "produce/ok.png",
-          "produce/start.png",
-          "cancel.png"
-        ],
-        "order_by": "Score",
-        "roi": [
-          0,
-          780,
-          720,
-          500
-        ]
-      }
-    },
-    "action": {
-      "type": "Click",
-      "param": {
-        "target_offset": [
-          0,
-          0,
-          0,
-          -10
-        ]
-      }
-    },
-    "pre_delay": 100,
-    "post_delay": 150
-  },
-  "ProduceHIFSelectionModeContinueButton": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": [
-          "next.png",
-          "produce/decide.png"
-        ],
-        "order_by": "Score",
-        "roi": [
-          200,
-          1000,
-          320,
-          160
-        ]
-      }
-    },
-    "action": {
-      "type": "Click",
-      "param": {
-        "target_offset": [
-          0,
-          0,
-          0,
-          -10
-        ]
-      }
-    },
-    "pre_delay": 100,
-    "post_delay": 150
-  },
-  "ProduceHIFFailedFlag": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {
-        "template": [
-          "produce/exam_failed.png"
-        ],
-        "roi": [
-          0,
-          700,
-          720,
-          250
-        ],
-        "threshold": 0.9
-      }
-    },
-    "action": {
-      "type": "StopTask",
-      "param": {}
-    },
-    "focus": {
-      "Node.Recognition.Succeeded": {
-        "content": "❌ HIF 考试失败",
-        "display": [
-          "log",
-          "notification"
-        ]
-      }
-    }
-  },
-  "ProduceHIFRound1ObserveFlag": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFRound1Observe"}},
-    "next": ["ProduceHIFRound1ReachedStop"]
-  },
-  "ProduceHIFRound1ReachedStop": {
-    "recognition": {"type": "DirectHit", "param": {}},
-    "action": {"type": "StopTask", "param": {}},
-    "focus": {
-      "Node.Action.Succeeded": {
-        "content": "✅ HIF 已安全到达 Round1，首版观察任务结束",
-        "display": ["log", "notification"]
-      }
-    }
-  },
-  "ProduceHIFClassOptionFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*余裕です！.*", ".*長い道のりでした.*"], "roi": [40, 620, 640, 360]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFClassOptionAuto"}}
-  },
-  "ProduceHIFDrinkRewardFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*受け取るPドリンクを選んでください.*"], "roi": [80, 560, 560, 180]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFDrinkRewardAuto"}},
-    "next": ["ProduceHIFRewardConfirmFlag", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFSkillRewardFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*受け取るスキルカードを選んでください.*"], "roi": [80, 560, 560, 180]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSkillRewardAuto"}},
-    "next": ["ProduceHIFRewardConfirmFlag", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFRewardConfirmFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*受け取る.*"], "roi": [200, 1000, 320, 150]}
-    },
-    "action": {"type": "Click", "param": {}},
-    "post_delay": 500
-  },
-  "ProduceHIFSelectChangeTargetFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*チェンジで獲得するスキルカードを選んでください.*"], "roi": [60, 260, 600, 110]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSelectChangeTargetAuto"}}
-  },
-  "ProduceHIFSelectChangeSourceFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*チェンジするスキルカードを選択してください.*"], "roi": [80, 540, 560, 110]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceChooseHIFSelectChangeSourceAuto"}}
-  },
-  "ProduceHIFConsultFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*Pポイントと交換するものを選んでください.*"], "roi": [100, 250, 520, 120]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFConsultAuto"}}
-  },
-  "ProduceHIFPublicLessonResultFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*公開レッスン.*"], "roi": [20, 20, 340, 140]}
-    },
-    "action": {"type": "DoNothing", "param": {}},
-    "next": ["ProduceHIFKnownNextButton", "ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFKnownNextButton": {
-    "recognition": {
-      "type": "TemplateMatch",
-      "param": {"template": ["next.png", "produce/continue.png"], "roi": [180, 1000, 360, 180], "threshold": 0.8}
-    },
-    "action": {"type": "Click", "param": {}},
-    "post_delay": 500
-  },
-  "ProduceHIFDrinkOverflowFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*Pドリンク所持上限.*"], "roi": [40, 70, 400, 100]}
-    },
-    "action": {"type": "DoNothing", "param": {}},
-    "next": ["ProduceHIFUnknownStop"],
-    "focus": {"Node.Recognition.Succeeded": "[color:Orange]HIF 未覆盖：P 饮料上限[/color]"}
-  },
-  "ProduceHIFIntervalFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*インターバル.*"], "roi": [20, 20, 360, 150]}
-    },
-    "action": {"type": "DoNothing", "param": {}},
-    "next": ["ProduceHIFUnknownStop"],
-    "focus": {"Node.Recognition.Succeeded": "[color:Orange]HIF 未覆盖：Interval[/color]"}
-  },
-  "ProduceHIFScoreSettlementFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*優勝.*"], "roi": [20, 20, 240, 160]}
-    },
-    "action": {"type": "DoNothing", "param": {}},
-    "next": ["ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFMemoryFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*MEMORY.*", ".*メモリー.*"], "roi": [20, 120, 680, 220]}
-    },
-    "action": {"type": "DoNothing", "param": {}},
-    "next": ["ProduceHIFUnknownStop"]
-  },
-  "ProduceHIFIdolSelectFlag": {
-    "recognition": {
-      "type": "OCR",
-      "param": {"expected": [".*アイドル選択.*"], "roi": [0, 0, 720, 80]}
-    },
-    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFChooseIdolAuto"}},
-    "next": ["[JumpBack]ProduceEntryHIF"],
-    "focus": {"Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=偶像选择，校验当前偶像后点击下一步[/color]"}
-  }
 }
