@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from pathlib import Path
 from importlib import import_module
 
+import numpy as np
 import pytest
 
 from agent.hif import (
@@ -342,13 +343,41 @@ def test_hif_round1_flag_anchors_on_remaining_turn_counter():
     assert flag["roi"] == [13, 43, 120, 128]
 
 
-def test_hif_event_flag_includes_hif_lesson_templates():
+def test_hif_event_flag_uses_gradient_card_template_with_exact_method():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
-    templates = payload["ProduceChooseHIFEventFlag"]["recognition"]["param"]["template"]
-    assert "produce/hif_lesson_vo.png" in templates
-    assert "produce/hif_lesson_da.png" in templates
-    assert "produce/hif_lesson_vi.png" in templates
+    param = payload["ProduceChooseHIFEventFlag"]["recognition"]["param"]
+    assert "produce/hif_event_card.png" in param["template"]
+    assert param["method"] == 10001
+    assert Path("assets/resource/base/image/produce/hif_event_card.png").exists()
+    for legacy in ("hif_lesson_vo.png", "hif_lesson_da.png", "hif_lesson_vi.png"):
+        assert legacy not in json.dumps(param)
+
+
+def test_hif_attribute_card_scan_classifies_vo_da_vi_by_fan_color():
+    sys.path.insert(0, str(Path("agent").resolve()))
+    action_cls = import_module("custom.action.produce_hif").ProduceChooseHIFEventAuto
+
+    canvas = np.zeros((1280, 720, 3), dtype=np.uint8)
+    canvas[:] = 240
+    fans = {
+        "Vo": (119, (208, 144, 207)),
+        "Da": (285, (99, 185, 245)),
+        "Vi": (448, (213, 203, 161)),
+    }
+    fan_dx, fan_y, fan_w, fan_h = action_cls.FAN_REGION
+    band = canvas[action_cls.GRADIENT_BAND]
+    for _, (card_x, rgb) in fans.items():
+        canvas[fan_y : fan_y + fan_h, card_x + fan_dx : card_x + fan_dx + fan_w] = rgb
+        grad_slice = band[:, card_x + 10 : card_x + 100]
+        grad_slice[:, :, 0] = 146
+        grad_slice[:, :, 1] = 143
+        grad_slice[:, :, 2] = 250
+
+    cards = action_cls._scan_attribute_cards(action_cls, canvas)
+    assert [card["name"] for card in cards] == ["Vo", "Da", "Vi"]
+    for card in cards:
+        assert card["box"][2:] == [1, 1] and card["box"][1] == 1000
 
 
 def test_hif_drink_overflow_and_select_change_done_have_live_actions():

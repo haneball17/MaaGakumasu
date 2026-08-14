@@ -3,6 +3,7 @@ import time
 from typing import Any, Dict, List, Optional
 from difflib import SequenceMatcher
 
+import numpy as np
 from utils import logger
 from maa.context import Context
 from maa.custom_action import CustomAction
@@ -120,9 +121,6 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         "おでかけ": "produce/go_out.png",
         "课程": "produce/lesson.png",
         "活动": "produce/event.png",
-        "Vo": ["produce/Vo.png", "produce/hif_lesson_vo.png"],
-        "Da": ["produce/Da.png", "produce/hif_lesson_da.png"],
-        "Vi": ["produce/Vi.png", "produce/hif_lesson_vi.png"],
     }
     EVENT_PRESET_KEYS = {
         "相談": "consult",
@@ -133,6 +131,21 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         "Da": "Da",
         "Vi": "Vi",
     }
+
+    # HIF 日程候选卡属性扫描(实机 hif_day1.png 720x1280 校准,场景卡 SC-201/501)
+    # 卡片结构:左上紫蓝渐变 [146,143,255]±30,右下属性扇形(粉=Vo/蓝=Da/橙=Vi)
+    GRADIENT_BAND = slice(940, 970)
+    GRADIENT_COLOR = (146, 143, 255)
+    GRADIENT_MIN_CLUSTER_WIDTH = 30
+    CARD_TOP_LEFT_Y = 919
+    CARD_CLICK_CENTER = (70, 1000 - 919)
+    FAN_REGION = (74, 992, 50, 38)
+    ATTRIBUTE_COLORS = {
+        "Vo": (208, 144, 207),
+        "Da": (99, 185, 245),
+        "Vi": (213, 203, 161),
+    }
+    ATTRIBUTE_COLOR_MAX_DISTANCE = 60
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         logger.success("事件: HIF 选择日程")
@@ -189,18 +202,73 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
     def _get_available_events(self, context: Context, image) -> List[Dict[str, Any]]:
         events: List[Dict[str, Any]] = []
         log_names: List[str] = []
-        roi = [0, 840, 720, 280]
 
+        for event in self._scan_attribute_cards(image):
+            events.append(event)
+            log_names.append(event["name"])
+
+        roi = [0, 840, 720, 280]
         for event_name, template in self.EVENT_CONFIG.items():
             reco_detail = self._run_template(context, image, "ProduceRecognitionHIFEvent", template, roi, threshold=0.78)
             if reco_detail and reco_detail.hit:
-                event = {"name": event_name, "box": reco_detail.best_result.box}
-                events.append(event)
+                events.append({"name": event_name, "box": reco_detail.best_result.box})
                 log_names.append(event_name)
 
         if log_names:
             logger.info(f"HIF 可用日程: {', '.join(log_names)}")
         return events
+
+    def _scan_attribute_cards(self, image) -> List[Dict[str, Any]]:
+        """两步法识别 Vo/Da/Vi 授業候选:渐变带定位卡片列,扇形平均色分类属性。
+
+        模板匹配对 50x38 纯色小扇形区分度不足(实测同源仅 0.55-0.65),
+        颜色分类距离 <30,已对 hif_day1.png 三卡全中(9/11/14)。
+        """
+        arr = np.asarray(image)
+        if arr.ndim != 3 or arr.shape[0] < self.FAN_REGION[1] + self.FAN_REGION[3]:
+            return []
+
+        band = arr[self.GRADIENT_BAND].astype(int)
+        r, g, b = band[:, :, 0], band[:, :, 1], band[:, :, 2]
+        gr, gg, gb = self.GRADIENT_COLOR
+        gradient_mask = (np.abs(r - gr) < 30) & (np.abs(g - gg) < 30) & (b > 225)
+        xs_sorted = np.sort(np.nonzero(gradient_mask)[1]) if gradient_mask.any() else np.array([], dtype=int)
+        clusters: List[tuple[int, int]] = []
+        start = prev = None
+        for x in xs_sorted:
+            if prev is None:
+                start = prev = int(x)
+                continue
+            if x - prev > 20:
+                clusters.append((start, prev))
+                start = int(x)
+            prev = int(x)
+        if start is not None:
+            clusters.append((start, prev))
+
+        cards: List[Dict[str, Any]] = []
+        for cluster_start, cluster_end in clusters:
+            if cluster_end - cluster_start < self.GRADIENT_MIN_CLUSTER_WIDTH:
+                continue
+            fan_dx, fan_y, fan_w, fan_h = self.FAN_REGION
+            fan = arr[fan_y : fan_y + fan_h, cluster_start + fan_dx : cluster_start + fan_dx + fan_w].astype(int)
+            if fan.size == 0:
+                continue
+            avg = fan.reshape(-1, 3).mean(axis=0)
+            best_name, best_distance = None, 1e9
+            for name, ref in self.ATTRIBUTE_COLORS.items():
+                distance = float(np.sqrt(((avg - np.array(ref)) ** 2).sum()))
+                if distance < best_distance:
+                    best_name, best_distance = name, distance
+            if best_name is None or best_distance > self.ATTRIBUTE_COLOR_MAX_DISTANCE:
+                logger.warning(f"HIF 候选卡属性色未识别: cluster_x={cluster_start}, RGB={avg.astype(int)}, d={best_distance:.0f}")
+                continue
+            card_x = cluster_start - 10
+            center_x = card_x + self.CARD_CLICK_CENTER[0]
+            center_y = self.CARD_TOP_LEFT_Y + self.CARD_CLICK_CENTER[1]
+            cards.append({"name": best_name, "box": [center_x, center_y, 1, 1], "attribute_rgb": avg.astype(int).tolist()})
+            logger.info(f"HIF 候选卡: {best_name} @({center_x},{center_y}) RGB={avg.astype(int).tolist()} d={best_distance:.0f}")
+        return cards
 
 
 @AgentServer.custom_action("ProduceChooseHIFPItemAuto")
