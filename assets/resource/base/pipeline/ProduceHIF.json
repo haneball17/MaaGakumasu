@@ -36,7 +36,7 @@
             "[JumpBack]ProduceHIFSelectionModeFlag",
             "[JumpBack]ProduceHIFFinalModeFlag"
         ],
-        "timeout": 20000,
+        "timeout": 12000,
         "on_error": [
             "ProduceHIFScheduleRoot"
         ],
@@ -55,20 +55,21 @@
         },
         "next": [
             "[JumpBack]ProduceHIFRound1Flag",
-            "[JumpBack]ProduceHIFIntervalFlag",
-            "[JumpBack]ProduceHIFScoreSettlementFlag",
-            "[JumpBack]ProduceHIFMemoryFlag",
-            "[JumpBack]ProduceChooseHIFEventFlag",
-            "[JumpBack]ProduceHIFClassOptionFlag",
-            "[JumpBack]ProduceHIFPublicLessonResultFlag",
+            "[JumpBack]ProduceHIFSelectChangeTargetFlag",
+            "[JumpBack]ProduceHIFSelectChangeSourceFlag",
+            "[JumpBack]ProduceHIFSelectChangeDoneFlag",
             "[JumpBack]ProduceHIFDrinkRewardFlag",
             "[JumpBack]ProduceHIFSkillRewardFlag",
             "[JumpBack]ProduceHIFRewardConfirmFlag",
             "[JumpBack]ProduceHIFDrinkOverflowFlag",
-            "[JumpBack]ProduceHIFSelectChangeTargetFlag",
-            "[JumpBack]ProduceHIFSelectChangeSourceFlag",
-            "[JumpBack]ProduceHIFSelectChangeDoneFlag",
-            "[JumpBack]ProduceHIFConsultFlag"
+            "[JumpBack]ProduceHIFConsultFlag",
+            "[JumpBack]ProduceHIFSPCardFlag",
+            "[JumpBack]ProduceHIFClassOptionFlag",
+            "[JumpBack]ProduceChooseHIFEventFlag",
+            "[JumpBack]ProduceHIFPublicLessonResultFlag",
+            "[JumpBack]ProduceHIFIntervalFlag",
+            "[JumpBack]ProduceHIFScoreSettlementFlag",
+            "[JumpBack]ProduceHIFMemoryFlag"
         ],
         "timeout": 40000,
         "on_error": [
@@ -143,10 +144,10 @@
                     ".*残りターン.*"
                 ],
                 "roi": [
-                    13,
-                    43,
-                    120,
-                    128
+                    5,
+                    0,
+                    180,
+                    60
                 ]
             }
         },
@@ -231,28 +232,17 @@
     },
     "ProduceChooseHIFEventFlag": {
         "recognition": {
-            "type": "TemplateMatch",
+            "type": "OCR",
             "param": {
-                "template": [
-                    "produce/hif_event_card.png",
-                    "produce/chat.png",
-                    "produce/go_out.png",
-                    "produce/lesson.png",
-                    "produce/event.png"
+                "expected": [
+                    ".*H.I.F本戦まで.*",
+                    ".*本戦まで.*"
                 ],
                 "roi": [
-                    0,
-                    800,
-                    720,
-                    320
-                ],
-                "method": 10001,
-                "threshold": [
-                    0.85,
-                    0.7,
-                    0.7,
-                    0.7,
-                    0.7
+                    32,
+                    25,
+                    160,
+                    145
                 ]
             }
         },
@@ -263,7 +253,7 @@
             }
         },
         "focus": {
-            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=日程候选,按预设选择并双击执行[/color]"
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=日程候选(本戦まで倒计时锚),按预设选择[/color]"
         }
     },
     "ProduceChooseHIFPItemFlag": {
@@ -388,23 +378,44 @@
             }
         }
     },
+    "ProduceHIFSPCardFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*レッスン終了時.*"
+                ],
+                "roi": [
+                    40,
+                    600,
+                    660,
+                    560
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceChooseHIFSPCardAuto"
+            }
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=SP课程效果选择,点第一张卡发动[/color]"
+        }
+    },
     "ProduceHIFClassOptionFlag": {
         "recognition": {
             "type": "OCR",
             "param": {
                 "expected": [
-                    ".*余裕です！.*",
-                    ".*長い道のりでした.*",
-                    ".*必ず勝ちます.*",
-                    ".*不安です.*",
-                    ".*勝ってきます.*",
-                    ".*楽しんできます.*"
+                    ".*授業.*",
+                    ".*おでかけ.*"
                 ],
                 "roi": [
-                    40,
-                    620,
-                    640,
-                    360
+                    32,
+                    38,
+                    160,
+                    118
                 ]
             }
         },
@@ -413,6 +424,9 @@
             "param": {
                 "custom_action": "ProduceChooseHIFClassOptionAuto"
             }
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=授業/おでかけ事件选项(标题锚),按预设选择选项[/color]"
         }
     },
     "ProduceHIFDrinkRewardFlag": {
@@ -623,7 +637,7 @@
             "type": "OCR",
             "param": {
                 "expected": [
-                    ".*Pドリンク所持上限.*"
+                    ".*[PＰ]ドリンク所持上限.*"
                 ],
                 "roi": [
                     40,

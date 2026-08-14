@@ -1,3 +1,4 @@
+import re
 import json
 import time
 from typing import Any, Dict, List, Optional
@@ -52,9 +53,9 @@ class _ProduceHIFActionBase(CustomAction):
 
     @staticmethod
     def _stop_unknown(context: Context, reason: str) -> bool:
-        logger.warning(f"HIF ??: {reason}")
-        context.run_task("ProduceHIFUnknownStop")
-        return True
+        logger.warning(f"HIF 安全停止: {reason}")
+        # 返回 False 让节点动作失败终止任务;run_task(UnknownStop) 只能停子任务流,父管线会继续轮询
+        return False
 
     @staticmethod
     def _get_preset(argv: CustomAction.RunArg) -> HIFPreset:
@@ -62,8 +63,7 @@ class _ProduceHIFActionBase(CustomAction):
 
     def _stop_unsupported(self, context: Context, screen_state: str, reason: str) -> bool:
         logger.warning(f"HIF 安全停止: screen_state={screen_state}, reason={reason}")
-        context.run_task("ProduceHIFUnknownStop")
-        return True
+        return False
 
     def _find_text_option(self, context: Context, image, phrases: tuple[str, ...], roi: list[int]):
         for phrase in phrases:
@@ -199,11 +199,21 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         time.sleep(self.ACTION_DELAY)
         return True
 
+    # HIF 公開レッスン候选卡(实机 hif_day2.png 校准):三卡底部彩色横条
+    # 有固定文字「Vo./Da./Vi.公開レッスン」,OCR 前缀映射属性;SP 徽章与体力标记三卡相同不作区分
+    PUBLIC_LESSON_ROI = [80, 1040, 570, 100]
+    PUBLIC_LESSON_CLICK_Y = 1010
+    PUBLIC_LESSON_PREFIXES = {"Vo.": "Vo", "Da.": "Da", "Vi.": "Vi"}
+
     def _get_available_events(self, context: Context, image) -> List[Dict[str, Any]]:
         events: List[Dict[str, Any]] = []
         log_names: List[str] = []
 
         for event in self._scan_attribute_cards(image):
+            events.append(event)
+            log_names.append(event["name"])
+
+        for event in self._scan_public_lessons(context, image):
             events.append(event)
             log_names.append(event["name"])
 
@@ -218,6 +228,24 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
             logger.info(f"HIF 可用日程: {', '.join(log_names)}")
         return events
 
+    def _scan_public_lessons(self, context: Context, image) -> List[Dict[str, Any]]:
+        """识别公開レッスン候选卡:OCR 底部横条固定文字,前缀映射 Vo/Da/Vi。"""
+        reco_detail = self._run_ocr(
+            context, image, "ProduceRecognitionHIFPublicLesson", [".*公開レッスン.*"], self.PUBLIC_LESSON_ROI
+        )
+        lessons: List[Dict[str, Any]] = []
+        if not (reco_detail and reco_detail.all_results):
+            return lessons
+        for item in reco_detail.all_results:
+            text = item.text.replace(" ", "")
+            for prefix, name in self.PUBLIC_LESSON_PREFIXES.items():
+                if prefix in text:
+                    center_x = item.box[0] + item.box[2] // 2
+                    lessons.append({"name": name, "box": [center_x, self.PUBLIC_LESSON_CLICK_Y, 1, 1]})
+                    logger.info(f"HIF 公開レッスン候选: {name} @({center_x},{self.PUBLIC_LESSON_CLICK_Y}) text={text!r}")
+                    break
+        return lessons
+
     def _scan_attribute_cards(self, image) -> List[Dict[str, Any]]:
         """两步法识别 Vo/Da/Vi 授業候选:渐变带定位卡片列,扇形平均色分类属性。
 
@@ -226,7 +254,11 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         """
         arr = np.asarray(image)
         if arr.ndim != 3 or arr.shape[0] < self.FAN_REGION[1] + self.FAN_REGION[3]:
+            logger.warning(f"HIF 色扫描: 图像形状异常 {None if not hasattr(arr, 'shape') else arr.shape}")
             return []
+        # maafw post_screencap 返回 OpenCV BGR 序,属性色参考值为 RGB,需翻转
+        if arr.shape[2] >= 3:
+            arr = arr[..., :3][..., ::-1]
 
         band = arr[self.GRADIENT_BAND].astype(int)
         r, g, b = band[:, :, 0], band[:, :, 1], band[:, :, 2]
@@ -330,21 +362,57 @@ class ProduceChooseHIFPItemAuto(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceChooseHIFClassOptionAuto")
 class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
-    """选择已在实机记录中确认的好调授業选项。"""
+    """授業事件选项:好调文案优先,未命中时选最上方的非トラブル追加选项。
+
+    选项文案随事件而变(实测 メンタルケア 事件文案与日志记录完全不同),
+    无法穷举;页面锚用左上「授業」标题(Flag 侧),选项选择用两级策略。
+    """
 
     OPTION_ROI = [40, 620, 640, 360]
     GOOD_CONDITION_OPTIONS = ("余裕です！", "長い道のりでした")
+    TROUBLE_MARKER = "トラブル"
+    # 选项文案至少含 2 个日文字符,排除「-50」等数字消耗标记与「T」等图标噪读
+    OPTION_TEXT_PATTERN = re.compile(r"[ぁ-んァ-ヶ一-龯a-zA-Z]{2,}")
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        preset = self._get_preset(argv)
-        if "good_condition" not in preset.class_option_priority:
+        priority = self._get_preset(argv).class_option_priority
+        if "good_condition" not in priority and "first_safe" not in priority:
             return self._stop_unsupported(context, "hif_class_options", "preset_no_class_option_policy")
 
-        reco_detail = self._find_text_option(context, self._get_screenshot(context), self.GOOD_CONDITION_OPTIONS, self.OPTION_ROI)
-        if not reco_detail:
+        image = self._get_screenshot(context)
+        if "good_condition" in priority:
+            reco_detail = self._find_text_option(context, image, self.GOOD_CONDITION_OPTIONS, self.OPTION_ROI)
+            if reco_detail:
+                if not self._click_box_center(context, reco_detail.best_result.box, double=False):
+                    return self._stop_unsupported(context, "hif_class_options", "good_condition_option_click_failed")
+                logger.info(f"HIF 授業选项: 好调文案命中「{reco_detail.best_result.text}」")
+                return True
+        if "first_safe" not in priority:
             return self._stop_unsupported(context, "hif_class_options", "good_condition_option_not_found")
-        if not self._click_box_center(context, reco_detail.best_result.box, double=False):
-            return self._stop_unsupported(context, "hif_class_options", "good_condition_option_click_failed")
+        return self._choose_first_safe_option(context, image)
+
+    def _choose_first_safe_option(self, context: Context, image) -> bool:
+        reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFClassOptions", [".*"], self.OPTION_ROI)
+        if not (reco_detail and reco_detail.all_results):
+            return self._stop_unsupported(context, "hif_class_options", "class_options_not_found")
+
+        results = reco_detail.all_results
+        trouble_ys = [item.box[1] + item.box[3] // 2 for item in results if self.TROUBLE_MARKER in item.text]
+        candidates = [
+            item
+            for item in results
+            if item.box[3] > 20
+            and self.OPTION_TEXT_PATTERN.search(item.text.replace("ß", ""))
+            and self.TROUBLE_MARKER not in item.text
+            and not any(abs(item.box[1] + item.box[3] // 2 - ty) < 40 for ty in trouble_ys)
+        ]
+        if not candidates:
+            return self._stop_unsupported(context, "hif_class_options", "no_safe_option")
+
+        target = min(candidates, key=lambda item: item.box[1])
+        if not self._click_box_center(context, target.box, double=False):
+            return self._stop_unsupported(context, "hif_class_options", "safe_option_click_failed")
+        logger.info(f"HIF 授業选项: 通用安全策略选择「{target.text}」")
         return True
 
 
@@ -377,7 +445,9 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceChooseHIFDrinkRewardAuto")
 class ProduceChooseHIFDrinkRewardAuto(_ProduceHIFRewardChoiceAction):
-    """按预设领取已识别的 P 饮料。"""
+    """按预设领取已识别的 P 饮料;预设未命中时回退选第一瓶(首版推进策略)。"""
+
+    FIRST_DRINK_BOX = [158, 822, 127, 127]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         chosen = self._choose_named_reward(
@@ -386,12 +456,19 @@ class ProduceChooseHIFDrinkRewardAuto(_ProduceHIFRewardChoiceAction):
             reroll_limit=0,
             screen_state="hif_drink_reward",
         )
-        return chosen or self._stop_unsupported(context, "hif_drink_reward", "preset_drink_not_found")
+        if not chosen:
+            logger.info("HIF 饮料领取: 预设饮料未命中,回退选择第一瓶(首版推进策略)")
+            if not self._click_box_center(context, self.FIRST_DRINK_BOX, double=False):
+                return self._stop_unsupported(context, "hif_drink_reward", "fallback_drink_click_failed")
+            time.sleep(self.ACTION_DELAY)
+        return True
 
 
 @AgentServer.custom_action("ProduceChooseHIFSkillRewardAuto")
 class ProduceChooseHIFSkillRewardAuto(_ProduceHIFRewardChoiceAction):
-    """按预设领取技能卡，且只在明确识别到再抽选时重抽。"""
+    """按预设领取技能卡,且只在明确识别到再抽选时重抽;预设未命中时回退选第一张(首版推进策略)。"""
+
+    FIRST_CARD_BOX = [156, 821, 128, 128]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
@@ -401,14 +478,20 @@ class ProduceChooseHIFSkillRewardAuto(_ProduceHIFRewardChoiceAction):
             reroll_limit=preset.reward_reroll_limit,
             screen_state="hif_skill_reward",
         )
-        return chosen or self._stop_unsupported(context, "hif_skill_reward", "preset_skill_not_found")
+        if not chosen:
+            logger.info("HIF 技能卡领取: 预设卡未命中,回退选择第一张(首版推进策略)")
+            if not self._click_box_center(context, self.FIRST_CARD_BOX, double=False):
+                return self._stop_unsupported(context, "hif_skill_reward", "fallback_card_click_failed")
+            time.sleep(self.ACTION_DELAY)
+        return True
 
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeTargetAuto")
 class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
-    """在变卡第一阶段选择预设目标卡，并推进到牌库选择。"""
+    """在变卡第一阶段选择预设目标卡,并推进到牌库选择;预设未命中时回退选第一张候选卡。"""
 
     NEXT_ROI = [200, 1010, 320, 130]
+    FIRST_CANDIDATE_BOX = [156, 837, 128, 128]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
@@ -418,9 +501,11 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
             reroll_limit=preset.select_change_reroll_limit,
             screen_state="select_change_target",
         ):
-            return self._stop_unsupported(context, "select_change_target", "preset_target_card_not_found")
+            logger.info("HIF 変卡: 预设目标卡未命中,回退选择第一张候选卡(首版推进策略)")
+            if not self._click_box_center(context, self.FIRST_CANDIDATE_BOX, double=False):
+                return self._stop_unsupported(context, "select_change_target", "fallback_candidate_click_failed")
+            time.sleep(self.ACTION_DELAY)
 
-        time.sleep(self.ACTION_DELAY)
         next_button = self._find_text_option(context, self._get_screenshot(context), ("次へ",), self.NEXT_ROI)
         if not next_button:
             return self._stop_unsupported(context, "select_change_target", "next_button_not_found")
@@ -431,10 +516,11 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeSourceAuto")
 class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
-    """在变卡第二阶段选择预设源卡并确认。"""
+    """在变卡第二阶段选择预设源卡并确认;预设未命中时回退选牌库第一格。"""
 
     DECK_ROI = [60, 600, 600, 500]
     CHANGE_ROI = [350, 1080, 320, 140]
+    FIRST_DECK_CELL_BOX = [80, 623, 118, 118]
     MAX_DECK_SCROLLS = 4
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
@@ -448,8 +534,10 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
                 context.tasker.controller.post_swipe(360, 1040, 360, 680, duration=300).wait()
                 time.sleep(self.ACTION_DELAY)
         if not source:
-            return self._stop_unsupported(context, "select_change_source_deck", "preset_source_card_not_found")
-        if not self._click_box_center(context, source.best_result.box, double=False):
+            logger.info("HIF 変卡: 预设源卡未命中,回退选择牌库第一格(首版推进策略)")
+            if not self._click_box_center(context, self.FIRST_DECK_CELL_BOX, double=False):
+                return self._stop_unsupported(context, "select_change_source_deck", "fallback_source_click_failed")
+        elif not self._click_box_center(context, source.best_result.box, double=False):
             return self._stop_unsupported(context, "select_change_source_deck", "source_card_click_failed")
         time.sleep(self.ACTION_DELAY)
 
@@ -479,6 +567,20 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
         return True
 
 
+@AgentServer.custom_action("ProduceChooseHIFSPCardAuto")
+class ProduceChooseHIFSPCardAuto(_ProduceHIFActionBase):
+    """SP 课程效果选择页:点第一张效果卡发动(点卡即执行,无确认按钮,实机 2026-08-14 确认)。"""
+
+    FIRST_CARD_BOX = [360, 660, 1, 1]
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        logger.info(f"HIF SP课程效果: 点击第一张卡 ({self.FIRST_CARD_BOX[0]},{self.FIRST_CARD_BOX[1]})")
+        if not self._click_box_center(context, self.FIRST_CARD_BOX, double=False):
+            return self._stop_unsupported(context, "hif_sp_card_select", "first_card_click_failed")
+        time.sleep(self.ACTION_DELAY)
+        return True
+
+
 @AgentServer.custom_action("ProduceChooseHIFDrinkOverflowAuto")
 class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
     """P 饮料持有上限取舍:保持默认勾选,按剩余数补勾列表项后点「残す」。
@@ -489,38 +591,55 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
 
     REMAIN_ROI = [260, 1180, 200, 50]
     KEEP_ROI = [210, 1090, 300, 110]
-    HAND_LIST_ROI = [54, 660, 612, 420]
-    MAX_PICKS = 4
-    PICK_ROW_OFFSETS = (0, 150)
+    # 实机 2026-08-14:勾选框在每行右侧 x≈493,可视行 y≈280/353/487/587;列表可滚动
+    PICK_CHECKBOX_X = 493
+    PICK_ROWS_Y = (280, 353, 487, 587)
+    SCROLL_ROUNDS = 2
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        for pick_index in range(self.MAX_PICKS + 1):
-            image = self._get_screenshot(context)
-            remain_text = self._read_digits_text(context, image)
-            if remain_text is None:
-                return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_not_found")
+        remain = self._read_digits_text(context, self._get_screenshot(context))
+        if remain is None:
+            return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_not_found")
 
-            if remain_text == 0:
-                keep = self._find_text_option(context, image, ("残す",), self.KEEP_ROI)
-                if not keep:
-                    return self._stop_unsupported(context, "hif_drink_overflow", "keep_button_not_found")
-                if not self._click_box_center(context, keep.best_result.box, double=False):
-                    return self._stop_unsupported(context, "hif_drink_overflow", "keep_button_click_failed")
-                logger.success(f"HIF 饮料上限:取舍完成(补勾 {pick_index} 项)")
+        # 点击是切换勾选:remain 下降=勾上了需要的项,上升=误取消已勾选项(立即撤销)
+        for scroll_round in range(self.SCROLL_ROUNDS):
+            stagnant_taps = 0
+            for row_y in self.PICK_ROWS_Y:
+                while remain > 0 and stagnant_taps < 2:
+                    context.tasker.controller.post_click(self.PICK_CHECKBOX_X, row_y).wait()
+                    time.sleep(self.ACTION_DELAY)
+                    new_remain = self._read_digits_text(context, self._get_screenshot(context))
+                    if new_remain is None:
+                        return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_lost_after_tap")
+                    if new_remain > remain:
+                        context.tasker.controller.post_click(self.PICK_CHECKBOX_X, row_y).wait()
+                        time.sleep(self.ACTION_DELAY)
+                        break
+                    if new_remain == remain:
+                        stagnant_taps += 1
+                        continue
+                    stagnant_taps = 0
+                    remain = new_remain
+                if remain == 0:
+                    break
+            if remain == 0:
+                break
+            if scroll_round + 1 < self.SCROLL_ROUNDS:
+                context.tasker.controller.post_swipe(360, 900, 360, 500, duration=300).wait()
                 time.sleep(self.ACTION_DELAY)
-                return True
 
-            if pick_index >= self.MAX_PICKS:
-                return self._stop_unsupported(context, "hif_drink_overflow", f"pick_limit_exceeded: remain={remain_text}")
+        if remain != 0:
+            return self._stop_unsupported(context, "hif_drink_overflow", f"pick_converge_failed: remain={remain}")
 
-            row = pick_index % len(self.PICK_ROW_OFFSETS)
-            pick_x = self.HAND_LIST_ROI[0] + self.HAND_LIST_ROI[2] // 2
-            pick_y = self.HAND_LIST_ROI[1] + 60 + self.PICK_ROW_OFFSETS[row]
-            logger.info(f"HIF 饮料上限:remain={remain_text},点击列表项 ({pick_x},{pick_y})")
-            context.tasker.controller.post_click(pick_x, pick_y).wait()
-            time.sleep(self.ACTION_DELAY)
-
-        return self._stop_unsupported(context, "hif_drink_overflow", "unreachable")
+        image = self._get_screenshot(context)
+        keep = self._find_text_option(context, image, ("残す",), self.KEEP_ROI)
+        if not keep:
+            return self._stop_unsupported(context, "hif_drink_overflow", "keep_button_not_found")
+        if not self._click_box_center(context, keep.best_result.box, double=False):
+            return self._stop_unsupported(context, "hif_drink_overflow", "keep_button_click_failed")
+        logger.success("HIF 饮料上限:取舍完成(remain=0,已提交残す)")
+        time.sleep(self.ACTION_DELAY)
+        return True
 
     def _read_digits_text(self, context: Context, image) -> Optional[int]:
         reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFDrinkRemain", [".*あと[0-9０-９]+個.*"], self.REMAIN_ROI)
@@ -654,5 +773,4 @@ class ProduceHIFRound1Observe(_ProduceHIFActionBase):
             f"good_condition_cards={hand.good_condition_card_count}, "
             f"shizen={hand.has_shizen_no_miryoku}, oneesan={hand.has_oneesan_no_kankaku}"
         )
-        context.run_task("ProduceHIFRound1ReachedStop")
         return True

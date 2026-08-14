@@ -340,18 +340,18 @@ def test_hif_round1_flag_anchors_on_remaining_turn_counter():
 
     flag = payload["ProduceHIFRound1Flag"]["recognition"]["param"]
     assert flag["expected"] == [".*残りターン.*"]
-    assert flag["roi"] == [13, 43, 120, 128]
+    assert flag["roi"] == [5, 0, 180, 60]
 
 
-def test_hif_event_flag_uses_gradient_card_template_with_exact_method():
+def test_hif_event_flag_anchors_on_finals_countdown_panel():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
-    param = payload["ProduceChooseHIFEventFlag"]["recognition"]["param"]
-    assert "produce/hif_event_card.png" in param["template"]
-    assert param["method"] == 10001
-    assert Path("assets/resource/base/image/produce/hif_event_card.png").exists()
-    for legacy in ("hif_lesson_vo.png", "hif_lesson_da.png", "hif_lesson_vi.png"):
-        assert legacy not in json.dumps(param)
+    flag = payload["ProduceChooseHIFEventFlag"]
+    assert flag["recognition"]["type"] == "OCR"
+    assert flag["recognition"]["param"]["expected"] == [".*H.I.F本戦まで.*", ".*本戦まで.*"]
+    assert flag["recognition"]["param"]["roi"] == [32, 25, 160, 145]
+    # 渐变模板已证实为全局 UI 风格(事件页选项按钮同款渐变 0.93 误中),禁止回流
+    assert "hif_event_card.png" not in json.dumps(payload)
 
 
 def test_hif_attribute_card_scan_classifies_vo_da_vi_by_fan_color():
@@ -361,18 +361,18 @@ def test_hif_attribute_card_scan_classifies_vo_da_vi_by_fan_color():
     canvas = np.zeros((1280, 720, 3), dtype=np.uint8)
     canvas[:] = 240
     fans = {
-        "Vo": (119, (208, 144, 207)),
-        "Da": (285, (99, 185, 245)),
-        "Vi": (448, (213, 203, 161)),
+        "Vo": (119, (207, 144, 208)),
+        "Da": (285, (245, 185, 99)),
+        "Vi": (448, (161, 203, 213)),
     }
     fan_dx, fan_y, fan_w, fan_h = action_cls.FAN_REGION
     band = canvas[action_cls.GRADIENT_BAND]
-    for _, (card_x, rgb) in fans.items():
-        canvas[fan_y : fan_y + fan_h, card_x + fan_dx : card_x + fan_dx + fan_w] = rgb
+    for _, (card_x, bgr) in fans.items():
+        canvas[fan_y : fan_y + fan_h, card_x + fan_dx : card_x + fan_dx + fan_w] = bgr
         grad_slice = band[:, card_x + 10 : card_x + 100]
-        grad_slice[:, :, 0] = 146
+        grad_slice[:, :, 0] = 250
         grad_slice[:, :, 1] = 143
-        grad_slice[:, :, 2] = 250
+        grad_slice[:, :, 2] = 146
 
     cards = action_cls._scan_attribute_cards(action_cls, canvas)
     assert [card["name"] for card in cards] == ["Vo", "Da", "Vi"]
