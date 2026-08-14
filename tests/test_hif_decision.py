@@ -302,6 +302,17 @@ def test_hif_selection_mode_does_not_fall_back_to_generic_button():
     assert button["recognition"]["param"]["roi"] == [200, 1000, 320, 160]
 
 
+def test_hif_idol_select_flag_routes_before_selection_mode_to_avoid_misrouting():
+    payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
+    routing = payload["ProduceEntryHIF"]["next"]
+
+    assert routing.index("[JumpBack]ProduceHIFIdolSelectFlag") < routing.index("[JumpBack]ProduceHIFSelectionModeFlag")
+    flag = payload["ProduceHIFIdolSelectFlag"]
+    assert flag["recognition"]["param"]["expected"] == [".*アイドル選択.*"]
+    assert flag["action"]["param"]["custom_action"] == "ProduceHIFChooseIdolAuto"
+    assert flag["next"] == ["[JumpBack]ProduceEntryHIF"]
+
+
 def test_hif_pipeline_ocr_patterns_are_valid_regular_expressions():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
@@ -312,14 +323,15 @@ def test_hif_pipeline_ocr_patterns_are_valid_regular_expressions():
                 re.compile(pattern)
 
 
-def test_hif_task_uses_the_preset_final_mode_action_instead_of_the_generic_difficulty_ocr():
+def test_hif_task_skips_generic_difficulty_ocr_and_enters_hif_routing():
     for task_path in (Path("assets/tasks/produce.json"), Path("assets/tasks/produce_cn.json")):
         task_payload = json.loads(task_path.read_text(encoding="utf-8"))
         hif_case = next(case for case in task_payload["option"]["培育难度"]["cases"] if case["name"] == "HIF")
         mode_override = hif_case["pipeline_override"]["ProduceChooseDifficulty"]
 
         assert mode_override["recognition"]["type"] == "DirectHit"
-        assert mode_override["action"]["param"]["custom_action"] == "ProduceHIFChooseFinalModeAuto"
+        assert mode_override["action"]["type"] == "DoNothing"
+        assert mode_override["next"] == "ProduceEntryHIF"
 
 
 def test_hif_consult_stops_safely_when_the_recognized_finish_button_cannot_be_clicked(monkeypatch):

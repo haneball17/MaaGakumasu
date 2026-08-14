@@ -1,5 +1,7 @@
+import json
 import time
 from typing import Any, Dict, List, Optional
+from difflib import SequenceMatcher
 
 from utils import logger
 from maa.context import Context
@@ -402,6 +404,63 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
         if not self._click_box_center(context, finish_button.best_result.box, double=False):
             return self._stop_unsupported(context, "consult_shop", "finish_button_click_failed")
         return True
+
+
+@AgentServer.custom_action("ProduceHIFChooseIdolAuto")
+class ProduceHIFChooseIdolAuto(_ProduceHIFActionBase):
+    """HIF 偶像选择页：校验当前选中偶像与预设一致后点击「次へ」。"""
+
+    TRUE_END_ROI = [430, 34, 266, 48]
+    IDOL_NAME_ROI_TRUE_END = [440, 128, 280, 64]
+    IDOL_NAME_ROI_DEFAULT = [400, 98, 320, 64]
+    SONG_NAME_ROI_TRUE_END = [380, 90, 320, 45]
+    SONG_NAME_ROI_DEFAULT = [340, 60, 380, 45]
+    NEXT_BUTTON_ROI = [150, 1000, 420, 200]
+    IDOL_SIMILARITY_THRESHOLD = 0.9
+    SONG_SIMILARITY_THRESHOLD = 0.7
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        params: Dict[str, Any] = json.loads(argv.custom_action_param) if argv.custom_action_param else {}
+        expected_idol = params.get("idol_name", "")
+        expected_song = params.get("song_name", "")
+
+        image = self._get_screenshot(context)
+        true_end_detail = self._run_ocr(context, image, "ProduceHIFIdolTrueEnd", ["True", "End"], self.TRUE_END_ROI)
+        has_true_end = bool(true_end_detail and true_end_detail.hit)
+        name_roi = self.IDOL_NAME_ROI_TRUE_END if has_true_end else self.IDOL_NAME_ROI_DEFAULT
+
+        recognized_name = self._read_text(context, image, "ProduceHIFIdolName", name_roi)
+        logger.info(f"HIF 偶像选择: true_end={has_true_end}, 当前偶像={recognized_name or '未识别'}")
+
+        if expected_idol and recognized_name:
+            similarity = SequenceMatcher(None, recognized_name, expected_idol).ratio()
+            if similarity < self.IDOL_SIMILARITY_THRESHOLD:
+                return self._stop_unsupported(
+                    context, "hif_idol_select", f"idol_mismatch: got={recognized_name}, want={expected_idol}, ratio={similarity:.2f}"
+                )
+
+        if expected_song and recognized_name:
+            song_roi = self.SONG_NAME_ROI_TRUE_END if has_true_end else self.SONG_NAME_ROI_DEFAULT
+            recognized_song = self._read_text(context, image, "ProduceHIFIdolSong", song_roi)
+            if recognized_song:
+                similarity = SequenceMatcher(None, recognized_song, expected_song).ratio()
+                if similarity < self.SONG_SIMILARITY_THRESHOLD:
+                    return self._stop_unsupported(
+                        context, "hif_idol_select", f"song_mismatch: got={recognized_song}, want={expected_song}, ratio={similarity:.2f}"
+                    )
+
+        next_button = self._find_text_option(context, image, ("次へ",), self.NEXT_BUTTON_ROI)
+        if not next_button:
+            return self._stop_unsupported(context, "hif_idol_select", "next_button_not_found")
+        if not self._click_box_center(context, next_button.best_result.box, double=False):
+            return self._stop_unsupported(context, "hif_idol_select", "next_button_click_failed")
+        return True
+
+    def _read_text(self, context: Context, image, name: str, roi: list[int]) -> str:
+        reco_detail = self._run_ocr(context, image, name, [".*"], roi)
+        if not (reco_detail and reco_detail.hit):
+            return ""
+        return "".join(item.text for item in reco_detail.all_results).replace(" ", "")
 
 
 @AgentServer.custom_action("ProduceHIFChooseFinalModeAuto")

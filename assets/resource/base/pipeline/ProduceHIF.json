@@ -12,6 +12,7 @@
       "ProduceExit",
       "ProduceHIFFinishedFlag",
       "ProduceHIFFailedFlag",
+      "[JumpBack]ProduceHIFIdolSelectFlag",
       "[JumpBack]ProduceChooseHIFPItemFlag",
       "[JumpBack]ProduceHIFSelectionModeFlag",
       "[JumpBack]ProduceHIFRound1Flag",
@@ -479,5 +480,14 @@
     },
     "action": {"type": "DoNothing", "param": {}},
     "next": ["ProduceHIFUnknownStop"]
+  },
+  "ProduceHIFIdolSelectFlag": {
+    "recognition": {
+      "type": "OCR",
+      "param": {"expected": [".*アイドル選択.*"], "roi": [0, 0, 720, 80]}
+    },
+    "action": {"type": "Custom", "param": {"custom_action": "ProduceHIFChooseIdolAuto"}},
+    "next": ["[JumpBack]ProduceEntryHIF"],
+    "focus": {"Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=偶像选择，校验当前偶像后点击下一步[/color]"}
   }
 }

@@ -65,11 +65,10 @@
                 "param": {}
               },
               "action": {
-                "type": "Custom",
-                "param": {
-                  "custom_action": "ProduceHIFChooseFinalModeAuto"
-                }
-              }
+                "type": "DoNothing",
+                "param": {}
+              },
+              "next": "ProduceEntryHIF"
             }
           }
         }
