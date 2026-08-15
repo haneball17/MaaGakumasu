@@ -435,3 +435,73 @@ def test_hif_consult_stops_safely_when_the_recognized_finish_button_cannot_be_cl
 
     assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
     assert stop_reasons == [("consult_shop", "finish_button_click_failed")]
+
+
+def test_hif_keyword_tables_load_all_preferences():
+    from agent.hif.decisions.rewards import load_keyword_tables
+
+    tables = load_keyword_tables()
+
+    assert set(tables) == {"good_condition", "focus", "balanced"}
+    assert all(table.accept_threshold == 4 for table in tables.values())
+
+
+def test_hif_keyword_scoring_uses_observed_finals_effect_texts():
+    from agent.hif.decisions.rewards import load_keyword_tables, pick_best_candidate
+
+    good = load_keyword_tables()["good_condition"]
+    # 実機録文本(finals-daily-log 2026-07-09):立ち位置チェック/エキサイト/始まりの合図/大胆不敵
+    tachibashi = "集中消費3 元気+15 パラメータ+30（好調効果を2倍適用） 元気増加無効2ターン レッスン中1回"
+    excitte = "パラメータ+6 絶好調3ターン レッスン中1回"
+    hajimari = "消費3 好調5ターン レッスン中1回"
+    daitan = "好調3ターン 集中+5 スキルカード使用数追加+1 眠気を山札のランダムな位置に生成 重複不可"
+
+    # 絶好調不被好調子串重复计分(8 而非 8+6);パラメータ+6 计 2
+    assert good.score(excitte) == 8 + 2
+    # 始まりの合図:好調 6 分,达到 accept 阈值
+    assert good.score(hajimari) == 6
+    # 立ち位置チェック:集中消費-1、元気増加無効-5(先行移除不再触发元気+1)
+    # 但「元気+15」的元気+1、パラメータ+2、条件加成「好調効果を2倍適用」的 好調+6
+    assert good.score(tachibashi) == -1 - 5 + 1 + 2 + 6
+    # 眠気重罚下大胆不敵仍正,但低于始まりの合図
+    assert good.score(daitan) < good.score(hajimari)
+    best = pick_best_candidate([("tachibashi", good.score(tachibashi)), ("hajimari", good.score(hajimari)), ("daitan", good.score(daitan))])
+    assert best[0] == "hajimari"
+
+
+def test_hif_keyword_scoring_normalizes_ocr_variants_before_scoring():
+    from agent.hif.decisions.rewards import load_keyword_tables
+
+    table = load_keyword_tables()["good_condition"]
+
+    assert table.normalize("好感5ターン") == "好調5ターン"
+    assert table.score("好感5ターン") == table.score("好調5ターン")
+
+
+def test_hif_keyword_focus_preference_prefers_focus_over_good_condition():
+    from agent.hif.decisions.rewards import load_keyword_tables
+
+    tables = load_keyword_tables()
+    text = "集中+5 レッスン中1回"
+
+    assert tables["focus"].score(text) > tables["good_condition"].score(text)
+
+
+def test_hif_schedule_classifies_fixed_class_option_markers():
+    from agent.hif.decisions.schedule import classify_class_option
+
+    assert classify_class_option("トラブル追加") == "trouble"
+    assert classify_class_option("スキルカードを選択して獲得") == "acquire"
+    assert classify_class_option("セレクトチェンジ") == "change"
+    assert classify_class_option("余裕です！") == "unknown"
+
+
+def test_hif_schedule_chooses_public_lesson_by_attribute_priority_only():
+    from agent.hif.decisions.schedule import choose_public_lesson
+
+    cards = [{"name": "Vo", "box": [1, 1, 1, 1]}, {"name": "Da", "box": [2, 2, 1, 1]}, {"name": "Vi", "box": [3, 3, 1, 1]}]
+
+    # SP 当日随机不可选(seesaawiki 2026-08-15 调研),决策只按属性序
+    assert choose_public_lesson(cards, ("Da", "Vi", "Vo"))["name"] == "Da"
+    assert choose_public_lesson(cards, ("Vi", "Da", "Vo"))["name"] == "Vi"
+    assert choose_public_lesson([{"name": "Vo", "box": [1, 1, 1, 1]}], ("Da", "Vi")) is None
