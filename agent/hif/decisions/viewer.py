@@ -354,7 +354,10 @@ def _build_day_tree(records: list[dict]) -> list[dict]:
 
 
 def load_sessions(decisions_dir: Path = DECISIONS_DIR) -> list[dict]:
-    """读全部 session-*.jsonl,返回 [{file, days}](按文件名升序);记录附加 _day 标签并分节分组。"""
+    """读全部 session-*.jsonl,返回 [{file, days}](按文件名升序);记录附加 _day 标签并分节分组。
+
+    ghost 标记的记录(残留进程用异常截图写出的假决策)默认排除,不计入组与统计。
+    """
     sessions = []
     for jsonl in sorted(decisions_dir.glob("session-*.jsonl")):
         records = []
@@ -362,9 +365,11 @@ def load_sessions(decisions_dir: Path = DECISIONS_DIR) -> list[dict]:
             line = line.strip()
             if line:
                 try:
-                    records.append(json.loads(line))
+                    rec = json.loads(line)
                 except json.JSONDecodeError:
                     continue
+                if not rec.get("ghost"):
+                    records.append(rec)
         _attach_day_labels(records)
         sessions.append({"file": jsonl.name, "days": _build_day_tree(records)})
     return sessions

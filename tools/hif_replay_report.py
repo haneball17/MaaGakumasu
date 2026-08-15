@@ -119,11 +119,14 @@ def main() -> int:
             return 1
         jsonl = sessions[-1]
     records = [json.loads(line) for line in jsonl.read_text(encoding="utf-8").splitlines() if line.strip()]
+    total = len(records)
+    records = [r for r in records if not r.get("ghost")]  # 幽灵假记录不进总表
     viewer = _load_viewer()
     viewer._attach_day_labels(records)
 
     table = render_table(build_rows(records, noise=viewer._is_noise_text))
-    print(f"# HIF 决策总表 {jsonl.name}（{len(records)} 条）\n")
+    ghost_note = f"（另隐藏 {total - len(records)} 条幽灵假记录）" if total != len(records) else ""
+    print(f"# HIF 决策总表 {jsonl.name}（{len(records)} 条{ghost_note}）\n")
     print(table)
 
     out_md = jsonl.with_suffix(".md")
