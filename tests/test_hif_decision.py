@@ -998,6 +998,26 @@ def test_hif_select_change_done_only_logs_real_change_flow(monkeypatch, tmp_path
     assert base._read_session_state().get(base.SELECT_CHANGE_FLAG) is not True
 
 
+def test_hif_card_name_layered_normalization():
+    """分层置信匹配(実機 2026-08-15 样本):NFKC → 精确 → +号归一 → 变体 → 编辑距离 → 未读。"""
+    from agent.hif.adapters import card_dict
+    from agent.hif.adapters.card_dict import normalize_card_name as norm
+
+    # NFKC 全角归一(コール＆レスポンス 全角＆差异,subagent 实证)
+    assert norm("コール＆レスポンス") == "コール&レスポンス"
+    # 精确命中
+    assert norm("静かな意志") == "静かな意志"
+    # +号档位归一:基础名在词典,保留档位(当天 3 个 miss 大声援+/深呼吸+/立ち位置チェック+ 均此类)
+    assert norm("大声援+") == "大声援+"
+    assert "大声援" in set(card_dict.build_card_name_dict())
+    # 编辑距离兜底:词典内卡 1 字误读修正
+    assert norm("竟地") == "意地"
+    assert norm("済観的") == "楽観的"
+    # 池外/远距离误读:保持原文不乱猜(好調状能の提分 不在 121 卡池)
+    far = norm("好調状能の提分")
+    assert far == "好調状能の提分" and far not in set(card_dict.build_card_name_dict())
+
+
 def test_hif_noise_text_detection():
     from agent.hif.decisions.viewer import _is_noise_text
 

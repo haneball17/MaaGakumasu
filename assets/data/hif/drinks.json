@@ -1,865 +1,977 @@
 {
-	"schema_version": 2,
-	"entity": "p_drinks",
-	"updated_at": "2026-06-30T13:04:38+00:00",
-	"sources": [
-		{
-			"source": "seesaawiki:p-drinks",
-			"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-			"fetched_at": "2026-06-30T13:04:38+00:00",
-			"item_count": 28
-		}
-	],
-	"drinks": [
-		{
-			"drink_id": "drink::com_F_R_001",
-			"name_jp": "初星水",
-			"name_zh": null,
-			"wiki_id": "com_F_R_001",
-			"plan": "free",
-			"rarity": "R",
-			"cost": {
-				"consultation": 50
-			},
-			"unlock_plv": null,
-			"effects": [
-				{
-					"tag": "score",
-					"op": "add",
-					"value": 10,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "パラメータ+10 (好調・集中・熱意の効果を受ける)",
-			"unmatched": "(好調 集中 熱意の効果を受ける)",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_F_R_002",
-			"name_jp": "烏龍茶",
-			"name_zh": null,
-			"wiki_id": "com_F_R_002",
-			"plan": "free",
-			"rarity": "R",
-			"cost": {
-				"consultation": 50
-			},
-			"unlock_plv": null,
-			"effects": [
-				{
-					"tag": "energy",
-					"op": "add_turns",
-					"value": 7,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "元気 +7 (やる気の効果を受ける)",
-			"unmatched": "(やる気の効果を受ける)",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_S_R_001",
-			"name_jp": "ビタミンドリンク",
-			"name_zh": null,
-			"wiki_id": "com_S_R_001",
-			"plan": "sense",
-			"rarity": "R",
-			"cost": {
-				"consultation": 50
-			},
-			"unlock_plv": null,
-			"effects": [
-				{
-					"tag": "good_condition",
-					"op": "add_turns",
-					"value": 3,
-					"unit": "turn",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "好調 3ターン",
-			"unmatched": "",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_S_R_002",
-			"name_jp": "アイスコーヒー",
-			"name_zh": null,
-			"wiki_id": "com_S_R_002",
-			"plan": "sense",
-			"rarity": "R",
-			"cost": {
-				"consultation": 50
-			},
-			"unlock_plv": null,
-			"effects": [
-				{
-					"tag": "focus",
-					"op": "add_turns",
-					"value": 3,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "集中 +3",
-			"unmatched": "",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_L_R_001",
-			"name_jp": "ルイボスティー",
-			"name_zh": null,
-			"wiki_id": "com_L_R_001",
-			"plan": "logic",
-			"rarity": "R",
-			"cost": {
-				"consultation": 50
-			},
-			"unlock_plv": null,
-			"effects": [
-				{
-					"tag": "good_impression",
-					"op": "add",
-					"value": 3,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "好印象 +3",
-			"unmatched": "",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_L_R_002",
-			"name_jp": "ホットコーヒー",
-			"name_zh": null,
-			"wiki_id": "com_L_R_002",
-			"plan": "logic",
-			"rarity": "R",
-			"cost": {
-				"consultation": 50
-			},
-			"unlock_plv": null,
-			"effects": [
-				{
-					"tag": "spirit",
-					"op": "add_turns",
-					"value": 3,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "やる気 +3",
-			"unmatched": "",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_A_R_001",
-			"name_jp": "ジンジャーエール",
-			"name_zh": null,
-			"wiki_id": "com_A_R_001",
-			"plan": "anomaly",
-			"rarity": "R",
-			"cost": {
-				"consultation": 50
-			},
-			"unlock_plv": null,
-			"effects": [],
-			"raw_text": "強気 に変更 全力値 +1",
-			"unmatched": "強気 に変更 全力値 +1",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_A_R_002",
-			"name_jp": "ほうじ茶",
-			"name_zh": null,
-			"wiki_id": "com_A_R_002",
-			"plan": "anomaly",
-			"rarity": "R",
-			"cost": {
-				"consultation": 50
-			},
-			"unlock_plv": null,
-			"effects": [],
-			"raw_text": "温存 に変更 全力値 +2",
-			"unmatched": "温存 に変更 全力値 +2",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_F_SR_001",
-			"name_jp": "フレッシュビネガー",
-			"name_zh": null,
-			"wiki_id": "com_F_SR_001",
-			"plan": "free",
-			"rarity": "SR",
-			"cost": {
-				"consultation": 75
-			},
-			"unlock_plv": null,
-			"effects": [
-				{
-					"tag": "stamina",
-					"op": "restore",
-					"value": 3,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "手札をすべて レッスン中強化 体力回復3",
-			"unmatched": "手札をすべて レッスン中強化",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_F_SR_002",
-			"name_jp": "ミックススムージー",
-			"name_zh": null,
-			"wiki_id": "com_F_SR_002",
-			"plan": "free",
-			"rarity": "SR",
-			"cost": {
-				"consultation": 75
-			},
-			"unlock_plv": 8,
-			"effects": [
-				{
-					"tag": "stamina",
-					"op": "restore",
-					"value": 2,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "手札をすべて入れ替える 体力回復2",
-			"unmatched": "手札をすべて入れ替える",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_F_SR_003",
-			"name_jp": "リカバリドリンク",
-			"name_zh": null,
-			"wiki_id": "com_F_SR_003",
-			"plan": "free",
-			"rarity": "SR",
-			"cost": {
-				"consultation": 75
-			},
-			"unlock_plv": 15,
-			"effects": [
-				{
-					"tag": "stamina",
-					"op": "restore",
-					"value": 6,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "体力回復6",
-			"unmatched": "",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_F_SR_004",
-			"name_jp": "ブーストエキス",
-			"name_zh": null,
-			"wiki_id": "com_F_SR_004",
-			"plan": "free",
-			"rarity": "SR",
-			"cost": {
-				"consultation": 75
-			},
-			"unlock_plv": 55,
-			"effects": [],
-			"raw_text": "パラメータ上昇量増加 30%(3ターン) 消費体力減少 3ターン 体力消費 2",
-			"unmatched": "パラメータ上昇量増加 30%(3ターン) 消費体力減少 3ターン 体力消費 2",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_F_SR_005",
-			"name_jp": "パワフル漢方ドリンク",
-			"name_zh": null,
-			"wiki_id": "com_F_SR_005",
-			"plan": "free",
-			"rarity": "SR",
-			"cost": {
-				"consultation": 75
-			},
-			"unlock_plv": 60,
-			"effects": [],
-			"raw_text": "山札か捨て札にあるアイドル固有スキルカード1枚を手札に移動 消費体力減少 3ターン",
-			"unmatched": "山札か捨て札にあるアイドル固有スキルカード1枚を手札に移動 消費体力減少 3ターン",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_F_SR_006",
-			"name_jp": "センブリソーダ",
-			"name_zh": null,
-			"wiki_id": "com_F_SR_006",
-			"plan": "free",
-			"rarity": "SR",
-			"cost": {
-				"consultation": 75
-			},
-			"unlock_plv": 61,
-			"effects": [],
-			"raw_text": "パラメータ上昇量増加 10%（5ターン) スキルカードを2枚引く 体力消費 2 以降の5ターンの間、ターン開始後、スキルカードを引く",
-			"unmatched": "パラメータ上昇量増加 10%（5ターン) スキルカードを2枚引く 体力消費 2 以降の5ターンの間、ターン開始後、スキルカードを引く",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_S_SR_001",
-			"name_jp": "スタミナ爆発ドリンク",
-			"name_zh": null,
-			"wiki_id": "com_S_SR_001",
-			"plan": "sense",
-			"rarity": "SR",
-			"cost": {
-				"consultation": 75
-			},
-			"unlock_plv": 21,
-			"effects": [
-				{
-					"tag": "good_condition",
-					"op": "add_turns",
-					"value": 1,
-					"unit": "turn",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				},
-				{
-					"tag": "energy",
-					"op": "add_turns",
-					"value": 9,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "絶好調 1ターン 元気 +9",
-			"unmatched": "",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_L_SR_001",
-			"name_jp": "おしゃれハーブティー",
-			"name_zh": null,
-			"wiki_id": "com_L_SR_001",
-			"plan": "logic",
-			"rarity": "SR",
-			"cost": {
-				"consultation": 75
-			},
-			"unlock_plv": 21,
-			"effects": [
-				{
-					"tag": "energy",
-					"op": "add_turns",
-					"value": 3,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "好印象 の100％分パラメータ上昇 元気 +3",
-			"unmatched": "好印象 の100％分パラメータ上昇",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_A_SR_001",
-			"name_jp": "ほっと緑茶",
-			"name_zh": null,
-			"wiki_id": "com_A_SR_001",
-			"plan": "anomaly",
-			"rarity": "SR",
-			"cost": {
-				"consultation": 75
-			},
-			"unlock_plv": 21,
-			"effects": [
-				{
-					"tag": "preserve",
-					"op": "add",
-					"value": 2,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "山札か捨て札にあるスキルカードを選択し、 保留 に移動 温存 2段階目に変更",
-			"unmatched": "山札か捨て札にあるスキルカードを選択し 保留 に移動 段階目に変更",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_F_SSR_001",
-			"name_jp": "初星ホエイプロテイン",
-			"name_zh": null,
-			"wiki_id": "com_F_SSR_001",
-			"plan": "free",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": null,
-			"effects": [],
-			"raw_text": "スキルカード使用数追加 +1",
-			"unmatched": "スキルカード使用数追加 +1",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_F_SSR_002",
-			"name_jp": "初星スペシャル青汁",
-			"name_zh": null,
-			"wiki_id": "com_F_SSR_002",
-			"plan": "free",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 15,
-			"effects": [],
-			"raw_text": "ランダムな強化済みスキルカード(SSR)を、手札に 生成 (PLv制限無視、プラン違いとサポートカード取得は出ない)",
-			"unmatched": "ランダムな強化済みスキルカード(SSR)を、手札に 生成 (PLv制限無視、プラン違いとサポートカード取得は出ない)",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_S_SSR_001",
-			"name_jp": "厳選初星マキアート",
-			"name_zh": null,
-			"wiki_id": "com_S_SSR_001",
-			"plan": "sense",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 27,
-			"effects": [
-				{
-					"tag": "focus",
-					"op": "add_turns",
-					"value": 1,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "以降、ターン終了時、 集中 +1",
-			"unmatched": "以降 ターン終了時",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_S_SSR_002",
-			"name_jp": "初星ブーストエナジー",
-			"name_zh": null,
-			"wiki_id": "com_S_SSR_002",
-			"plan": "sense",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 26,
-			"effects": [
-				{
-					"tag": "good_condition",
-					"op": "add_turns",
-					"value": 2,
-					"unit": "turn",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "絶好調 2ターン 手札をすべて レッスン中強化",
-			"unmatched": "絶 手札をすべて レッスン中強化",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_S_SSR_003",
-			"name_jp": "初星黒酢",
-			"name_zh": null,
-			"wiki_id": "com_S_SSR_003",
-			"plan": "sense",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 61,
-			"effects": [],
-			"raw_text": "山札か捨札にあるスキルカードを選択し、手札に移動 次に使用したスキルカードの消費体力を0にする（2回） 体力消費 2 消費体力増加 1ターン",
-			"unmatched": "山札か捨札にあるスキルカードを選択し、手札に移動 次に使用したスキルカードの消費体力を0にする（2回） 体力消費 2 消費体力増加 1ターン",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_L_SSR_001",
-			"name_jp": "厳選初星ブレンド",
-			"name_zh": null,
-			"wiki_id": "com_L_SSR_001",
-			"plan": "logic",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 26,
-			"effects": [
-				{
-					"tag": "spirit",
-					"op": "add_turns",
-					"value": 1,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "以降、ターン終了時、 やる気 +1",
-			"unmatched": "以降 ターン終了時",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_L_SSR_002",
-			"name_jp": "厳選初星ティー",
-			"name_zh": null,
-			"wiki_id": "com_L_SSR_002",
-			"plan": "logic",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 27,
-			"effects": [
-				{
-					"tag": "good_impression",
-					"op": "add",
-					"value": 1,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "以降、ターン終了時、 好印象 +1",
-			"unmatched": "以降 ターン終了時",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_L_SSR_003",
-			"name_jp": "特製ハツボシエキス",
-			"name_zh": null,
-			"wiki_id": "com_L_SSR_003",
-			"plan": "logic",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 55,
-			"effects": [],
-			"raw_text": "次に使用する アクティブスキルカード の効果をもう1回発動(1回・1ターン) 体力消費 2 消費体力増加 1ターン",
-			"unmatched": "次に使用する アクティブスキルカード の効果をもう1回発動(1回・1ターン) 体力消費 2 消費体力増加 1ターン",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_A_SSR_001",
-			"name_jp": "初星スーパーソーダ",
-			"name_zh": null,
-			"wiki_id": "com_A_SSR_001",
-			"plan": "anomaly",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 26,
-			"effects": [
-				{
-					"tag": "tough",
-					"op": "add_turns",
-					"value": 2,
-					"unit": "flat",
-					"scope": "self",
-					"condition": null,
-					"note": null
-				}
-			],
-			"raw_text": "強気 2段階目に変更 消費体力減少 1ターン",
-			"unmatched": "段階目に変更 消費体力減少 1ターン",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_A_SSR_002",
-			"name_jp": "厳選初星チャイ",
-			"name_zh": null,
-			"wiki_id": "com_A_SSR_002",
-			"plan": "anomaly",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 27,
-			"effects": [],
-			"raw_text": "以降、ターン終了時、 全力値 +1",
-			"unmatched": "以降、ターン終了時、 全力値 +1",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		},
-		{
-			"drink_id": "drink::com_A_SSR_003",
-			"name_jp": "初星湯",
-			"name_zh": null,
-			"wiki_id": "com_A_SSR_003",
-			"plan": "anomaly",
-			"rarity": "SSR",
-			"cost": {
-				"consultation": 100
-			},
-			"unlock_plv": 60,
-			"effects": [],
-			"raw_text": "ターン追加 +1 体力消費 2 消費体力増加 1ターン",
-			"unmatched": "ターン追加 +1 体力消費 2 消費体力増加 1ターン",
-			"sources": [
-				{
-					"source": "seesaawiki:p-drinks",
-					"url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
-					"fetched_at": "2026-06-30T13:04:38+00:00",
-					"confidence": "high"
-				}
-			]
-		}
-	],
-	"report": {
-		"total_drinks": 28,
-		"effects_parsed": 18,
-		"unmatched_fragments": 22,
-		"unmatched_samples": [
-			"(好調 集中 熱意の効果を受ける)",
-			"(やる気の効果を受ける)",
-			"強気 に変更 全力値 +1",
-			"温存 に変更 全力値 +2",
-			"手札をすべて レッスン中強化",
-			"手札をすべて入れ替える",
-			"パラメータ上昇量増加 30%(3ターン) 消費体力減少 3ターン 体力消費 2",
-			"山札か捨て札にあるアイドル固有スキルカード1枚を手札に移動 消費体力減少 3ターン",
-			"パラメータ上昇量増加 10%（5ターン) スキルカードを2枚引く 体力消費 2 以降の5ターンの間、ターン開始後、スキルカードを引く",
-			"好印象 の100％分パラメータ上昇",
-			"山札か捨て札にあるスキルカードを選択し 保留 に移動 段階目に変更",
-			"スキルカード使用数追加 +1",
-			"ランダムな強化済みスキルカード(SSR)を、手札に 生成 (PLv制限無視、プラン違いとサポートカード取得は出ない)",
-			"以降 ターン終了時",
-			"絶 手札をすべて レッスン中強化",
-			"山札か捨札にあるスキルカードを選択し、手札に移動 次に使用したスキルカードの消費体力を0にする（2回） 体力消費 2 消費体力増加 1ターン",
-			"以降 ターン終了時",
-			"以降 ターン終了時",
-			"次に使用する アクティブスキルカード の効果をもう1回発動(1回・1ターン) 体力消費 2 消費体力増加 1ターン",
-			"段階目に変更 消費体力減少 1ターン"
-		]
-	}
+  "schema_version": 2,
+  "entity": "p_drinks",
+  "updated_at": "2026-08-15T22:36:39+0800",
+  "sources": [
+    {
+      "source": "vertesan/gakumasu-diff",
+      "commit": "69dc17b",
+      "tables": [
+        "ProduceDrink.yaml"
+      ]
+    },
+    {
+      "source": "seesaawiki:p-drinks",
+      "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+      "fetched_at": "2026-06-30T13:04:38+00:00",
+      "item_count": 28
+    }
+  ],
+  "drinks": [
+    {
+      "drink_id": "pdrink_00-1-001",
+      "name_jp": "初星水",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_R_001",
+      "cost": {
+        "consultation": 50
+      },
+      "effects": [
+        {
+          "tag": "score",
+          "op": "add",
+          "value": 10,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "パラメータ+10 (好調・集中・熱意の効果を受ける)",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-1-004",
+      "name_jp": "烏龍茶",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_R_002",
+      "cost": {
+        "consultation": 50
+      },
+      "effects": [
+        {
+          "tag": "energy",
+          "op": "add_turns",
+          "value": 7,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "元気 +7 (やる気の効果を受ける)",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-001",
+      "name_jp": "ミックススムージー",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 8,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_SR_002",
+      "cost": {
+        "consultation": 75
+      },
+      "effects": [
+        {
+          "tag": "stamina",
+          "op": "restore",
+          "value": 2,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "手札をすべて入れ替える 体力回復2",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-003",
+      "name_jp": "リカバリドリンク",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 15,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_SR_003",
+      "cost": {
+        "consultation": 75
+      },
+      "effects": [
+        {
+          "tag": "stamina",
+          "op": "restore",
+          "value": 6,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "体力回復6",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-004",
+      "name_jp": "フレッシュビネガー",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_SR_001",
+      "cost": {
+        "consultation": 75
+      },
+      "effects": [
+        {
+          "tag": "stamina",
+          "op": "restore",
+          "value": 3,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "手札をすべて レッスン中強化 体力回復3",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-008",
+      "name_jp": "ブーストエキス",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 55,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_SR_004",
+      "cost": {
+        "consultation": 75
+      },
+      "effects": [],
+      "raw_text": "パラメータ上昇量増加 30%(3ターン) 消費体力減少 3ターン 体力消費 2",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-009",
+      "name_jp": "パワフル漢方ドリンク",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 60,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_SR_005",
+      "cost": {
+        "consultation": 75
+      },
+      "effects": [],
+      "raw_text": "山札か捨て札にあるアイドル固有スキルカード1枚を手札に移動 消費体力減少 3ターン",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-010",
+      "name_jp": "センブリソーダ",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 61,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_SR_006",
+      "cost": {
+        "consultation": 75
+      },
+      "effects": [],
+      "raw_text": "パラメータ上昇量増加 10%（5ターン) スキルカードを2枚引く 体力消費 2 以降の5ターンの間、ターン開始後、スキルカードを引く",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-3-001",
+      "name_jp": "初星ホエイプロテイン",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_SSR_001",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [],
+      "raw_text": "スキルカード使用数追加 +1",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-3-005",
+      "name_jp": "初星スペシャル青汁",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 15,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_F_SSR_002",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [],
+      "raw_text": "ランダムな強化済みスキルカード(SSR)を、手札に 生成 (PLv制限無視、プラン違いとサポートカード取得は出ない)",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-3-013",
+      "name_jp": "初星スペシャル青汁X",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Common",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": null,
+      "cost": null,
+      "effects": [],
+      "raw_text": null,
+      "unmatched": "diff 新增,效果待关联表解析",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-1-002",
+      "name_jp": "ビタミンドリンク",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan1",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_S_R_001",
+      "cost": {
+        "consultation": 50
+      },
+      "effects": [
+        {
+          "tag": "good_condition",
+          "op": "add_turns",
+          "value": 3,
+          "unit": "turn",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "好調 3ターン",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-1-003",
+      "name_jp": "アイスコーヒー",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan1",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_S_R_002",
+      "cost": {
+        "consultation": 50
+      },
+      "effects": [
+        {
+          "tag": "focus",
+          "op": "add_turns",
+          "value": 3,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "集中 +3",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-2-005",
+      "name_jp": "スタミナ爆発ドリンク",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Plan1",
+      "unlock_plv": 21,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_S_SR_001",
+      "cost": {
+        "consultation": 75
+      },
+      "effects": [
+        {
+          "tag": "good_condition",
+          "op": "add_turns",
+          "value": 1,
+          "unit": "turn",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        },
+        {
+          "tag": "energy",
+          "op": "add_turns",
+          "value": 9,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "絶好調 1ターン 元気 +9",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-3-002",
+      "name_jp": "厳選初星マキアート",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan1",
+      "unlock_plv": 27,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_S_SSR_001",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [
+        {
+          "tag": "focus",
+          "op": "add_turns",
+          "value": 1,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "以降、ターン終了時、 集中 +1",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-3-004",
+      "name_jp": "初星ブーストエナジー",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan1",
+      "unlock_plv": 26,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_S_SSR_002",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [
+        {
+          "tag": "good_condition",
+          "op": "add_turns",
+          "value": 2,
+          "unit": "turn",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "絶好調 2ターン 手札をすべて レッスン中強化",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-3-012",
+      "name_jp": "初星黒酢",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan1",
+      "unlock_plv": 61,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_S_SSR_003",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [],
+      "raw_text": "山札か捨札にあるスキルカードを選択し、手札に移動 次に使用したスキルカードの消費体力を0にする（2回） 体力消費 2 消費体力増加 1ターン",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-1-006",
+      "name_jp": "ルイボスティー",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan2",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_L_R_001",
+      "cost": {
+        "consultation": 50
+      },
+      "effects": [
+        {
+          "tag": "good_impression",
+          "op": "add",
+          "value": 3,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "好印象 +3",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-1-008",
+      "name_jp": "ホットコーヒー",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan2",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_L_R_002",
+      "cost": {
+        "consultation": 50
+      },
+      "effects": [
+        {
+          "tag": "spirit",
+          "op": "add_turns",
+          "value": 3,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "やる気 +3",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-2-006",
+      "name_jp": "おしゃれハーブティー",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Plan2",
+      "unlock_plv": 21,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_L_SR_001",
+      "cost": {
+        "consultation": 75
+      },
+      "effects": [
+        {
+          "tag": "energy",
+          "op": "add_turns",
+          "value": 3,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "好印象 の100％分パラメータ上昇 元気 +3",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-3-006",
+      "name_jp": "厳選初星ティー",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan2",
+      "unlock_plv": 27,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_L_SSR_002",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [
+        {
+          "tag": "good_impression",
+          "op": "add",
+          "value": 1,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "以降、ターン終了時、 好印象 +1",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-3-007",
+      "name_jp": "厳選初星ブレンド",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan2",
+      "unlock_plv": 26,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_L_SSR_001",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [
+        {
+          "tag": "spirit",
+          "op": "add_turns",
+          "value": 1,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "以降、ターン終了時、 やる気 +1",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-3-010",
+      "name_jp": "特製ハツボシエキス",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan2",
+      "unlock_plv": 55,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_L_SSR_003",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [],
+      "raw_text": "次に使用する アクティブスキルカード の効果をもう1回発動(1回・1ターン) 体力消費 2 消費体力増加 1ターン",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-1-009",
+      "name_jp": "ジンジャーエール",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan3",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_A_R_001",
+      "cost": {
+        "consultation": 50
+      },
+      "effects": [],
+      "raw_text": "強気 に変更 全力値 +1",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-1-010",
+      "name_jp": "ほうじ茶",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan3",
+      "unlock_plv": 0,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_A_R_002",
+      "cost": {
+        "consultation": 50
+      },
+      "effects": [],
+      "raw_text": "温存 に変更 全力値 +2",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-2-007",
+      "name_jp": "ほっと緑茶",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Plan3",
+      "unlock_plv": 21,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_A_SR_001",
+      "cost": {
+        "consultation": 75
+      },
+      "effects": [
+        {
+          "tag": "preserve",
+          "op": "add",
+          "value": 2,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "山札か捨て札にあるスキルカードを選択し、 保留 に移動 温存 2段階目に変更",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-3-008",
+      "name_jp": "厳選初星チャイ",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan3",
+      "unlock_plv": 27,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_A_SSR_002",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [],
+      "raw_text": "以降、ターン終了時、 全力値 +1",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-3-009",
+      "name_jp": "初星スーパーソーダ",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan3",
+      "unlock_plv": 26,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_A_SSR_001",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [
+        {
+          "tag": "tough",
+          "op": "add_turns",
+          "value": 2,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "note": null
+        }
+      ],
+      "raw_text": "強気 2段階目に変更 消費体力減少 1ターン",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-3-011",
+      "name_jp": "初星湯",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan3",
+      "unlock_plv": 60,
+      "origin_support_card_id": "",
+      "name_zh": null,
+      "wiki_id": "com_A_SSR_003",
+      "cost": {
+        "consultation": 100
+      },
+      "effects": [],
+      "raw_text": "ターン追加 +1 体力消費 2 消費体力増加 1ターン",
+      "sources": [
+        {
+          "source": "vertesan/gakumasu-diff",
+          "commit": "69dc17b"
+        },
+        {
+          "source": "seesaawiki:p-drinks",
+          "url": "https://seesaawiki.jp/gakumasu/d/P%A5%C9%A5%EA%A5%F3%A5%AF%B0%EC%CD%F7",
+          "fetched_at": "2026-06-30T13:04:38+00:00",
+          "confidence": "high"
+        }
+      ]
+    }
+  ]
 }

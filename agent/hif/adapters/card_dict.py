@@ -38,9 +38,46 @@ COMMON_GOOD_CONDITION_CARDS = [
 # OCR 常见误识变体：日文片假名/汉字相近字符的容错映射。
 # OCR 把「自然体の魅力」认成「自然体の鹿力」之类的，回退到正解。
 # 注意：此映射仅用于 OCR 后的卡名修正，不改变决策逻辑。
+# 积累方式：tools/hif_mine_ocr_variants.py 从决策日志挖掘候选，人工确认合入。
 OCR_VARIANTS: dict[str, str] = {
     # 占位：实机调试时根据实际误识样本补充（Step 3 调优）。
 }
+
+# 编辑距离兜底阈值：距离不超过 max(1, len//4) 且唯一最近邻才修正（低置信标未读不乱猜）。
+def _fuzzy_limit(text: str) -> int:
+    """编辑距离兜底阈值(按名长分级):≤5 字限 1,≥6 字限 2(実機 2026-08-15
+    「好調状能の提分」→「好調状態の提唱」距离 2);配合唯一最近邻约束防误纠。"""
+    return 1 if len(text) <= 5 else 2
+
+
+def _edit_distance(a: str, b: str) -> int:
+    """Levenshtein 距离（卡名短,O(n·m) 足够）。"""
+    if a == b:
+        return 0
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
+
+
+def _fuzzy_match(text: str, names: list[str]) -> str | None:
+    """编辑距离兜底:唯一最近邻且距离达阈值才修正,否则 None(调用方标未读)。"""
+    best_name: str | None = None
+    best_dist = float("inf")
+    ties = 0
+    limit = _fuzzy_limit(text)
+    for name in names:
+        dist = _edit_distance(text, name)
+        if dist < best_dist:
+            best_name, best_dist, ties = name, dist, 0
+        elif dist == best_dist:
+            ties += 1
+    if best_name is None or best_dist > limit or ties:
+        return None
+    return best_name
 
 
 def build_card_name_dict() -> list[str]:
@@ -81,13 +118,41 @@ def build_card_name_dict() -> list[str]:
 
 
 def normalize_card_name(ocr_text: str) -> str:
-    """修正 OCR 误识变体，返回标准卡名。
+    """OCR 卡名 → 标准卡名,分层置信匹配(grill 定案 2026-08-15)。
 
-    OCR 识别结果若命中 OCR_VARIANTS，回退到正解；
-    否则原样返回（调用方据此查 hand_meta 判断）。
+    层序(先高后低):
+    1. NFKC 归一(全角＆/数字等 → 半角,実機实证「コール＆レスポンス」全角差异)
+    2. 精确命中词典(含档位 + 号全名)
+    3. + 号归一:剥档位尾缀后命中基础名 → 返回保留档位的规范名(「大声援+」→ 词典「大声援」确认)
+    4. OCR_VARIANTS 变体词典
+    5. 编辑距离兜底:唯一最近邻且距离 ≤ max(1, len//4) 才修正
+    全部失败返回归一化原文(调用方据此标「卡名未读」,不乱猜)。
     """
-    text = ocr_text.strip().replace(" ", "")
-    return OCR_VARIANTS.get(text, text)
+    import unicodedata
+
+    text = unicodedata.normalize("NFKC", ocr_text.strip().replace(" ", ""))
+    if not text:
+        return text
+    names = build_card_name_dict()
+    name_set = set(names)
+
+    if text in name_set:
+        return text
+
+    # + 号档位归一:「大声援+」→ 基础名「大声援」在词典 → 规范返回带档位
+    base = text.rstrip("+")
+    suffix = text[len(base):]
+    if suffix and base in name_set:
+        return text
+
+    variant_hit = OCR_VARIANTS.get(text)
+    if variant_hit:
+        return variant_hit
+
+    fuzzy = _fuzzy_match(text, names)
+    if fuzzy:
+        return fuzzy
+    return text
 
 
 def is_good_condition_card(card_name: str) -> bool:
