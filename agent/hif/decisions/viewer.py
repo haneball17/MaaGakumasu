@@ -64,7 +64,7 @@ td{padding:5px 10px;border-bottom:1px solid #24283b;vertical-align:top}
 tr.row{cursor:pointer}
 tr.row:hover{background:#24283b}
 .tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;white-space:nowrap}
-.flag-stop{color:#f7768e}.flag-empty{color:#e0af68}.flag-reroll{color:#7dcfff}.flag-ok{color:#9ece6a}
+.flag-stop{color:#f7768e}.flag-empty{color:#e0af68}.flag-reroll{color:#7dcfff}.flag-ok{color:#9ece6a}.flag-recovered{color:#ff9e64}
 .detail{display:none;background:#16161e}
 .detail.open{display:table-row}
 .detail>td{padding:10px 14px}
@@ -102,6 +102,7 @@ function flags(rec){
   let f='';
   if(rec.action==='stop') f+='<span class="flag-stop">■停止</span> ';
   if(rec.evidence_empty) f+='<span class="flag-empty">⚠空证据</span> ';
+  if(rec.recovered) f+='<span class="flag-recovered">⟲重建</span> ';
   if(rec.action==='reroll') f+='<span class="flag-reroll">↻重抽</span> ';
   if(rec.action==='confirm'||rec.action==='pick'||rec.action==='pick_event'||rec.action==='pick_option'||rec.action==='pick_line'||rec.action==='pick_source'||rec.action==='keep_submit'||rec.action==='finish_without_purchase'||rec.action==='observe'||rec.action==='blank_tap') f+='<span class="flag-ok">✓</span>';
   return f;
@@ -137,6 +138,7 @@ function render(){
   const onlyEmpty=document.getElementById('f-empty').checked;
   const onlyReroll=document.getElementById('f-reroll').checked;
   const onlyTuned=document.getElementById('f-tuned').checked;
+  const onlyRecovered=document.getElementById('f-recovered').checked;
   const body=document.getElementById('rows');
   body.innerHTML='';
   let shown=0;
@@ -146,6 +148,7 @@ function render(){
     if(onlyEmpty && !rec.evidence_empty) return;
     if(onlyReroll && rec.action!=='reroll') return;
     if(onlyTuned && !rec.overrides) return;
+    if(onlyRecovered && !rec.recovered) return;
     shown++;
     const screen=rec.screen||'?';
     const row=document.createElement('tr');
@@ -244,6 +247,7 @@ def render_html(sessions: list[dict]) -> str:
   <label class="chk"><input type="checkbox" id="f-stop">停止</label>
   <label class="chk"><input type="checkbox" id="f-empty">空证据</label>
   <label class="chk"><input type="checkbox" id="f-reroll">重抽</label>
+  <label class="chk"><input type="checkbox" id="f-recovered">重建</label>
   <label class="chk"><input type="checkbox" id="f-tuned">调参生效</label>
 </div>
 <table><thead><tr><th>时间</th><th>Day</th><th>页面</th><th>动作</th><th>候选→选择/原因</th><th>调参</th><th>标记</th></tr></thead>
