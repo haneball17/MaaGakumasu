@@ -936,7 +936,38 @@ def test_hif_decision_viewer_renders_selfcontained_html(tmp_path):
     # 数据内嵌、样式与交互脚本自包含、截图用相对文件名
     assert "session-20260101.jsonl" in html
     assert "センブリソーダ" in html
-    assert "color-scheme:dark" in html and "id=\"rows\"" in html
+
+
+def test_hif_day_labels_inherit_and_backfill():
+    from agent.hif.decisions.viewer import _attach_day_labels
+
+    records = [
+        {"ts": "10:00", "screen": "select_change_target", "action": "confirm"},
+        {"ts": "10:05", "screen": "finals_action_select", "action": "pick_event", "day_remaining": 3},
+        {"ts": "10:10", "screen": "hif_class_options", "action": "pick_option"},
+        {"ts": "11:00", "screen": "finals_action_select", "action": "pick_event", "day_remaining": 1},
+        {"ts": "11:05", "screen": "consult_shop", "action": "finish_without_purchase"},
+        {"ts": "12:00", "screen": "round1_initial", "action": "observe"},
+        {"ts": "12:05", "screen": "hif_drink_reward", "action": "confirm"},
+    ]
+    _attach_day_labels(records)
+
+    # 开头未标段回填首个已知 Day(変卡与随后日程同天);继承向下;Round1 起标 R1
+    assert [r["_day"] for r in records] == ["D4", "D4", "D4", "D6", "D6", "R1", "R1"]
+
+
+def test_hif_decision_viewer_keeps_selfcontained_script_assertions(tmp_path):
+    from agent.hif.decisions import viewer
+
+    (tmp_path / "session-20260102.jsonl").write_text(
+        json.dumps({"ts": "10:00", "screen": "hif_drink_reward", "action": "confirm",
+                    "candidates": [{"label": 1, "card": "x", "text": "t", "score": 1.0, "breakdown": []}],
+                    "chosen": 1, "image": "x/y.png"}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    html = viewer.refresh(tmp_path).read_text(encoding="utf-8")
+
+    assert "color-scheme:dark" in html and 'id="rows"' in html
     # img src 由运行时 JS 生成:验证嵌入数据带完整路径、脚本含取文件名的 pop 逻辑
     assert "x/y.png" in html and ".pop()" in html
     assert "http" not in html  # 无外部资源依赖

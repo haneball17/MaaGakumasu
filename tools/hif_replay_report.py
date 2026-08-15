@@ -9,10 +9,19 @@ from __future__ import annotations
 
 import sys
 import json
+import importlib.util
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 DECISIONS_DIR = REPO / "debug" / "decisions"
+
+
+def _load_viewer():
+    """按文件加载 viewer.py(无 maafw 依赖;避免 agent 包 __init__ 的 custom.reco import 链)。"""
+    spec = importlib.util.spec_from_file_location("hif_viewer", REPO / "agent" / "hif" / "decisions" / "viewer.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 # 页面名的中文短标签(总表可读性)
 SCREEN_LABELS = {
@@ -59,12 +68,12 @@ def build_rows(records: list[dict]) -> list[list[str]]:
             flag = (flag + " 重抽").strip()
         detail = _describe_candidates(rec)
         overrides = "有" if rec.get("overrides") else ""
-        rows.append([rec.get("ts", ""), screen, rec.get("action", ""), detail, overrides, flag])
+        rows.append([rec.get("ts", ""), rec.get("_day", "?"), screen, rec.get("action", ""), detail, overrides, flag])
     return rows
 
 
 def render_table(rows: list[list[str]]) -> str:
-    headers = ["时间", "页面", "动作", "候选→选择/原因", "调参", "标记"]
+    headers = ["时间", "Day", "页面", "动作", "候选→选择/原因", "调参", "标记"]
     widths = [max(len(str(r[i])) for r in rows + [headers]) for i in range(len(headers))]
     lines = [" | ".join(str(h).ljust(widths[i]) for i, h in enumerate(headers))]
     lines.append("-|-".join("-" * w for w in widths))
@@ -86,6 +95,7 @@ def main() -> int:
             return 1
         jsonl = sessions[-1]
     records = [json.loads(line) for line in jsonl.read_text(encoding="utf-8").splitlines() if line.strip()]
+    _load_viewer()._attach_day_labels(records)
 
     table = render_table(build_rows(records))
     print(f"# HIF 决策总表 {jsonl.name}（{len(records)} 条）\n")

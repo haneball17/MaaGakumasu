@@ -33,6 +33,29 @@ class _ProduceHIFActionBase(CustomAction):
     # 决策存档目录:绝对定位(agent 由 MFA/插件启动时 cwd 未必是仓库根)
     # parents[3]: produce_hif.py 在 agent/custom/action/ 下,需上溯 3 级到仓库根(parents[2] 是 agent/,实证 2026-08-15 存档全部写入 agent/debug/)
     _DECISIONS_DIR = Path(__file__).resolve().parents[3] / "debug" / "decisions"
+    # 会话 day 状态(跨 hif_run 分段持久):日程选择时写入,所有决策记录读取注入
+    _SESSION_STATE_FILE = _DECISIONS_DIR / "session-state.json"
+
+    @staticmethod
+    def _read_session_day() -> Optional[int]:
+        try:
+            data = json.loads(_ProduceHIFActionBase._SESSION_STATE_FILE.read_text(encoding="utf-8"))
+            return data.get("day_remaining")
+        except Exception:
+            return None
+
+    @classmethod
+    def _set_session_day(cls, day_remaining: Optional[int]) -> None:
+        if day_remaining is None:
+            return
+        try:
+            cls._SESSION_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+            cls._SESSION_STATE_FILE.write_text(
+                json.dumps({"day_remaining": day_remaining, "updated": time.strftime("%Y-%m-%d %H:%M:%S")}),
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
 
     @staticmethod
     def _get_screenshot(context: Context):
@@ -153,6 +176,11 @@ class _ProduceHIFActionBase(CustomAction):
                 record["evidence_empty"] = True
             record.setdefault("ts", time.strftime("%H:%M:%S"))
             record.setdefault("screen", screen_state)
+            # 注入会话 day(记录自带时不覆盖;状态文件由日程选择时更新)
+            if "day_remaining" not in record:
+                session_day = _ProduceHIFActionBase._read_session_day()
+                if session_day is not None:
+                    record["day_remaining"] = session_day
             jsonl = out_dir / f"session-{time.strftime('%Y%m%d')}.jsonl"
             with jsonl.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -221,6 +249,8 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
 
         preset = self._get_preset(argv)
         day_remaining = self._get_day_remaining(context, image)
+        if day_remaining is not None:
+            _ProduceHIFActionBase._set_session_day(day_remaining)
         best_event = self._choose_best_event(health_data, events, preset, day_remaining)
         if not best_event:
             return self._stop_unsupported(context, "finals_action_select", "preset_no_matching_event")

@@ -150,10 +150,10 @@ function render(){
     const screen=rec.screen||'?';
     const row=document.createElement('tr');
     row.className='row';
-    row.innerHTML=`<td>${esc(rec.ts)}</td><td><span class="tag" style="background:${colorOf(screen)}22;color:${colorOf(screen)}">${tagOf(screen)}</span></td><td>${esc(rec.action)}</td><td>${summarize(rec)}</td><td>${rec.overrides?'<span class="flag-ok">有</span>':''}</td><td>${flags(rec)}</td>`;
+    row.innerHTML=`<td>${esc(rec.ts)}</td><td>${esc(rec._day||'?')}</td><td><span class="tag" style="background:${colorOf(screen)}22;color:${colorOf(screen)}">${tagOf(screen)}</span></td><td>${esc(rec.action)}</td><td>${summarize(rec)}</td><td>${rec.overrides?'<span class="flag-ok">有</span>':''}</td><td>${flags(rec)}</td>`;
     const det=document.createElement('tr');
     det.className='detail';
-    det.innerHTML=`<td colspan="6">${detailHtml(rec)}</td>`;
+    det.innerHTML=`<td colspan="7">${detailHtml(rec)}</td>`;
     row.onclick=()=>det.classList.toggle('open');
     body.appendChild(row);body.appendChild(det);
   });
@@ -177,8 +177,40 @@ initSession();render();
 """
 
 
+def _day_label_of(rec: dict) -> str | None:
+    """单条记录的 Day 标签:HIF 准备期「本戦まで N 日」→ D{7-N};Round1 起标 R1。"""
+    if rec.get("screen") in ("round1_initial",):
+        return "R1"
+    n = rec.get("day_remaining")
+    if n is None:
+        return None
+    try:
+        n = int(n)
+    except (TypeError, ValueError):
+        return None
+    if n == 0:
+        return "本戦"
+    if 1 <= n <= 6:
+        return f"D{7 - n}"
+    return None
+
+
+def _attach_day_labels(records: list[dict]) -> None:
+    """为记录就地附加 _day:自带优先→顺序继承;开头未标段用首个已知 Day 回填(変卡等每日开头环节与随后日程同天)。"""
+    labels = []
+    cur = None
+    for rec in records:
+        label = _day_label_of(rec)
+        if label is not None:
+            cur = label
+        labels.append(cur)
+    first_known = next((l for l in labels if l), None)
+    for rec, label in zip(records, labels):
+        rec["_day"] = label or first_known or "?"
+
+
 def load_sessions(decisions_dir: Path = DECISIONS_DIR) -> list[dict]:
-    """读全部 session-*.jsonl,返回 [{file, records}](按文件名升序)。"""
+    """读全部 session-*.jsonl,返回 [{file, records}](按文件名升序);记录附加 _day 标签。"""
     sessions = []
     for jsonl in sorted(decisions_dir.glob("session-*.jsonl")):
         records = []
@@ -189,6 +221,7 @@ def load_sessions(decisions_dir: Path = DECISIONS_DIR) -> list[dict]:
                     records.append(json.loads(line))
                 except json.JSONDecodeError:
                     continue
+        _attach_day_labels(records)
         sessions.append({"file": jsonl.name, "records": records})
     return sessions
 
@@ -213,7 +246,7 @@ def render_html(sessions: list[dict]) -> str:
   <label class="chk"><input type="checkbox" id="f-reroll">重抽</label>
   <label class="chk"><input type="checkbox" id="f-tuned">调参生效</label>
 </div>
-<table><thead><tr><th>时间</th><th>页面</th><th>动作</th><th>候选→选择/原因</th><th>调参</th><th>标记</th></tr></thead>
+<table><thead><tr><th>时间</th><th>Day</th><th>页面</th><th>动作</th><th>候选→选择/原因</th><th>调参</th><th>标记</th></tr></thead>
 <tbody id="rows"></tbody></table>
 <div id="lightbox"><img id="lb" alt=""></div>
 <script>{script}</script>
