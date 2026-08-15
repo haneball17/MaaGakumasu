@@ -88,7 +88,7 @@ def build_interface() -> dict:
     ]
 
     def hif_options():
-        return ["HIF预设", "培育倾向"]
+        return ["HIF预设", "培育倾向", "HIF 决策微调"]
 
     return {
         "interface_version": "1.0",
@@ -123,6 +123,8 @@ def build_interface() -> dict:
                 "default_case": opts["培育倾向"]["default_case"],
                 "cases": tendency_cases,
             },
+            # input 型决策微调选项原样透传(调试界面支持与否由插件决定,不影响 agent 参数解析)
+            "HIF 决策微调": opts.get("HIF 决策微调"),
         },
     }
 

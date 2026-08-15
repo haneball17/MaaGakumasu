@@ -466,11 +466,11 @@ def test_hif_keyword_scoring_uses_observed_finals_effect_texts():
 
     # 絶好調不被好調子串重复计分(8 而非 8+6);パラメータ+6 计 2
     assert good.score(excitte) == 8 + 2
-    # 始まりの合図:好調 6 分,达到 accept 阈值
+    # 始まりの合図:好調5ターン 6 分,达到 accept 阈值
     assert good.score(hajimari) == 6
-    # 立ち位置チェック:集中消費-1、元気増加無効-5(先行移除不再触发元気+1)
-    # 但「元気+15」的元気+1、パラメータ+2、条件加成「好調効果を2倍適用」的 好調+6
-    assert good.score(tachibashi) == -1 - 5 + 1 + 2 + 6
+    # 立ち位置チェック:括号条件「（好調効果を2倍適用）」不计分(実機 2026-08-15 grill 修正,原误计+6)
+    # 集中消費-1、元気増加無効-5(负面先行移除)、「元気+15」元気+1、パラメータ+2 → -3
+    assert good.score(tachibashi) == -1 - 5 + 1 + 2
     # 眠気重罚下大胆不敵仍正,但低于始まりの合図
     assert good.score(daitan) < good.score(hajimari)
     best = pick_best_candidate([("tachibashi", good.score(tachibashi)), ("hajimari", good.score(hajimari)), ("daitan", good.score(daitan))])
@@ -642,3 +642,197 @@ def test_hif_tendency_option_injects_preference_into_all_keyword_actions():
         # Produce 任务引用了该选项
         produce_task = next(t for t in task_payload["task"] if t.get("entry") == "Produce")
         assert "培育倾向" in produce_task["option"]
+
+
+def test_hif_card_dict_covers_master_121_cards():
+    from agent.hif.adapters.card_dict import build_card_name_dict
+    from agent.hif.decisions.hand_meta import _load_skill_master
+
+    names = build_card_name_dict()
+    master = _load_skill_master()
+
+    assert len(master) == 121
+    # 実機出現过的卡必须可被词典约束识别
+    for observed in ("立ち位置チェック", "エキサイト", "始まりの合図", "大胆不敵", "鳴り止まない拍手", "静かな意志", "魅惑の視線"):
+        assert observed in names, observed
+    assert len(names) >= 121
+
+
+def test_hif_hand_meta_reads_master_tiers_by_suffix():
+    from agent.hif.decisions.hand_meta import get_card_meta, get_focus_cost, get_stamina_cost
+
+    plain = get_card_meta("立ち位置チェック")
+    assert plain is not None
+    # wiki 数据:立ち位置チェック 是集中消耗卡(focus_cost=3),效果含 パラメータ
+    assert plain.focus_cost == 3
+    assert "パラメータ" in plain.effect_summary
+    # 档位符号选 tier:++ 的体力消耗低于無印(wiki 数据)
+    assert get_stamina_cost("始まりの合図++") <= get_stamina_cost("始まりの合図")
+
+
+def test_hif_keyword_score_detail_reports_breakdown():
+    from agent.hif.decisions.rewards import load_keyword_tables
+
+    table = load_keyword_tables()["good_condition"]
+    score, breakdown = table.score_detail("絶好調2ターン 手札をすべてレッスン中強化 体力消費2")
+
+    assert score == 8 + 4 - 1
+    assert ("絶好調[0-9０-９]*ターン", 8.0) in breakdown
+    assert ("レッスン中強化", 4.0) in breakdown
+    assert ("体力消費", -1.0) in breakdown
+
+
+def test_hif_keyword_ignores_condition_phrases_outside_turn_pattern():
+    from agent.hif.decisions.rewards import load_keyword_tables
+
+    table = load_keyword_tables()["good_condition"]
+    # 「好調状態の場合」是好调状态的条件描述,非好调获得效果,不计分
+    assert table.score("好調状態の場合 集中+5") == 2
+
+
+def test_hif_keyword_overrides_apply_by_named_parameter():
+    from agent.hif.decisions.rewards import load_keyword_tables
+
+    tables = load_keyword_tables(overrides={"keyword_weights": {"集中": 9}, "accept_threshold": 7})
+    good = tables["good_condition"]
+
+    assert good.score("集中+5") == 9
+    assert good.accept_threshold == 7
+    # 未点名的词保持基准
+    assert good.score("体力回復6") == 5
+
+
+def test_hif_preset_parses_gui_override_params():
+    preset = parse_hif_preset(
+        '{"preset_id":"rinami_good_condition_safe","preference":"focus","good_weight":9,'
+        '"accept_threshold":6,"select_change_reroll_override":1,"low_health_percent":50,'
+        '"card_priority_str":"始まりの合図, 大胆不敵","day4_order":"Da,Vi,Vo"}'
+    )
+
+    assert preset.preference == "focus"
+    assert preset.good_weight == 9
+    assert preset.accept_threshold == 6
+    assert preset.select_change_reroll_override == 1
+    assert preset.low_health_percent == 50
+    assert preset.card_priority == ("始まりの合図", "大胆不敵")
+    assert preset.daily_override == ((3, ("Da", "Vi", "Vo")),)  # day4 → 剩余日数 3
+    # 非法值容错:回落不覆盖
+    bad = parse_hif_preset('{"good_weight":"abc","preference":"bogus"}')
+    assert bad.good_weight == 0.0 and bad.preference == "good_condition"
+
+
+def test_hif_build_gui_keyword_overrides_maps_weight_knobs():
+    from agent.hif.presets import build_gui_keyword_overrides
+
+    preset = parse_hif_preset('{"good_weight":9,"focus_weight":7,"accept_threshold":6}')
+    overrides = build_gui_keyword_overrides(preset)
+
+    assert overrides["keyword_weights"]["好調[0-9０-９]*ターン"] == 9
+    assert overrides["keyword_weights"]["絶好調[0-9０-９]*ターン"] == 11
+    assert overrides["keyword_weights"]["集中"] == 7
+    assert overrides["accept_threshold"] == 6
+
+
+def test_hif_schedule_priority_respects_daily_override():
+    preset = parse_hif_preset('{"preset_id":"safe_default","day1_order":"Vi,Da,Vo","day6_order":"consult"}')
+
+    assert choose_schedule_priority(preset, 6) == ("Vi", "Da", "Vo")
+    assert choose_schedule_priority(preset, 1) == ("consult",)
+    # 未覆盖的日数回落 preset 全局序
+    assert choose_schedule_priority(preset, 5) == preset.schedule_priority
+
+
+def test_hif_apply_file_overrides_merges_non_scoring_items(tmp_path, monkeypatch):
+    from agent.hif.presets import apply_file_overrides
+
+    override_file = tmp_path / "decision_override.json"
+    override_file.write_text(
+        json.dumps(
+            {
+                "_说明": "ignore",
+                "card_priority": ["始まりの合図"],
+                "select_change_reroll_limit": 1,
+                "low_health_percent": 40,
+                "daily_schedule": {"6": "Vo,Da,Vi"},
+                "consult_policy": "finish_without_purchase",
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    preset = apply_file_overrides(parse_hif_preset(None), path=override_file)
+
+    assert preset.card_priority == ("始まりの合図",)
+    assert preset.select_change_reroll_override == 1
+    assert preset.low_health_percent == 40
+    assert preset.daily_override == ((6, ("Vo", "Da", "Vi")),)
+    assert preset.consult_policy_override == "finish_without_purchase"
+
+
+def test_hif_drink_reward_prefers_named_card_over_score(monkeypatch):
+    produce_hif = _load_produce_hif_module()
+    action = produce_hif.ProduceChooseHIFDrinkRewardAuto()
+    clicks: list[list[int]] = []
+    # 候选按点选次序:卡名+效果;候选2 是名单饮料(低分),候选3 高分——名单优先应选 2
+    details = [
+        ("初星水", "体力回復6"),
+        ("センブリソーダ", "パラメータ+10"),
+        ("リカバリドリンク", "体力回復6"),
+    ]
+    read_count = {"n": 0}
+    confirm_box = [300, 1060, 120, 40]
+
+    def fake_click(ctx, box, double=True, **kwargs):
+        clicks.append(list(box))
+        return True
+
+    def fake_ocr(ctx, image, name, expected, roi):
+        if name == "ProduceRecognitionHIFRewardDetail":
+            idx = min(read_count["n"], len(details) - 1)
+            read_count["n"] += 1
+            return SimpleNamespace(all_results=[SimpleNamespace(text=details[idx][1], box=[0, 0, 1, 1])], hit=True)
+        if name == "ProduceRecognitionHIFCardName":
+            idx = read_count["n"] - 1
+            return SimpleNamespace(best_result=SimpleNamespace(text=details[idx][0]), all_results=[], hit=True)
+        return None
+
+    def fake_find(context, image, phrases, roi):
+        if any(p in ("受け取る", "次へ") for p in phrases):
+            return SimpleNamespace(best_result=SimpleNamespace(box=confirm_box))
+        return None
+
+    monkeypatch.setattr(action, "_click_box_center", fake_click)
+    monkeypatch.setattr(action, "_get_screenshot", lambda ctx: object())
+    monkeypatch.setattr(action, "_run_ocr", fake_ocr)
+    monkeypatch.setattr(action, "_find_text_option", fake_find)
+    monkeypatch.setattr(action, "_archive_decision", lambda *a, **k: None)
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"drink_priority_str":"センブリソーダ"}'))
+
+    boxes = action.CANDIDATE_BOXES
+    # 逐张点选后名单命中候选2:点回候选2 → 确认;无流转验证锚命中(锚 OCR 走 fake_find 返回 None 之外的锚词)
+    assert boxes[1] in [c for c in clicks]
+    assert confirm_box in clicks
+
+
+def test_hif_confirm_no_transition_stops_safely(monkeypatch):
+    produce_hif = _load_produce_hif_module()
+    action = produce_hif.ProduceChooseHIFSelectChangeTargetAuto()
+    stops: list[str] = []
+    anchor = SimpleNamespace(best_result=SimpleNamespace(box=[1, 1, 1, 1]))
+
+    monkeypatch.setattr(action, "_click_box_center", lambda ctx, box, double=True, **kw: True)
+    monkeypatch.setattr(action, "_get_screenshot", lambda ctx: object())
+
+    def fake_find(context, image, phrases, roi):
+        # 次へ 与流转验证锚都命中 → 确认点击后页面未离开
+        return anchor
+
+    monkeypatch.setattr(action, "_find_text_option", fake_find)
+    monkeypatch.setattr(
+        action, "_stop_unsupported", lambda context, screen_state, reason: stops.append(reason) or False
+    )
+
+    ok = action._confirm_candidate(object(), [10, 10, 1, 1], "select_change_target")
+    assert ok is False
+    assert stops == ["confirm_no_transition"]

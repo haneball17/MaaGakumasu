@@ -1,8 +1,8 @@
 from .shop import *
 from .Counter import *
 from .produce import *
-from .produce_hif import *
 from .challenge import *
+from .produce_hif import *
 from .SupportCards import *
 
 __all__ = [

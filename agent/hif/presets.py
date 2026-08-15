@@ -1,15 +1,20 @@
-"""HIF 用户预设的纯数据与候选排序逻辑。"""
+"""HIF 用户预设的纯数据与候选排序逻辑。
+
+覆盖链（grill 2026-08-15 定案）：GUI 输入（custom_action_param 平铺参数）
+> decision_override.json 文件 > 倾向基准 > preset 默认；点名覆盖语义（只改点名项）。
+"""
 
 from __future__ import annotations
 
 import json
 from typing import Any, Iterable
+from pathlib import Path
 from dataclasses import replace, dataclass
 
 
 @dataclass(frozen=True, slots=True)
 class HIFPreset:
-    """首版 HIF 安全执行预设。"""
+    """首版 HIF 安全执行预设 + 用户覆盖字段（全 0/空 = 不覆盖）。"""
 
     preset_id: str
     schedule_priority: tuple[str, ...]
@@ -28,6 +33,19 @@ class HIFPreset:
     round1_mode: str
     # 培育倾向:决定三选一效果关键词评分表(good_condition/focus/balanced)
     preference: str = "good_condition"
+    # ---- 用户覆盖（GUI > 文件；0/空 = 不覆盖，用上方 preset 值） ----
+    card_priority: tuple[str, ...] = ()  # 命中卡名直接选,优先于评分
+    drink_priority: tuple[str, ...] = ()  # 命中饮料名直接选,优先于评分
+    good_weight: float = 0.0  # 好調Nターン 分值(絶好調按 +2 差值联动)
+    focus_weight: float = 0.0  # 集中 分值
+    stamina_recover_weight: float = 0.0  # 体力回復 分值
+    accept_threshold: float = 0.0  # 重抽阈值
+    select_change_reroll_override: int = 0  # 変卡重抽上限
+    reward_reroll_override: int = 0  # 奖励重抽上限
+    low_health_percent: int = 0  # 低体力阈值百分比(强制外出)
+    daily_override: tuple[tuple[int, tuple[str, ...]], ...] = ()  # 逐日日程覆盖
+    consult_policy_override: str = ""  # 相談策略覆盖
+    class_option_policy_override: str = ""  # 授業选项策略覆盖
 
 
 SAFE_DEFAULT_PRESET = HIFPreset(
@@ -77,10 +95,56 @@ RINAMI_GOOD_CONDITION_SAFE = HIFPreset(
 
 _PRESETS = {preset.preset_id: preset for preset in (SAFE_DEFAULT_PRESET, RINAMI_GOOD_CONDITION_SAFE)}
 
+_KEYWORD_PREFERENCES = ("good_condition", "focus", "balanced")
+
+# GUI 数值旋钮 → 关键词表词名（好調句式与 keywords 表同步）
+_GOOD_TURN = "好調[0-9０-９]*ターン"
+_ZGOOD_TURN = "絶好調[0-9０-９]*ターン"
+
+
+def _to_float(value: Any) -> float:
+    """GUI 传参容错：合法正数返回，否则 0（不覆盖）。"""
+    try:
+        num = float(value)
+        return num if num > 0 else 0.0
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _to_int(value: Any) -> int:
+    try:
+        num = int(value)
+        return num if num > 0 else 0
+    except (TypeError, ValueError):
+        return 0
+
+
+def _split_names(value: Any) -> tuple[str, ...]:
+    """逗号/顿号分隔名单 → 去空元组。"""
+    if not isinstance(value, str):
+        return ()
+    return tuple(s.strip() for s in value.replace("、", ",").split(",") if s.strip())
+
+
+def _parse_daily_override(payload: dict) -> tuple[tuple[int, tuple[str, ...]], ...]:
+    """GUI dayN_order 字段（"Da,Vi,Vo"）→ ((day_remaining, order), ...)。
+
+    日数语义与 daily_schedule_priorities 一致：day_remaining = 7 - Day 编号
+    （Day1 对应 6、Day6 对应 1）。
+    """
+    entries: list[tuple[int, tuple[str, ...]]] = []
+    for day in range(1, 7):
+        order = _split_names(payload.get(f"day{day}_order", ""))
+        if order:
+            entries.append((7 - day, order))
+    return tuple(entries)
+
 
 def parse_hif_preset(raw: str | None) -> HIFPreset:
-    """从 MaaFramework 的 custom_action_param 读取预设；preference 可选覆盖倾向。"""
+    """从 MaaFramework 的 custom_action_param 读取预设与 GUI 覆盖参数。
 
+    覆盖容错（grill 定案）：非法值忽略并回落 preset 默认，部分生效。
+    """
     try:
         payload: Any = json.loads(raw or "{}")
     except json.JSONDecodeError:
@@ -89,13 +153,102 @@ def parse_hif_preset(raw: str | None) -> HIFPreset:
     if not isinstance(payload, dict):
         return SAFE_DEFAULT_PRESET
     preset = _PRESETS.get(payload.get("preset_id"), SAFE_DEFAULT_PRESET)
+
+    updates: dict[str, Any] = {}
     preference = payload.get("preference")
     if preference in _KEYWORD_PREFERENCES and preference != preset.preference:
-        return replace(preset, preference=preference)
-    return preset
+        updates["preference"] = preference
+    for field_name in ("card_priority", "drink_priority"):
+        names = _split_names(payload.get(f"{field_name}_str", ""))
+        if names:
+            updates[field_name] = names
+    for field_name in ("good_weight", "focus_weight", "stamina_recover_weight", "accept_threshold"):
+        value = _to_float(payload.get(field_name))
+        if value:
+            updates[field_name] = value
+    for field_name in ("select_change_reroll_override", "reward_reroll_override", "low_health_percent"):
+        value = _to_int(payload.get(field_name))
+        if value:
+            updates[field_name] = value
+    daily = _parse_daily_override(payload)
+    if daily:
+        updates["daily_override"] = daily
+    for field_name in ("consult_policy_override", "class_option_policy_override"):
+        value = payload.get(field_name)
+        if isinstance(value, str) and value.strip():
+            updates[field_name] = value.strip()
+
+    return replace(preset, **updates) if updates else preset
 
 
-_KEYWORD_PREFERENCES = ("good_condition", "focus", "balanced")
+def build_gui_keyword_overrides(preset: HIFPreset) -> dict:
+    """把 preset 的 GUI 数值旋钮转成 load_keyword_tables 的 overrides 结构。"""
+    weights: dict[str, float] = {}
+    if preset.good_weight:
+        weights[_GOOD_TURN] = preset.good_weight
+        weights[_ZGOOD_TURN] = preset.good_weight + 2  # 保持基准差值关系
+    if preset.focus_weight:
+        weights["集中"] = preset.focus_weight
+    if preset.stamina_recover_weight:
+        weights["体力回復"] = preset.stamina_recover_weight
+    overrides: dict = {}
+    if weights:
+        overrides["keyword_weights"] = weights
+    if preset.accept_threshold:
+        overrides["accept_threshold"] = preset.accept_threshold
+    return overrides
+
+
+_OVERRIDE_PATH = Path(__file__).resolve().parents[3] / "assets" / "data" / "hif" / "decision_override.json"
+
+
+def apply_file_overrides(preset: HIFPreset, path: Path = _OVERRIDE_PATH) -> HIFPreset:
+    """把 decision_override.json 的非评分项(名单/重抽/低体力/逐日/策略)合并进 preset。
+
+    评分词与阈值由 rewards.load_keyword_tables 在 KeywordTable 层合并,此处不重复;
+    `_=0/空` 视为未配置;文件缺失/语法错静默忽略(评分层已警告)。
+    """
+    if not path.exists():
+        return preset
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return preset
+    if not isinstance(payload, dict):
+        return preset
+    payload = {k: v for k, v in payload.items() if not k.startswith("_")}
+
+    updates: dict[str, Any] = {}
+    for field_name, key in (("card_priority", "card_priority"), ("drink_priority", "drink_priority")):
+        names = payload.get(key)
+        if isinstance(names, list) and names and not preset.__getattribute__(field_name):
+            updates[field_name] = tuple(str(n).strip() for n in names if str(n).strip())
+    for field_name, key in (
+        ("select_change_reroll_override", "select_change_reroll_limit"),
+        ("reward_reroll_override", "reward_reroll_limit"),
+        ("low_health_percent", "low_health_percent"),
+    ):
+        value = _to_int(payload.get(key))
+        if value and not preset.__getattribute__(field_name):
+            updates[field_name] = value
+    daily = payload.get("daily_schedule")
+    if isinstance(daily, dict) and daily and not preset.daily_override:
+        entries = []
+        for key, order in daily.items():
+            try:
+                day = int(key)
+            except (TypeError, ValueError):
+                continue
+            names = _split_names(order if isinstance(order, str) else "")
+            if names:
+                entries.append((day, names))
+        if entries:
+            updates["daily_override"] = tuple(entries)
+    for field_name, key in (("consult_policy_override", "consult_policy"), ("class_option_policy_override", "class_option_policy")):
+        value = payload.get(key)
+        if isinstance(value, str) and value.strip() and not preset.__getattribute__(field_name):
+            updates[field_name] = value.strip()
+    return replace(preset, **updates) if updates else preset
 
 
 def choose_first_matching(candidates: Iterable[str], priority: Iterable[str]) -> str | None:
@@ -106,9 +259,12 @@ def choose_first_matching(candidates: Iterable[str], priority: Iterable[str]) ->
 
 
 def choose_schedule_priority(preset: HIFPreset, day_remaining: int | None) -> tuple[str, ...] | None:
-    """返回当前剩余日数的日程优先级，实验预设拒绝缺失日数。"""
+    """返回当前剩余日数的日程优先级（GUI daily_override > preset daily 表 > 全局序）。"""
 
     if day_remaining is not None:
+        for day, order in preset.daily_override:
+            if day == day_remaining:
+                return order
         for day, priority in preset.daily_schedule_priorities:
             if day == day_remaining:
                 return priority

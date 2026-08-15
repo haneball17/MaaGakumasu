@@ -3,15 +3,25 @@ import json
 import time
 from typing import Any, Dict, List, Optional
 from difflib import SequenceMatcher
+from pathlib import Path
 
 import numpy as np
+from PIL import Image
 from utils import logger
 from maa.context import Context
 from maa.custom_action import CustomAction
 from maa.agent.agent_server import AgentServer
 
-from agent.hif.presets import HIFPreset, parse_hif_preset, choose_first_matching, choose_schedule_priority
+from agent.hif.presets import (
+    HIFPreset,
+    parse_hif_preset,
+    apply_file_overrides,
+    choose_first_matching,
+    choose_schedule_priority,
+    build_gui_keyword_overrides,
+)
 from agent.hif.decisions.rewards import load_keyword_tables
+from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict
 from agent.hif.decisions.schedule import classify_class_option
 from agent.hif.adapters.exam_reader import ExamStateReader
 
@@ -61,7 +71,8 @@ class _ProduceHIFActionBase(CustomAction):
 
     @staticmethod
     def _get_preset(argv: CustomAction.RunArg) -> HIFPreset:
-        return parse_hif_preset(argv.custom_action_param)
+        # 覆盖链:GUI(custom_action_param) > decision_override.json(非评分项) > preset 默认
+        return apply_file_overrides(parse_hif_preset(argv.custom_action_param))
 
     def _stop_unsupported(self, context: Context, screen_state: str, reason: str) -> bool:
         logger.warning(f"HIF 安全停止: screen_state={screen_state}, reason={reason}")
@@ -176,7 +187,9 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         current_health = health_data["current"]
         ratio_health = health_data["ratio"]
 
-        if current_health <= self.LOW_HEALTH_VALUE or ratio_health <= self.LOW_HEALTH_RATIO:
+        low_ratio = (preset.low_health_percent / 100) if preset.low_health_percent else self.LOW_HEALTH_RATIO
+        if current_health <= self.LOW_HEALTH_VALUE or ratio_health <= low_ratio:
+            logger.info(f"HIF 低体力({current_health}, {ratio_health:.0%} ≤ {low_ratio:.0%}): 强制おでかけ")
             go_out = self._find_event(events, "おでかけ")
             if go_out:
                 return go_out
@@ -435,11 +448,12 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
 
 
 class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
-    """三选一奖励基类:逐张点选候选,读详情面板效果文本做关键词评分,选最高分确认。
+    """三选一奖励基类:逐张点选候选,读详情面板卡名+效果文本做关键词评分,选最高分确认。
 
     候选缩略图上无文字(実機 2026-08-15 确认),卡名与效果只在点选后的白色详情面板渲染;
     点选是选中而非确认(确认另有 受け取る/次へ 按钮),逐张读取安全。
-    预设名单制已废弃:変卡实机 0/3 命中且候选区本无可读文字。
+    决策透明度(2026-08-15 grill):评分明细日志、截图存档、JSONL 落盘、确认后流转验证;
+    名单优先:卡名命中 preset.card/drink_priority 直接选(用户指定 > 评分器)。
     """
 
     SELECT_DELAY = 1.2
@@ -447,8 +461,15 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
     # 三个固定候选位(三列布局,列间距约 152px;[待実機校准] 第二/三列为对称推算)
     CANDIDATE_BOXES: list[list[int]] = []
     DETAIL_TEXT_ROI: list[int] = []
+    # 详情面板卡名行(daily-log 実測 y512-560;此前 DETAIL_TEXT_ROI 从 y555 起漏读卡名 43px)
+    CARD_NAME_ROI: list[int] = [120, 500, 480, 70]
     CONFIRM_TEXT: tuple[str, ...] = ()
     CONFIRM_ROI: list[int] = []
+    # 本页标题锚(流转验证:确认后仍见此文本=未流转)
+    ANCHOR_TEXT: tuple[str, ...] = ()
+    ANCHOR_ROI: list[int] = []
+
+    _CARD_DICT: list[str] | None = None
 
     def _read_all_text(self, context: Context, image, name: str, roi: list[int]) -> str:
         reco_detail = self._run_ocr(context, image, name, [".*"], roi)
@@ -456,31 +477,79 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
             return ""
         return " ".join(item.text for item in reco_detail.all_results)
 
+    def _read_card_name(self, context: Context, image) -> str:
+        """读详情面板卡名行;master 121 卡词典约束候选,normalize 修正误识。"""
+        if _ProduceHIFRewardChoiceAction._CARD_DICT is None:
+            _ProduceHIFRewardChoiceAction._CARD_DICT = build_card_name_dict()
+        reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFCardName", self._CARD_DICT, self.CARD_NAME_ROI)
+        if not (reco_detail and reco_detail.hit):
+            return ""
+        return normalize_card_name(reco_detail.best_result.text)
+
+    def _archive_decision(self, image, screen_state: str, record: dict) -> None:
+        """决策落盘:截图 debug/decisions/<ts>_<state>.png + session JSONL(含评分明细/override)。"""
+        try:
+            out_dir = Path("debug") / "decisions"
+            out_dir.mkdir(parents=True, exist_ok=True)
+            ts = time.strftime("%Y%m%d-%H%M%S")
+            img_path = out_dir / f"{ts}_{screen_state}.png"
+            Image.fromarray(image).save(img_path)
+            record["image"] = str(img_path)
+            jsonl = out_dir / f"session-{time.strftime('%Y%m%d')}.jsonl"
+            with jsonl.open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+        except Exception as err:  # 存档失败不阻断决策
+            logger.warning(f"HIF 决策存档失败: {err}")
+
     def _choose_keyword_reward(self, context: Context, preset: HIFPreset, reroll_limit: int, screen_state: str) -> bool:
-        table = load_keyword_tables()[preset.preference]
+        table = load_keyword_tables(overrides=build_gui_keyword_overrides(preset))[preset.preference]
+        priority_names = preset.drink_priority if "drink" in screen_state else preset.card_priority
         best_box = None
-        for _ in range(reroll_limit + 1):
-            scored = []
+        for round_index in range(reroll_limit + 1):
+            candidates = []
             for label, box in enumerate(self.CANDIDATE_BOXES, start=1):
                 self._click_box_center(context, box, double=False)
                 time.sleep(self.SELECT_DELAY)
-                text = self._read_all_text(context, self._get_screenshot(context), "ProduceRecognitionHIFRewardDetail", self.DETAIL_TEXT_ROI)
-                score = table.score(text)
-                scored.append((box, score))
-                logger.info(f"HIF 三选一[{screen_state}] 候选{label}: score={score:.0f} text={text[:60]!r}")
+                image = self._get_screenshot(context)
+                card_name = self._read_card_name(context, image)
+                text = self._read_all_text(context, image, "ProduceRecognitionHIFRewardDetail", self.DETAIL_TEXT_ROI)
+                score, breakdown = table.score_detail(text)
+                candidates.append({"label": label, "box": box, "card": card_name, "text": text, "score": score, "breakdown": breakdown})
+                detail_str = ",".join(f"{kw}{value:+g}" for kw, value in breakdown) or "无命中"
+                logger.info(f"HIF 三选一[{screen_state}] 候选{label}: {card_name or '卡名未读'} score={score:.0f} [{detail_str}]")
 
-            best_box, best_score = max(scored, key=lambda item: item[1])
-            if table.accepts(best_score):
-                return self._confirm_candidate(context, best_box, screen_state)
+            # 名单优先:用户点名的卡/饮料直接选(grill 定案:用户指定 > 评分器)
+            chosen = next((c for c in candidates if c["card"] and c["card"] in priority_names), None)
+            if chosen:
+                logger.info(f"HIF 三选一[{screen_state}] 名单优先: 「{chosen['card']}」(跳过评分)")
+            else:
+                chosen = max(candidates, key=lambda c: c["score"])
+                if table.accepts(chosen["score"]):
+                    pass  # 达标直接确认
+                else:
+                    reroll = self._find_text_option(context, self._get_screenshot(context), ("再抽選",), self.REROLL_ROI)
+                    if reroll and round_index < reroll_limit:
+                        logger.info(
+                            f"HIF 三选一[{screen_state}] 最高分 {chosen['score']:.0f} 未达阈值 {table.accept_threshold:.0f},重抽"
+                        )
+                        self._archive_decision(self._get_screenshot(context), screen_state, {
+                            "ts": time.strftime("%H:%M:%S"), "screen": screen_state, "round": round_index,
+                            "preference": preset.preference, "candidates": candidates, "action": "reroll",
+                            "accept_threshold": table.accept_threshold,
+                            "overrides": build_gui_keyword_overrides(preset) or None,
+                        })
+                        self._click_box_center(context, reroll.best_result.box, double=False)
+                        time.sleep(self.ACTION_DELAY)
+                        continue
+            self._archive_decision(self._get_screenshot(context), screen_state, {
+                "ts": time.strftime("%H:%M:%S"), "screen": screen_state, "round": round_index,
+                "preference": preset.preference, "candidates": candidates, "action": "confirm",
+                "chosen": chosen["label"], "chosen_card": chosen["card"] or None,
+                "accept_threshold": table.accept_threshold,
+                "overrides": build_gui_keyword_overrides(preset) or None,
+            })
+            return self._confirm_candidate(context, chosen["box"], screen_state)
 
-            reroll = self._find_text_option(context, self._get_screenshot(context), ("再抽選",), self.REROLL_ROI)
-            if not reroll:
-                break
-            logger.info(f"HIF 三选一[{screen_state}] 最高分 {best_score:.0f} 未达阈值,重抽")
-            self._click_box_center(context, reroll.best_result.box, double=False)
-            time.sleep(self.ACTION_DELAY)
-
-        logger.info(f"HIF 三选一[{screen_state}] 重抽耗尽,以最高分候选确认")
         return self._confirm_candidate(context, best_box, screen_state)
 
     def _confirm_candidate(self, context: Context, box: List[int], screen_state: str) -> bool:
@@ -492,17 +561,24 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
         if not self._click_box_center(context, confirm.best_result.box, double=False):
             return self._stop_unsupported(context, screen_state, "confirm_button_click_failed")
         time.sleep(self.ACTION_DELAY)
+        # 流转验证(grill 定案):确认后本页标题锚仍在=确认未生效,安全停止防同页重复决策
+        if self.ANCHOR_TEXT:
+            still = self._find_text_option(context, self._get_screenshot(context), self.ANCHOR_TEXT, self.ANCHOR_ROI)
+            if still:
+                return self._stop_unsupported(context, screen_state, "confirm_no_transition")
         return True
 
 
 @AgentServer.custom_action("ProduceChooseHIFDrinkRewardAuto")
 class ProduceChooseHIFDrinkRewardAuto(_ProduceHIFRewardChoiceAction):
-    """P 饮料三选一:逐张点选读效果关键词评分选最高分确认(无重抽,页面无再抽選按钮)。"""
+    """P 饮料三选一:逐张点选读卡名+效果,名单(饮料名)优先,评分选最高分确认(无重抽)。"""
 
     CANDIDATE_BOXES = [[158, 822, 127, 127], [308, 822, 127, 127], [458, 822, 127, 127]]
     DETAIL_TEXT_ROI = [118, 506, 500, 230]
     CONFIRM_TEXT = ("受け取る", "次へ")
     CONFIRM_ROI = [150, 1000, 420, 200]
+    ANCHOR_TEXT = ("受け取るPドリンク", "Pドリンクを選んで")
+    ANCHOR_ROI = [80, 540, 560, 220]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         return self._choose_keyword_reward(context, self._get_preset(argv), reroll_limit=0, screen_state="hif_drink_reward")
@@ -510,32 +586,36 @@ class ProduceChooseHIFDrinkRewardAuto(_ProduceHIFRewardChoiceAction):
 
 @AgentServer.custom_action("ProduceChooseHIFSkillRewardAuto")
 class ProduceChooseHIFSkillRewardAuto(_ProduceHIFRewardChoiceAction):
-    """技能卡三选一:逐张点选读效果关键词评分;不达阈值且见「再抽選」才重抽(上限 2)。"""
+    """技能卡三选一:逐张点选读卡名+效果,名单(卡名)优先,评分;不达阈值且见「再抽選」才重抽。"""
 
     CANDIDATE_BOXES = [[156, 821, 128, 128], [308, 821, 128, 128], [460, 821, 128, 128]]
     DETAIL_TEXT_ROI = [118, 555, 490, 185]
     CONFIRM_TEXT = ("受け取る", "次へ")
     CONFIRM_ROI = [150, 1000, 420, 200]
+    ANCHOR_TEXT = ("受け取るスキルカード", "スキルカードを選んで")
+    ANCHOR_ROI = [80, 540, 560, 220]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
-        return self._choose_keyword_reward(context, preset, reroll_limit=preset.reward_reroll_limit, screen_state="hif_skill_reward")
+        reroll = preset.reward_reroll_override or preset.reward_reroll_limit
+        return self._choose_keyword_reward(context, preset, reroll_limit=reroll, screen_state="hif_skill_reward")
 
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeTargetAuto")
 class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
-    """変卡第一阶段:逐张点选候选读效果评分选最高分,确认后推进到牌库选择。"""
+    """変卡第一阶段:逐张点选候选读卡名+效果评分选最高分,确认后推进到牌库选择。"""
 
     CANDIDATE_BOXES = [[156, 837, 128, 128], [308, 837, 128, 128], [460, 837, 128, 128]]
     DETAIL_TEXT_ROI = [118, 555, 490, 185]
     CONFIRM_TEXT = ("次へ",)
     CONFIRM_ROI = [200, 1010, 320, 130]
+    ANCHOR_TEXT = ("チェンジで獲得する",)
+    ANCHOR_ROI = [60, 260, 600, 110]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
-        return self._choose_keyword_reward(
-            context, preset, reroll_limit=preset.select_change_reroll_limit, screen_state="select_change_target"
-        )
+        reroll = preset.select_change_reroll_override or preset.select_change_reroll_limit
+        return self._choose_keyword_reward(context, preset, reroll_limit=reroll, screen_state="select_change_target")
 
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeSourceAuto")
@@ -580,7 +660,11 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
     FINISH_ROI = [530, 1000, 190, 150]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        if self._get_preset(argv).consult_policy != "finish_without_purchase":
+        preset = self._get_preset(argv)
+        if preset.consult_policy_override:
+            if preset.consult_policy_override not in ("finish_without_purchase",):
+                return self._stop_unsupported(context, "consult_shop", f"consult_policy_override_not_supported: {preset.consult_policy_override}")
+        elif preset.consult_policy != "finish_without_purchase":
             return self._stop_unsupported(context, "consult_shop", "consult_policy_not_supported")
 
         finish_button = self._find_text_option(context, self._get_screenshot(context), ("終了",), self.FINISH_ROI)
@@ -605,7 +689,7 @@ class ProduceChooseHIFSPCardAuto(_ProduceHIFActionBase):
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
-        table = load_keyword_tables()[preset.preference]
+        table = load_keyword_tables(overrides=build_gui_keyword_overrides(preset))[preset.preference]
         image = self._get_screenshot(context)
         reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFSPCardText", [".*"], self.OPTION_ROI)
 
@@ -617,9 +701,10 @@ class ProduceChooseHIFSPCardAuto(_ProduceHIFActionBase):
                 if item.box[3] > 20 and re.search(r"[ぁ-んァ-ヶ一-龯]", item.text)
             ]
             if lines:
-                scored = [(item, table.score(item.text)) for item in lines]
-                best_item, best_score = max(scored, key=lambda pair: pair[1])
-                logger.info(f"HIF SP效果卡: 关键词最高分 {best_score:.0f}「{best_item.text[:40]}」")
+                scored = [(item, *table.score_detail(item.text)) for item in lines]
+                best_item, best_score, best_breakdown = max(scored, key=lambda pair: pair[1])
+                detail_str = ",".join(f"{kw}{value:+g}" for kw, value in best_breakdown) or "无命中"
+                logger.info(f"HIF SP效果卡: 最高分 {best_score:.0f} [{detail_str}]「{best_item.text[:40]}」")
                 target_box = best_item.box
 
         if target_box is None:
@@ -831,6 +916,7 @@ class ProduceHIFRound1Observe(_ProduceHIFActionBase):
         logger.success(
             "HIF 已到达 Round1："
             f"good_condition_cards={hand.good_condition_card_count}, "
-            f"shizen={hand.has_shizen_no_miryoku}, oneesan={hand.has_oneesan_no_kankaku}"
+            f"shizen={hand.has_shizen_no_miryoku}, oneesan={hand.has_oneesan_no_kankaku}, "
+            f"card_names={list(hand.card_names) or '未读到'}"
         )
         return True

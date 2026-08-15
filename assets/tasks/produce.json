@@ -7,6 +7,7 @@
         "培育难度",
         "HIF预设",
         "培育倾向",
+        "HIF 决策微调",
         "培育偶像",
         "培育次数",
         "使用体力药",
@@ -248,6 +249,322 @@
           }
         }
       ]
+    },
+    "HIF 决策微调": {
+      "type": "input",
+      "inputs": [
+        {
+          "name": "preset_id",
+          "label": "$预设ID",
+          "default": "safe_default",
+          "pipeline_type": "string",
+          "verify": "^(safe_default|rinami_good_condition_safe)$",
+          "pattern_msg": "$预设ID说明"
+        },
+        {
+          "name": "preference",
+          "label": "$培育倾向值",
+          "default": "good_condition",
+          "pipeline_type": "string",
+          "verify": "^(good_condition|focus|balanced)$",
+          "pattern_msg": "$培育倾向值说明"
+        },
+        {
+          "name": "card_priority_str",
+          "label": "$卡牌优先名单",
+          "default": "",
+          "pipeline_type": "string"
+        },
+        {
+          "name": "drink_priority_str",
+          "label": "$饮料优先名单",
+          "default": "",
+          "pipeline_type": "string"
+        },
+        {
+          "name": "day1_order",
+          "label": "$Day1日程序",
+          "default": "",
+          "pipeline_type": "string"
+        },
+        {
+          "name": "day2_order",
+          "label": "$Day2日程序",
+          "default": "",
+          "pipeline_type": "string"
+        },
+        {
+          "name": "day3_order",
+          "label": "$Day3日程序",
+          "default": "",
+          "pipeline_type": "string"
+        },
+        {
+          "name": "day4_order",
+          "label": "$Day4日程序",
+          "default": "",
+          "pipeline_type": "string"
+        },
+        {
+          "name": "day5_order",
+          "label": "$Day5日程序",
+          "default": "",
+          "pipeline_type": "string"
+        },
+        {
+          "name": "day6_order",
+          "label": "$Day6日程序",
+          "default": "",
+          "pipeline_type": "string"
+        },
+        {
+          "name": "good_weight",
+          "label": "$好调权重",
+          "default": "0",
+          "pipeline_type": "int",
+          "verify": "^[0-9]+$",
+          "pattern_msg": "$好调权重说明"
+        },
+        {
+          "name": "focus_weight",
+          "label": "$集中权重",
+          "default": "0",
+          "pipeline_type": "int",
+          "verify": "^[0-9]+$",
+          "pattern_msg": "$集中权重说明"
+        },
+        {
+          "name": "stamina_recover_weight",
+          "label": "$体力回复权重",
+          "default": "0",
+          "pipeline_type": "int",
+          "verify": "^[0-9]+$",
+          "pattern_msg": "$体力回复权重说明"
+        },
+        {
+          "name": "accept_threshold",
+          "label": "$重抽阈值",
+          "default": "0",
+          "pipeline_type": "int",
+          "verify": "^[0-9]+$",
+          "pattern_msg": "$重抽阈值说明"
+        },
+        {
+          "name": "select_reroll",
+          "label": "$変卡重抽上限",
+          "default": "0",
+          "pipeline_type": "int",
+          "verify": "^[0-9]+$",
+          "pattern_msg": "$変卡重抽上限说明"
+        },
+        {
+          "name": "reward_reroll",
+          "label": "$奖励重抽上限",
+          "default": "0",
+          "pipeline_type": "int",
+          "verify": "^[0-9]+$",
+          "pattern_msg": "$奖励重抽上限说明"
+        },
+        {
+          "name": "low_health_pct",
+          "label": "$低体力百分比",
+          "default": "0",
+          "pipeline_type": "int",
+          "verify": "^[0-9]+$",
+          "pattern_msg": "$低体力百分比说明"
+        }
+      ],
+      "pipeline_override": {
+        "ProduceChooseHIFEventFlag": {
+          "custom_action_param": {
+            "preset_id": "{preset_id}",
+            "preference": "{preference}",
+            "good_weight": "{good_weight}",
+            "focus_weight": "{focus_weight}",
+            "stamina_recover_weight": "{stamina_recover_weight}",
+            "accept_threshold": "{accept_threshold}",
+            "select_change_reroll_override": "{select_reroll}",
+            "reward_reroll_override": "{reward_reroll}",
+            "low_health_percent": "{low_health_pct}",
+            "card_priority_str": "{card_priority_str}",
+            "drink_priority_str": "{drink_priority_str}",
+            "day1_order": "{day1_order}",
+            "day2_order": "{day2_order}",
+            "day3_order": "{day3_order}",
+            "day4_order": "{day4_order}",
+            "day5_order": "{day5_order}",
+            "day6_order": "{day6_order}"
+          }
+        },
+        "ProduceHIFClassOptionFlag": {
+          "custom_action_param": {
+            "preset_id": "{preset_id}",
+            "preference": "{preference}",
+            "good_weight": "{good_weight}",
+            "focus_weight": "{focus_weight}",
+            "stamina_recover_weight": "{stamina_recover_weight}",
+            "accept_threshold": "{accept_threshold}",
+            "select_change_reroll_override": "{select_reroll}",
+            "reward_reroll_override": "{reward_reroll}",
+            "low_health_percent": "{low_health_pct}",
+            "card_priority_str": "{card_priority_str}",
+            "drink_priority_str": "{drink_priority_str}",
+            "day1_order": "{day1_order}",
+            "day2_order": "{day2_order}",
+            "day3_order": "{day3_order}",
+            "day4_order": "{day4_order}",
+            "day5_order": "{day5_order}",
+            "day6_order": "{day6_order}"
+          }
+        },
+        "ProduceHIFDrinkRewardFlag": {
+          "custom_action_param": {
+            "preset_id": "{preset_id}",
+            "preference": "{preference}",
+            "good_weight": "{good_weight}",
+            "focus_weight": "{focus_weight}",
+            "stamina_recover_weight": "{stamina_recover_weight}",
+            "accept_threshold": "{accept_threshold}",
+            "select_change_reroll_override": "{select_reroll}",
+            "reward_reroll_override": "{reward_reroll}",
+            "low_health_percent": "{low_health_pct}",
+            "card_priority_str": "{card_priority_str}",
+            "drink_priority_str": "{drink_priority_str}",
+            "day1_order": "{day1_order}",
+            "day2_order": "{day2_order}",
+            "day3_order": "{day3_order}",
+            "day4_order": "{day4_order}",
+            "day5_order": "{day5_order}",
+            "day6_order": "{day6_order}"
+          }
+        },
+        "ProduceHIFSkillRewardFlag": {
+          "custom_action_param": {
+            "preset_id": "{preset_id}",
+            "preference": "{preference}",
+            "good_weight": "{good_weight}",
+            "focus_weight": "{focus_weight}",
+            "stamina_recover_weight": "{stamina_recover_weight}",
+            "accept_threshold": "{accept_threshold}",
+            "select_change_reroll_override": "{select_reroll}",
+            "reward_reroll_override": "{reward_reroll}",
+            "low_health_percent": "{low_health_pct}",
+            "card_priority_str": "{card_priority_str}",
+            "drink_priority_str": "{drink_priority_str}",
+            "day1_order": "{day1_order}",
+            "day2_order": "{day2_order}",
+            "day3_order": "{day3_order}",
+            "day4_order": "{day4_order}",
+            "day5_order": "{day5_order}",
+            "day6_order": "{day6_order}"
+          }
+        },
+        "ProduceHIFSelectChangeTargetFlag": {
+          "custom_action_param": {
+            "preset_id": "{preset_id}",
+            "preference": "{preference}",
+            "good_weight": "{good_weight}",
+            "focus_weight": "{focus_weight}",
+            "stamina_recover_weight": "{stamina_recover_weight}",
+            "accept_threshold": "{accept_threshold}",
+            "select_change_reroll_override": "{select_reroll}",
+            "reward_reroll_override": "{reward_reroll}",
+            "low_health_percent": "{low_health_pct}",
+            "card_priority_str": "{card_priority_str}",
+            "drink_priority_str": "{drink_priority_str}",
+            "day1_order": "{day1_order}",
+            "day2_order": "{day2_order}",
+            "day3_order": "{day3_order}",
+            "day4_order": "{day4_order}",
+            "day5_order": "{day5_order}",
+            "day6_order": "{day6_order}"
+          }
+        },
+        "ProduceHIFSelectChangeSourceFlag": {
+          "custom_action_param": {
+            "preset_id": "{preset_id}",
+            "preference": "{preference}",
+            "good_weight": "{good_weight}",
+            "focus_weight": "{focus_weight}",
+            "stamina_recover_weight": "{stamina_recover_weight}",
+            "accept_threshold": "{accept_threshold}",
+            "select_change_reroll_override": "{select_reroll}",
+            "reward_reroll_override": "{reward_reroll}",
+            "low_health_percent": "{low_health_pct}",
+            "card_priority_str": "{card_priority_str}",
+            "drink_priority_str": "{drink_priority_str}",
+            "day1_order": "{day1_order}",
+            "day2_order": "{day2_order}",
+            "day3_order": "{day3_order}",
+            "day4_order": "{day4_order}",
+            "day5_order": "{day5_order}",
+            "day6_order": "{day6_order}"
+          }
+        },
+        "ProduceHIFConsultFlag": {
+          "custom_action_param": {
+            "preset_id": "{preset_id}",
+            "preference": "{preference}",
+            "good_weight": "{good_weight}",
+            "focus_weight": "{focus_weight}",
+            "stamina_recover_weight": "{stamina_recover_weight}",
+            "accept_threshold": "{accept_threshold}",
+            "select_change_reroll_override": "{select_reroll}",
+            "reward_reroll_override": "{reward_reroll}",
+            "low_health_percent": "{low_health_pct}",
+            "card_priority_str": "{card_priority_str}",
+            "drink_priority_str": "{drink_priority_str}",
+            "day1_order": "{day1_order}",
+            "day2_order": "{day2_order}",
+            "day3_order": "{day3_order}",
+            "day4_order": "{day4_order}",
+            "day5_order": "{day5_order}",
+            "day6_order": "{day6_order}"
+          }
+        },
+        "ProduceHIFRound1ObserveFlag": {
+          "custom_action_param": {
+            "preset_id": "{preset_id}",
+            "preference": "{preference}",
+            "good_weight": "{good_weight}",
+            "focus_weight": "{focus_weight}",
+            "stamina_recover_weight": "{stamina_recover_weight}",
+            "accept_threshold": "{accept_threshold}",
+            "select_change_reroll_override": "{select_reroll}",
+            "reward_reroll_override": "{reward_reroll}",
+            "low_health_percent": "{low_health_pct}",
+            "card_priority_str": "{card_priority_str}",
+            "drink_priority_str": "{drink_priority_str}",
+            "day1_order": "{day1_order}",
+            "day2_order": "{day2_order}",
+            "day3_order": "{day3_order}",
+            "day4_order": "{day4_order}",
+            "day5_order": "{day5_order}",
+            "day6_order": "{day6_order}"
+          }
+        },
+        "ProduceHIFSPCardFlag": {
+          "custom_action_param": {
+            "preset_id": "{preset_id}",
+            "preference": "{preference}",
+            "good_weight": "{good_weight}",
+            "focus_weight": "{focus_weight}",
+            "stamina_recover_weight": "{stamina_recover_weight}",
+            "accept_threshold": "{accept_threshold}",
+            "select_change_reroll_override": "{select_reroll}",
+            "reward_reroll_override": "{reward_reroll}",
+            "low_health_percent": "{low_health_pct}",
+            "card_priority_str": "{card_priority_str}",
+            "drink_priority_str": "{drink_priority_str}",
+            "day1_order": "{day1_order}",
+            "day2_order": "{day2_order}",
+            "day3_order": "{day3_order}",
+            "day4_order": "{day4_order}",
+            "day5_order": "{day5_order}",
+            "day6_order": "{day6_order}"
+          }
+        }
+      }
     },
     "「初」难度": {
       "type": "select",

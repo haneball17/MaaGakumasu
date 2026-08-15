@@ -49,6 +49,8 @@ class HandSummary:
     good_condition_card_count: int  # 好调卡张数（凑 P アイテム再抽牌 + 抬高自然体加成）
     swap_hand_available: bool  # 手札交換是否可用
     draw_available: bool  # ドロー追加是否可用
+    # 実機 2026-08-15 接线：OCR 读到的卡名（决策日志/实证用，空=未读到）
+    card_names: tuple[str, ...] = ()
 
 
 @dataclass(slots=True)

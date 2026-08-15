@@ -145,6 +145,7 @@ def build_hand_summary(detections: list[CardDetection]) -> HandSummary:
         # draw/swap 按钮识别留待实机（Step3/4），当前默认 False（决策会兜底处理）
         swap_hand_available=False,
         draw_available=False,
+        card_names=tuple(card_names),
     )
 
 

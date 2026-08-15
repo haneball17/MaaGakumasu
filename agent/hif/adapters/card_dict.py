@@ -6,14 +6,16 @@ YOLO(cards.onnx) 只输出 cards/suggestions/useless 三类 + box 位置，不�
 
 词典来源：
 1. assets/data/hif/skill_cards.json 的卡名（关键 3 张 + 其他）
-2. 常见状态卡硬编码（好調/集中等通用卡，提高好调卡计数准确度）
+2. assets/data/hif/skill_cards_master.json 的 121 卡全表 name_jp
+   （実機 2026-08-15 接线：変卡/技能卡候选与 Round1 手牌均出自此池）
+3. 常见状态卡硬编码（好調/集中等通用卡，提高好调卡计数准确度）
 
 本模块零 maafw 依赖，纯数据生成，可离线单测。
 """
 
 from __future__ import annotations
 
-from agent.hif.decisions.hand_meta import _load_skill_cards
+from agent.hif.decisions.hand_meta import _load_skill_cards, _load_skill_master
 
 # ガラクタロード策略必中的 3 张关键卡（决策分支 1/2/3 的触发条件）。
 KEY_CARDS = [
@@ -44,7 +46,7 @@ OCR_VARIANTS: dict[str, str] = {
 def build_card_name_dict() -> list[str]:
     """生成 OCR expected 词典（卡名候选集）。
 
-    合并 skill_cards.json 卡名 + 关键卡 + 常见好调卡，去重保序。
+    合并关键卡 + skill_cards.json 卡名 + master 121 卡 + 常见好调卡，去重保序。
     数据缺失时回退到硬编码常量，保证降级可用。
     """
     names: list[str] = []
@@ -67,7 +69,11 @@ def build_card_name_dict() -> list[str]:
         if base:
             add(base)
 
-    # 3. 常见好调卡
+    # 3. master 121 卡全表（実機変卡/Round1 候选池）
+    for card_name in _load_skill_master():
+        add(card_name)
+
+    # 4. 常见好调卡
     for card in COMMON_GOOD_CONDITION_CARDS:
         add(card)
 
