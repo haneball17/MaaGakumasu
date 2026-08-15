@@ -30,6 +30,7 @@ SCREEN_LABELS = {
     "hif_p_item_select": "P道具",
     "round1_initial": "Round1",
     "unknown_stop": "安全停止",
+    "support_card_reinforce": "支援卡强化",
 }
 
 # 评分关键词 → 人话(覆盖 decision_keywords.json 全部键;游戏通用术语保持日文原样)
@@ -65,6 +66,7 @@ SCREEN_COLORS = {
     "hif_p_item_select": "#b4f9f8",
     "round1_initial": "#ff757f",
     "unknown_stop": "#db4b4b",
+    "support_card_reinforce": "#c0caf5",
 }
 
 STYLE = """

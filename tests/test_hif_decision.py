@@ -956,6 +956,48 @@ def test_hif_day_labels_inherit_and_backfill():
     assert [r["_day"] for r in records] == ["D4", "D4", "D4", "D6", "D6", "R1", "R1"]
 
 
+def test_hif_select_change_done_only_logs_real_change_flow(monkeypatch, tmp_path):
+    agent_path = str(Path("agent").resolve())
+    sys.path.insert(0, agent_path)
+    try:
+        mod = import_module("agent.custom.action.produce_hif")
+    finally:
+        sys.path.remove(agent_path)
+    base = mod._ProduceHIFActionBase
+    state_file = tmp_path / "session-state.json"
+    monkeypatch.setattr(base, "_SESSION_STATE_FILE", state_file)
+
+    action = mod.ProduceHIFSelectChangeDoneAuto()
+    monkeypatch.setattr(action, "_get_screenshot", lambda context: object())
+    monkeypatch.setattr(mod.time, "sleep", lambda s: None)
+    clicked = []
+
+    class FakeCtrl:
+        def post_click(self, x, y):
+            clicked.append((x, y))
+            return SimpleNamespace(wait=lambda: None)
+
+    class FakeTasker:
+        controller = FakeCtrl()
+
+    class FakeContext:
+        tasker = FakeTasker()
+
+    archived = []
+    monkeypatch.setattr(action, "_archive_decision", lambda *a, **k: archived.append(a[1]))
+
+    # 无在途标记(支援卡随机强化演出页):推进但不记日志
+    assert action.run(FakeContext(), SimpleNamespace(custom_action_param="{}"))
+    assert archived == []
+    assert clicked == [(360, 1000)]
+
+    # 変卡流程在途:记录 select_change_done 并清标记
+    base._write_session_state({base.SELECT_CHANGE_FLAG: True})
+    assert action.run(FakeContext(), SimpleNamespace(custom_action_param="{}"))
+    assert archived == ["select_change_done"]
+    assert base._read_session_state().get(base.SELECT_CHANGE_FLAG) is not True
+
+
 def test_hif_noise_text_detection():
     from agent.hif.decisions.viewer import _is_noise_text
 

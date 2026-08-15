@@ -33,29 +33,38 @@ class _ProduceHIFActionBase(CustomAction):
     # 决策存档目录:绝对定位(agent 由 MFA/插件启动时 cwd 未必是仓库根)
     # parents[3]: produce_hif.py 在 agent/custom/action/ 下,需上溯 3 级到仓库根(parents[2] 是 agent/,实证 2026-08-15 存档全部写入 agent/debug/)
     _DECISIONS_DIR = Path(__file__).resolve().parents[3] / "debug" / "decisions"
-    # 会话 day 状态(跨 hif_run 分段持久):日程选择时写入,所有决策记录读取注入
+    # 会话状态(跨 hif_run 分段持久):day_remaining=当前日程;select_change_active=変卡流程在途标记
+    # (区分真変卡完成页与日程收尾的支援卡随机强化演出页——后者不记决策日志,用户定案 2026-08-15)
     _SESSION_STATE_FILE = _DECISIONS_DIR / "session-state.json"
+    SELECT_CHANGE_FLAG = "select_change_active"
+
+    @staticmethod
+    def _read_session_state() -> dict:
+        try:
+            data = json.loads(_ProduceHIFActionBase._SESSION_STATE_FILE.read_text(encoding="utf-8"))
+            return data if isinstance(data, dict) else {}
+        except Exception:
+            return {}
+
+    @classmethod
+    def _write_session_state(cls, patch: dict) -> None:
+        state = cls._read_session_state()
+        state.update(patch)
+        state["updated"] = time.strftime("%Y-%m-%d %H:%M:%S")
+        try:
+            cls._SESSION_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+            cls._SESSION_STATE_FILE.write_text(json.dumps(state), encoding="utf-8")
+        except Exception:
+            pass
 
     @staticmethod
     def _read_session_day() -> Optional[int]:
-        try:
-            data = json.loads(_ProduceHIFActionBase._SESSION_STATE_FILE.read_text(encoding="utf-8"))
-            return data.get("day_remaining")
-        except Exception:
-            return None
+        return _ProduceHIFActionBase._read_session_state().get("day_remaining")
 
     @classmethod
     def _set_session_day(cls, day_remaining: Optional[int]) -> None:
-        if day_remaining is None:
-            return
-        try:
-            cls._SESSION_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-            cls._SESSION_STATE_FILE.write_text(
-                json.dumps({"day_remaining": day_remaining, "updated": time.strftime("%Y-%m-%d %H:%M:%S")}),
-                encoding="utf-8",
-            )
-        except Exception:
-            pass
+        if day_remaining is not None:
+            cls._write_session_state({"day_remaining": day_remaining})
 
     @staticmethod
     def _get_screenshot(context: Context):
@@ -251,6 +260,8 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         day_remaining = self._get_day_remaining(context, image)
         if day_remaining is not None:
             _ProduceHIFActionBase._set_session_day(day_remaining)
+        # 新日程开始=上一轮変卡流程必然已结束,兜底清在途标记(防中断残留)
+        _ProduceHIFActionBase._write_session_state({_ProduceHIFActionBase.SELECT_CHANGE_FLAG: False})
         best_event = self._choose_best_event(health_data, events, preset, day_remaining)
         if not best_event:
             return self._stop_unsupported(context, "finals_action_select", "preset_no_matching_event")
@@ -730,6 +741,8 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
     ANCHOR_ROI = [60, 260, 600, 110]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        # 変卡流程在途标记:完成页据此区分真変卡与日程收尾的支援卡随机强化演出页
+        _ProduceHIFActionBase._write_session_state({_ProduceHIFActionBase.SELECT_CHANGE_FLAG: True})
         preset = self._get_preset(argv)
         reroll = preset.select_change_reroll_override or preset.select_change_reroll_limit
         return self._choose_keyword_reward(context, preset, reroll_limit=reroll, screen_state="select_change_target")
@@ -996,8 +1009,10 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceHIFSelectChangeDoneAuto")
 class ProduceHIFSelectChangeDoneAuto(_ProduceHIFActionBase):
-    """変卡完成提示页:点空白推进。
+    """変卡/強化演出提示页:点空白推进;仅真変卡流程(在途标记)记决策日志。
 
+    「強化しました」锚同样命中日程收尾的支援卡随机强化演出页(角色对话+随机卡強化)——
+    该类页面不记日志以免混淆,静默推进即可(用户定案 2026-08-15)。
     注意「戻る」按钮是回退本次強化/チェンジ 的撤销键,绝不可点(用户确认 2026-08-15);
     空白点取横幅下方区(実機 2026-08-15 逐位试探:卡面 (360,640)/横幅行 (360,830) 均无效,(360,1000) 有效)。
     """
@@ -1005,10 +1020,14 @@ class ProduceHIFSelectChangeDoneAuto(_ProduceHIFActionBase):
     BLANK_TAP = (360, 1000)
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        logger.info(f"HIF 変卡完成:点空白 ({self.BLANK_TAP[0]},{self.BLANK_TAP[1]}) 推进")
-        self._archive_decision(self._get_screenshot(context), "select_change_done", {
-            "action": "blank_tap", "tap": list(self.BLANK_TAP),
-        })
+        is_real_change = _ProduceHIFActionBase._read_session_state().get(_ProduceHIFActionBase.SELECT_CHANGE_FLAG)
+        if is_real_change:
+            _ProduceHIFActionBase._write_session_state({_ProduceHIFActionBase.SELECT_CHANGE_FLAG: False})
+        logger.info(f"HIF 変卡完成:点空白 ({self.BLANK_TAP[0]},{self.BLANK_TAP[1]}) 推进" + ("" if is_real_change else "(非変卡流程,不记日志)"))
+        if is_real_change:
+            self._archive_decision(self._get_screenshot(context), "select_change_done", {
+                "action": "blank_tap", "tap": list(self.BLANK_TAP),
+            })
         context.tasker.controller.post_click(*self.BLANK_TAP).wait()
         time.sleep(self.ACTION_DELAY)
         return True

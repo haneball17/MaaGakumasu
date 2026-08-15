@@ -37,6 +37,7 @@ SCREEN_LABELS = {
     "consult_shop": "相談",
     "hif_p_item_select": "P道具",
     "round1_initial": "Round1",
+    "support_card_reinforce": "支援卡强化",
     "unknown_stop": "安全停止",
 }
 
