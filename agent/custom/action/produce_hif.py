@@ -20,6 +20,7 @@ from agent.hif.presets import (
     choose_schedule_priority,
     build_gui_keyword_overrides,
 )
+from agent.hif.decisions import viewer
 from agent.hif.decisions.rewards import load_keyword_tables
 from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict
 from agent.hif.decisions.schedule import classify_class_option
@@ -29,6 +30,8 @@ from agent.hif.adapters.exam_reader import ExamStateReader
 class _ProduceHIFActionBase(CustomAction):
     CLICK_DELAY = 0.4
     ACTION_DELAY = 2.0
+    # 决策存档目录:绝对定位(agent 由 MFA/插件启动时 cwd 未必是仓库根)
+    _DECISIONS_DIR = Path(__file__).resolve().parents[2] / "debug" / "decisions"
 
     @staticmethod
     def _get_screenshot(context: Context):
@@ -129,9 +132,9 @@ class _ProduceHIFActionBase(CustomAction):
         return day_remaining
 
     def _archive_decision(self, image, screen_state: str, record: dict) -> None:
-        """决策落盘(全决策点共用):截图 debug/decisions/<ts>_<state>.png + session JSONL。"""
+        """决策落盘(全决策点共用):截图 debug/decisions/<ts>_<state>.png + session JSONL + 自动刷新查看器 HTML。"""
         try:
-            out_dir = Path("debug") / "decisions"
+            out_dir = self._DECISIONS_DIR
             out_dir.mkdir(parents=True, exist_ok=True)
             ts = time.strftime("%Y%m%d-%H%M%S")
             img_path = out_dir / f"{ts}_{screen_state}.png"
@@ -142,6 +145,11 @@ class _ProduceHIFActionBase(CustomAction):
             jsonl = out_dir / f"session-{time.strftime('%Y%m%d')}.jsonl"
             with jsonl.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+            # 决策时自动刷新 HTML 查看器(grill 定案);失败不阻断决策
+            try:
+                viewer.refresh(out_dir)
+            except Exception as err:
+                logger.warning(f"HIF 决策查看器刷新失败: {err}")
         except Exception as err:  # 存档失败不阻断决策
             logger.warning(f"HIF 决策存档失败: {err}")
 

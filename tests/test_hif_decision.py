@@ -904,3 +904,32 @@ def test_hif_replay_report_builds_table_from_records():
     assert "センブリソーダ=5" in table and "→ センブリソーダ" in table
     assert "相談" in table and "stop" in table and "⚠空证据" in table
     assert "有" in table  # overrides 生效标记
+
+
+def test_hif_decision_viewer_renders_selfcontained_html(tmp_path):
+    from agent.hif.decisions import viewer
+
+    (tmp_path / "session-20260101.jsonl").write_text(
+        "\n".join(
+            [
+                json.dumps({"ts": "10:00", "screen": "finals_action_select", "action": "pick_event",
+                            "candidates": ["Vo", "Da"], "chosen": "Vo"}, ensure_ascii=False),
+                json.dumps({"ts": "10:01", "screen": "hif_drink_reward", "action": "confirm",
+                            "candidates": [{"label": 1, "card": "センブリソーダ", "text": "体力回復6",
+                                            "score": 5.0, "breakdown": [["体力回復", 5.0]]}],
+                            "chosen": 1, "chosen_card": "センブリソーダ", "image": "x/y.png"}, ensure_ascii=False),
+            ]
+        ),
+        encoding="utf-8",
+    )
+    out = viewer.refresh(tmp_path)
+
+    assert out is not None and out.name == viewer.OUT_NAME
+    html = out.read_text(encoding="utf-8")
+    # 数据内嵌、样式与交互脚本自包含、截图用相对文件名
+    assert "session-20260101.jsonl" in html
+    assert "センブリソーダ" in html
+    assert "color-scheme:dark" in html and "id=\"rows\"" in html
+    # img src 由运行时 JS 生成:验证嵌入数据带完整路径、脚本含取文件名的 pop 逻辑
+    assert "x/y.png" in html and ".pop()" in html
+    assert "http" not in html  # 无外部资源依赖
