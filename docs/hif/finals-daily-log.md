@@ -2076,3 +2076,31 @@ H.I.F 专用能力：
 - 相談商店「終了」按钮 finish_button_not_found 一次（根因未查，后续轮次流转过）
 - Day5 饮料上限页勾选框 x=620 布局变体（収敛算法已加 x 自适应仍失败一次；灰描边=未确认/橙实心=已保留 两种勾选态语义待精确建模）
 - ClassOptionFlag 锚特异性根治（左上「授業」标题在后续页残留，现靠顺序+守卫缓解）
+
+---
+
+## 2026-08-15 下午·二 决策体系升级实机验证（识别接线+透明度+三层覆盖）
+
+grill 定案（六轮）：全四层参数暴露、点名覆盖、GUI 为主+文件兜底、部分生效容错+JSONL 记录 overrides_applied、日志三件套+流转验证、评分修正；前置查证发现 121 卡 master 表建全但零消费、三选一 ROI 错位 43px 漏读卡名、Round1 读牌无正面实证。commit dfbe0c1。
+
+### 实机验证记录（新局 Day2，姫崎莉波 True End）
+
+| 验证项 | 实机证据 |
+| --- | --- |
+| 卡名 OCR（master 121 词典约束） | 変卡候选 意地/飛躍/スタンドプレー、饮料 初星水/センブリソーダ 全部正确读出 |
+| 评分明细日志 | `候選2: 飛躍 score=6 [パラメータ+4,集中+2]`、`候選3: スタンドプレー score=4 [重複不可-1,パラメータ+2,集中+2,元気+1]` |
+| 名单优先 | `名单优先: 「センブリソーダ」(跳过评分)`——drink_name_priority 命中直选 |
+| ターン句式正则 | `SP效果卡: 最高分 6 [好調[0-9０-９]*ターン+6]「好調3ターン」` |
+| JSONL+截图落盘 | debug/decisions/session-20260815.jsonl（候选/明细/选择/overrides）+ 同目录 PNG |
+| 评分修正回归 | 括号条件不计分（立ち位置チェック 9→-3），単测锁定 |
+
+### 关键设计决策（记录备查）
+
+- GUI「HIF 决策微调」input 的 custom_action_param **自带 preset_id/preference 全键**：MaaFW option override 对同名字段（custom_action_param）后合并覆盖——input 与 select 注入无法深合并共存，自足设计在两种语义下都正确（深合并=并存取并集，替换=input 全量生效）。
+- MFA input 占位符 `{name}` 必须写在 JSON 字符串里，pipeline_type=int 在替换后转数字。
+- 手动输入次数先例（培育次数 select case 嵌套 input）是互斥场景，不能证明同键共存。
+
+### 遗留
+
+- 相談「終了」按钮、Day5 上限页 x620 变体、ClassOption 转场竞态（前节遗留不变）
+- GUI 17 输入框的 MFA 界面实测（input 渲染/占位符替换端到端）待用户在 MFAAvalonia/VS Code 插件里跑一次确认
