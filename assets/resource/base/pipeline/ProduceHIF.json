@@ -53,6 +53,7 @@
             "param": {}
         },
         "next": [
+            "[JumpBack]ProduceHIFSupportEventPopup",
             "[JumpBack]ProduceHIFRound1Flag",
             "[JumpBack]ProduceHIFSelectChangeTargetFlag",
             "[JumpBack]ProduceHIFSelectChangeSourceFlag",
@@ -618,6 +619,35 @@
             "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 変卡完成,点空白推进[/color]"
         }
     },
+    "ProduceHIFSupportEventPopup": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*サポートイベント効果.*"
+                ],
+                "roi": [
+                    40,
+                    890,
+                    400,
+                    60
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    325,
+                    1156
+                ]
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 支援卡事件效果弹窗(実機 2026-08-15 取证 OK [235,1122,181,68],点 OK 关闭;相談/行动后可连续多个)[/color]"
+        }
+    },
     "ProduceHIFConsultFlag": {
         "recognition": {
             "type": "OCR",
@@ -645,7 +675,7 @@
             "type": "OCR",
             "param": {
                 "expected": [
-                    ".*公開レッスン.*"
+                    ".*公開レッス.*"
                 ],
                 "roi": [
                     20,
@@ -660,10 +690,38 @@
             "param": {}
         },
         "next": [
+            "ProduceHIFDrinkObtainedBlank",
             "ProduceHIFKnownNextButton",
             "ProduceHIFLessonSettleBlank",
             "ProduceHIFUnknownStop"
         ]
+    },
+    "ProduceHIFDrinkObtainedBlank": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*ランダムなドリンク.*",
+                    ".*つ獲得.*"
+                ],
+                "roi": [
+                    160,
+                    450,
+                    420,
+                    110
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: SPレッスン饮料获得展示页(実機 2026-08-15 取证「ランダムなドリンクを2つ獲得」,点文字推进)[/color]"
+        }
     },
     "ProduceHIFLessonSettleBlank": {
         "recognition": {

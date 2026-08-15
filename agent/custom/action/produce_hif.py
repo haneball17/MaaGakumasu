@@ -31,7 +31,8 @@ class _ProduceHIFActionBase(CustomAction):
     CLICK_DELAY = 0.4
     ACTION_DELAY = 2.0
     # 决策存档目录:绝对定位(agent 由 MFA/插件启动时 cwd 未必是仓库根)
-    _DECISIONS_DIR = Path(__file__).resolve().parents[2] / "debug" / "decisions"
+    # parents[3]: produce_hif.py 在 agent/custom/action/ 下,需上溯 3 级到仓库根(parents[2] 是 agent/,实证 2026-08-15 存档全部写入 agent/debug/)
+    _DECISIONS_DIR = Path(__file__).resolve().parents[3] / "debug" / "decisions"
 
     @staticmethod
     def _get_screenshot(context: Context):
@@ -131,15 +132,25 @@ class _ProduceHIFActionBase(CustomAction):
         logger.info(f"HIF 剩余日数: {day_remaining}")
         return day_remaining
 
-    def _archive_decision(self, image, screen_state: str, record: dict) -> None:
-        """决策落盘(全决策点共用):截图 debug/decisions/<ts>_<state>.png + session JSONL + 自动刷新查看器 HTML。"""
+    @staticmethod
+    def _archive_decision(image, screen_state: str, record: dict) -> None:
+        """决策落盘(全决策点共用):截图 debug/decisions/<ts>_<state>.png + session JSONL + 自动刷新查看器 HTML。
+
+        staticmethod:_archive_static(classmethod)经 cls 调用时无实例,非静态会参数错位且异常被吞。
+        """
         try:
-            out_dir = self._DECISIONS_DIR
+            out_dir = _ProduceHIFActionBase._DECISIONS_DIR
             out_dir.mkdir(parents=True, exist_ok=True)
             ts = time.strftime("%Y%m%d-%H%M%S")
+            # 截图失败只丢图不丢记录(IPC 代理进程的 screencap 可能返回非 ndarray,実機 2026-08-15 双进程环境实证)
             img_path = out_dir / f"{ts}_{screen_state}.png"
-            Image.fromarray(image).save(img_path)
-            record["image"] = str(img_path)
+            try:
+                Image.fromarray(image).save(img_path)
+                record["image"] = str(img_path)
+            except Exception as err:
+                logger.warning(f"HIF 决策截图失败(记录仍写入): {err}")
+                img_path.unlink(missing_ok=True)
+                record["evidence_empty"] = True
             record.setdefault("ts", time.strftime("%H:%M:%S"))
             record.setdefault("screen", screen_state)
             jsonl = out_dir / f"session-{time.strftime('%Y%m%d')}.jsonl"
@@ -747,6 +758,11 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
     """首版仅支持保留 P 点并结束咨询商店。"""
 
     FINISH_ROI = [530, 1000, 190, 150]
+    # 相談触发的前置弹窗:支援卡事件效果(実機 2026-08-15 取证标题「サポートイベント効果」+OK 按钮 [235,1122,181,68])
+    POPUP_TITLE = "サポートイベント効果"
+    POPUP_TITLE_ROI = [40, 890, 400, 60]
+    POPUP_OK_TAP = (325, 1156)
+    POPUP_MAX_ROUNDS = 3
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
@@ -755,6 +771,16 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
                 return self._stop_unsupported(context, "consult_shop", f"consult_policy_override_not_supported: {preset.consult_policy_override}")
         elif preset.consult_policy != "finish_without_purchase":
             return self._stop_unsupported(context, "consult_shop", "consult_policy_not_supported")
+
+        # 先关掉支援卡事件效果弹窗(可能连续多个),否则「終了」被遮挡找不到
+        for _ in range(self.POPUP_MAX_ROUNDS):
+            image = self._get_screenshot(context)
+            popup = self._find_text_option(context, image, (self.POPUP_TITLE,), self.POPUP_TITLE_ROI)
+            if not popup:
+                break
+            logger.info("HIF 相談:关闭支援卡事件效果弹窗")
+            context.tasker.controller.post_click(*self.POPUP_OK_TAP).wait()
+            time.sleep(self.ACTION_DELAY)
 
         image = self._get_screenshot(context)
         finish_button = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
@@ -824,17 +850,19 @@ class ProduceChooseHIFSPCardAuto(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceChooseHIFDrinkOverflowAuto")
 class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
-    """P 饮料持有上限取舍:保持默认勾选,按剩余数补勾列表项后点「残す」。
+    """P 饮料持有上限取舍:色扫定位勾选框,补勾未选项至「あとN個」归零后点「残す」。
 
-    首版保守策略(SC-430 场景卡):新获得饮料默认已勾选;读「あとN個選択」,
-    N>0 时点击手持列表首项补勾,N==0 时点「残す」提交。勾选交互细节待实机校准。
+    実機 2026-08-15(Day5)取证:勾选框中心 x≈620-640,橙色实心(255,118,0)=已勾、
+    灰色(201,204,204)=未勾;接收区/手持区行 y 随获得饮料数变化,固定行列表不可靠
+    (Day5 失败根因:y=305 标题行点空后 stagnant_taps 跨行累积毒死全部后续行)。
     """
 
     REMAIN_ROI = [260, 1180, 200, 50]
     KEEP_ROI = [210, 1090, 300, 110]
-    # 勾选框 x 两种布局:実機 2026-08-14(Day3)x≈493、2026-08-15(Day5)x≈620,按 remain 反应自适应
-    PICK_CHECKBOX_XS = (620, 493)
-    PICK_ROWS_Y = (305, 445, 280, 353, 487, 587, 745, 885, 1025)
+    CHECKBOX_SCAN_X = (560, 700)
+    CHECKBOX_SCAN_Y = (250, 1160)
+    CHECKBOX_MIN_RUN = 10  # 单行特征色像素数下限
+    CHECKBOX_MIN_HEIGHT = 20  # 色块高度下限(px)
     SCROLL_ROUNDS = 2
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
@@ -844,32 +872,30 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
             return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_not_found")
         initial_remain = remain
 
-        # 点击是切换勾选:remain 下降=勾上了需要的项,上升=误取消已勾选项(立即撤销)
-        active_x = self.PICK_CHECKBOX_XS[0]
         for scroll_round in range(self.SCROLL_ROUNDS):
-            stagnant_taps = 0
-            for row_y in self.PICK_ROWS_Y:
-                while remain > 0 and stagnant_taps < 2:
-                    context.tasker.controller.post_click(active_x, row_y).wait()
+            image = self._get_screenshot(context)
+            boxes = self._find_checkboxes(image)
+            pending = [(x, y) for x, y, checked in boxes if not checked]
+            logger.info(f"HIF 饮料上限:勾选框 {len(boxes)} 个(未勾 {len(pending)}),remain={remain},第 {scroll_round + 1} 轮")
+            stagnant = 0
+            while remain > 0 and pending and stagnant < 2:
+                x, y = pending.pop(0)
+                context.tasker.controller.post_click(x, y).wait()
+                time.sleep(self.ACTION_DELAY)
+                new_remain = self._read_digits_text(context, self._get_screenshot(context))
+                if new_remain is None:
+                    return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_lost_after_tap")
+                if new_remain > remain:
+                    # 颜色误判点中已勾框:撤销勾选并放弃该框
+                    context.tasker.controller.post_click(x, y).wait()
                     time.sleep(self.ACTION_DELAY)
-                    new_remain = self._read_digits_text(context, self._get_screenshot(context))
-                    if new_remain is None:
-                        return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_lost_after_tap")
-                    if new_remain > remain:
-                        context.tasker.controller.post_click(active_x, row_y).wait()
-                        time.sleep(self.ACTION_DELAY)
-                        break
-                    if new_remain == remain:
-                        # 当前 x 无反应 → 换另一布局的勾选框 x 再试
-                        alt_x = next((x for x in self.PICK_CHECKBOX_XS if x != active_x), None)
-                        if alt_x:
-                            active_x, alt_x = alt_x, active_x
-                        stagnant_taps += 1
-                        continue
-                    stagnant_taps = 0
-                    remain = new_remain
-                if remain == 0:
-                    break
+                    stagnant += 1
+                    continue
+                if new_remain == remain:
+                    stagnant += 1
+                    continue
+                remain = new_remain
+                stagnant = 0
             if remain == 0:
                 break
             if scroll_round + 1 < self.SCROLL_ROUNDS:
@@ -888,10 +914,47 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
         logger.success("HIF 饮料上限:取舍完成(remain=0,已提交残す)")
         self._archive_decision(first_image, "hif_drink_overflow", {
             "action": "keep_submit", "initial_remain": initial_remain, "final_remain": remain,
-            "checkbox_x": active_x,
+            "checkboxes": [{"x": x, "y": y, "checked": c} for x, y, c in boxes],
         })
         time.sleep(self.ACTION_DELAY)
         return True
+
+    def _find_checkboxes(self, image) -> list[tuple[int, int, bool]]:
+        """色扫勾选框,返回 [(x_center, y_center, checked)]。
+
+        对称色条件不依赖通道序(maafw 截图可能 BGR):
+        已勾=橙 (255,118,0) → R/B 一高一中差、G 中;未勾=灰 (201,204,204) → 三通道近等且 185-225。
+        """
+        img = Image.fromarray(image)
+        px = img.load()
+        x0, x1 = self.CHECKBOX_SCAN_X
+        y0, y1 = self.CHECKBOX_SCAN_Y
+        runs = []  # (y, checked, xs)
+        for y in range(y0, min(y1, img.height)):
+            checked_xs, unchecked_xs = [], []
+            for x in range(x0, min(x1, img.width)):
+                r, g, b = px[x, y][:3]
+                if abs(r - b) > 90 and 90 <= g <= 160 and max(r, b) > 240:
+                    checked_xs.append(x)
+                elif abs(r - b) <= 20 and all(185 <= v <= 225 for v in (r, g, b)):
+                    unchecked_xs.append(x)
+            if len(checked_xs) >= self.CHECKBOX_MIN_RUN:
+                runs.append((y, True, checked_xs))
+            elif len(unchecked_xs) >= self.CHECKBOX_MIN_RUN:
+                runs.append((y, False, unchecked_xs))
+        # 相邻同色行聚类成块,取块中心的 x 均值
+        boxes, cur = [], None
+        for y, checked, xs in runs:
+            if cur and cur["checked"] == checked and y - cur["y2"] <= 3:
+                cur["y2"] = y
+                cur["xs"] += xs
+            else:
+                if cur and cur["y2"] - cur["y1"] >= self.CHECKBOX_MIN_HEIGHT:
+                    boxes.append((sum(cur["xs"]) // len(cur["xs"]), (cur["y1"] + cur["y2"]) // 2, cur["checked"]))
+                cur = {"checked": checked, "y1": y, "y2": y, "xs": list(xs)}
+        if cur and cur["y2"] - cur["y1"] >= self.CHECKBOX_MIN_HEIGHT:
+            boxes.append((sum(cur["xs"]) // len(cur["xs"]), (cur["y1"] + cur["y2"]) // 2, cur["checked"]))
+        return boxes
 
     def _read_digits_text(self, context: Context, image) -> Optional[int]:
         reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFDrinkRemain", [".*あと[0-9０-９]+個.*"], self.REMAIN_ROI)

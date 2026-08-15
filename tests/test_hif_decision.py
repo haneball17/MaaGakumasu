@@ -346,7 +346,8 @@ def test_hif_pipeline_uses_segmented_roots_with_error_chaining():
     assert schedule_root["timeout"] >= 30000
 
     schedule_next = schedule_root["next"]
-    assert schedule_next[0] == "[JumpBack]ProduceHIFRound1Flag"
+    assert schedule_next[0] == "[JumpBack]ProduceHIFSupportEventPopup"
+    assert "[JumpBack]ProduceHIFRound1Flag" in schedule_next
     assert "[JumpBack]ProduceHIFSelectChangeDoneFlag" in schedule_next
     assert "ProduceHIFUnknownStop" not in schedule_next
 
@@ -445,8 +446,14 @@ def test_hif_consult_stops_safely_when_the_recognized_finish_button_cannot_be_cl
     stop_reasons = []
     button = SimpleNamespace(best_result=SimpleNamespace(box=[]))
 
+    def fake_find_text_option(context, image, phrases, roi):
+        # 弹窗标题(サポートイベント効果)不命中;「終了」查询返回不可点击按钮
+        if phrases and phrases[0] == "サポートイベント効果":
+            return None
+        return button
+
     monkeypatch.setattr(action, "_get_screenshot", lambda context: object())
-    monkeypatch.setattr(action, "_find_text_option", lambda *args: button)
+    monkeypatch.setattr(action, "_find_text_option", fake_find_text_option)
     monkeypatch.setattr(action, "_click_box_center", lambda *args, **kwargs: False)
     monkeypatch.setattr(action, "_stop_unsupported", lambda context, screen_state, reason: stop_reasons.append((screen_state, reason)) or True)
 
