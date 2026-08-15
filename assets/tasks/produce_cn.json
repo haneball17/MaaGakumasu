@@ -6,6 +6,7 @@
       "option": [
         "培育难度",
         "HIF预设",
+        "培育倾向",
         "培育偶像-zh_CN",
         "培育次数",
         "使用体力药",
@@ -138,6 +139,115 @@
       ],
       "label": "$HIF预设",
       "description": "$HIF预设说明"
+    },
+    "培育倾向": {
+      "type": "select",
+      "default_case": "好调系",
+      "cases": [
+        {
+          "name": "好调系"
+        },
+        {
+          "name": "集中系",
+          "pipeline_override": {
+            "ProduceChooseHIFEventFlag": {
+              "custom_action_param": {
+                "preference": "focus"
+              }
+            },
+            "ProduceHIFClassOptionFlag": {
+              "custom_action_param": {
+                "preference": "focus"
+              }
+            },
+            "ProduceHIFDrinkRewardFlag": {
+              "custom_action_param": {
+                "preference": "focus"
+              }
+            },
+            "ProduceHIFSkillRewardFlag": {
+              "custom_action_param": {
+                "preference": "focus"
+              }
+            },
+            "ProduceHIFSelectChangeTargetFlag": {
+              "custom_action_param": {
+                "preference": "focus"
+              }
+            },
+            "ProduceHIFSelectChangeSourceFlag": {
+              "custom_action_param": {
+                "preference": "focus"
+              }
+            },
+            "ProduceHIFConsultFlag": {
+              "custom_action_param": {
+                "preference": "focus"
+              }
+            },
+            "ProduceHIFRound1ObserveFlag": {
+              "custom_action_param": {
+                "preference": "focus"
+              }
+            },
+            "ProduceHIFSPCardFlag": {
+              "custom_action_param": {
+                "preference": "focus"
+              }
+            }
+          }
+        },
+        {
+          "name": "均衡",
+          "pipeline_override": {
+            "ProduceChooseHIFEventFlag": {
+              "custom_action_param": {
+                "preference": "balanced"
+              }
+            },
+            "ProduceHIFClassOptionFlag": {
+              "custom_action_param": {
+                "preference": "balanced"
+              }
+            },
+            "ProduceHIFDrinkRewardFlag": {
+              "custom_action_param": {
+                "preference": "balanced"
+              }
+            },
+            "ProduceHIFSkillRewardFlag": {
+              "custom_action_param": {
+                "preference": "balanced"
+              }
+            },
+            "ProduceHIFSelectChangeTargetFlag": {
+              "custom_action_param": {
+                "preference": "balanced"
+              }
+            },
+            "ProduceHIFSelectChangeSourceFlag": {
+              "custom_action_param": {
+                "preference": "balanced"
+              }
+            },
+            "ProduceHIFConsultFlag": {
+              "custom_action_param": {
+                "preference": "balanced"
+              }
+            },
+            "ProduceHIFRound1ObserveFlag": {
+              "custom_action_param": {
+                "preference": "balanced"
+              }
+            },
+            "ProduceHIFSPCardFlag": {
+              "custom_action_param": {
+                "preference": "balanced"
+              }
+            }
+          }
+        }
+      ]
     },
     "培育偶像-zh_CN": {
       "type": "select",

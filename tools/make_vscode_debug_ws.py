@@ -82,6 +82,13 @@ def build_interface() -> dict:
         {"name": c["name"], **({"pipeline_override": c["pipeline_override"]} if c.get("pipeline_override") else {})}
         for c in opts["HIF预设"]["cases"]
     ]
+    tendency_cases = [
+        {"name": c["name"], **({"pipeline_override": c["pipeline_override"]} if c.get("pipeline_override") else {})}
+        for c in opts["培育倾向"]["cases"]
+    ]
+
+    def hif_options():
+        return ["HIF预设", "培育倾向"]
 
     return {
         "interface_version": "1.0",
@@ -97,20 +104,25 @@ def build_interface() -> dict:
             {
                 "name": "HIF 全链路（主页→Round1）",
                 "entry": "Produce",
-                "option": ["HIF预设"],
+                "option": hif_options(),
                 "pipeline_override": hif_entry_override,
             },
-            {"name": "HIF 入口直入（准备页）", "entry": "ProduceEntryHIF", "option": ["HIF预设"]},
-            {"name": "HIF 准备路由", "entry": "ProduceHIFPrepRoot", "option": ["HIF预设"]},
-            {"name": "HIF 日程路由", "entry": "ProduceHIFScheduleRoot", "option": ["HIF预设"]},
-            {"name": "HIF Round1 识别", "entry": "ProduceHIFRound1Flag", "option": ["HIF预设"]},
+            {"name": "HIF 入口直入（准备页）", "entry": "ProduceEntryHIF", "option": hif_options()},
+            {"name": "HIF 准备路由", "entry": "ProduceHIFPrepRoot", "option": hif_options()},
+            {"name": "HIF 日程路由", "entry": "ProduceHIFScheduleRoot", "option": hif_options()},
+            {"name": "HIF Round1 识别", "entry": "ProduceHIFRound1Flag", "option": hif_options()},
         ],
         "option": {
             "HIF预设": {
                 "type": "select",
                 "default_case": opts["HIF预设"]["default_case"],
                 "cases": preset_cases,
-            }
+            },
+            "培育倾向": {
+                "type": "select",
+                "default_case": opts["培育倾向"]["default_case"],
+                "cases": tendency_cases,
+            },
         },
     }
 

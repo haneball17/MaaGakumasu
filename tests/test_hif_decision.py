@@ -606,3 +606,31 @@ def test_hif_class_option_prefers_acquire_marker_over_topmost(monkeypatch):
     assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
     # 好调文案未命中 → first_safe 中固定表 acquire 标记优先于最上方叙事行
     assert clicks == [acquire_box]
+
+
+def test_hif_tendency_option_injects_preference_into_all_keyword_actions():
+    expected_nodes = {
+        "ProduceChooseHIFEventFlag",
+        "ProduceHIFClassOptionFlag",
+        "ProduceHIFDrinkRewardFlag",
+        "ProduceHIFSkillRewardFlag",
+        "ProduceHIFSelectChangeTargetFlag",
+        "ProduceHIFSelectChangeSourceFlag",
+        "ProduceHIFConsultFlag",
+        "ProduceHIFRound1ObserveFlag",
+        "ProduceHIFSPCardFlag",
+    }
+    for task_path in (Path("assets/tasks/produce.json"), Path("assets/tasks/produce_cn.json")):
+        task_payload = json.loads(task_path.read_text(encoding="utf-8"))
+        option = task_payload["option"]["培育倾向"]
+
+        assert option["default_case"] == "好调系"
+        assert option["cases"][0] == {"name": "好调系"}
+        focus = next(c for c in option["cases"] if c["name"] == "集中系")
+        balanced = next(c for c in option["cases"] if c["name"] == "均衡")
+        assert set(focus["pipeline_override"]) == expected_nodes
+        assert set(balanced["pipeline_override"]) == expected_nodes
+        assert focus["pipeline_override"]["ProduceHIFSPCardFlag"]["custom_action_param"] == {"preference": "focus"}
+        # Produce 任务引用了该选项
+        produce_task = next(t for t in task_payload["task"] if t.get("entry") == "Produce")
+        assert "培育倾向" in produce_task["option"]
