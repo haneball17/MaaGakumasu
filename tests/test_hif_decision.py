@@ -235,6 +235,15 @@ def test_hif_safe_preset_uses_observed_priority_and_never_falls_back_to_unknown(
     assert choose_first_matching(["unknown"], preset.schedule_priority) is None
 
 
+def test_hif_safe_preset_day1_prefers_vo_by_user_directive():
+    from agent.hif.presets import SAFE_DEFAULT_PRESET
+
+    # 用户指定 2026-08-15: Day1(剩余6日)授業 Vo 优先;其余日保持全局序
+    assert choose_schedule_priority(SAFE_DEFAULT_PRESET, 6) == ("Vo", "Da", "Vi")
+    assert choose_schedule_priority(SAFE_DEFAULT_PRESET, 5) == SAFE_DEFAULT_PRESET.schedule_priority
+    assert choose_schedule_priority(SAFE_DEFAULT_PRESET, None) == SAFE_DEFAULT_PRESET.schedule_priority
+
+
 def test_hif_preset_rejects_invalid_json_and_unknown_preset():
     assert parse_hif_preset("not-json").preset_id == "safe_default"
     assert parse_hif_preset('{"preset_id":"unknown"}').preset_id == "safe_default"

@@ -51,7 +51,8 @@ class HIFPreset:
 SAFE_DEFAULT_PRESET = HIFPreset(
     preset_id="safe_default",
     schedule_priority=("Da", "Vi", "Vo", "gift", "consult", "go_out"),
-    daily_schedule_priorities=(),
+    # Day1(剩余6日)授業 Vo 优先(用户指定 2026-08-15);其余日走全局序
+    daily_schedule_priorities=((6, ("Vo", "Da", "Vi")),),
     requires_day_schedule=False,
     class_option_priority=("good_condition", "first_safe"),
     # 公開レッスン按属性序选卡;SP 当日随机不可选(seesaawiki 2026-08-15 调研)
