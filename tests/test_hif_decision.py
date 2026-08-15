@@ -308,7 +308,14 @@ def test_hif_idol_select_flag_routes_before_selection_mode_to_avoid_misrouting()
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
     prep_routing = payload["ProduceHIFPrepRoot"]["next"]
 
-    assert prep_routing.index("[JumpBack]ProduceHIFIdolSelectFlag") < prep_routing.index("[JumpBack]ProduceHIFSelectionModeFlag")
+    # 実機 2026-08-15: 活动主页同屏含 選抜試験/本戦 两按钮,SelectionModeFlag(選抜試験锚)误触风险高,已移出本战准备路由
+    assert "[JumpBack]ProduceHIFSelectionModeFlag" not in prep_routing
+    assert prep_routing.index("[JumpBack]ProduceHIFIdolSelectFlag") < prep_routing.index("[JumpBack]ProduceHIFFinalModeFlag")
+    # FinalModeFlag 実機取证:ROI 覆盖按钮区,Click 点「本戦」,无 next 回跳 PrepRoot
+    final_mode = payload["ProduceHIFFinalModeFlag"]
+    assert final_mode["recognition"]["param"]["roi"] == [140, 860, 460, 60]
+    assert final_mode["action"]["type"] == "Click"
+    assert "next" not in final_mode
     flag = payload["ProduceHIFIdolSelectFlag"]
     assert flag["recognition"]["param"]["expected"] == [".*アイドル選択.*"]
     assert flag["action"]["param"]["custom_action"] == "ProduceHIFChooseIdolAuto"
@@ -387,7 +394,8 @@ def test_hif_drink_overflow_and_select_change_done_have_live_actions():
     assert payload["ProduceHIFDrinkOverflowFlag"].get("next") is None
     done = payload["ProduceHIFSelectChangeDoneFlag"]
     assert done["action"]["param"]["custom_action"] == "ProduceHIFSelectChangeDoneAuto"
-    assert done["recognition"]["param"]["expected"] == [".*チェンジしました.*"]
+    # 実機 2026-08-15:完成页两种文案(強化继承版「強化しました」),且 OCR 会断行(チェンジしま+した)
+    assert done["recognition"]["param"]["expected"] == [".*チェンジしま.*", ".*強化しま.*"]
 
 
 def test_hif_preset_splits_reroll_limits_by_scene():

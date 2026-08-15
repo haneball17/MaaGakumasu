@@ -393,6 +393,10 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
             return self._stop_unsupported(context, "hif_class_options", "good_condition_option_not_found")
         return self._choose_first_safe_option(context, image)
 
+    # 转场竞态防循环(実機 2026-08-15 Day4):変卡标题未渲染时 Flag 误命中残留「授業」标题,
+    # 同一无效文本被反复点击;记录最近点击文本,重复时跳过换下一个候选
+    _recent_option_texts: list[str] = []
+
     def _choose_first_safe_option(self, context: Context, image) -> bool:
         reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFClassOptions", [".*"], self.OPTION_ROI)
         if not (reco_detail and reco_detail.all_results):
@@ -406,6 +410,8 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
             if item.box[3] > 20
             and self.OPTION_TEXT_PATTERN.search(item.text.replace("ß", ""))
             and self.TROUBLE_MARKER not in item.text
+            # 排除页面指令文案(実機 2026-08-15:「受け取るスキルカードを選んでください。」被误当选)
+            and "ください" not in item.text
             and not any(abs(item.box[1] + item.box[3] // 2 - ty) < 40 for ty in trouble_ys)
         ]
         if not candidates:
@@ -413,9 +419,17 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
 
         # 固定表标记可见时(選択して獲得)优先获得类选项(seesaawiki 授業固定表),否则取最上方安全项
         acquire_candidates = [item for item in candidates if classify_class_option(item.text) == "acquire"]
-        target = acquire_candidates[0] if acquire_candidates else min(candidates, key=lambda item: item.box[1])
+        ordered = acquire_candidates + [c for c in candidates if c not in acquire_candidates]
+        recent = type(self)._recent_option_texts
+        target = next((c for c in ordered if c.text not in recent), ordered[0])
+        # 全部候选都点过一轮仍停在原地 → 清空守卫重新开始(避免卡死)
+        if target.text in recent:
+            recent.clear()
+
         if not self._click_box_center(context, target.box, double=False):
             return self._stop_unsupported(context, "hif_class_options", "safe_option_click_failed")
+        recent.append(target.text)
+        del recent[:-3]
         logger.info(f"HIF 授業选项: 通用安全策略选择「{target.text}」")
         return True
 
@@ -627,9 +641,9 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
 
     REMAIN_ROI = [260, 1180, 200, 50]
     KEEP_ROI = [210, 1090, 300, 110]
-    # 实机 2026-08-14:勾选框在每行右侧 x≈493,可视行 y≈280/353/487/587;列表可滚动
-    PICK_CHECKBOX_X = 493
-    PICK_ROWS_Y = (280, 353, 487, 587)
+    # 勾选框 x 两种布局:実機 2026-08-14(Day3)x≈493、2026-08-15(Day5)x≈620,按 remain 反应自适应
+    PICK_CHECKBOX_XS = (620, 493)
+    PICK_ROWS_Y = (305, 445, 280, 353, 487, 587, 745, 885, 1025)
     SCROLL_ROUNDS = 2
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
@@ -638,20 +652,25 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
             return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_not_found")
 
         # 点击是切换勾选:remain 下降=勾上了需要的项,上升=误取消已勾选项(立即撤销)
+        active_x = self.PICK_CHECKBOX_XS[0]
         for scroll_round in range(self.SCROLL_ROUNDS):
             stagnant_taps = 0
             for row_y in self.PICK_ROWS_Y:
                 while remain > 0 and stagnant_taps < 2:
-                    context.tasker.controller.post_click(self.PICK_CHECKBOX_X, row_y).wait()
+                    context.tasker.controller.post_click(active_x, row_y).wait()
                     time.sleep(self.ACTION_DELAY)
                     new_remain = self._read_digits_text(context, self._get_screenshot(context))
                     if new_remain is None:
                         return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_lost_after_tap")
                     if new_remain > remain:
-                        context.tasker.controller.post_click(self.PICK_CHECKBOX_X, row_y).wait()
+                        context.tasker.controller.post_click(active_x, row_y).wait()
                         time.sleep(self.ACTION_DELAY)
                         break
                     if new_remain == remain:
+                        # 当前 x 无反应 → 换另一布局的勾选框 x 再试
+                        alt_x = next((x for x in self.PICK_CHECKBOX_XS if x != active_x), None)
+                        if alt_x:
+                            active_x, alt_x = alt_x, active_x
                         stagnant_taps += 1
                         continue
                     stagnant_taps = 0
@@ -687,9 +706,13 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceHIFSelectChangeDoneAuto")
 class ProduceHIFSelectChangeDoneAuto(_ProduceHIFActionBase):
-    """変卡完成提示页:点空白处推进(页面无按钮,日志确认为空白点击)。"""
+    """変卡完成提示页:点空白推进。
 
-    BLANK_TAP = (360, 640)
+    注意「戻る」按钮是回退本次強化/チェンジ 的撤销键,绝不可点(用户确认 2026-08-15);
+    空白点取横幅下方区(実機 2026-08-15 逐位试探:卡面 (360,640)/横幅行 (360,830) 均无效,(360,1000) 有效)。
+    """
+
+    BLANK_TAP = (360, 1000)
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         logger.info(f"HIF 変卡完成:点空白 ({self.BLANK_TAP[0]},{self.BLANK_TAP[1]}) 推进")
@@ -745,8 +768,9 @@ class ProduceHIFChooseIdolAuto(_ProduceHIFActionBase):
                         context, "hif_idol_select", f"song_mismatch: got={recognized_song}, want={expected_song}, ratio={similarity:.2f}"
                     )
 
-        # 底部中央大按钮实机 OCR 为「プロデュース開始」(box 约 [247,1059,225,33]),非「次へ」
-        next_button = self._find_text_option(context, image, ("プロデュース開始",), self.NEXT_BUTTON_ROI)
+        # 底部中央大按钮:普通偶像页为「プロデュース開始」(box 约 [247,1059,225,33]);
+        # True End 姫崎莉波页(実機 2026-08-15)首屏为「次へ」(box [351,1074,53,32]),按序找两者
+        next_button = self._find_text_option(context, image, ("プロデュース開始", "次へ"), self.NEXT_BUTTON_ROI)
         if not next_button:
             return self._stop_unsupported(context, "hif_idol_select", "next_button_not_found")
         if not self._click_box_center(context, next_button.best_result.box, double=False):

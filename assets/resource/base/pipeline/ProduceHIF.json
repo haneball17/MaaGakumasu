@@ -33,7 +33,6 @@
             "[JumpBack]ProduceHIFIdolSelectFlag",
             "[JumpBack]ProduceHIFStartConfirmFlag",
             "[JumpBack]ProduceChooseHIFPItemFlag",
-            "[JumpBack]ProduceHIFSelectionModeFlag",
             "[JumpBack]ProduceHIFFinalModeFlag"
         ],
         "timeout": 12000,
@@ -65,6 +64,8 @@
             "[JumpBack]ProduceHIFConsultFlag",
             "[JumpBack]ProduceHIFSPCardFlag",
             "[JumpBack]ProduceHIFClassOptionFlag",
+            "[JumpBack]ProduceHIFCardShowBlank",
+            "[JumpBack]ProduceHIFTapNextFlag",
             "[JumpBack]ProduceChooseHIFEventFlag",
             "[JumpBack]ProduceHIFPublicLessonResultFlag",
             "[JumpBack]ProduceHIFIntervalFlag",
@@ -117,23 +118,19 @@
                     ".*本戦.*"
                 ],
                 "roi": [
-                    40,
-                    40,
-                    640,
-                    220
+                    140,
+                    860,
+                    460,
+                    60
                 ]
             }
         },
         "action": {
-            "type": "DoNothing",
+            "type": "Click",
             "param": {}
         },
-        "next": [
-            "ProduceChooseHIFEventFlag",
-            "ProduceHIFUnknownStop"
-        ],
         "focus": {
-            "Node.Recognition.Succeeded": "[color:Orange]HIF: 本戦モード页(文案未取证,疑似不存在)[/color]"
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 活动主页本戦按钮(実機 2026-08-15 取证 box[538,870,64,35],点后进偶像选择回 PrepRoot)[/color]"
         }
     },
     "ProduceHIFRound1Flag": {
@@ -429,6 +426,63 @@
             "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=授業/おでかけ事件选项(标题锚),按预设选择选项[/color]"
         }
     },
+    "ProduceHIFCardShowBlank": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*レッスン中1回.*"
+                ],
+                "roi": [
+                    80,
+                    920,
+                    600,
+                    200
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    500,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 获卡演出页(実機 2026-08-15 取证:无按钮tap推进,点卡上方空白)[/color]"
+        }
+    },
+    "ProduceHIFTapNextFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*タップして次へ.*"
+                ],
+                "roi": [
+                    140,
+                    1100,
+                    460,
+                    150
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 演出页「タップして次へ」(実機 2026-08-15:中盘順位展示等)[/color]"
+        }
+    },
     "ProduceHIFDrinkRewardFlag": {
         "recognition": {
             "type": "OCR",
@@ -543,13 +597,14 @@
             "type": "OCR",
             "param": {
                 "expected": [
-                    ".*チェンジしました.*"
+                    ".*チェンジしま.*",
+                    ".*強化しま.*"
                 ],
                 "roi": [
                     56,
-                    940,
+                    930,
                     610,
-                    140
+                    150
                 ]
             }
         },
@@ -606,8 +661,34 @@
         },
         "next": [
             "ProduceHIFKnownNextButton",
+            "ProduceHIFLessonSettleBlank",
             "ProduceHIFUnknownStop"
         ]
+    },
+    "ProduceHIFLessonSettleBlank": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*上昇した.*"
+                ],
+                "roi": [
+                    40,
+                    990,
+                    640,
+                    120
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 公開レッスン结算页(無按鈕,実機 2026-08-15 取证气泡「Da.が185上昇した!」,点空白推进)[/color]"
+        }
     },
     "ProduceHIFKnownNextButton": {
         "recognition": {
