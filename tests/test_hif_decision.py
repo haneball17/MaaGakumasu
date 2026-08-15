@@ -596,6 +596,7 @@ def test_hif_sp_card_picks_keyword_best_line_and_falls_back_to_first(monkeypatch
         )
         monkeypatch.setattr(action, "_click_box_center", lambda ctx, box, double=True, **kw: clicks.append(list(box)) or True)
         monkeypatch.setattr(action, "_get_screenshot", lambda ctx: object())
+        monkeypatch.setattr(action, "_archive_decision", lambda *a, **k: None)
         assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
         assert clicks == [expect_box]
 
@@ -614,15 +615,45 @@ def test_hif_class_option_prefers_acquire_marker_over_topmost(monkeypatch):
         SimpleNamespace(text="スキルカードを選択して獲得", box=acquire_box),
         SimpleNamespace(text="トラブル追加", box=trouble_box),
     ]
+    ocr_calls = {"n": 0}
+
+    def fake_ocr(ctx, image, name, expected, roi):
+        ocr_calls["n"] += 1
+        # 第一次=候选读取;第二次=流转验证(点击后选项页已离开,返回空)
+        if ocr_calls["n"] == 1:
+            return SimpleNamespace(all_results=ocr_results, hit=True)
+        return SimpleNamespace(all_results=[], hit=False)
 
     monkeypatch.setattr(action, "_get_screenshot", lambda ctx: object())
-    monkeypatch.setattr(action, "_run_ocr", lambda ctx, image, name, expected, roi: SimpleNamespace(all_results=ocr_results, hit=True))
+    monkeypatch.setattr(action, "_run_ocr", fake_ocr)
     monkeypatch.setattr(action, "_find_text_option", lambda *args, **kwargs: None)  # 好调文案不命中
+    monkeypatch.setattr(action, "_archive_decision", lambda *a, **k: None)
     monkeypatch.setattr(action, "_click_box_center", lambda ctx, box, double=True, **kw: clicks.append(list(box)) or True)
 
     assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
     # 好调文案未命中 → first_safe 中固定表 acquire 标记优先于最上方叙事行
     assert clicks == [acquire_box]
+
+
+def test_hif_class_option_stops_when_click_does_not_transition(monkeypatch):
+    produce_hif = _load_produce_hif_module()
+    action = produce_hif.ProduceChooseHIFClassOptionAuto()
+    stops: list[str] = []
+    option_box = [100, 700, 400, 40]
+    ocr_results = [SimpleNamespace(text="楽しみです", box=option_box)]
+
+    monkeypatch.setattr(action, "_get_screenshot", lambda ctx: object())
+    # 候选读取与流转验证都返回同一文本同位置 → 点击无效
+    monkeypatch.setattr(action, "_run_ocr", lambda *a: SimpleNamespace(all_results=ocr_results, hit=True))
+    monkeypatch.setattr(action, "_find_text_option", lambda *args, **kwargs: None)
+    monkeypatch.setattr(action, "_click_box_center", lambda *a, **kw: True)
+    monkeypatch.setattr(
+        action, "_stop_unsupported", lambda context, screen_state, reason: stops.append(reason) or False
+    )
+
+    ok = action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
+    assert ok is False
+    assert any("option_click_no_transition" in r for r in stops)
 
 
 def test_hif_tendency_option_injects_preference_into_all_keyword_actions():
@@ -845,3 +876,31 @@ def test_hif_confirm_no_transition_stops_safely(monkeypatch):
     ok = action._confirm_candidate(object(), [10, 10, 1, 1], "select_change_target")
     assert ok is False
     assert stops == ["confirm_no_transition"]
+
+
+def test_hif_replay_report_builds_table_from_records():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("hif_replay_report", Path("tools/hif_replay_report.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+
+    records = [
+        {"ts": "10:00:01", "screen": "finals_action_select", "action": "pick_event",
+         "candidates": ["Vo", "Da", "Vi"], "chosen": "Vo", "day_remaining": 6},
+        {"ts": "10:01:02", "screen": "hif_drink_reward", "action": "confirm", "round": 0,
+         "candidates": [
+             {"label": 1, "card": "初星水", "text": "パラメータ+10", "score": 2.0, "breakdown": []},
+             {"label": 2, "card": "センブリソーダ", "text": "体力回復6", "score": 5.0, "breakdown": [["体力回復", 5.0]]},
+         ], "chosen": 2, "chosen_card": "センブリソーダ", "overrides": {"keyword_weights": {"集中": 9}}},
+        {"ts": "10:02:03", "screen": "consult_shop", "action": "stop",
+         "reason": "finish_button_not_found", "evidence_empty": True},
+    ]
+    rows = mod.build_rows(records)
+    table = mod.render_table(rows)
+
+    assert len(rows) == 3
+    assert "日程选择" in table and "pick_event" in table
+    assert "センブリソーダ=5" in table and "→ センブリソーダ" in table
+    assert "相談" in table and "stop" in table and "⚠空证据" in table
+    assert "有" in table  # overrides 生效标记

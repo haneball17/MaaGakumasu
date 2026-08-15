@@ -63,9 +63,11 @@ class _ProduceHIFActionBase(CustomAction):
             pipeline_override={name: {"recognition": "TemplateMatch", "template": template, "roi": roi, "threshold": threshold}},
         )
 
-    @staticmethod
-    def _stop_unknown(context: Context, reason: str) -> bool:
+    @classmethod
+    def _stop_unknown(cls, context: Context, reason: str) -> bool:
         logger.warning(f"HIF 安全停止: {reason}")
+        # 全量日志:安全停止也存档(截图+原因),复盘直接看当时页面
+        cls._archive_static(context, "unknown_stop", {"action": "stop", "reason": reason, "evidence_empty": True})
         # 返回 False 让节点动作失败终止任务;run_task(UnknownStop) 只能停子任务流,父管线会继续轮询
         return False
 
@@ -76,6 +78,9 @@ class _ProduceHIFActionBase(CustomAction):
 
     def _stop_unsupported(self, context: Context, screen_state: str, reason: str) -> bool:
         logger.warning(f"HIF 安全停止: screen_state={screen_state}, reason={reason}")
+        self._archive_static(context, screen_state, {
+            "action": "stop", "reason": reason, "evidence_empty": True,
+        })
         return False
 
     def _find_text_option(self, context: Context, image, phrases: tuple[str, ...], roi: list[int]):
@@ -122,6 +127,31 @@ class _ProduceHIFActionBase(CustomAction):
         day_remaining = int(digits) if digits else None
         logger.info(f"HIF 剩余日数: {day_remaining}")
         return day_remaining
+
+    def _archive_decision(self, image, screen_state: str, record: dict) -> None:
+        """决策落盘(全决策点共用):截图 debug/decisions/<ts>_<state>.png + session JSONL。"""
+        try:
+            out_dir = Path("debug") / "decisions"
+            out_dir.mkdir(parents=True, exist_ok=True)
+            ts = time.strftime("%Y%m%d-%H%M%S")
+            img_path = out_dir / f"{ts}_{screen_state}.png"
+            Image.fromarray(image).save(img_path)
+            record["image"] = str(img_path)
+            record.setdefault("ts", time.strftime("%H:%M:%S"))
+            record.setdefault("screen", screen_state)
+            jsonl = out_dir / f"session-{time.strftime('%Y%m%d')}.jsonl"
+            with jsonl.open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+        except Exception as err:  # 存档失败不阻断决策
+            logger.warning(f"HIF 决策存档失败: {err}")
+
+    @classmethod
+    def _archive_static(cls, context: Context, screen_state: str, record: dict) -> None:
+        """类方法入口的安全停止存档(截图自取,失败静默——停止路径不能被存档异常掩盖)。"""
+        try:
+            cls._archive_decision(cls._get_screenshot(context), screen_state, record)
+        except Exception:
+            pass
 
 
 @AgentServer.custom_action("ProduceChooseHIFEventAuto")
@@ -170,11 +200,21 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
             logger.warning("未识别到 HIF 可选日程，保持当前状态")
             return True
 
-        best_event = self._choose_best_event(health_data, events, self._get_preset(argv), self._get_day_remaining(context, image))
+        preset = self._get_preset(argv)
+        day_remaining = self._get_day_remaining(context, image)
+        best_event = self._choose_best_event(health_data, events, preset, day_remaining)
         if not best_event:
             return self._stop_unsupported(context, "finals_action_select", "preset_no_matching_event")
 
         logger.info(f"HIF 选择事件: {best_event['name']}")
+        self._archive_decision(image, "finals_action_select", {
+            "action": "pick_event",
+            "day_remaining": day_remaining,
+            "health": f"{health_data['current']}/{health_data['max']}",
+            "candidates": [e["name"] for e in events],
+            "chosen": best_event["name"],
+            "priority": choose_schedule_priority(preset, day_remaining),
+        })
         return self._execute_event(context, best_event)
 
     def _choose_best_event(
@@ -334,6 +374,7 @@ class ProduceChooseHIFPItemAuto(_ProduceHIFActionBase):
         recommend = self._find_recommend(context, image)
         if recommend:
             logger.info("命中推荐 P 道具")
+            self._archive_decision(image, "hif_p_item_select", {"action": "pick", "mode": "recommend"})
             if not self._click_box_center(context, recommend, double=False, y_offset=80):
                 return self._stop_unsupported(context, "hif_p_item_select", "recommend_click_failed")
             time.sleep(self.ACTION_DELAY)
@@ -342,6 +383,9 @@ class ProduceChooseHIFPItemAuto(_ProduceHIFActionBase):
         keyword_hit = self._find_keyword_option(context, image)
         if keyword_hit:
             logger.info(f"按关键词选择 HIF P 道具: {keyword_hit['name']}")
+            self._archive_decision(image, "hif_p_item_select", {
+                "action": "pick", "mode": "keyword", "chosen": keyword_hit["name"],
+            })
             if not self._click_box_center(context, keyword_hit["box"], double=False):
                 return self._stop_unsupported(context, "hif_p_item_select", "keyword_click_failed")
             time.sleep(self.ACTION_DELAY)
@@ -386,6 +430,7 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
     OPTION_ROI = [40, 620, 640, 360]
     GOOD_CONDITION_OPTIONS = ("余裕です！", "長い道のりでした")
     TROUBLE_MARKER = "トラブル"
+    TRANSITION_DELAY = 1.2
     # 选项文案至少含 2 个日文字符,排除「-50」等数字消耗标记与「T」等图标噪读
     OPTION_TEXT_PATTERN = re.compile(r"[ぁ-んァ-ヶ一-龯a-zA-Z]{2,}")
 
@@ -401,6 +446,10 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
                 if not self._click_box_center(context, reco_detail.best_result.box, double=False):
                     return self._stop_unsupported(context, "hif_class_options", "good_condition_option_click_failed")
                 logger.info(f"HIF 授業选项: 好调文案命中「{reco_detail.best_result.text}」")
+                self._archive_decision(image, "hif_class_options", {
+                    "action": "pick_option", "strategy": "good_condition",
+                    "chosen": reco_detail.best_result.text,
+                })
                 return True
         if "first_safe" not in priority:
             return self._stop_unsupported(context, "hif_class_options", "good_condition_option_not_found")
@@ -441,9 +490,24 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
 
         if not self._click_box_center(context, target.box, double=False):
             return self._stop_unsupported(context, "hif_class_options", "safe_option_click_failed")
+        # 流转验证(実機 2026-08-15:选项点击后进预览页,残留授業标题致 Flag 再命中连点 7 次):
+        # 点击后同文本仍在原位 = 点击无效(如预览页文案),安全停止防循环
+        time.sleep(self.TRANSITION_DELAY)
+        verify = self._run_ocr(context, self._get_screenshot(context), "ProduceRecognitionHIFClassOptions", [".*"], self.OPTION_ROI)
+        still_there = any(
+            item.text == target.text and abs(item.box[1] - target.box[1]) < 20
+            for item in (verify.all_results if verify else [])
+        )
+        if still_there:
+            return self._stop_unsupported(context, "hif_class_options", f"option_click_no_transition: {target.text}")
         recent.append(target.text)
         del recent[:-3]
         logger.info(f"HIF 授業选项: 通用安全策略选择「{target.text}」")
+        self._archive_decision(image, "hif_class_options", {
+            "action": "pick_option", "strategy": "first_safe",
+            "candidates": [item.text for item in results],
+            "chosen": target.text,
+        })
         return True
 
 
@@ -478,28 +542,18 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
         return " ".join(item.text for item in reco_detail.all_results)
 
     def _read_card_name(self, context: Context, image) -> str:
-        """读详情面板卡名行;master 121 卡词典约束候选,normalize 修正误识。"""
+        """读详情面板卡名行;词典约束候选(卡名 121+子类扩展),normalize 修正误识。"""
         if _ProduceHIFRewardChoiceAction._CARD_DICT is None:
             _ProduceHIFRewardChoiceAction._CARD_DICT = build_card_name_dict()
-        reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFCardName", self._CARD_DICT, self.CARD_NAME_ROI)
+        dict_names = _ProduceHIFRewardChoiceAction._CARD_DICT + self._extra_name_dict()
+        reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFCardName", dict_names, self.CARD_NAME_ROI)
         if not (reco_detail and reco_detail.hit):
             return ""
         return normalize_card_name(reco_detail.best_result.text)
 
-    def _archive_decision(self, image, screen_state: str, record: dict) -> None:
-        """决策落盘:截图 debug/decisions/<ts>_<state>.png + session JSONL(含评分明细/override)。"""
-        try:
-            out_dir = Path("debug") / "decisions"
-            out_dir.mkdir(parents=True, exist_ok=True)
-            ts = time.strftime("%Y%m%d-%H%M%S")
-            img_path = out_dir / f"{ts}_{screen_state}.png"
-            Image.fromarray(image).save(img_path)
-            record["image"] = str(img_path)
-            jsonl = out_dir / f"session-{time.strftime('%Y%m%d')}.jsonl"
-            with jsonl.open("a", encoding="utf-8") as fh:
-                fh.write(json.dumps(record, ensure_ascii=False) + "\n")
-        except Exception as err:  # 存档失败不阻断决策
-            logger.warning(f"HIF 决策存档失败: {err}")
+    def _extra_name_dict(self) -> list[str]:
+        """子类扩展名词典(如饮料页追加 drinks.json 名单),默认空。"""
+        return []
 
     def _choose_keyword_reward(self, context: Context, preset: HIFPreset, reroll_limit: int, screen_state: str) -> bool:
         table = load_keyword_tables(overrides=build_gui_keyword_overrides(preset))[preset.preference]
@@ -533,7 +587,7 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
                             f"HIF 三选一[{screen_state}] 最高分 {chosen['score']:.0f} 未达阈值 {table.accept_threshold:.0f},重抽"
                         )
                         self._archive_decision(self._get_screenshot(context), screen_state, {
-                            "ts": time.strftime("%H:%M:%S"), "screen": screen_state, "round": round_index,
+                            "round": round_index,
                             "preference": preset.preference, "candidates": candidates, "action": "reroll",
                             "accept_threshold": table.accept_threshold,
                             "overrides": build_gui_keyword_overrides(preset) or None,
@@ -542,7 +596,7 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
                         time.sleep(self.ACTION_DELAY)
                         continue
             self._archive_decision(self._get_screenshot(context), screen_state, {
-                "ts": time.strftime("%H:%M:%S"), "screen": screen_state, "round": round_index,
+                "round": round_index,
                 "preference": preset.preference, "candidates": candidates, "action": "confirm",
                 "chosen": chosen["label"], "chosen_card": chosen["card"] or None,
                 "accept_threshold": table.accept_threshold,
@@ -579,6 +633,20 @@ class ProduceChooseHIFDrinkRewardAuto(_ProduceHIFRewardChoiceAction):
     CONFIRM_ROI = [150, 1000, 420, 200]
     ANCHOR_TEXT = ("受け取るPドリンク", "Pドリンクを選んで")
     ANCHOR_ROI = [80, 540, 560, 220]
+
+    _drink_names: list[str] | None = None
+
+    def _extra_name_dict(self) -> list[str]:
+        """饮料页名词典追加 drinks.json 28 种(実機 2026-08-15:纯卡词典读饮料名全空)。"""
+        if ProduceChooseHIFDrinkRewardAuto._drink_names is None:
+            names: list[str] = []
+            try:
+                payload = json.loads((Path(__file__).resolve().parents[2] / "assets" / "data" / "hif" / "drinks.json").read_text(encoding="utf-8"))
+                names = [d["name_jp"] for d in payload.get("drinks", []) if d.get("name_jp")]
+            except Exception:
+                names = []
+            ProduceChooseHIFDrinkRewardAuto._drink_names = names
+        return ProduceChooseHIFDrinkRewardAuto._drink_names
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         return self._choose_keyword_reward(context, self._get_preset(argv), reroll_limit=0, screen_state="hif_drink_reward")
@@ -630,19 +698,32 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
         source = None
+        scrolls_used = 0
         for scroll_index in range(self.MAX_DECK_SCROLLS + 1):
             source = self._find_text_option(context, self._get_screenshot(context), preset.select_change_source_names, self.DECK_ROI)
             if source:
                 break
             if scroll_index < self.MAX_DECK_SCROLLS:
+                scrolls_used += 1
                 context.tasker.controller.post_swipe(360, 1040, 360, 680, duration=300).wait()
                 time.sleep(self.ACTION_DELAY)
         if not source:
             logger.info("HIF 変卡: 预设源卡未命中,回退选择牌库第一格(首版推进策略)")
+            self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
+                "action": "pick_source", "mode": "fallback_first_cell",
+                "names": list(preset.select_change_source_names), "scrolls": scrolls_used,
+            })
             if not self._click_box_center(context, self.FIRST_DECK_CELL_BOX, double=False):
                 return self._stop_unsupported(context, "select_change_source_deck", "fallback_source_click_failed")
-        elif not self._click_box_center(context, source.best_result.box, double=False):
-            return self._stop_unsupported(context, "select_change_source_deck", "source_card_click_failed")
+        else:
+            logger.info(f"HIF 変卡: 源卡名单命中「{source.best_result.text}」")
+            self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
+                "action": "pick_source", "mode": "named",
+                "names": list(preset.select_change_source_names), "scrolls": scrolls_used,
+                "chosen": source.best_result.text,
+            })
+            if not self._click_box_center(context, source.best_result.box, double=False):
+                return self._stop_unsupported(context, "select_change_source_deck", "source_card_click_failed")
         time.sleep(self.ACTION_DELAY)
 
         change_button = self._find_text_option(context, self._get_screenshot(context), ("チェンジ",), self.CHANGE_ROI)
@@ -667,11 +748,15 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
         elif preset.consult_policy != "finish_without_purchase":
             return self._stop_unsupported(context, "consult_shop", "consult_policy_not_supported")
 
-        finish_button = self._find_text_option(context, self._get_screenshot(context), ("終了",), self.FINISH_ROI)
+        image = self._get_screenshot(context)
+        finish_button = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
         if not finish_button:
             return self._stop_unsupported(context, "consult_shop", "finish_button_not_found")
         if not self._click_box_center(context, finish_button.best_result.box, double=False):
             return self._stop_unsupported(context, "consult_shop", "finish_button_click_failed")
+        self._archive_decision(image, "consult_shop", {
+            "action": "finish_without_purchase", "policy": preset.consult_policy_override or preset.consult_policy,
+        })
         return True
 
 
@@ -694,6 +779,7 @@ class ProduceChooseHIFSPCardAuto(_ProduceHIFActionBase):
         reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFSPCardText", [".*"], self.OPTION_ROI)
 
         target_box = None
+        line_records: list[dict] = []
         if reco_detail and reco_detail.all_results:
             lines = [
                 item
@@ -706,13 +792,25 @@ class ProduceChooseHIFSPCardAuto(_ProduceHIFActionBase):
                 detail_str = ",".join(f"{kw}{value:+g}" for kw, value in best_breakdown) or "无命中"
                 logger.info(f"HIF SP效果卡: 最高分 {best_score:.0f} [{detail_str}]「{best_item.text[:40]}」")
                 target_box = best_item.box
+                line_records = [
+                    {"text": item.text, "score": score, "breakdown": breakdown}
+                    for item, score, breakdown in scored
+                ]
 
-        if target_box is None:
+        fallback = target_box is None
+        if fallback:
             logger.info("HIF SP效果卡: 无文字可读或全无命中,回退点击第一张")
             target_box = self.FIRST_CARD_BOX
         if not self._click_box_center(context, target_box, double=False):
             return self._stop_unsupported(context, "hif_sp_card_select", "card_click_failed")
         time.sleep(self.ACTION_DELAY)
+        self._archive_decision(image, "hif_sp_card_select", {
+            "action": "pick_line",
+            "lines": line_records,
+            "chosen": "first_fallback" if fallback else "best_score_line",
+            "preference": preset.preference,
+            "evidence_empty": fallback or not line_records,
+        })
         return True
 
 
@@ -732,9 +830,11 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
     SCROLL_ROUNDS = 2
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        remain = self._read_digits_text(context, self._get_screenshot(context))
+        first_image = self._get_screenshot(context)
+        remain = self._read_digits_text(context, first_image)
         if remain is None:
             return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_not_found")
+        initial_remain = remain
 
         # 点击是切换勾选:remain 下降=勾上了需要的项,上升=误取消已勾选项(立即撤销)
         active_x = self.PICK_CHECKBOX_XS[0]
@@ -778,6 +878,10 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
         if not self._click_box_center(context, keep.best_result.box, double=False):
             return self._stop_unsupported(context, "hif_drink_overflow", "keep_button_click_failed")
         logger.success("HIF 饮料上限:取舍完成(remain=0,已提交残す)")
+        self._archive_decision(first_image, "hif_drink_overflow", {
+            "action": "keep_submit", "initial_remain": initial_remain, "final_remain": remain,
+            "checkbox_x": active_x,
+        })
         time.sleep(self.ACTION_DELAY)
         return True
 
@@ -801,6 +905,9 @@ class ProduceHIFSelectChangeDoneAuto(_ProduceHIFActionBase):
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         logger.info(f"HIF 変卡完成:点空白 ({self.BLANK_TAP[0]},{self.BLANK_TAP[1]}) 推进")
+        self._archive_decision(self._get_screenshot(context), "select_change_done", {
+            "action": "blank_tap", "tap": list(self.BLANK_TAP),
+        })
         context.tasker.controller.post_click(*self.BLANK_TAP).wait()
         time.sleep(self.ACTION_DELAY)
         return True
@@ -919,4 +1026,12 @@ class ProduceHIFRound1Observe(_ProduceHIFActionBase):
             f"shizen={hand.has_shizen_no_miryoku}, oneesan={hand.has_oneesan_no_kankaku}, "
             f"card_names={list(hand.card_names) or '未读到'}"
         )
+        self._archive_static(context, "round1_initial", {
+            "action": "observe",
+            "good_condition_cards": hand.good_condition_card_count,
+            "shizen": hand.has_shizen_no_miryoku,
+            "oneesan": hand.has_oneesan_no_kankaku,
+            "card_names": list(hand.card_names),
+            "evidence_empty": not hand.card_names,
+        })
         return True
