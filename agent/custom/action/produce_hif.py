@@ -177,7 +177,8 @@ class _ProduceHIFActionBase(CustomAction):
             # 截图失败只丢图不丢记录(IPC 代理进程的 screencap 可能返回非 ndarray,実機 2026-08-15 双进程环境实证)
             img_path = out_dir / f"{ts}_{screen_state}.png"
             try:
-                Image.fromarray(image).save(img_path)
+                # maafw post_screencap 返回 BGR 通道序,PIL 按 RGB 解释会红蓝互换,翻通道后再保存
+                Image.fromarray(np.ascontiguousarray(image[..., ::-1])).save(img_path)
                 record["image"] = str(img_path)
             except Exception as err:
                 logger.warning(f"HIF 决策截图失败(记录仍写入): {err}")
