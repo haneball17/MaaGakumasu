@@ -505,3 +505,104 @@ def test_hif_schedule_chooses_public_lesson_by_attribute_priority_only():
     assert choose_public_lesson(cards, ("Da", "Vi", "Vo"))["name"] == "Da"
     assert choose_public_lesson(cards, ("Vi", "Da", "Vo"))["name"] == "Vi"
     assert choose_public_lesson([{"name": "Vo", "box": [1, 1, 1, 1]}], ("Da", "Vi")) is None
+
+
+def _load_produce_hif_module():
+    agent_path = str(Path("agent").resolve())
+    sys.path.insert(0, agent_path)
+    try:
+        return import_module("agent.custom.action.produce_hif")
+    finally:
+        sys.path.remove(agent_path)
+
+
+def test_hif_drink_reward_scores_each_candidate_and_confirms_best(monkeypatch):
+    produce_hif = _load_produce_hif_module()
+    action = produce_hif.ProduceChooseHIFDrinkRewardAuto()
+    clicks: list[list[int]] = []
+    # 候选详情效果按点选顺序返回:低分/高分/中分,最高分为候选2(絶好調+レッスン中強化)
+    detail_texts = ["体力回復6", "絶好調2ターン 手札をすべてレッスン中強化", "パラメータ+10"]
+    read_count = {"detail": 0}
+    confirm_box = [300, 1060, 120, 40]
+
+    def fake_click(ctx, box, double=True, **kwargs):
+        clicks.append(list(box))
+        return True
+
+    def fake_ocr(ctx, image, name, expected, roi):
+        # 候选详情读取:按读取次序给出对应效果文本
+        if name == "ProduceRecognitionHIFRewardDetail":
+            text = detail_texts[read_count["detail"]] if read_count["detail"] < len(detail_texts) else ""
+            read_count["detail"] += 1
+            return SimpleNamespace(all_results=[SimpleNamespace(text=text, box=[0, 0, 1, 1])], hit=True)
+        return None
+
+    def fake_find_text(context, image, phrases, roi):
+        if any(p in ("受け取る", "次へ", "決定") for p in phrases):
+            return SimpleNamespace(best_result=SimpleNamespace(box=confirm_box))
+        return None  # 无 再抽選
+
+    monkeypatch.setattr(action, "_click_box_center", fake_click)
+    monkeypatch.setattr(action, "_get_screenshot", lambda ctx: object())
+    monkeypatch.setattr(action, "_run_ocr", fake_ocr)
+    monkeypatch.setattr(action, "_find_text_option", fake_find_text)
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
+
+    boxes = action.CANDIDATE_BOXES
+    # 逐张点选 3 候选 → 点回最高分候选2 → 点确认按钮
+    assert clicks == [boxes[0], boxes[1], boxes[2], boxes[1], confirm_box]
+
+
+def test_hif_preset_preference_overrides_and_rejects_unknown():
+    assert parse_hif_preset('{"preset_id":"safe_default","preference":"focus"}').preference == "focus"
+    assert parse_hif_preset('{"preset_id":"safe_default","preference":"bogus"}').preference == "good_condition"
+    assert parse_hif_preset('{"preset_id":"rinami_good_condition_safe"}').preference == "good_condition"
+
+
+def test_hif_sp_card_picks_keyword_best_line_and_falls_back_to_first(monkeypatch):
+    produce_hif = _load_produce_hif_module()
+    action = produce_hif.ProduceChooseHIFSPCardAuto()
+    clicks: list[list[int]] = []
+    low_box, high_box, mid_box = [100, 640, 300, 40], [100, 760, 300, 40], [100, 880, 300, 40]
+
+    def run_with(lines, expect_box):
+        clicks.clear()
+        monkeypatch.setattr(
+            action,
+            "_run_ocr",
+            lambda ctx, image, name, expected, roi: SimpleNamespace(
+                all_results=[SimpleNamespace(text=t, box=b, ) for t, b in lines], hit=True
+            )
+            if lines
+            else None,
+        )
+        monkeypatch.setattr(action, "_click_box_center", lambda ctx, box, double=True, **kw: clicks.append(list(box)) or True)
+        monkeypatch.setattr(action, "_get_screenshot", lambda ctx: object())
+        assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
+        assert clicks == [expect_box]
+
+    run_with([("パラメータ+10", low_box), ("絶好調2ターン 手札をすべてレッスン中強化", high_box), ("体力回復3", mid_box)], high_box)
+    # 无文字可读时回退第一张
+    run_with([], action.FIRST_CARD_BOX)
+
+
+def test_hif_class_option_prefers_acquire_marker_over_topmost(monkeypatch):
+    produce_hif = _load_produce_hif_module()
+    action = produce_hif.ProduceChooseHIFClassOptionAuto()
+    clicks: list[list[int]] = []
+    narrative_box, acquire_box, trouble_box = [100, 700, 400, 40], [100, 820, 400, 40], [100, 940, 400, 40]
+    ocr_results = [
+        SimpleNamespace(text="余裕です！", box=narrative_box),
+        SimpleNamespace(text="スキルカードを選択して獲得", box=acquire_box),
+        SimpleNamespace(text="トラブル追加", box=trouble_box),
+    ]
+
+    monkeypatch.setattr(action, "_get_screenshot", lambda ctx: object())
+    monkeypatch.setattr(action, "_run_ocr", lambda ctx, image, name, expected, roi: SimpleNamespace(all_results=ocr_results, hit=True))
+    monkeypatch.setattr(action, "_find_text_option", lambda *args, **kwargs: None)  # 好调文案不命中
+    monkeypatch.setattr(action, "_click_box_center", lambda ctx, box, double=True, **kw: clicks.append(list(box)) or True)
+
+    assert action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
+    # 好调文案未命中 → first_safe 中固定表 acquire 标记优先于最上方叙事行
+    assert clicks == [acquire_box]

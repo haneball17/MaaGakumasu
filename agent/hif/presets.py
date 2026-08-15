@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from typing import Any, Iterable
-from dataclasses import dataclass
+from dataclasses import replace, dataclass
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,6 +26,8 @@ class HIFPreset:
     consult_policy: str
     entry_mode: str
     round1_mode: str
+    # 培育倾向:决定三选一效果关键词评分表(good_condition/focus/balanced)
+    preference: str = "good_condition"
 
 
 SAFE_DEFAULT_PRESET = HIFPreset(
@@ -34,7 +36,8 @@ SAFE_DEFAULT_PRESET = HIFPreset(
     daily_schedule_priorities=(),
     requires_day_schedule=False,
     class_option_priority=("good_condition", "first_safe"),
-    public_lesson_priority=("Da_sp", "Vi_sp", "Vo_sp"),
+    # 公開レッスン按属性序选卡;SP 当日随机不可选(seesaawiki 2026-08-15 调研)
+    public_lesson_priority=("Da", "Vi", "Vo"),
     drink_name_priority=("センブリソーダ",),
     skill_reward_names=("始まりの合図",),
     select_change_target_names=("始まりの合図",),
@@ -76,7 +79,7 @@ _PRESETS = {preset.preset_id: preset for preset in (SAFE_DEFAULT_PRESET, RINAMI_
 
 
 def parse_hif_preset(raw: str | None) -> HIFPreset:
-    """从 MaaFramework 的 custom_action_param 读取预设。"""
+    """从 MaaFramework 的 custom_action_param 读取预设；preference 可选覆盖倾向。"""
 
     try:
         payload: Any = json.loads(raw or "{}")
@@ -85,7 +88,14 @@ def parse_hif_preset(raw: str | None) -> HIFPreset:
 
     if not isinstance(payload, dict):
         return SAFE_DEFAULT_PRESET
-    return _PRESETS.get(payload.get("preset_id"), SAFE_DEFAULT_PRESET)
+    preset = _PRESETS.get(payload.get("preset_id"), SAFE_DEFAULT_PRESET)
+    preference = payload.get("preference")
+    if preference in _KEYWORD_PREFERENCES and preference != preset.preference:
+        return replace(preset, preference=preference)
+    return preset
+
+
+_KEYWORD_PREFERENCES = ("good_condition", "focus", "balanced")
 
 
 def choose_first_matching(candidates: Iterable[str], priority: Iterable[str]) -> str | None:
