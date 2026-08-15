@@ -956,6 +956,60 @@ def test_hif_day_labels_inherit_and_backfill():
     assert [r["_day"] for r in records] == ["D4", "D4", "D4", "D6", "D6", "R1", "R1"]
 
 
+def test_hif_noise_text_detection():
+    from agent.hif.decisions.viewer import _is_noise_text
+
+    assert _is_noise_text("禾") is True  # 单字碎片
+    assert _is_noise_text("€") is True  # 纯符号
+    assert _is_noise_text("-") is True
+    assert _is_noise_text("") is True
+    assert _is_noise_text(None) is True
+    assert _is_noise_text("体力回復6") is False
+    assert _is_noise_text("ß楽しみです") is False  # 前缀符号+实词不算噪音
+    assert _is_noise_text("スキルカードを選択して獲得") is False
+
+
+def test_hif_day_tree_groups_consecutive_same_screen():
+    from agent.hif.decisions.viewer import _build_day_tree
+
+    records = [
+        {"ts": "10:00", "screen": "finals_action_select", "_day": "D1"},
+        {"ts": "10:01", "screen": "hif_class_options", "_day": "D1"},
+        {"ts": "10:02", "screen": "hif_class_options", "_day": "D1"},
+        {"ts": "10:03", "screen": "hif_class_options", "_day": "D1"},
+        {"ts": "11:00", "screen": "finals_action_select", "_day": "D2"},
+    ]
+    tree = _build_day_tree(records)
+
+    assert [d["label"] for d in tree] == ["D1", "D2"]
+    d1_screens = [g["screen"] for g in tree[0]["groups"]]
+    assert d1_screens == ["finals_action_select", "hif_class_options"]
+    assert len(tree[0]["groups"][1]["records"]) == 3  # 连续同 screen 合并
+    assert tree[1]["groups"][0]["records"] == [records[4]]
+
+
+def test_hif_viewer_embeds_keyword_labels_and_day_rows(tmp_path):
+    from agent.hif.decisions import viewer
+
+    (tmp_path / "session-20260103.jsonl").write_text(
+        "\n".join(
+            [
+                json.dumps({"ts": "10:00", "screen": "finals_action_select", "action": "pick_event",
+                            "candidates": ["Da"], "chosen": "Da", "day_remaining": 3}, ensure_ascii=False),
+                json.dumps({"ts": "10:01", "screen": "hif_class_options", "action": "pick_option",
+                            "candidates": ["禾", "€", "体力回復6"], "chosen": "体力回復6"}, ensure_ascii=False),
+            ]
+        ),
+        encoding="utf-8",
+    )
+    html = viewer.refresh(tmp_path).read_text(encoding="utf-8")
+
+    # 翻译词典注入;Day 分节与组渲染脚本存在;days 树数据内嵌
+    assert "好調N回合" in html
+    assert "day-row" in html and "groupSummary" in html
+    assert '"days"' in html
+
+
 def test_hif_decision_viewer_keeps_selfcontained_script_assertions(tmp_path):
     from agent.hif.decisions import viewer
 

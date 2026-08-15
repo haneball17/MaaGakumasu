@@ -41,34 +41,57 @@ SCREEN_LABELS = {
 }
 
 
-def _describe_candidates(rec: dict) -> str:
-    """候选/选择摘要:三选一带分数,其他带文本。"""
+def _is_noise_passthrough(text) -> bool:
+    """默认不过滤(独立调用/测试兼容);main 注入 viewer._is_noise_text。"""
+    return False
+
+
+def _describe_candidates(rec: dict, noise) -> str:
+    """候选/选择摘要:三选一带分数(?=卡名未读),其他带文本(OCR 碎片噪音隐藏)。"""
     candidates = rec.get("candidates") or []
     if candidates and isinstance(candidates[0], dict) and "score" in candidates[0]:
         parts = []
         for c in candidates:
-            card = c.get("card") or "?"
+            card = c.get("card") or "卡名未读"
+            if card == "?":
+                card = "卡名未读"
             parts.append(f"{card}={c['score']:g}")
-        chosen = rec.get("chosen_card") or "?"
+        chosen = rec.get("chosen_card") or "卡名未读"
         return f"[{','.join(parts)}] → {chosen}"
     if candidates:
+        clean = [c for c in candidates if not noise(c)]
+        head = " / ".join(clean[:3])
+        rest = f" 等 {len(clean)} 项" if len(clean) > 3 else ""
         chosen = rec.get("chosen") or rec.get("reason") or ""
-        return f"{candidates} → {chosen}"
+        return f"{head if clean else '(OCR碎片)'}{rest} → {chosen}"
     return rec.get("chosen") or rec.get("reason") or rec.get("mode") or ""
 
 
-def build_rows(records: list[dict]) -> list[list[str]]:
+def build_rows(records: list[dict], noise=_is_noise_passthrough) -> list[list[str]]:
+    """同 screen 连续记录合并为组行(×N+选择序列),其余逐条。"""
     rows = []
-    for rec in records:
-        screen = SCREEN_LABELS.get(rec.get("screen", "?"), rec.get("screen", "?"))
-        flag = ""
-        if rec.get("evidence_empty"):
-            flag = "⚠空证据"
-        if rec.get("action") == "reroll":
-            flag = (flag + " 重抽").strip()
-        detail = _describe_candidates(rec)
-        overrides = "有" if rec.get("overrides") else ""
-        rows.append([rec.get("ts", ""), rec.get("_day", "?"), screen, rec.get("action", ""), detail, overrides, flag])
+    i = 0
+    while i < len(records):
+        rec = records[i]
+        screen = rec.get("screen", "?")
+        j = i
+        while j + 1 < len(records) and records[j + 1].get("screen", "?") == screen:
+            j += 1
+        group = records[i : j + 1]
+        label = SCREEN_LABELS.get(screen, screen)
+        if len(group) == 1:
+            flag = "⚠空证据" if rec.get("evidence_empty") else ""
+            if rec.get("action") == "reroll":
+                flag = (flag + " 重抽").strip()
+            rows.append([rec.get("ts", ""), rec.get("_day", "?"), label, rec.get("action", ""), _describe_candidates(rec, noise), "有" if rec.get("overrides") else "", flag])
+        else:
+            seq = [str(r.get("chosen_card") or r.get("chosen") or r.get("policy") or r.get("mode") or "") for r in group]
+            seq = [s for s in seq if s]
+            uniq = sorted(set(seq))
+            detail = "(" + "→".join(uniq[:3]) + (f" …共{len(group)}条" if len(seq) > 3 else "") + ")"
+            flags = "⚠空证据" if any(r.get("evidence_empty") for r in group) else ""
+            rows.append([f"{group[0].get('ts', '')}~{group[-1].get('ts', '')}", group[0].get("_day", "?"), f"{label}×{len(group)}", "组", detail, "", flags])
+        i = j + 1
     return rows
 
 
@@ -95,9 +118,10 @@ def main() -> int:
             return 1
         jsonl = sessions[-1]
     records = [json.loads(line) for line in jsonl.read_text(encoding="utf-8").splitlines() if line.strip()]
-    _load_viewer()._attach_day_labels(records)
+    viewer = _load_viewer()
+    viewer._attach_day_labels(records)
 
-    table = render_table(build_rows(records))
+    table = render_table(build_rows(records, noise=viewer._is_noise_text))
     print(f"# HIF 决策总表 {jsonl.name}（{len(records)} 条）\n")
     print(table)
 
