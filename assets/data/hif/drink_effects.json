@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "entity": "hif_drink_effects",
-  "updated_at": "2026-08-16T14:29:40+0800",
+  "updated_at": "2026-08-16T17:43:05+0800",
   "pool_note": "in_pool = planType ∈ {Common, Plan1}(莉波路线可用 17 种,设计文档 5.4)",
   "sources": [
     {

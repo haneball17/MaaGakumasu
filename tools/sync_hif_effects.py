@@ -268,6 +268,31 @@ def _grow_effect_entry(grow: dict, grow_names: dict[str, str], condition: str | 
     }
 
 
+def _expand_timer_child(
+    effect: dict,
+    entry: dict,
+    exam_idx: dict[str, dict],
+    exam_names: dict[str, str],
+    condition: str | None,
+) -> dict | None:
+    """発動予約(timer)容器展开:child 效果 id 拼在 timer id 尾段
+    (e_effect-exam_effect_timer-{delay}-{count}-{child_id}),delay = effectValue1。
+    展开为 deferred 效果(评分侧按延迟折现);child 查不到返回 None(原条目保留)。"""
+    # id 形如 e_effect-exam_effect_timer-0001-01-e_effect-exam_card_draw-0002:
+    # 从第二个 "e_effect" 起为 child id
+    tokens = effect.get("id", "").split("-")
+    starts = [i for i, tok in enumerate(tokens) if tok == "e_effect"]
+    child_id = "-".join(tokens[starts[1]:]) if len(starts) >= 2 else None
+    if not child_id or child_id not in exam_idx:
+        return None
+    child = exam_idx[child_id]
+    delay = effect.get("effectValue1") or 0
+    expanded = _exam_effect_entry(child, exam_names, condition=condition)
+    expanded["note"] = f"{expanded.get('note') or expanded['tag']}(予約:{delay}回合後)"
+    expanded["deferred_turns"] = delay
+    return expanded
+
+
 def _card_tier_effects(
     variant: dict,
     exam_idx: dict[str, dict],
@@ -275,6 +300,7 @@ def _card_tier_effects(
     enchant_idx: dict[str, dict],
     exam_names: dict[str, str],
     grow_names: dict[str, str],
+    stats: dict,
 ) -> list[dict]:
     effects: list[dict] = []
     for play in variant.get("playEffects") or []:
@@ -286,7 +312,19 @@ def _card_tier_effects(
             effects.append({"tag": "unmapped", "effect_id": effect_id, "note": "exam effect not found"})
             continue
         condition = play.get("produceExamTriggerId") or None
-        effects.append(_exam_effect_entry(effect, exam_names, condition=condition))
+        entry = _exam_effect_entry(effect, exam_names, condition=condition)
+        # 強気(ExamConcentration)档位:effectValue1 = 1/2 级(倍率 ×2.0/×2.5,ExamSetting)
+        if entry["tag"] == "buff:confidence" and effect.get("effectValue1") in (1, 2):
+            entry["level"] = effect["effectValue1"]
+        effects.append(entry)
+        # 発動予約容器展开(聚光灯类循环卡的延迟效果,136 条解封)
+        if entry["tag"] == "container:timer":
+            expanded = _expand_timer_child(effect, entry, exam_idx, exam_names, condition)
+            if expanded is not None:
+                effects.append(expanded)
+                stats["timer_expanded"] = stats.get("timer_expanded", 0) + 1
+            else:
+                stats["timer_unexpanded"] = stats.get("timer_unexpanded", 0) + 1
         # 成長効果(ExamAddGrowEffect 等指向的 grow 数值)展开一层
         for gid in effect.get("produceCardGrowEffectIds") or []:
             grow = grow_idx.get(gid)
@@ -351,6 +389,9 @@ def sync_cards(diff_root: Path, master: dict) -> tuple[dict, dict]:
                 (origin_idol and not origin_idol.startswith("i_card-hrnm-")) or bool(origin_character)
             ),
             "master_verified": card_id in master_ids,
+            # 出牌去向(D1 裁决):Lost=lesson_once 用后除外不回流;Grave=捨て札重洗回流(循环卡)
+            "move_position": (base.get("playMovePositionType") or "").replace("ProduceCardMovePositionType_", "") or None,
+            "is_lesson_once": (base.get("playMovePositionType") or "").endswith("Lost"),
             "flags": {
                 "is_initial": bool(base.get("isInitial")),
                 "is_initial_deck": bool(base.get("isInitialDeckProduceCard")),
@@ -363,7 +404,7 @@ def sync_cards(diff_root: Path, master: dict) -> tuple[dict, dict]:
             key = TIER_KEYS.get(variant.get("upgradeCount"))
             if key is None:
                 continue
-            effects = _card_tier_effects(variant, exam_idx, grow_idx, enchant_idx, exam_names, grow_names)
+            effects = _card_tier_effects(variant, exam_idx, grow_idx, enchant_idx, exam_names, grow_names, stats)
             for eff in effects:
                 tag = eff.get("tag") or "unmapped"
                 stats["tag"][tag] = stats["tag"].get(tag, 0) + 1
@@ -378,6 +419,8 @@ def sync_cards(diff_root: Path, master: dict) -> tuple[dict, dict]:
             }
         if entry["tiers"]:
             cards_out.append(entry)
+            if entry["is_lesson_once"]:
+                stats["lesson_once"] = stats.get("lesson_once", 0) + 1
             if origin_character:
                 stats["origin_character"].setdefault(origin_character, []).append(base.get("name"))
             if origin_idol:
@@ -529,6 +572,17 @@ def run_reconciliation(cards_payload: dict, master: dict) -> list[str]:
         target = by_name.get(c["name_jp"].rstrip("+"))
         if target and c.get("plan_type") != target.get("plan"):
             problems.append(f"plan 不一致: {c['name_jp']} master={c.get('plan_type')} diff={target.get('plan')}")
+
+    # 5) lesson_once 交叉验证(D1 裁决):master is_lesson_once vs diff move_position==Lost
+    #    仅对实证层(master_verified)卡对账——wiki 标记与数据字段应一一对应
+    mismatches = []
+    for c in master.get("cards", []):
+        target = by_name.get(c["name_jp"].rstrip("+"))
+        if target and target.get("master_verified"):
+            if bool(c.get("is_lesson_once")) != bool(target.get("is_lesson_once")):
+                mismatches.append(f"{c['name_jp']}(wiki={c.get('is_lesson_once')} diff={target.get('move_position')})")
+    if mismatches:
+        problems.append(f"lesson_once 不一致 {len(mismatches)} 张: {mismatches[:5]}")
     return problems
 
 
@@ -550,6 +604,8 @@ def main() -> int:
     print(f"\ncards: {len(cards_payload['cards'])} 去重卡 / {tier_records} 档位记录")
     print(f"master_verified: {sum(1 for c in cards_payload['cards'] if c['master_verified'])}")
     print(f"is_idol_exclusive: {sum(1 for c in cards_payload['cards'] if c['is_idol_exclusive'])}")
+    print(f"lesson_once(Lost 除外): {card_stats.get('lesson_once', 0)} / 循环卡(Grave): {sum(1 for c in cards_payload['cards'] if c.get('move_position') == 'Grave')}")
+    print(f"timer 展开: {card_stats.get('timer_expanded', 0)} 成功 / {card_stats.get('timer_unexpanded', 0)} 未展开")
     print(f"in_pool drinks: {sum(1 for d in drinks_payload['drinks'] if d['in_pool'])} / {len(drinks_payload['drinks'])}")
     print("\n-- 固有卡对账(待定 #6,nasr 归属需人审)--")
     for char, names in sorted(card_stats["origin_character"].items()):
