@@ -1,0 +1,1075 @@
+{
+  "schema_version": 1,
+  "entity": "hif_drink_effects",
+  "updated_at": "2026-08-16T14:29:40+0800",
+  "pool_note": "in_pool = planType ∈ {Common, Plan1}(莉波路线可用 17 种,设计文档 5.4)",
+  "sources": [
+    {
+      "source": "vertesan/gakumasu-diff",
+      "commit": "unknown",
+      "tables": [
+        "ProduceDrink.yaml",
+        "ProduceDrinkEffect.yaml",
+        "ProduceExamEffect.yaml",
+        "ProduceEffect.yaml"
+      ]
+    }
+  ],
+  "drinks": [
+    {
+      "drink_id": "pdrink_00-1-001",
+      "name_jp": "初星水",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "score:parameter_add",
+          "name_jp": "パラメータ",
+          "op": "add",
+          "value": 10,
+          "value2": null,
+          "turn": null,
+          "count": 1,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_lesson-0010-01",
+          "effect_type": "ProduceExamEffectType_ExamLesson",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-1-004",
+      "name_jp": "烏龍茶",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "resource:energy",
+          "name_jp": "元気",
+          "op": "add",
+          "value": 7,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_block-0007",
+          "effect_type": "ProduceExamEffectType_ExamBlock",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-001",
+      "name_jp": "ミックススムージー",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "action:draw_replace",
+          "name_jp": "手札を入れ替える",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_hand_grave_count_card_draw",
+          "effect_type": "ProduceExamEffectType_ExamHandGraveCountCardDraw",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_recover",
+          "name_jp": "体力回復",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_recover_fix-0002",
+          "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-003",
+      "name_jp": "リカバリドリンク",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "resource:stamina_recover",
+          "name_jp": "体力回復",
+          "op": "add",
+          "value": 6,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_recover_fix-0006",
+          "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-004",
+      "name_jp": "フレッシュビネガー",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "buff:card_upgrade",
+          "name_jp": "レッスン中強化",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": "p_card_search-hand",
+          "effect_id": "e_effect-exam_card_upgrade-p_card_search-hand-all-0_0",
+          "effect_type": "ProduceExamEffectType_ExamCardUpgrade",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_recover",
+          "name_jp": "体力回復",
+          "op": "add",
+          "value": 3,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_recover_fix-0003",
+          "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-008",
+      "name_jp": "ブーストエキス",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "score:parameter_gain_mult",
+          "name_jp": "パラメータ上昇量増加",
+          "op": "mult",
+          "value": 300,
+          "value2": null,
+          "turn": 3,
+          "count": null,
+          "unit": "pct",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_lesson_value_multiple-0300-03",
+          "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_cost_down",
+          "name_jp": "消費体力減少",
+          "op": "mult",
+          "value": 0,
+          "value2": null,
+          "turn": 3,
+          "count": null,
+          "unit": "pct",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_consumption_down-03",
+          "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionDown",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_cost_fix",
+          "name_jp": "体力消費",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_reduce_fix-0002",
+          "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-009",
+      "name_jp": "パワフル漢方ドリンク",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "action:move",
+          "name_jp": "",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": "p_card_search-deck_grave-idol-unique-1",
+          "effect_id": "e_effect-exam_card_move-p_card_search-deck_grave-idol-unique-1-hand-all-0_0",
+          "effect_type": "ProduceExamEffectType_ExamCardMove",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_cost_down",
+          "name_jp": "消費体力減少",
+          "op": "mult",
+          "value": 0,
+          "value2": null,
+          "turn": 3,
+          "count": null,
+          "unit": "pct",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_consumption_down-03",
+          "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionDown",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-2-010",
+      "name_jp": "センブリソーダ",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "score:parameter_gain_mult",
+          "name_jp": "パラメータ上昇量増加",
+          "op": "mult",
+          "value": 100,
+          "value2": null,
+          "turn": 5,
+          "count": null,
+          "unit": "pct",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_lesson_value_multiple-0100-05",
+          "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+          "note": null
+        },
+        {
+          "tag": "action:draw",
+          "name_jp": "スキルカードを引く",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_card_draw-0002",
+          "effect_type": "ProduceExamEffectType_ExamCardDraw",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_cost_fix",
+          "name_jp": "体力消費",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_reduce_fix-0002",
+          "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+          "note": null
+        },
+        {
+          "tag": "container:enchant",
+          "name_jp": "持続効果",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": 5,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_status_enchant-05-enchant-pdrink_00-2-010-enc01",
+          "effect_type": "ProduceExamEffectType_ExamStatusEnchant",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-3-001",
+      "name_jp": "初星ホエイプロテイン",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "action:play_add",
+          "name_jp": "スキルカード使用数追加",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": null,
+          "count": 1,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_playable_value_add-01",
+          "effect_type": "ProduceExamEffectType_ExamPlayableValueAdd",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-3-005",
+      "name_jp": "初星スペシャル青汁",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "action:create",
+          "name_jp": "",
+          "op": "add",
+          "value": 1,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": "p_card_search-random-random_pool-p_random_pool-ssr-upgrade_1-1",
+          "effect_id": "e_effect-exam_card_create_search-0001-p_card_search-random-random_pool-p_random_pool-ssr-upgrade_1-1-hand-random-1_1",
+          "effect_type": "ProduceExamEffectType_ExamCardCreateSearch",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_00-3-013",
+      "name_jp": "初星スペシャル青汁X",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Common",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "action:force_search",
+          "name_jp": "",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": "p_card_search-random-random_pool-p_random_pool-rush_idol_unique_set-ssr-upgrade_1-1",
+          "effect_id": "e_effect-exam_force_play_card_search-p_card_search-random-random_pool-p_random_pool-rush_idol_unique_set-ssr-upgrade_1-1-hand-random-1_1",
+          "effect_type": "ProduceExamEffectType_ExamForcePlayCardSearch",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-1-002",
+      "name_jp": "ビタミンドリンク",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan1",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "buff:good_condition",
+          "name_jp": "好調",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": 3,
+          "count": null,
+          "unit": "turns",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_parameter_buff-03",
+          "effect_type": "ProduceExamEffectType_ExamParameterBuff",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-1-003",
+      "name_jp": "アイスコーヒー",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan1",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "buff:focus",
+          "name_jp": "集中",
+          "op": "add",
+          "value": 3,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "turns",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_lesson_buff-0003",
+          "effect_type": "ProduceExamEffectType_ExamLessonBuff",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-2-005",
+      "name_jp": "スタミナ爆発ドリンク",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Plan1",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "buff:excellent_condition",
+          "name_jp": "絶好調",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": 1,
+          "count": null,
+          "unit": "turns",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_parameter_buff_multiple_per_turn-01",
+          "effect_type": "ProduceExamEffectType_ExamParameterBuffMultiplePerTurn",
+          "note": null
+        },
+        {
+          "tag": "resource:energy",
+          "name_jp": "元気",
+          "op": "add",
+          "value": 9,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_block-0009",
+          "effect_type": "ProduceExamEffectType_ExamBlock",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-3-002",
+      "name_jp": "厳選初星マキアート",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan1",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "container:enchant",
+          "name_jp": "持続効果",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": -1,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_status_enchant-inf-enchant-pdrink_01-3-002-enc01",
+          "effect_type": "ProduceExamEffectType_ExamStatusEnchant",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-3-004",
+      "name_jp": "初星ブーストエナジー",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan1",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "buff:excellent_condition",
+          "name_jp": "絶好調",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": 2,
+          "count": null,
+          "unit": "turns",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_parameter_buff_multiple_per_turn-02",
+          "effect_type": "ProduceExamEffectType_ExamParameterBuffMultiplePerTurn",
+          "note": null
+        },
+        {
+          "tag": "buff:card_upgrade",
+          "name_jp": "レッスン中強化",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": "p_card_search-hand",
+          "effect_id": "e_effect-exam_card_upgrade-p_card_search-hand-all-0_0",
+          "effect_type": "ProduceExamEffectType_ExamCardUpgrade",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_01-3-012",
+      "name_jp": "初星黒酢",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan1",
+      "in_pool": true,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "action:move",
+          "name_jp": "",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": "p_card_search-deck_grave",
+          "effect_id": "e_effect-exam_card_move-p_card_search-deck_grave-hand-select-1_1",
+          "effect_type": "ProduceExamEffectType_ExamCardMove",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_cost_change",
+          "name_jp": "消費体力変化",
+          "op": "mult",
+          "value": 0,
+          "value2": null,
+          "turn": -1,
+          "count": 2,
+          "unit": "pct",
+          "scope": "self",
+          "condition": "p_card_search-deck_all",
+          "effect_id": "e_effect-exam_search_play_card_stamina_consumption_change-02-inf-p_card_search-deck_all-all-0_0",
+          "effect_type": "ProduceExamEffectType_ExamSearchPlayCardStaminaConsumptionChange",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_cost_fix",
+          "name_jp": "体力消費",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_reduce_fix-0002",
+          "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+          "note": null
+        },
+        {
+          "tag": "penalty:stamina_cost_add",
+          "name_jp": "消費体力増加",
+          "op": "mult",
+          "value": 0,
+          "value2": null,
+          "turn": 1,
+          "count": null,
+          "unit": "pct",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_consumption_add-01",
+          "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionAdd",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-1-006",
+      "name_jp": "ルイボスティー",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan2",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "buff:good_impression",
+          "name_jp": "好印象",
+          "op": "add",
+          "value": 3,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_review-0003",
+          "effect_type": "ProduceExamEffectType_ExamReview",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-1-008",
+      "name_jp": "ホットコーヒー",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan2",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "buff:motivation",
+          "name_jp": "やる気",
+          "op": "add",
+          "value": 3,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_card_play_aggressive-0003",
+          "effect_type": "ProduceExamEffectType_ExamCardPlayAggressive",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-2-006",
+      "name_jp": "おしゃれハーブティー",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Plan2",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "score:parameter_add_cond",
+          "name_jp": "",
+          "op": "add",
+          "value": 1000,
+          "value2": null,
+          "turn": null,
+          "count": 1,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_lesson_depend_exam_review-1000-01",
+          "effect_type": "ProduceExamEffectType_ExamLessonDependExamReview",
+          "note": null
+        },
+        {
+          "tag": "resource:energy",
+          "name_jp": "元気",
+          "op": "add",
+          "value": 3,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_block-0003",
+          "effect_type": "ProduceExamEffectType_ExamBlock",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-3-006",
+      "name_jp": "厳選初星ティー",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan2",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "container:enchant",
+          "name_jp": "持続効果",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": -1,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_status_enchant-inf-enchant-pdrink_02-3-006-enc01",
+          "effect_type": "ProduceExamEffectType_ExamStatusEnchant",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-3-007",
+      "name_jp": "厳選初星ブレンド",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan2",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "container:enchant",
+          "name_jp": "持続効果",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": -1,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_status_enchant-inf-enchant-pdrink_02-3-007-enc01",
+          "effect_type": "ProduceExamEffectType_ExamStatusEnchant",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_02-3-010",
+      "name_jp": "特製ハツボシエキス",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan2",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "action:extra_play",
+          "name_jp": "スキルカード追加発動",
+          "op": "add",
+          "value": 1,
+          "value2": null,
+          "turn": 1,
+          "count": 1,
+          "unit": "flat",
+          "scope": "self",
+          "condition": "p_card_search-active_skill-n-r-sr-ssr-playing",
+          "effect_id": "e_effect-exam_card_search_effect_play_count_buff-0001-01-01-p_card_search-active_skill-n-r-sr-ssr-playing-all-0_0",
+          "effect_type": "ProduceExamEffectType_ExamCardSearchEffectPlayCountBuff",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_cost_fix",
+          "name_jp": "体力消費",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_reduce_fix-0002",
+          "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+          "note": null
+        },
+        {
+          "tag": "penalty:stamina_cost_add",
+          "name_jp": "消費体力増加",
+          "op": "mult",
+          "value": 0,
+          "value2": null,
+          "turn": 1,
+          "count": null,
+          "unit": "pct",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_consumption_add-01",
+          "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionAdd",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-1-009",
+      "name_jp": "ジンジャーエール",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan3",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "buff:confidence",
+          "name_jp": "強気",
+          "op": "add",
+          "value": 1,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_concentration-0001",
+          "effect_type": "ProduceExamEffectType_ExamConcentration",
+          "note": null
+        },
+        {
+          "tag": "buff:full_power",
+          "name_jp": "全力値",
+          "op": "add",
+          "value": 1,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_full_power_point-0001",
+          "effect_type": "ProduceExamEffectType_ExamFullPowerPoint",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-1-010",
+      "name_jp": "ほうじ茶",
+      "rarity": "ProduceDrinkRarity_R",
+      "plan": "ProducePlanType_Plan3",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "stance:preserve",
+          "name_jp": "温存",
+          "op": "add",
+          "value": 1,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_preservation-0001",
+          "effect_type": "ProduceExamEffectType_ExamPreservation",
+          "note": null
+        },
+        {
+          "tag": "buff:full_power",
+          "name_jp": "全力値",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_full_power_point-0002",
+          "effect_type": "ProduceExamEffectType_ExamFullPowerPoint",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-2-007",
+      "name_jp": "ほっと緑茶",
+      "rarity": "ProduceDrinkRarity_Sr",
+      "plan": "ProducePlanType_Plan3",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "action:move",
+          "name_jp": "",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": "p_card_search-deck_grave",
+          "effect_id": "e_effect-exam_card_move-p_card_search-deck_grave-hold-select-1_1",
+          "effect_type": "ProduceExamEffectType_ExamCardMove",
+          "note": null
+        },
+        {
+          "tag": "stance:preserve",
+          "name_jp": "温存",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_preservation-0002",
+          "effect_type": "ProduceExamEffectType_ExamPreservation",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-3-008",
+      "name_jp": "厳選初星チャイ",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan3",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "container:enchant",
+          "name_jp": "持続効果",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": -1,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_status_enchant-inf-enchant-pdrink_03-3-008-enc01",
+          "effect_type": "ProduceExamEffectType_ExamStatusEnchant",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-3-009",
+      "name_jp": "初星スーパーソーダ",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan3",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "buff:confidence",
+          "name_jp": "強気",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_concentration-0002",
+          "effect_type": "ProduceExamEffectType_ExamConcentration",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_cost_down",
+          "name_jp": "消費体力減少",
+          "op": "mult",
+          "value": 0,
+          "value2": null,
+          "turn": 1,
+          "count": null,
+          "unit": "pct",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_consumption_down-01",
+          "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionDown",
+          "note": null
+        }
+      ]
+    },
+    {
+      "drink_id": "pdrink_03-3-011",
+      "name_jp": "初星湯",
+      "rarity": "ProduceDrinkRarity_Ssr",
+      "plan": "ProducePlanType_Plan3",
+      "in_pool": false,
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "tag": "action:extra_turn",
+          "name_jp": "ターン追加",
+          "op": "add",
+          "value": 0,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_extra_turn",
+          "effect_type": "ProduceExamEffectType_ExamExtraTurn",
+          "note": null
+        },
+        {
+          "tag": "resource:stamina_cost_fix",
+          "name_jp": "体力消費",
+          "op": "add",
+          "value": 2,
+          "value2": null,
+          "turn": null,
+          "count": null,
+          "unit": "flat",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_reduce_fix-0002",
+          "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+          "note": null
+        },
+        {
+          "tag": "penalty:stamina_cost_add",
+          "name_jp": "消費体力増加",
+          "op": "mult",
+          "value": 0,
+          "value2": null,
+          "turn": 1,
+          "count": null,
+          "unit": "pct",
+          "scope": "self",
+          "condition": null,
+          "effect_id": "e_effect-exam_stamina_consumption_add-01",
+          "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionAdd",
+          "note": null
+        }
+      ]
+    }
+  ]
+}

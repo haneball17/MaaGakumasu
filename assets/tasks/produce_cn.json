@@ -372,6 +372,22 @@
           "pipeline_type": "int",
           "verify": "^[0-9]+$",
           "pattern_msg": "$低体力百分比说明"
+        },
+        {
+          "name": "scoring_scale",
+          "label": "$缩放系数",
+          "default": "0",
+          "pipeline_type": "string",
+          "verify": "^[0-9]*\\.?[0-9]*$",
+          "pattern_msg": "$缩放系数说明"
+        },
+        {
+          "name": "endgame_weight",
+          "label": "$终盘权重",
+          "default": "",
+          "pipeline_type": "string",
+          "verify": "^$|^[0-9]*\\.?[0-9]+$",
+          "pattern_msg": "$终盘权重说明"
         }
       ],
       "pipeline_override": {
@@ -393,7 +409,9 @@
             "day3_order": "{day3_order}",
             "day4_order": "{day4_order}",
             "day5_order": "{day5_order}",
-            "day6_order": "{day6_order}"
+            "day6_order": "{day6_order}",
+            "scoring_scale": "{scoring_scale}",
+            "endgame_weight": "{endgame_weight}"
           }
         },
         "ProduceHIFClassOptionFlag": {
@@ -414,7 +432,9 @@
             "day3_order": "{day3_order}",
             "day4_order": "{day4_order}",
             "day5_order": "{day5_order}",
-            "day6_order": "{day6_order}"
+            "day6_order": "{day6_order}",
+            "scoring_scale": "{scoring_scale}",
+            "endgame_weight": "{endgame_weight}"
           }
         },
         "ProduceHIFDrinkRewardFlag": {
@@ -435,7 +455,9 @@
             "day3_order": "{day3_order}",
             "day4_order": "{day4_order}",
             "day5_order": "{day5_order}",
-            "day6_order": "{day6_order}"
+            "day6_order": "{day6_order}",
+            "scoring_scale": "{scoring_scale}",
+            "endgame_weight": "{endgame_weight}"
           }
         },
         "ProduceHIFSkillRewardFlag": {
@@ -456,7 +478,9 @@
             "day3_order": "{day3_order}",
             "day4_order": "{day4_order}",
             "day5_order": "{day5_order}",
-            "day6_order": "{day6_order}"
+            "day6_order": "{day6_order}",
+            "scoring_scale": "{scoring_scale}",
+            "endgame_weight": "{endgame_weight}"
           }
         },
         "ProduceHIFSelectChangeTargetFlag": {
@@ -477,7 +501,9 @@
             "day3_order": "{day3_order}",
             "day4_order": "{day4_order}",
             "day5_order": "{day5_order}",
-            "day6_order": "{day6_order}"
+            "day6_order": "{day6_order}",
+            "scoring_scale": "{scoring_scale}",
+            "endgame_weight": "{endgame_weight}"
           }
         },
         "ProduceHIFSelectChangeSourceFlag": {
@@ -498,7 +524,9 @@
             "day3_order": "{day3_order}",
             "day4_order": "{day4_order}",
             "day5_order": "{day5_order}",
-            "day6_order": "{day6_order}"
+            "day6_order": "{day6_order}",
+            "scoring_scale": "{scoring_scale}",
+            "endgame_weight": "{endgame_weight}"
           }
         },
         "ProduceHIFConsultFlag": {
@@ -519,7 +547,9 @@
             "day3_order": "{day3_order}",
             "day4_order": "{day4_order}",
             "day5_order": "{day5_order}",
-            "day6_order": "{day6_order}"
+            "day6_order": "{day6_order}",
+            "scoring_scale": "{scoring_scale}",
+            "endgame_weight": "{endgame_weight}"
           }
         },
         "ProduceHIFRound1ObserveFlag": {
@@ -540,7 +570,9 @@
             "day3_order": "{day3_order}",
             "day4_order": "{day4_order}",
             "day5_order": "{day5_order}",
-            "day6_order": "{day6_order}"
+            "day6_order": "{day6_order}",
+            "scoring_scale": "{scoring_scale}",
+            "endgame_weight": "{endgame_weight}"
           }
         },
         "ProduceHIFSPCardFlag": {
@@ -561,7 +593,9 @@
             "day3_order": "{day3_order}",
             "day4_order": "{day4_order}",
             "day5_order": "{day5_order}",
-            "day6_order": "{day6_order}"
+            "day6_order": "{day6_order}",
+            "scoring_scale": "{scoring_scale}",
+            "endgame_weight": "{endgame_weight}"
           }
         }
       }

@@ -158,10 +158,13 @@ function detailHtml(rec){
   let h='';
   const cands=rec.candidates;
   if (Array.isArray(cands)&&cands.length&&typeof cands[0]==='object'&&'breakdown' in cands[0]){
-    h+='<table class="cands"><tr><th>#</th><th>卡名</th><th>分</th><th>评分明细</th><th>效果原文</th></tr>';
+    h+='<table class="cands"><tr><th>#</th><th>卡名</th><th>分(来源/关键词对照)</th><th>评分明细</th><th>效果原文</th></tr>';
     cands.forEach(c=>{
       const bd=(c.breakdown||[]).map(([k,v])=>`${esc(kw(k))}<b>${v>0?'+':''}${v}</b>`).join(' ');
-      h+=`<tr><td class="num">${c.label??''}</td><td>${cardName(c.card)}</td><td class="num">${(+c.score).toFixed(0)}</td><td class="bd">${bd||'-'}</td><td>${esc((c.text||'').slice(0,80))}</td></tr>`;
+      const isModel=c.score_source==='effects';
+      const src=isModel?'<span class="flag-ok">模型</span>':'<span>词</span>';
+      const kwCmp=isModel&&c.keyword_score!=null?`<small>词${(+c.keyword_score).toFixed(0)}</small>`:'';
+      h+=`<tr><td class="num">${c.label??''}</td><td>${cardName(c.card)}</td><td class="num">${(+c.score).toFixed(1)} ${src}${kwCmp}</td><td class="bd">${bd||'-'}</td><td>${esc((c.text||'').slice(0,80))}</td></tr>`;
     });
     h+='</table>';
   } else if (rec.lines && rec.lines.length){

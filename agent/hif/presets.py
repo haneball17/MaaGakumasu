@@ -11,6 +11,8 @@ from typing import Any, Iterable
 from pathlib import Path
 from dataclasses import replace, dataclass
 
+from agent.hif.decisions.scoring import ScoringParams
+
 
 @dataclass(frozen=True, slots=True)
 class HIFPreset:
@@ -46,6 +48,9 @@ class HIFPreset:
     daily_override: tuple[tuple[int, tuple[str, ...]], ...] = ()  # 逐日日程覆盖
     consult_policy_override: str = ""  # 相談策略覆盖
     class_option_policy_override: str = ""  # 授業选项策略覆盖
+    # ---- 评分模型旋钮(B4;0/None = 不覆盖,用 scoring.ScoringParams 默认) ----
+    scoring_scale: float = 0.0  # 缩放系数(量级对齐,默认 0.53 → 好調7T ≈8 分)
+    endgame_weight: float | None = None  # 终盘权重(None=默认 1.0;0=关闭终盘衰减)
 
 
 SAFE_DEFAULT_PRESET = HIFPreset(
@@ -174,6 +179,14 @@ def parse_hif_preset(raw: str | None) -> HIFPreset:
     daily = _parse_daily_override(payload)
     if daily:
         updates["daily_override"] = daily
+    scoring_scale = _to_float(payload.get("scoring_scale"))
+    if scoring_scale:
+        updates["scoring_scale"] = scoring_scale
+    # GUI 模板注入恒为字符串;0=关闭终盘衰减为有效值,不能走 0 哨兵,解析失败才不覆盖
+    try:
+        updates["endgame_weight"] = float(payload.get("endgame_weight"))
+    except (TypeError, ValueError):
+        pass
     for field_name in ("consult_policy_override", "class_option_policy_override"):
         value = payload.get(field_name)
         if isinstance(value, str) and value.strip():
@@ -198,6 +211,19 @@ def build_gui_keyword_overrides(preset: HIFPreset) -> dict:
     if preset.accept_threshold:
         overrides["accept_threshold"] = preset.accept_threshold
     return overrides
+
+
+def build_scoring_params(preset: HIFPreset) -> ScoringParams:
+    """preset 的评分模型旋钮(B4 GUI:缩放系数/终盘权重)→ ScoringParams 点名覆盖。
+
+    其余参数留给 C 阶段校准定值,不暴露 GUI。
+    """
+    params = ScoringParams()
+    if preset.scoring_scale > 0:
+        params = replace(params, global_scale=preset.scoring_scale)
+    if preset.endgame_weight is not None:
+        params = replace(params, endgame_weight=preset.endgame_weight)
+    return params
 
 
 _OVERRIDE_PATH = Path(__file__).resolve().parents[3] / "assets" / "data" / "hif" / "decision_override.json"

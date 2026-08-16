@@ -1,15 +1,14 @@
-import argparse
-import hashlib
 import json
+import hashlib
+import argparse
 import urllib.request
-from dataclasses import dataclass
-from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any
+from pathlib import Path
+from datetime import datetime, timezone
+from dataclasses import dataclass
 
 import requests
 from bs4 import BeautifulSoup
-
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "assets" / "data"
@@ -683,6 +682,36 @@ def validate_all() -> list[str]:
     p_items_master = load_json(P_ITEMS_MASTER, {})
     if p_items_master:
         errors.extend(validate_master(p_items_master, "p_item_id", "p_items_master"))
+    errors.extend(validate_hif_effects())
+    return errors
+
+
+def validate_hif_effects() -> list[str]:
+    """校验 sync_hif_effects.py 产物(assets/data/hif/)的主键唯一性与结构完整性。"""
+    errors: list[str] = []
+    card_effects = load_json(DATA_DIR / "hif" / "skill_card_effects.json", {})
+    if card_effects:
+        cards = card_effects.get("cards", [])
+        if not isinstance(cards, list) or not cards:
+            return ["hif_card_effects: cards 缺失或为空"]
+        ids = [card.get("card_id", "") for card in cards]
+        if any(not item for item in ids):
+            errors.append("hif_card_effects: 存在空 card_id")
+        if len(set(ids)) != len(ids):
+            errors.append("hif_card_effects: card_id 重复")
+        for card in cards:
+            if not card.get("tiers"):
+                errors.append(f"hif_card_effects: {card.get('card_id')} 无 tiers")
+    drink_effects = load_json(DATA_DIR / "hif" / "drink_effects.json", {})
+    if drink_effects:
+        drinks = drink_effects.get("drinks", [])
+        if not isinstance(drinks, list) or not drinks:
+            return ["hif_drink_effects: drinks 缺失或为空"]
+        ids = [drink.get("drink_id", "") for drink in drinks]
+        if any(not item for item in ids):
+            errors.append("hif_drink_effects: 存在空 drink_id")
+        if len(set(ids)) != len(ids):
+            errors.append("hif_drink_effects: drink_id 重复")
     return errors
 
 

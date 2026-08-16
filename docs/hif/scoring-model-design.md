@@ -1,7 +1,7 @@
 # HIF 三选一评分模型设计
 
 **日期：** 2026-08-15（同日第二轮 grill 修订：曲线族结构、数值解析路线、卡池边界、先验声明四项定案）
-**状态：** 设计定案（多轮 grill 讨论沉淀），模型代码暂不实施，本文档为唯一交付物
+**状态：** 设计定案；离线链 A/B 已实施（2026-08-16，见 [`scoring-model-implementation-plan.md`](scoring-model-implementation-plan.md) 实施结果速览），待定 #6/#7 已实证关闭
 **适用场景：** HIF 本战三选一（セレクトチェンジ変卡目标 / 技能卡奖励 / P ドリンク奖励 / SP 效果卡列表）
 **前置阅读：** [`decision-override.md`](decision-override.md)（现有关键词评分与三层覆盖）、[`round1-blockers.md`](round1-blockers.md)、[`finals-daily-log.md`](finals-daily-log.md) 2026-08-15 各节
 
@@ -178,8 +178,8 @@ score(card, context) = V(effect, magnitude) × synergy(hand?) − C(cost, stamin
 | 3 | 校准数据冲突仲裁规则细化 | 4 节只定了「HIF 场景共识优先」总原则 |
 | 4 | ~~`produceDescriptions` 碎片重组 vs 关联表 join~~ **已关闭（第二轮 grill）** | 定案关联表 join（5.2），join 脚本实现为下一阶段任务 |
 | 5 | 手牌跟踪（P2 读牌库）激活 synergy 层的时点 | 依赖 Round1 出牌闭环与决策日志回填 |
-| 6 | 其他 sense 偶像固有卡的识别与剔除 | 流派过滤池 170 卡中含非莉波固有卡，需按 `originSupportCardId` / id 模式标记剔除（新增） |
-| 7 | 82 张未实证卡的置信度处理 | 流派层卡无実機证据即进入词典与评分，是否标记置信度/降权待定（新增） |
+| 6 | ~~其他 sense 偶像固有卡的识别与剔除~~ **已关闭（2026-08-16 実機实证）** | 実機 88 卡实证层 origin 分布一锤定音：`i_card-hrnm-*` 7 张全在实证层（hrnm=姫崎莉波，保留）；`s_card-*` 支援卡固有 30 张全在实证层（支援编成带入，保留）；其余偶像固有（amao/fktn/hski 等）与 `originCharacterId=nasr`（「先生でアイドル！」）实证层零出现 → 标记 `is_idol_exclusive` 剔除（产物落盘 48 张） |
+| 7 | ~~82 张未实证卡的置信度处理~~ **已关闭（2026-08-16）** | 产物逐卡落 `master_verified` 布尔标记（diff_ids 命中 88 卡 = 高置信）；未实证卡不降权，进词典享受模型外推，実機观察到异常时按 5.5 数据修正流程处理 |
 
 ## 参考
 
@@ -202,6 +202,7 @@ score(card, context) = V(effect, magnitude) × synergy(hand?) − C(cost, stamin
 
 ### 关联文档
 
+- [`scoring-model-implementation-plan.md`](scoring-model-implementation-plan.md) —— 实施计划（离线链 A→B→C，2026-08-16 批准）
 - [`decision-override.md`](decision-override.md) —— 现有评分规则与三层覆盖
 - [`finals-daily-log.md`](finals-daily-log.md) —— 2026-08-15 各実機会话记录
 - [`round1-blockers.md`](round1-blockers.md) —— 実機验证清单与遗留问题

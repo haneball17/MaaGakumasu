@@ -16,12 +16,14 @@ from agent.hif.presets import (
     HIFPreset,
     parse_hif_preset,
     apply_file_overrides,
+    build_scoring_params,
     choose_first_matching,
     choose_schedule_priority,
     build_gui_keyword_overrides,
 )
 from agent.hif.decisions import viewer
 from agent.hif.decisions.rewards import load_keyword_tables
+from agent.hif.decisions.scoring import DecisionContext, score_card_by_name, score_drink_by_name
 from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict
 from agent.hif.decisions.schedule import classify_class_option
 from agent.hif.adapters.exam_reader import ExamStateReader
@@ -619,6 +621,23 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
     def _choose_keyword_reward(self, context: Context, preset: HIFPreset, reroll_limit: int, screen_state: str) -> bool:
         table = load_keyword_tables(overrides=build_gui_keyword_overrides(preset))[preset.preference]
         priority_names = preset.drink_priority if "drink" in screen_state else preset.card_priority
+        # 评分模型接线(B3):卡/饮料名命中效果池走结构化数值评分,miss 退关键词兜底(断崖为零);
+        # 局面信号(B2):三选一页顶部 HUD 体力 + 日数(session 状态,日程页写入)
+        scoring_params = build_scoring_params(preset)
+        is_drink_page = "drink" in screen_state
+        hud_image = self._get_screenshot(context)
+        try:
+            health = self._get_health(context, hud_image)
+        except Exception:  # HUD 遮挡/识别链路异常退中性信号,不阻断三选一决策
+            health = None
+        decision_ctx = DecisionContext(
+            stamina_ratio=health["ratio"] if health else None,
+            days_remaining=self._read_session_day(),
+        )
+        logger.info(
+            "HIF 三选一局面信号: "
+            f"体力比率={decision_ctx.stamina_ratio if health else '未知'} 日数={decision_ctx.days_remaining if decision_ctx.days_remaining is not None else '未知'}"
+        )
         best_box = None
         for round_index in range(reroll_limit + 1):
             candidates = []
@@ -627,11 +646,30 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
                 time.sleep(self.SELECT_DELAY)
                 image = self._get_screenshot(context)
                 card_name = self._read_card_name(context, image)
+                # 关键词评分恒算(对照基线,离线回放差异表双评分消费);决策分命中效果池时用模型分
                 text = self._read_all_text(context, image, "ProduceRecognitionHIFRewardDetail", self.DETAIL_TEXT_ROI)
-                score, breakdown = table.score_detail(text)
-                candidates.append({"label": label, "box": box, "card": card_name, "text": text, "score": score, "breakdown": breakdown})
+                keyword_score, keyword_breakdown = table.score_detail(text)
+                model = None
+                if card_name:
+                    model = (score_drink_by_name if is_drink_page else score_card_by_name)(
+                        card_name, decision_ctx, scoring_params
+                    )
+                if model is not None:
+                    score = model.total
+                    breakdown = [(item.note, item.points) for item in model.breakdown]
+                    score_source = "effects"
+                else:
+                    score, breakdown = keyword_score, keyword_breakdown
+                    score_source = "keywords"
+                candidates.append({
+                    "label": label, "box": box, "card": card_name, "text": text, "score": score,
+                    "breakdown": breakdown, "keyword_score": keyword_score, "score_source": score_source,
+                })
                 detail_str = ",".join(f"{kw}{value:+g}" for kw, value in breakdown) or "无命中"
-                logger.info(f"HIF 三选一[{screen_state}] 候选{label}: {card_name or '卡名未读'} score={score:.0f} [{detail_str}]")
+                logger.info(
+                    f"HIF 三选一[{screen_state}] 候选{label}: {card_name or '卡名未读'} "
+                    f"score={score:.1f}[{score_source}] [{detail_str}]"
+                )
 
             # 名单优先:用户点名的卡/饮料直接选(grill 定案:用户指定 > 评分器)
             chosen = next((c for c in candidates if c["card"] and c["card"] in priority_names), None)

@@ -455,3 +455,4 @@ debug
 .cache/
 .cache/gakumas-data/
 .worktrees/
+.scrape/

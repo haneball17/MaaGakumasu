@@ -6,8 +6,9 @@ YOLO(cards.onnx) 只输出 cards/suggestions/useless 三类 + box 位置，不�
 
 词典来源：
 1. assets/data/hif/skill_cards.json 的卡名（关键 3 张 + 其他）
-2. assets/data/hif/skill_cards_master.json 的 121 卡全表 name_jp
-   （実機 2026-08-15 接线：変卡/技能卡候选与 Round1 手牌均出自此池）
+2. assets/data/hif/skill_card_effects.json 流派过滤池（A1 产物，Plan1+Common
+   剔非莉波固有 ≈122 卡，含档位变体全名；実機 変卡/技能卡候选与 Round1
+   手牌均出自此池，master 121 卡的 Plan2/3 死代码已剔除；缺文件回退 master）
 3. 常见状态卡硬编码（好調/集中等通用卡，提高好调卡计数准确度）
 
 本模块零 maafw 依赖，纯数据生成，可离线单测。
@@ -15,7 +16,7 @@ YOLO(cards.onnx) 只输出 cards/suggestions/useless 三类 + box 位置，不�
 
 from __future__ import annotations
 
-from agent.hif.decisions.hand_meta import _load_skill_cards, _load_skill_master
+from agent.hif.decisions.hand_meta import _load_skill_cards, _load_effects_pool, _load_skill_master
 
 # ガラクタロード策略必中的 3 张关键卡（决策分支 1/2/3 的触发条件）。
 KEY_CARDS = [
@@ -90,6 +91,11 @@ def build_card_name_dict() -> list[str]:
     seen: set[str] = set()
 
     def add(name: str) -> None:
+        # 词典统一 NFKC 归一(diff 侧「コール＆レスポンス」全角＆ → 半角&,
+        # 与 normalize_card_name 的输入归一同空间,精确匹配不被全半角差异拦截)
+        import unicodedata
+
+        name = unicodedata.normalize("NFKC", name)
         if name and name not in seen:
             names.append(name)
             seen.add(name)
@@ -106,9 +112,18 @@ def build_card_name_dict() -> list[str]:
         if base:
             add(base)
 
-    # 3. master 121 卡全表（実機変卡/Round1 候选池）
-    for card_name in _load_skill_master():
-        add(card_name)
+    # 3. 流派过滤池（A1 产物 skill_card_effects.json：Plan1+Common 剔非莉波固有 ≈122 卡，
+    #    按实际存在档位生成「軽い足取り+」等变体全名；master 121 卡的 Plan2/3 死代码已剔除，
+    #    不再叠加。文件缺失时回退 master 121 卡，保证降级可用。）
+    effects_pool = _load_effects_pool()
+    if effects_pool:
+        for base_name, card in effects_pool.items():
+            for tier_key in card.get("tiers", {}):
+                suffix = "" if tier_key == "無印" else tier_key
+                add(f"{base_name}{suffix}")
+    else:
+        for card_name in _load_skill_master():
+            add(card_name)
 
     # 4. 常见好调卡
     for card in COMMON_GOOD_CONDITION_CARDS:

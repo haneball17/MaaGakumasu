@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import json
+import unicodedata
 from pathlib import Path
 from functools import lru_cache
 from dataclasses import dataclass
@@ -22,9 +23,15 @@ from dataclasses import dataclass
 _DATA_DIR = Path(__file__).resolve().parents[3] / "assets" / "data" / "hif"
 _KEY_CARDS_PATH = _DATA_DIR / "skill_cards.json"
 _MASTER_PATH = _DATA_DIR / "skill_cards_master.json"
+_EFFECTS_POOL_PATH = _DATA_DIR / "skill_card_effects.json"
 
 # 卡名尾缀的档位符号 → master tiers 键。
 _TIER_KEYS = {"": "無印", "+": "+", "++": "++", "+++": "+++"}
+
+
+def _norm_key(name: str) -> str:
+    """查表键 NFKC 归一(与 card_dict 词典同空间,全半角&差异统一)。"""
+    return unicodedata.normalize("NFKC", name)
 
 
 @dataclass(slots=True, frozen=True)
@@ -51,17 +58,39 @@ def _load_skill_cards() -> dict[str, dict]:
     # 用 name 做主键（含档位符号的完整名），同时建 base_name 索引方便按基础名查。
     table: dict[str, dict] = {}
     for card in raw:
-        table[card["name"]] = card
+        table[_norm_key(card["name"])] = card
     return table
 
 
 @lru_cache(maxsize=1)
 def _load_skill_master() -> dict[str, dict]:
-    """加载 skill_cards_master.json（121 卡），返回 {name_jp: 原始dict}。"""
+    """加载 skill_cards_master.json（121 卡），返回 {name_jp: 原始dict}。
+
+    键做 NFKC 归一（wiki 半角& 与 diff 全角＆ 统一到半角），与 card_dict 词典同一命名空间。
+    """
     if not _MASTER_PATH.exists():
         return {}
     raw = json.loads(_MASTER_PATH.read_text(encoding="utf-8"))
-    return {card["name_jp"]: card for card in raw.get("cards", [])}
+    return {_norm_key(card["name_jp"]): card for card in raw.get("cards", [])}
+
+
+@lru_cache(maxsize=1)
+def _load_effects_pool() -> dict[str, dict]:
+    """加载 skill_card_effects.json（流派过滤池，A1 产物），返回 {基础名: 原始dict}。
+
+    池口径（设计文档 5.5）：planType ∈ {Plan1, Common} 且剔除 is_idol_exclusive
+    （非莉波偶像固有卡；hrnm 莉波固有与 s_card 支援卡固有保留）。
+    每卡含四档 tiers 的结构化效果数值（tag/value/turn），OCR 词典与评分模型共同消费。
+    键做 NFKC 归一（diff 侧全角＆ → 半角&），与 card_dict 词典同一命名空间。
+    """
+    if not _EFFECTS_POOL_PATH.exists():
+        return {}
+    raw = json.loads(_EFFECTS_POOL_PATH.read_text(encoding="utf-8"))
+    return {
+        _norm_key(card["name_jp"]): card
+        for card in raw.get("cards", [])
+        if not card.get("is_idol_exclusive")
+    }
 
 
 def _split_tier_suffix(card_name: str) -> tuple[str, str]:
