@@ -238,6 +238,10 @@ class RoundSimRunner:
         self.popular = generate_popular_sequence(spec.scenario.popular_mode, settings.turns, self.rng)
         # M2 预检:未建模卡硬失败(§5)
         engine.precheck(spec.scenario.deck)
+        # M3:P item trigger(憧れ続けた輝き 等;未注册道具名 → None)
+        from agent.hif.roundsim.triggers import build_trigger
+
+        self.trigger = build_trigger(spec.scenario.p_items.idol_exclusive)
 
     # -- 视图与合法性 --------------------------------------------------------
 
@@ -354,7 +358,15 @@ class RoundSimRunner:
         # 3. 移动(D1 分流)
         zones.move_played(card, self.rng)
 
-        # 4. 再演判定(R4:任意卡使用後、条件卡在手、本ターン未発動、回数未满)
+        # 4. P item trigger(M3:憧れ続けた輝き 计数间隔+状态门槛)
+        if self.trigger is not None:
+            trigger_events.extend(
+                self.trigger.on_card_played(
+                    spec, runtime, zones, self.rng, turn, self.spec.exam_settings.hand_limit
+                )
+            )
+
+        # 5. 再演判定(R4:任意卡使用後、条件卡在手、本ターン未発動、回数未满)
         self._check_encore(runtime, zones, turn, trigger_events, params, flow)
         return score_entries, effect_events, trigger_events
 

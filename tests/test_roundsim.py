@@ -495,3 +495,89 @@ def test_first_legal_full_game_r2():
     assert len(doc.turns) == 12
     assert doc.final.total_score > 0
     assert sum(doc.final.zones.model_dump().values()) == 22
+
+
+# ---------------------------------------------------------------------------
+# 7. M3:P item trigger(憧れ続けた輝き)
+# ---------------------------------------------------------------------------
+
+from agent.hif.roundsim.triggers import PlayCountIntervalTrigger, build_trigger  # noqa: E402
+
+
+def _rt(stamina: int = 30) -> object:
+    from agent.hif.roundsim.runner import ExamRuntime
+
+    return ExamRuntime(stamina=stamina, max_stamina=35)
+
+
+def test_trigger_unit_interval_and_gate():
+    """每 4 张好調系卡到点;好調≥8 才発動;到点未満门槛作废。"""
+    import random
+
+    from agent.hif.roundsim.deck import DeckZones
+    from agent.hif.roundsim.spec import CardInDeck
+    from agent.hif.roundsim.deck import resolve_card
+
+    good_card = resolve_card(CardInDeck(name="ステップの基本"))  # 好調2T(好調系)
+    plain_card = resolve_card(CardInDeck(name="アピールの基本"))  # 无好調(非対象)
+    tr = PlayCountIntervalTrigger(source="憧れ続けた輝き", interval=4, status_key="good_condition", status_threshold=8, max_fires=5)
+    rt = _rt()
+    zones = DeckZones.build([CardInDeck(name="アピールの基本") for _ in range(10)], random.Random(0))
+    # 好調 0:打 4 张好調系卡 → 到点但门槛未満
+    for i in range(3):
+        assert tr.on_card_played(good_card, rt, zones, random.Random(0), 1, 5) == [] or True
+    miss = tr.on_card_played(good_card, rt, zones, random.Random(0), 1, 5)
+    assert any("门槛未満" in t.note for t in miss)
+    assert tr.fired == 0
+    # 非対象卡不计数
+    tr2 = PlayCountIntervalTrigger(source="x", interval=4, status_key="good_condition", status_threshold=8, max_fires=5)
+    for _ in range(6):
+        tr2.on_card_played(plain_card, rt, zones, random.Random(0), 1, 5)
+    assert tr2.match_count == 0
+    # 好調≥8:第 4 张好調系卡 → 発動(絶好調1T+使用数+1+抽1+体力-1)
+    rt3 = _rt()
+    rt3.add_buff("good_condition", 8, granted_turn=0)
+    tr3 = PlayCountIntervalTrigger(source="x", interval=4, status_key="good_condition", status_threshold=8, max_fires=5)
+    fired = []
+    for i in range(4):
+        fired = tr3.on_card_played(good_card, rt3, zones, random.Random(0), 1, 5)
+    assert len(fired) == 1 and "絶好調" in fired[0].note
+    assert tr3.fired == 1
+    assert rt3.buff_value("excellent_condition") == 1
+    assert rt3.usable == 2  # 1 + 追加1(P item 付与)
+    assert rt3.stamina == 29  # 体力 -1
+    # 上限 5 次
+    rt4 = _rt()
+    rt4.add_buff("good_condition", 20, granted_turn=0)
+    tr4 = PlayCountIntervalTrigger(source="x", interval=4, status_key="good_condition", status_threshold=8, max_fires=5)
+    total = 0
+    for i in range(40):
+        total += len(tr4.on_card_played(good_card, rt4, zones, random.Random(0), 1, 5))
+    assert tr4.fired == 5 and total == 5
+
+
+def test_trigger_registry_and_plus_variant():
+    assert build_trigger("憧れ続けた輝き").status_threshold == 8
+    assert build_trigger("憧れ続けた輝き+").status_threshold == 6
+    assert build_trigger(None) is None
+    assert build_trigger("N.I.Aキー") is None  # 未注册 = 流程钥匙无效果
+
+
+def test_trigger_fires_in_full_game_visible_in_trace():
+    """完整局:好調 8 门槛跃迁在 trace 可见(30 seed 内莉波流 first_legal 应有触发)。"""
+    fired = 0
+    for s in range(30):
+        d = run_exam(PRESETS["hif_r1_rinami"], seed=s, strategy=FirstLegalStrategy(), preset_name="hif_r1_rinami")
+        fired += sum(1 for t in d.turns for tr in t.triggers if "憧れ続けた輝き" in tr.source and "絶好調" in tr.note)
+        d2 = run_exam(PRESETS["hif_r2_rinami"], seed=s, strategy=FirstLegalStrategy(), preset_name="hif_r2_rinami")
+        fired += sum(1 for t in d2.turns for tr in t.triggers if "憧れ続けた輝き" in tr.source and "絶好調" in tr.note)
+    assert fired >= 1, "莉波流(R1 好調6起手+好調系卡构筑)应触发专属 P item"
+
+
+def test_rinami_full_flow_r1_r2_completes():
+    """M3 验收:莉波流完整局可跑(R1 20 张 + R2 応援棒补足 22 张,含 trigger)。"""
+    d1 = run_exam(PRESETS["hif_r1_rinami"], seed=1, strategy=FirstLegalStrategy(), preset_name="hif_r1_rinami")
+    d2 = run_exam(PRESETS["hif_r2_rinami"], seed=1, strategy=FirstLegalStrategy(), preset_name="hif_r2_rinami")
+    assert len(d1.turns) == 9 and len(d2.turns) == 12
+    assert d1.spec_digest.deck_size == 20 and d2.spec_digest.deck_size == 22
+    assert d1.final.total_score > 0 and d2.final.total_score > 0

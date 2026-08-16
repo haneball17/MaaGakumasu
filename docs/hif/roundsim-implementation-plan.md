@@ -9,7 +9,7 @@
 | --- | --- | --- | --- | --- |
 | M1 | 内核骨架(spec/settings/deck/runner/trace + CLI) | ✅ 完成 | `feat(hif): roundsim M1 内核骨架` | pytest 151 全绿(存量 128 + 新增 23);`simulate_round.py --preset hif_r1_rinami --seed 42` 出 9 回合合法 trace;R2 预设応援棒补足 22 张;ruff 过 |
 | M2 | 效果引擎 + S1 得分 + 算例回归 | ✅ 完成 | `feat(hif): roundsim M2 效果引擎+S1` | kjirou 算例 (23+4×2.0)×(1.5+0.6)=65.1→66 与 (10+4)×2.1=29.4→30 单测绿;莉波池+基本池未建模 tag=0;first_legal 完整局 R1/R2 可跑(守恒/D1 分流/再演/延迟抽牌在 trace 可见);pytest 167 全绿;ruff 过 |
-| M3 | 专属 P item trigger + 応援棒 | ⬜ | | (応援棒补卡已随 M1 deck.py 落地并测试) |
+| M3 | 专属 P item trigger + 応援棒 | ✅ 完成 | `feat(hif): roundsim M3 P item trigger` | 憧れ続けた輝き(好調≥8+每4张好調系卡→絶好調1T/使用数+1/抽1/体力-1,≤5次,+版好調≥6)单测+完整局 trace 可见;莉波流 R1(20张)+R2(応援棒补足22张)完整局可跑;pytest 171 全绿;ruff 过 |
 | M4 | play.py 三修复 + 贪心基线 + A/B runner | ⬜ | | |
 | M5 | observed case adapter + 実機回放校验 | ⬜ | | |
 | M-UIa | FastAPI 骨架 + 回放查看 | ⬜ | | |
@@ -35,6 +35,12 @@
 - **裁判强制项**:使用可门槛/集中成本(ExamLessonBuff)/好調層成本(ExamParameterBuff)/体力+元気支付(元気优先,R2)/使用数(play_add 即回补、出卡后残余追加清零、SKIP 延续)/再演(ターン内 1 回・4 回まで・源卡 Lost→Grave 可回流)/もう1回発動(次卡效果双执行,第二个得分条目)。非法动作 IllegalActionError。
 - **修 bug**:deck.move_played 未从手牌移除(卡无限复用→使用数雪崩死循环);好調倍率叠加错误(1.0+1.5→2.5,应为替换 1.5)。
 - **ActionKind.SKIP** 已加入 decisions/state.py(M4 修复项前置,枚举向后兼容)。
+
+## M3 记录(2026-08-16)
+
+- **triggers.py**:`PlayCountIntervalTrigger`(计数间隔+状态门槛类,メモリー将来同接口)+ 注册表(憧れ続けた輝き = interval 4/好調≥8/≤5 回;+版 好調≥6——dump 312-0/312-1-enc01 両版本)。新道具 = 注册表加一行。
+- **触发语义实现声明**:每第 4 张好調系卡(效果含 ExamParameterBuff)到点时检好調门槛;満 → 絶好調1T+使用数+1(P item 付与,skip 即失,R3)+抽1+体力-1;未満 → 本次作废,下个 4 张再检。
+- 応援棒补卡已在 M1 随 deck.pad_ouenbou 落地(ratio 1:2:1:1:1,ProduceCardRandomPool 実証)。
 
 ## 假设清单(§11,随报告输出)
 
