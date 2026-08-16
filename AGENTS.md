@@ -29,7 +29,8 @@ HIF（学祭，即学園祭本战）培育为当前活跃开发分支（`feat/hi
 - 决策参数覆盖链：GUI 选项 > `debug/decisions/decision_override.json` > 培育倾向基准 > preset 默认（`agent/hif/presets.py`）。
 - 全决策点落盘 `debug/decisions/`（截图 + `session-*.jsonl` + 会话状态），`agent/hif/decisions/viewer.py` 自动生成 HTML 查看器，`tools/hif_replay_report.py` 出复盘总表。
 - Round1 到达后仅观察初始手牌（`ProduceHIFRound1Observe` 读手牌后 `ProduceHIFRound1ReachedStop` 停止），**不出牌**；出牌策略 `GarakutaRinamiStrategy`（`agent/hif/decisions/play.py`）已实现并有 22 个测试，但未接线实机。
-- 评分模型离线链 A/B 已完成（数据 join、双评分回放、Spearman 校准框架，当前 rho≈0.458），C2 人工调参待做。
+- 评分模型离线链 A/B 已完成（数据 join、双评分回放、Spearman 校准框架，当前 rho≈0.458）；C2 人工调参已被模拟器参数枚举取代（ADR-0001）。
+- **Round 模拟器（`agent/hif/roundsim/`）七里程碑完成（2026-08-16，速览表见 `docs/hif/roundsim-implementation-plan.md`）**：ScenarioSpec 三层 + preset⊕override；效果引擎（effect_type 派发、预检硬失败、timer/enchant/condition 全在支持面）；S1 得分（逐级 ceil，kjirou 双算例回归）；专属 P item trigger（憧れ続けた輝き：好調≥8 + 每 4 张好調系卡）与 応援棒补卡；A/B runner（CRN 同批种子 + 対手独立 RNG 流、bootstrap CI、優勝组合模式，CLI `tools/simulate_round.py --ab A,B --n --combined`）；実機回放校验（`tools/calibrate_roundsim.py`：実機総合 475.6 万落点 100% 分位，归因 A9 三围快照/A10 构筑近似，**待実機数据补校准**）；本地 WebUI（`tools/round_sim_app.py` → localhost:8642，Vue3+ECharts 三视图 + 离线渲染 `tools/render_round_ui.py` + TS 契约 `tools/export_roundsim_schema.py`，node ≥22 与 fastapi/uvicorn 为新前置）。莉波 20 张构筑为重构近似（実機逐卡清单未録）；`decisions/play.py` 三修复已落地（SKIP 动作、DRAW/SWAP_HAND 废弃、`pick_playable_card` 具体选卡）。
 - 机制知识库 `docs/hif/mechanics.md`（M1 起逐条带 A-D 置信度与実機验证状态）是机制语义的首要依据；数据链同步 gakumasu-diff 主干（`tools/sync_hif_master.py`、`sync_hif_effects.py`、`scrape_hif_tiers.py`）。
 - 尚未实现：Round1 出牌执行、Round2、Interval、结算、メモリー（回忆卡）评分、整局自动培育；这些页面仍由 `ProduceHIFUnknownStop` 兜底停止。
 - 特別指導（カスタマイズ）接入点已勘察规划（`docs/hif/customize-integration-notes.md`），暂缓至 Round2 立项。
@@ -46,7 +47,7 @@ HIF（学祭，即学園祭本战）培育为当前活跃开发分支（`feat/hi
 待实现或未完全完成的内容包括：
 
 - 初 `LEGEND` 培育适配。
-- HIF：Round1 出牌接线（`GarakutaRinamiStrategy` → 实机）、评分模型 C2 人工调参、快慢路径路由实施、Round2/Interval/结算/メモリー、模拟器立项（输入需含偶像卡）。
+- HIF：Round1 出牌接线（`GarakutaRinamiStrategy`（已含 M4 三修复）→ 実機）、実機配合项补录（R1 最終得分/R2 初始状态/Round 卡组计数 → 重跑校准）、快慢路径路由实施、Round2/Interval/结算/メモリー、模拟器参数枚举（取代 C2，`simulate_round.py --ab` 网格扫描）。
 - 更多语言与更多自动培育样本覆盖。
 
 截至最近更新本文件时（2026-08-16），工作区存在未提交修改：
