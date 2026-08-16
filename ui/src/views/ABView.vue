@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { listPresets, postSimulate, taskStatus, type PresetInfo, type StatRow } from "../api";
+import { computed, onMounted, ref, watch } from "vue";
+import { fetchCards, fetchPresetDeck, listPresets, postSimulate, taskStatus, type DeckEntry, type PoolCard, type PresetInfo, type StatRow } from "../api";
 
 const emit = defineEmits<{ (e: "jump-replay", preset: string, seed: number, strategy: string): void }>();
 
@@ -19,6 +19,37 @@ const error = ref("");
 const assumptions = ref<string[]>([]);
 let pollTimer: number | undefined;
 
+// -- 卡组编辑器(M-UIb 标准表单:预设 + 搜索增删 + JSON 粘贴三通道) --
+const deckEntries = ref<DeckEntry[]>([]);
+const deckDirty = ref(false);
+const cardPool = ref<PoolCard[]>([]);
+const deckSearch = ref("");
+const searchResults = computed(() => {
+    const q = deckSearch.value.trim();
+    if (!q) return [];
+    return cardPool.value.filter((c) => c.name.includes(q)).slice(0, 8);
+});
+
+async function loadDeck(p: string) {
+    deckEntries.value = (await fetchPresetDeck(p)).deck;
+    deckDirty.value = false;
+}
+
+function addCard(card: PoolCard) {
+    deckEntries.value.push({ name: card.name, tier: card.tiers[0] ?? "無印" });
+    deckDirty.value = true;
+    deckSearch.value = "";
+}
+
+function removeCard(idx: number) {
+    deckEntries.value.splice(idx, 1);
+    deckDirty.value = true;
+}
+
+watch(preset, (p) => {
+    if (!deckDirty.value) loadDeck(p);
+});
+
 function toggleStrategy(s: string) {
     const i = strategies.value.indexOf(s);
     if (i >= 0) strategies.value.splice(i, 1);
@@ -30,8 +61,12 @@ async function run() {
     error.value = "";
     stats.value = [];
     try {
-        let overrides: object | undefined;
+        let overrides: Record<string, unknown> | undefined;
         if (overridesJson.value.trim()) overrides = JSON.parse(overridesJson.value);
+        if (deckDirty.value) {
+            // 编辑器是 scenario.deck 的真源;JSON 粘贴仍可覆盖其他字段
+            overrides = { ...(overrides ?? {}), scenario: { ...(overrides?.scenario ?? {}), deck: deckEntries.value } };
+        }
         const res = await postSimulate({
             preset: preset.value,
             overrides,
@@ -69,6 +104,8 @@ function stopPoll() {
 
 onMounted(async () => {
     presets.value = (await listPresets()).presets;
+    cardPool.value = (await fetchCards()).cards;
+    await loadDeck(preset.value);
 });
 </script>
 
@@ -93,8 +130,26 @@ onMounted(async () => {
             N <input v-model.number="n" type="number" min="1" style="width: 80px" />
             seed0 <input v-model.number="seed0" type="number" style="width: 90px" />
         </div>
+        <div class="deckeditor">
+            <b>卡组编辑</b>({{ deckEntries.length }} 张{{ deckDirty ? " · 已修改" : "" }})
+            <div class="decklist">
+                <span v-for="(c, i) in deckEntries" :key="i" class="chip">
+                    {{ c.name }}{{ c.tier === "無印" ? "" : c.tier }} <a href="#" @click.prevent="removeCard(i)">×</a>
+                </span>
+            </div>
+            <div class="row">
+                搜索添加:<input v-model="deckSearch" placeholder="卡名(流派池 122 张)" style="width: 220px" />
+            </div>
+            <ul v-if="searchResults.length" class="results">
+                <li v-for="c in searchResults" :key="c.name" :class="{ unsup: !c.supported }">
+                    {{ c.name }}
+                    <span class="muted">{{ c.rarity }} · {{ c.move === "Lost" ? "除外" : "循环" }}{{ c.play_trigger ? " · 有使用门槛" : "" }}{{ c.supported ? "" : " · ⚠ 未建模,加入会预检失败" }}</span>
+                    <button class="primary small" :disabled="!c.supported" @click="addCard(c)">添加</button>
+                </li>
+            </ul>
+        </div>
         <div class="row">
-            ScenarioSpec 覆盖(JSON 粘贴,可选):
+            其他覆盖(JSON 粘贴,可选):
             <textarea v-model="overridesJson" rows="2" placeholder='{"scenario":{"initial":{"stamina":20}}}'></textarea>
         </div>
         <button class="primary" :disabled="busy" @click="run">{{ busy ? "运行中…" : "一键模拟" }}</button>
@@ -156,6 +211,50 @@ onMounted(async () => {
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
+}
+.deckeditor {
+    margin: 10px 0;
+    padding: 10px;
+    background: #191d23;
+    border-radius: 8px;
+}
+.decklist {
+    margin: 8px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.chip {
+    background: #2c333d;
+    border-radius: 5px;
+    padding: 2px 8px;
+    font-size: 12px;
+}
+.chip a {
+    color: #ff7b72;
+    text-decoration: none;
+    margin-left: 4px;
+}
+.results {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0;
+    max-height: 220px;
+    overflow-y: auto;
+}
+.results li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    border-bottom: 1px solid #2a2f36;
+}
+.results li.unsup {
+    color: #ff9d8f;
+}
+button.small {
+    padding: 2px 10px;
+    font-size: 12px;
 }
 textarea {
     width: 100%;

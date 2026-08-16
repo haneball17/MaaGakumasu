@@ -124,6 +124,44 @@ def list_presets() -> dict:
     }
 
 
+@app.get("/api/preset-deck")
+def get_preset_deck(preset: str) -> dict:
+    """预设卡组逐卡内容(卡组编辑器数据源,§8.4 标准表单)。"""
+    merged = _all_presets()
+    if preset not in merged or merged[preset] is None:
+        raise HTTPException(404, f"未知预设 {preset}")
+    return {"deck": [{"name": c.name, "tier": c.tier} for c in merged[preset].scenario.deck]}
+
+
+@app.get("/api/cards")
+def list_cards() -> dict:
+    """流派效果池全量(前端搜索增删;supported=false 的卡加入卡组会在预检硬失败,UI 标红)。"""
+    from agent.hif.roundsim import engine
+    from agent.hif.roundsim.deck import DeckPrecheckError, _load_pool
+    from agent.hif.roundsim.spec import CardInDeck
+
+    cards = []
+    for name, card in sorted(_load_pool().items()):
+        entries = [CardInDeck(name=card["name_jp"], tier=tier) for tier in (card.get("tiers") or {})]
+        try:
+            engine.precheck(entries)
+            supported = True
+        except DeckPrecheckError:
+            supported = False
+        cards.append(
+            {
+                "name": card["name_jp"],
+                "rarity": (card.get("rarity") or "").replace("ProduceCardRarity_", ""),
+                "category": (card.get("category") or "").replace("ProduceCardCategory_", ""),
+                "move": card.get("move_position"),
+                "play_trigger": bool(card.get("play_trigger")),
+                "tiers": sorted((card.get("tiers") or {}).keys()),
+                "supported": supported,
+            }
+        )
+    return {"cards": cards}
+
+
 @app.get("/api/trace")
 def get_trace(preset: str = "hif_r1_rinami", seed: int = 42, strategy: str = "garakuta_rinami") -> dict:
     merged = _all_presets()

@@ -17,6 +17,26 @@ export interface PresetInfo {
 
 export const listPresets = () => fetchJson<{ presets: PresetInfo[] }>("/api/presets");
 
+export interface DeckEntry {
+    name: string;
+    tier: string;
+}
+
+export const fetchPresetDeck = (preset: string) =>
+    fetchJson<{ deck: DeckEntry[] }>(`/api/preset-deck?preset=${encodeURIComponent(preset)}`);
+
+export interface PoolCard {
+    name: string;
+    rarity: string;
+    category: string;
+    move: string | null;
+    play_trigger: boolean;
+    tiers: string[];
+    supported: boolean;
+}
+
+export const fetchCards = () => fetchJson<{ cards: PoolCard[] }>("/api/cards");
+
 export const fetchTrace = (preset: string, seed: number, strategy: string) =>
     fetchJson<TraceDocument>(`/api/trace?preset=${encodeURIComponent(preset)}&seed=${seed}&strategy=${encodeURIComponent(strategy)}`);
 

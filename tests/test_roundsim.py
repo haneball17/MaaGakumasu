@@ -756,3 +756,27 @@ def test_ui_contract():
     assert (OUT_DIR / "scenariospec.schema.json").read_text(encoding="utf-8").strip() == schema_json.strip()
     assert (OUT_DIR / "scenariospec.ts").read_text(encoding="utf-8").strip() == ts_text.strip()
     assert "scenario" in ts_text and "exam_settings" in ts_text and "opponent" in ts_text
+
+
+def test_deck_editor_endpoints():
+    """M-UIb 卡组编辑器接口:预设逐卡内容 + 流派池搜索清单(含 supported 标记)。"""
+    from tools.round_sim_app import get_preset_deck, list_cards
+
+    deck = get_preset_deck(preset="hif_r1_rinami")["deck"]
+    assert len(deck) == 20 and {"name", "tier"} <= set(deck[0])
+    cards = list_cards()["cards"]
+    assert len(cards) >= 120
+    staged = next(c for c in cards if c["name"] == "ステージングの基本")
+    assert staged["supported"] is True  # 応援棒池卡已建模
+    atsui = next(c for c in cards if c["name"] == "おアツイ視線")
+    assert atsui["supported"] is False  # 未建模卡 UI 标红
+
+
+def test_simulate_with_deck_override():
+    """卡组编辑器 → POST /api/simulate 链:scenario.deck 覆盖生效(handler 直调)。"""
+    from tools.round_sim_app import SimulateRequest, simulate
+
+    deck = [{"name": "スポットライト", "tier": "無印"} for _ in range(9)]
+    deck += [{"name": "視線の基本", "tier": "無印"} for _ in range(11)]
+    res = simulate(SimulateRequest(preset="hif_r1_rinami", strategies=["greedy"], n=3, overrides={"scenario": {"deck": deck}}))
+    assert res["mode"] == "sync" and res["stats"][0]["n"] == 3
