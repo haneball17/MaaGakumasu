@@ -11,7 +11,7 @@
 | M2 | 效果引擎 + S1 得分 + 算例回归 | ✅ 完成 | `feat(hif): roundsim M2 效果引擎+S1` | kjirou 算例 (23+4×2.0)×(1.5+0.6)=65.1→66 与 (10+4)×2.1=29.4→30 单测绿;莉波池+基本池未建模 tag=0;first_legal 完整局 R1/R2 可跑(守恒/D1 分流/再演/延迟抽牌在 trace 可见);pytest 167 全绿;ruff 过 |
 | M3 | 专属 P item trigger + 応援棒 | ✅ 完成 | `feat(hif): roundsim M3 P item trigger` | 憧れ続けた輝き(好調≥8+每4张好調系卡→絶好調1T/使用数+1/抽1/体力-1,≤5次,+版好調≥6)单测+完整局 trace 可见;莉波流 R1(20张)+R2(応援棒补足22张)完整局可跑;pytest 171 全绿;ruff 过 |
 | M4 | play.py 三修复 + 贪心基线 + A/B runner | ✅ 完成(C2 被取代点) | `feat(hif): roundsim M4 三修复+贪心+A/B` | **首个 A/B 结论**(N=1000, CRN, bootstrap CI):R1 garakuta 13661[13134,14162] vs greedy 1954[1913,2004] vs first_legal 5841(7.0×,CI 不重叠);R2 garakuta 6359[5710,6987] vs greedy 2046(P50 1651 低于 greedy 2029,方差大=好調门槛依赖)。pytest 181 全绿;ruff 过 |
-| M5 | observed case adapter + 実機回放校验 | ⬜ | | |
+| M5 | observed case adapter + 実機回放校验 | ✅ 完成(待実機数据补校准) | `feat(hif): roundsim M5 実機回放校验` | 校准报告生成:`calibrate_roundsim.py --n 50` 出 R1/R2/総合分布+実機総合落点分位(4,756,391 → 100%)+偏差归因(A9/A10/未建模乘区)+数据缺口清单;手工録局 schema 定型+漂移对比单测;実機 R1 分/R2 初始未録 → TODO 标注不阻塞 M-UI;pytest 185 全绿 |
 | M-UIa | FastAPI 骨架 + 回放查看 | ⬜ | | |
 | M-UIb | 配置表单 + 模拟驱动 + A/B 视图 | ⬜ | | |
 
@@ -50,6 +50,12 @@
 - **适配器**:`RinamiStrategyAdapter` 包装 decisions.GarakutaRinamiStrategy(ExamView→ExamState 投影,与実機 OCR 适配层同构);None/不可出目标在交给裁判前兜底 Skip(裁判 IllegalActionError 仍守底线)。
 - **首个 A/B 结论**(莉波重构构筑,R1 9T/R2 12T):garakuta_rinami 显著优于 greedy(R1 均值 7.0×,CI 不重叠;R2 3.1×);R2 garakuta P50(1651)低于 greedy(2029)——好調 12T 收尾门槛在 buff 清零的 R2 前期不满足,分布重尾(自然体命中即大分)。**此 commit 起 C2(评分模型人工调参)正式被模拟器参数枚举取代(ADR-0001)**。
 - **絶対分校准注记**:sim R1 ~1.4万 vs 対手 40万——预设三围为准备期中段快照(Vo1116/Da2920/Vi2175),実機 R1 入场三围未取证(3807% 那次 Vi=3807);相对 A/B 结论不受影响(同构筑同対手),絶対落点校准归 M5(実機总分落点分位 → 归因 A9/构筑近似)。
+
+## M5 记录(2026-08-16)——**待実機数据补校准**
+
+- **adapter.py**:`spec_from_observed_case`(三围取実機记录链最后值 Da2920/Vi2175、R1 体力 28;缺口显式声明不猜)+ `observed_final_scores`(R2 総合評価 4,756,391 在 case 内;R1 单段分未録 → None/TODO)+ `ManualGameRecord/ManualTurnRecord` 手工録局 schema(extra=forbid 锁死)+ `validate_trace_against_manual` 逐回合漂移对比。
+- **calibrate_roundsim.py**:全局口径报告(R1/R2/総合分布 P10/P50/P90、実機落点分位、越界归因到 §11 条目、数据缺口清单、可选 --manual 逐回合口径)。
+- **当前校准结论(n=50)**:実機総合 475.6 万落点 100% 分位(模拟 P100 ≈ 7.6 万)——系统性偏低,候选归因 A9(预设三围为准备期中段快照,実機入场值更高)+ A10(构筑重构近似)+ 未建模乘区(好印象 S5/得分上升量/S6 分段+親愛度 H7)。**待実機配合项补录后重跑**:① R1 最終得分;② R2 初始状态截图;③ Round 中卡组计数。
 
 ## 假设清单(§11,随报告输出)
 

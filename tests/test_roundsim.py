@@ -675,3 +675,69 @@ def test_combined_mode_r1r2():
     )
     assert stats[0].n == 5
     assert len(stats[0].r1_first) == 5
+
+
+# ---------------------------------------------------------------------------
+# 9. M5:observed case adapter + 手工録局 + 校准框架
+# ---------------------------------------------------------------------------
+
+from agent.hif.roundsim.adapter import (  # noqa: E402
+    ManualGameRecord,
+    ManualTurnRecord,
+    ObservedCaseGap,
+    observed_final_scores,
+    spec_from_observed_case,
+    validate_trace_against_manual,
+)
+
+
+def test_adapter_spec_from_observed_case():
+    """observed case → spec:三围取最后记录值(Da2920/Vi2175),R1 体力 28 実機值。"""
+    spec, info = spec_from_observed_case(round_tag="r1")
+    assert spec.scenario.initial.stamina == 28
+    assert (spec.scenario.initial.params.dance, spec.scenario.initial.params.visual) == (2920, 2175)
+    assert spec.exam_settings.turns == 9
+    assert any("卡组" in g for g in info["gaps"])  # 缺口显式声明
+    spec2, _ = spec_from_observed_case(round_tag="r2")
+    assert spec2.exam_settings.turns == 12
+    assert spec2.scenario.initial.good_condition_turns == 0  # A2 清零
+
+
+def test_adapter_observed_final_scores():
+    finals = observed_final_scores()
+    assert finals["combined_final"] == 4756391  # R2 総合評価(実機優勝)
+    assert finals["r1_final"] is None  # TODO 待実機補録
+
+
+def test_manual_record_schema_and_drift():
+    """手工録局 schema 定型 + 逐回合漂移对比(録局文件后补即用)。"""
+    doc = run_exam(PRESETS["hif_r1_rinami"], seed=42, strategy=FirstLegalStrategy(), preset_name="hif_r1_rinami")
+    # 构造一份与 trace 完全一致的録局 → 零漂移
+    record = ManualGameRecord(
+        case_id="test",
+        round_tag="r1",
+        seed=42,
+        turns=[
+            ManualTurnRecord(turn=t.turn, flow=t.flow, played_cards=t.action.plays, good_condition_turns=t.state_after.good_condition_turns, stamina=t.state_after.stamina, turn_score=t.turn_score)
+            for t in doc.turns
+        ],
+        final_score=doc.final.total_score,
+    )
+    assert validate_trace_against_manual(doc, record) == {}
+    # 篡改一个回合的得分 → 漂移报告命中
+    record.turns[0].turn_score = (record.turns[0].turn_score or 0) + 1
+    drifts = validate_trace_against_manual(doc, record)
+    assert 1 in drifts and "turn_score" in drifts[1]
+    # schema 锁死:未知字段拒绝
+    import pydantic
+
+    with pytest.raises(pydantic.ValidationError):
+        ManualTurnRecord(turn=1, no_such_field=1)
+
+
+def test_calibration_report_framework():
+    """全局口径框架可跑(実機数值 TODO 标注,不阻塞)——小 N 冒烟。"""
+    from tools.calibrate_roundsim import percentile_of
+
+    assert percentile_of(50, [10, 20, 30, 40, 60]) == 80.0
+    assert percentile_of(5, [10, 20]) == 0.0
