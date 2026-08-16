@@ -218,6 +218,15 @@ HIF 本戦 = `Produce.yaml produce-008`(ProduceType_HatsuboshiIdolFestival,split
 
 ---
 
+### H12 特別指導(カスタマイズ,Interval 强化环节)【A 数据实证,2026-08-16】
+游戏内文本确认:「※カスタマイズは特別指導でおこなえます」(Localization)——特別指導 = カスタマイズ系统,Round1/Round2 之间的准备环节(及変卡流程?)对技能卡强化。
+- **选项表**:`ProduceCardCustomize.yaml` 340 条,每条 = P 点消耗(producePoint 20/40/100)+ 指导次数档(customizeCount 1/2/3)+ **注入 grow effect**(`g_effect-*`)。两种强化:数值提升链(如 block_add 4→13)与新增效果(cost_reduce/aggressive_add 等)。
+- **挂载**:`ProduceCard.produceCardCustomizeIds` + `maxCustomizeCount`;**流派池 170 卡中 98 张可被特別指導**(アイドル魂 max1/2 选项、ファーストステップ+ max3/3 选项等)。
+- `ProduceCardCustomizeRarityEvaluation`:定制后稀有度评价。
+- **对项目**:①Interval 的特別指導决策(选卡+选项)是 Round2 流程的开发点,管线未覆盖;②定制效果全为 grow effect,评分层 GROW_EFFECT_TAGS 五族映射已覆盖——评「定制后价值增量」可零新开发;③実機変卡流程第三步的「训练师选项」疑似同一系统,待実機对照。
+
+---
+
 ## 7. 社区策略共识(非硬机制,校准锚)
 
 ### P1 引擎卡为什么强(四条,全部对应评分修正方向)【B 共识】
