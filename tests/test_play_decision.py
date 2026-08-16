@@ -234,26 +234,26 @@ def test_oneesan_skipped_when_stamina_insufficient() -> None:
 
 
 # ---------------------------------------------------------------------------
-# 分支 4：压缩山札
+# 分支 4：压缩山札（M4 修复 3：打出抽卡系/换牌系效果的卡，実機无独立按钮）
 # ---------------------------------------------------------------------------
 
 
-def test_draw_when_shizen_missing() -> None:
-    """再演未满 + 手牌无自然体 + 有ドロー追加 → 抽牌压缩。"""
+def test_play_draw_card_when_shizen_missing() -> None:
+    """再演未满 + 手牌无自然体 + 手牌有抽卡系卡(スポットライト)→ 打出它压缩。"""
     strategy = GarakutaRinamiStrategy(make_payload())
-    state = make_state(hand=make_hand(has_shizen_no_miryoku=False, draw_available=True))
+    state = make_state(hand=make_hand(has_shizen_no_miryoku=False, card_names=("スポットライト", "アドリブ")))
     action = strategy.decide(state)
-    assert action.kind is ActionKind.DRAW
+    assert action.kind is ActionKind.PLAY_CARD
+    assert action.target_card == "スポットライト"
 
 
-def test_swap_when_draw_unavailable() -> None:
-    """ドロー追加不可时退而求其次用手札交換压缩。"""
+def test_compression_skipped_when_no_draw_card() -> None:
+    """手牌无抽卡系效果卡时不虚构压缩动作，落到后续分支（好调默认/兜底 Skip）。"""
     strategy = GarakutaRinamiStrategy(make_payload())
-    state = make_state(
-        hand=make_hand(has_shizen_no_miryoku=False, draw_available=False, swap_hand_available=True),
-    )
+    state = make_state(hand=make_hand(has_shizen_no_miryoku=False, card_names=("アドリブ",)))
     action = strategy.decide(state)
-    assert action.kind is ActionKind.SWAP_HAND
+    assert action.kind is not ActionKind.DRAW
+    assert action.kind is not ActionKind.SWAP_HAND
 
 
 # ---------------------------------------------------------------------------
@@ -345,15 +345,15 @@ def test_default_reason_no_false_alarm_when_delta_unset() -> None:
     assert "Vi" in action.reason
 
 
-def test_fallback_draw_when_no_good_card() -> None:
-    """无好调卡且无特殊触发时兜底抽牌。"""
+def test_fallback_skip_when_no_good_card() -> None:
+    """无好调卡且无特殊触发时兜底 Skip 回体 2（M4 修复 3：実機无独立抽牌按钮）。"""
     strategy = GarakutaRinamiStrategy(make_payload())
     state = make_state(
         reprise_count=4,
         hand=make_hand(good_condition_card_count=0, draw_available=True),
     )
     action = strategy.decide(state)
-    assert action.kind is ActionKind.DRAW
+    assert action.kind is ActionKind.SKIP
 
 
 # ---------------------------------------------------------------------------
@@ -375,3 +375,48 @@ def test_strategy_satisfies_protocol() -> None:
     assert strategy.plan == "sense"
     assert strategy.recommend_effect == "集中"
     assert isinstance(strategy.decide(make_state()).kind, ActionKind)
+
+
+# ---------------------------------------------------------------------------
+# M4 修复：pick_playable_card 具体选卡 + 低体力 Skip 回退
+# ---------------------------------------------------------------------------
+
+
+def test_pick_playable_card_prefers_good_grant_then_low_cost() -> None:
+    """默认选卡排序:好調付与值高 > 体力消耗低 > 不卡手(即得分高)。"""
+    from agent.hif.decisions.play import pick_playable_card
+
+    # 深呼吸(好調3T,集中+2,体力0)vs 軽い足取り(好調2T,体力4)vs ステージングの基本(无好調,即得分)
+    state = make_state(hand=make_hand(card_names=("ステージングの基本", "軽い足取り", "深呼吸")))
+    assert pick_playable_card(state) == "深呼吸"
+    state2 = make_state(hand=make_hand(card_names=("軽い足取り", "アドリブ")))  # 好調2T vs 好調3T(アドリブ)
+    assert pick_playable_card(state2) == "アドリブ"
+
+
+def test_pick_playable_card_excludes_key_and_gated_cards() -> None:
+    """关键三卡与门槛卡(自然体/お姉さん/国民的/ペース配分)不进默认选卡。"""
+    from agent.hif.decisions.play import pick_playable_card
+
+    state = make_state(hand=make_hand(card_names=("自然体の魅力", "ペース配分", "軽い足取り")))
+    assert pick_playable_card(state) == "軽い足取り"
+
+
+def test_pick_playable_card_returns_none_without_names() -> None:
+    """OCR 未读到卡名(card_names 空)→ None,由执行层兜底(向后兼容)。"""
+    from agent.hif.decisions.play import pick_playable_card
+
+    state = make_state(hand=make_hand(card_names=()))
+    assert pick_playable_card(state) is None
+
+
+def test_low_stamina_without_drink_skips() -> None:
+    """M4 修复 2:体力告急 + 无 P ドリンク → Skip 回体 2(二选一的另一支)。"""
+    strategy = GarakutaRinamiStrategy(make_payload())
+    state = make_state(
+        stamina=15,
+        available_p_drinks=[],
+        hand=make_hand(good_condition_card_count=0, draw_available=False, swap_hand_available=False),
+    )
+    action = strategy.decide(state)
+    assert action.kind is ActionKind.SKIP
+    assert "回体" in action.reason

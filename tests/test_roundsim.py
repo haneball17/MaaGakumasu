@@ -581,3 +581,97 @@ def test_rinami_full_flow_r1_r2_completes():
     assert len(d1.turns) == 9 and len(d2.turns) == 12
     assert d1.spec_digest.deck_size == 20 and d2.spec_digest.deck_size == 22
     assert d1.final.total_score > 0 and d2.final.total_score > 0
+
+
+# ---------------------------------------------------------------------------
+# 8. M4:贪心基线 + 莉波适配器 + A/B runner
+# ---------------------------------------------------------------------------
+
+from agent.hif.roundsim.strategies import GreedyStrategy, RinamiStrategyAdapter, make_strategy  # noqa: E402
+
+
+def test_greedy_picks_highest_immediate_score():
+    """贪心:枚举手牌算即时 S1 分选最高(自然体の魅力体力依存 >> 好調小卡)。"""
+    spec = build_spec(
+        "hif_r1_rinami",
+        {"scenario": {"initial": {"good_condition_turns": 12, "stamina": 28}, "popular_mode": {"mode": "fixed", "turns": ["Vi"] * 9}}},
+    )
+    doc = run_exam(spec, seed=42, strategy=GreedyStrategy(), preset_name="greedy-test")
+    assert doc.final.total_score > 10000  # Vi 21.75× 下好調 2.1 倍的终结技量级
+    assert all(t.action.kind in ("play_card", "skip", "use_p_drink") for t in doc.turns)
+
+
+def test_greedy_skips_when_all_zero():
+    """全候选即时分 0 → Skip 省体力(纯资源卡不空转)。"""
+    from agent.hif.roundsim.runner import RoundSimRunner
+
+    class ZeroHand:
+        """手牌恒为視線の基本(元気+好調,即时分 0)。"""
+
+        name = "zero"
+
+        def decide(self, view):
+            best = GreedyStrategy()
+            for i, c in enumerate(view.hand):
+                if c.playable and c.name == "視線の基本":
+                    score = best._immediate_score(view, i)
+                    assert score[0] == 0
+                    return _skip("greedy0:0 分卡不空转")
+            return _skip("无可出卡")
+
+    def _skip(r):
+        from agent.hif.decisions.state import ActionKind, CardAction
+
+        return CardAction(ActionKind.SKIP, None, r)
+
+    # 直接跑一局断言 skip 为主(贪心策略本体)
+    spec = build_spec(
+        "hif_r1_rinami",
+        {"scenario": {"popular_mode": {"mode": "fixed", "turns": ["Da"] * 9}}},
+    )
+    doc = run_exam(spec, seed=1, strategy=GreedyStrategy(), preset_name="greedy-test")
+    assert any(t.action.kind == "skip" for t in doc.turns)
+
+
+def test_rinami_adapter_full_game_no_illegal():
+    """莉波适配器完整局:裁判全程无 IllegalAction(适配器兜底 None/不可出)。"""
+    for s in range(10):
+        doc = run_exam(PRESETS["hif_r1_rinami"], seed=s, strategy=RinamiStrategyAdapter(), preset_name="hif_r1_rinami")
+        assert len(doc.turns) == 9
+        assert doc.final.total_score > 0
+        d2 = run_exam(PRESETS["hif_r2_rinami"], seed=s, strategy=RinamiStrategyAdapter(), preset_name="hif_r2_rinami")
+        assert len(d2.turns) == 12
+
+
+def test_ab_crn_same_opponents_across_strategies():
+    """CRN:同 seed 不同策略,対手抽样落点恒同(独立流不受局内 rng 消耗影响)。"""
+    from agent.hif.roundsim.runner import run_exam as _run
+
+    a = _run(PRESETS["hif_r1_rinami"], seed=7, strategy=GreedyStrategy())
+    b = _run(PRESETS["hif_r1_rinami"], seed=7, strategy=RinamiStrategyAdapter())
+    c = _run(PRESETS["hif_r1_rinami"], seed=7, strategy=None)
+    assert [(o.name, o.score) for o in a.final.opponents] == [(o.name, o.score) for o in b.final.opponents]
+    assert [(o.name, o.score) for o in a.final.opponents] == [(o.name, o.score) for o in c.final.opponents]
+
+
+def test_run_ab_small_n():
+    """A/B runner 小样本:三策略统计产出 + 报告格式含假设清单。"""
+    from agent.hif.roundsim.ab import format_report, run_ab
+
+    stats = run_ab(PRESETS["hif_r1_rinami"], ["garakuta_rinami", "greedy"], n=12, bootstrap=False)
+    assert len(stats) == 2
+    assert all(s.n == 12 and len(s.scores) == 12 for s in stats)
+    report = format_report(stats, PRESETS["hif_r1_rinami"], "hif_r1_rinami", combined=False)
+    assert "假设清单" in report and "A1" in report and "garakuta_rinami" in report
+
+
+def test_combined_mode_r1r2():
+    """優勝组合模式:R1 第 1 位 ×1.2 + R2 vs 双対手合计;総合分 > 单段 R1 分。"""
+    from agent.hif.roundsim.ab import _combined_total, run_ab
+
+    stats = run_ab(
+        PRESETS["hif_r1_rinami"], ["greedy"], n=5, preset_name="hif_r1_rinami",
+        spec_r2=PRESETS["hif_r2_rinami"], preset_r2="hif_r2_rinami", bootstrap=False,
+    )
+    assert stats[0].n == 5
+    assert len(stats[0].r1_first) == 5

@@ -233,7 +233,9 @@ class RoundSimRunner:
         self.seed = seed
         self.strategy_name = strategy_name
         self.preset_name = preset_name
-        self.rng = random.Random(seed)
+        self.rng = random.Random(seed)  # 局内随机(洗牌/流行/抽牌)
+        # 対手抽样独立流(CRN §7:不受策略动作导致的 rng 消耗差异影响,同批种子対手分恒同)
+        self.opp_rng = random.Random(seed * 1000003 + 7)
         settings = spec.exam_settings
         self.popular = generate_popular_sequence(spec.scenario.popular_mode, settings.turns, self.rng)
         # M2 预检:未建模卡硬失败(§5)
@@ -575,7 +577,7 @@ class RoundSimRunner:
 
         total_score = sum(t.turn_score for t in doc.turns)
         opponents = [
-            OpponentRoll(name=o.name, score=self.rng.randint(o.score_min, o.score_max))
+            OpponentRoll(name=o.name, score=self.opp_rng.randint(o.score_min, o.score_max))
             for o in self.spec.opponent
         ]
         rank = 1 + sum(1 for o in opponents if o.score > total_score)

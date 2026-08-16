@@ -25,6 +25,7 @@ from agent.hif.decisions.state import (
 )
 from agent.hif.decisions.config import ProfilePayload
 from agent.hif.decisions.hand_meta import get_focus_cost as _get_focus
+from agent.hif.decisions.hand_meta import get_effect_facts as _get_effect_facts
 from agent.hif.decisions.hand_meta import get_stamina_cost as _get_stamina
 
 # 固有卡名常量，避免散落字符串导致拼写偏差。
@@ -119,22 +120,20 @@ class GarakutaRinamiStrategy:
                 "序盤尽早发动お姉さんの感覚，驱动再演循环（可发动次数越多越有利）",
             )
 
-        # 4. 再演未满但手牌无自然体 → 压缩山札把它抽上来以触发再演。
+        # 4. 再演未满但手牌无自然体 → 打出抽卡系/换牌系效果的卡压缩山札把它抽上来
+        #    (M4 修复 3:実機无「ドロー/手札交換」独立按钮——它们是卡效果 tag,
+        #     压缩手段 = 出手牌中带 action:draw / action:draw_replace 效果的卡,§3.3)。
         if state.reprise_count < reprise_max and not hand.has_shizen_no_miryoku:
-            if hand.draw_available:
+            compression = _pick_compression_card(hand.card_names)
+            if compression is not None:
                 return CardAction(
-                    ActionKind.DRAW,
-                    None,
-                    "ドロー追加压缩山札，尽快把自然体の魅力抽到手牌以触发再演",
-                )
-            if hand.swap_hand_available:
-                return CardAction(
-                    ActionKind.SWAP_HAND,
-                    None,
-                    "手札交換压缩山札，尽快把自然体の魅力抽到手牌以触发再演",
+                    ActionKind.PLAY_CARD,
+                    compression,
+                    f"打出抽卡系卡 {compression} 压缩山札，尽快把自然体の魅力抽到手牌以触发再演",
                 )
 
-        # 5. ラウンド1 注力策略：体力告急 + 持有优先 P ドリンク → 不惜药（ラウンド1 失败率更高）。
+        # 5. 低体力分支二选一（M4 修复 2）：喝优先 P ドリンク or Skip 回体 2。
+        #    ラウンド1 注力（focus_r1）：失败率更高，体力告急时不惜药；无药可喝则 Skip 回体。
         if (
             cfg.focus_r1
             and state.round is ExamRound.HONSEN_R1
@@ -147,20 +146,26 @@ class GarakutaRinamiStrategy:
                     drink,
                     f"ラウンド1 注力策略，体力告急（{state.stamina}），不惜使用 {drink}",
                 )
+            return CardAction(
+                ActionKind.SKIP,
+                None,
+                f"体力告急（{state.stamina}）且无 P ドリンク，Skip 回体 2 再战",
+            )
 
         # 6. 默认：出好调卡（凑 P アイテム「憧れ続けた輝き」每4张再抽牌，抬高自然体の魅力
         #    +14/张加成；出牌亦可在手牌含自然体时触发再演），并按当前流参数与审查基准告警。
-        if hand.good_condition_card_count > 0:
+        #    M4 修复 1:target_card 从 None 具体化为 pick_playable_card() 选出的卡
+        #    (好調付与值高 > 体力消耗低 > 不卡手);OCR 未读到卡名时退 None 留执行层。
+        if hand.good_condition_card_count > 0 or hand.card_names:
             return CardAction(
                 ActionKind.PLAY_CARD,
-                None,
+                pick_playable_card(state),
                 self._default_play_reason(state),
             )
 
-        # 7. 兜底：无好调卡可用，抽牌寻找资源，避免空转。
-        if hand.draw_available:
-            return CardAction(ActionKind.DRAW, None, "无好调卡可用，ドロー追加寻找出牌资源")
-        return CardAction(ActionKind.PLAY_CARD, None, "兜底：出任意可用牌推进回合")
+        # 7. 兜底（M4 修复 3）：无好调卡可出 → Skip 回体 2（実機无独立抽牌按钮，
+        #    空转回合的最优真实动作就是 Skip）。
+        return CardAction(ActionKind.SKIP, None, "无好调卡可用，Skip 回体 2 等下回合资源")
 
     def _default_play_reason(self, state: ExamState) -> str:
         """默认好调卡出牌理由，附当前流参数感知告警。
@@ -188,6 +193,58 @@ class GarakutaRinamiStrategy:
 def _flow_param(params: ParamSet, flow: str) -> int:
     """取当前流对应的参数值，未知流返回 0。"""
     return getattr(params, _FLOW_PARAM_ATTR.get(flow, ""), 0)
+
+
+# 关键卡(由分支 1-3 专门处理,默认选卡与压缩选卡均排除,避免推荐非法/浪费动作)。
+_KEY_CARDS = {CARD_ONEESAN_NO_KANKAKU, CARD_SHIZEN_NO_MIRYOKU, CARD_KOKUMINTEKI_IDOL}
+
+
+def pick_playable_card(state: ExamState) -> str | None:
+    """M4 修复 1:默认「出好调卡」分支的具体选卡。
+
+    从手牌卡名(OCR 读到的 hand.card_names)中按 好調付与值高 > 体力消耗低 >
+    不卡手(即得分值高,lesson_value 为 0 的纯资源卡靠后)排序;排除关键三卡
+    (分支 1-3 专管)、带使用可门槛的卡、以及当前资源付不起成本的卡
+    (体力/集中/好調層)。未读到卡名或无可选卡返回 None,由执行层兜底选牌。
+    """
+    candidates: list[tuple[int, int, float, str]] = []
+    for name in state.hand.card_names:
+        if not name or name in _KEY_CARDS:
+            continue
+        facts = _effect_facts(name)
+        if facts is None or facts["has_gate"]:
+            continue
+        if facts["stamina_cost"] > state.stamina or facts["focus_cost"] > state.focus:
+            continue
+        if facts["good_cost"] > state.good_condition_turns:
+            continue
+        candidates.append((-facts["good_turns"], facts["stamina_cost"], -facts["lesson_value"], name))
+    if not candidates:
+        return None
+    return min(candidates)[3]
+
+
+def _pick_compression_card(card_names: tuple[str, ...]) -> str | None:
+    """M4 修复 3:压缩山札 = 出手牌中带抽卡/换牌效果(action:draw / draw_replace)的卡。
+
+    选抽牌数多 > 体力消耗低;关键三卡与门槛卡排除(同 pick_playable_card)。
+    """
+    candidates: list[tuple[int, int, str]] = []
+    for name in card_names:
+        if not name or name in _KEY_CARDS:
+            continue
+        facts = _effect_facts(name)
+        if facts is None or facts["has_gate"] or facts["draw_count"] <= 0:
+            continue
+        candidates.append((-facts["draw_count"], facts["stamina_cost"], name))
+    if not candidates:
+        return None
+    return min(candidates)[2]
+
+
+def _effect_facts(card_name: str) -> dict | None:
+    """卡名 → 效果摘要(hand_meta.get_effect_facts,效果池未命中返回 None)。"""
+    return _get_effect_facts(card_name)
 
 
 def _flow_threshold(thresholds, flows: list[str], flow: str) -> int | None:

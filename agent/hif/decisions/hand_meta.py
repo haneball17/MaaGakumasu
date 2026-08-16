@@ -156,3 +156,57 @@ def get_focus_cost(card_name: str) -> int | None:
     """便捷查询：该卡的集中消耗。未命中返回 None。"""
     meta = get_card_meta(card_name)
     return meta.focus_cost if meta else None
+
+
+# 效果摘要缓存(效果池行 → 出牌决策用的少量事实;play.py M4 修复消费)。
+_EFFECT_FACTS_TAGS = {
+    "buff:good_condition": "good_turns",
+    "action:draw": "draw_count",
+    "action:draw_replace": "draw_count",
+    "score:parameter_add": "lesson_value",
+}
+
+
+@lru_cache(maxsize=512)
+def get_effect_facts(card_name: str) -> dict | None:
+    """按卡名(含档位符号)查效果池摘要,返回出牌决策用事实 dict;未命中返回 None。
+
+    字段:good_turns(好調付与ターン合计)/stamina_cost(基础+固定,含 force_stamina)/
+    draw_count(抽卡·换牌系效果合计)/lesson_value(即得分值合计)/has_gate(有使用可门槛)/
+    focus_cost(集中コスト)/good_cost(好調層コスト)。
+    数据源:skill_card_effects.json(流派池,roundsim 与决策层共用同一张表)。
+    """
+    pool = _load_effects_pool()
+    if not pool:
+        return None
+    base, suffix = _split_tier_suffix(card_name)
+    card = pool.get(_norm_key(base))
+    if card is None:
+        return None
+    tier = card.get("tiers", {}).get(_TIER_KEYS[suffix]) or card.get("tiers", {}).get("無印") or {}
+    facts: dict = {
+        "good_turns": 0,
+        "stamina_cost": 0,
+        "draw_count": 0,
+        "lesson_value": 0.0,
+        "has_gate": bool(card.get("play_trigger")),
+        "focus_cost": 0,
+        "good_cost": 0,
+    }
+    facts["stamina_cost"] = (tier.get("stamina") or 0) + (tier.get("force_stamina") or 0)
+    if tier.get("cost_type") == "ExamCostType_ExamLessonBuff":
+        facts["focus_cost"] = tier.get("cost_value") or 0
+    elif tier.get("cost_type") == "ExamCostType_ExamParameterBuff":
+        facts["good_cost"] = tier.get("cost_value") or 0
+    for eff in tier.get("effects") or []:
+        target = _EFFECT_FACTS_TAGS.get(eff.get("tag"))
+        if target is None:
+            continue
+        value = eff.get("value") or 0
+        if target == "good_turns":
+            facts["good_turns"] += eff.get("turn") or 0
+        elif target == "draw_count":
+            facts["draw_count"] += value
+        else:
+            facts["lesson_value"] += value
+    return facts
