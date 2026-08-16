@@ -1,0 +1,333 @@
+{
+  "$defs": {
+    "CardInDeck": {
+      "additionalProperties": false,
+      "description": "卡组条目:卡名 + 档位(§4.2 scenario.deck)。",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "tier": {
+          "default": "無印",
+          "enum": [
+            "無印",
+            "+",
+            "++",
+            "+++"
+          ],
+          "title": "Tier",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CardInDeck",
+      "type": "object"
+    },
+    "ExamSettings": {
+      "description": "考试结构参数(§4.2「结构参数可配」,默认 = 官方值)。\n\n覆盖任意字段用于实验(如 12 回合 R1);机制常量(好調 ×1.5 等)不在此列。",
+      "properties": {
+        "turns": {
+          "default": 9,
+          "title": "Turns",
+          "type": "integer"
+        },
+        "turn_start_distribute": {
+          "default": 3,
+          "title": "Turn Start Distribute",
+          "type": "integer"
+        },
+        "hand_limit": {
+          "default": 5,
+          "title": "Hand Limit",
+          "type": "integer"
+        },
+        "hold_limit": {
+          "default": 2,
+          "title": "Hold Limit",
+          "type": "integer"
+        },
+        "stamina_recover_per_turn_end": {
+          "default": 2,
+          "title": "Stamina Recover Per Turn End",
+          "type": "integer"
+        }
+      },
+      "title": "ExamSettings",
+      "type": "object"
+    },
+    "FixedPopular": {
+      "additionalProperties": false,
+      "description": "流行序列固定注入(A/B 控制变量用,§3.1 #5)。turns 长度须等于 exam_settings.turns。",
+      "properties": {
+        "mode": {
+          "const": "fixed",
+          "default": "fixed",
+          "title": "Mode",
+          "type": "string"
+        },
+        "turns": {
+          "items": {
+            "enum": [
+              "Vo",
+              "Da",
+              "Vi"
+            ],
+            "type": "string"
+          },
+          "title": "Turns",
+          "type": "array"
+        }
+      },
+      "required": [
+        "turns"
+      ],
+      "title": "FixedPopular",
+      "type": "object"
+    },
+    "InitialExamState": {
+      "additionalProperties": false,
+      "description": "考试初始状态(§3.5:R1 默认 = 実機观察值;R2 実機未取证走 A2 假设)。",
+      "properties": {
+        "stamina": {
+          "default": 28,
+          "title": "Stamina",
+          "type": "integer"
+        },
+        "max_stamina": {
+          "default": 35,
+          "title": "Max Stamina",
+          "type": "integer"
+        },
+        "energy": {
+          "default": 0,
+          "title": "Energy",
+          "type": "integer"
+        },
+        "params": {
+          "$ref": "#/$defs/ParamsSnapshot"
+        },
+        "p_drinks": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "P Drinks",
+          "type": "object"
+        },
+        "good_condition_turns": {
+          "default": 0,
+          "title": "Good Condition Turns",
+          "type": "integer"
+        },
+        "excellent_condition_turns": {
+          "default": 0,
+          "title": "Excellent Condition Turns",
+          "type": "integer"
+        },
+        "focus": {
+          "default": 0,
+          "title": "Focus",
+          "type": "integer"
+        }
+      },
+      "title": "InitialExamState",
+      "type": "object"
+    },
+    "J3RandomPopular": {
+      "additionalProperties": false,
+      "description": "J3 官方规则:末 3 回合固定 3→2→1 位、末回合必 1 位、首回合自定权重、中段按比率随机。\n\ncriteria:属性 → 審査基準值(produce_008 davi-01 = Da1960/Vi1307/Vo1089)。\nfirst_weights:首回合属性权重(A4 假设:官方 HIF 概率表不存在,缺省按 criteria 比率)。",
+      "properties": {
+        "mode": {
+          "const": "j3_random",
+          "default": "j3_random",
+          "title": "Mode",
+          "type": "string"
+        },
+        "criteria": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Criteria",
+          "type": "object"
+        },
+        "first_weights": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "number"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "First Weights"
+        }
+      },
+      "title": "J3RandomPopular",
+      "type": "object"
+    },
+    "OpponentSpec": {
+      "additionalProperties": false,
+      "description": "対手:静态分数,每局 uniform(score_min, score_max) 独立抽样(A1 假设,§3.4)。",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "score_min": {
+          "title": "Score Min",
+          "type": "integer"
+        },
+        "score_max": {
+          "title": "Score Max",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "score_min",
+        "score_max"
+      ],
+      "title": "OpponentSpec",
+      "type": "object"
+    },
+    "PItems": {
+      "additionalProperties": false,
+      "description": "P アイテム开关(§4.2:応援棒 R2 固定 on;偶像专属道具随偶像卡挂载,H13)。",
+      "properties": {
+        "ouenbou": {
+          "default": false,
+          "title": "Ouenbou",
+          "type": "boolean"
+        },
+        "idol_exclusive": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Idol Exclusive"
+        }
+      },
+      "title": "PItems",
+      "type": "object"
+    },
+    "ParamsSnapshot": {
+      "additionalProperties": false,
+      "description": "三围有效参数口径(U2/A9:含親愛度/HIFボーナス换算后的実機画面值,成分分解不做)。",
+      "properties": {
+        "vocal": {
+          "default": 0,
+          "title": "Vocal",
+          "type": "integer"
+        },
+        "dance": {
+          "default": 0,
+          "title": "Dance",
+          "type": "integer"
+        },
+        "visual": {
+          "default": 0,
+          "title": "Visual",
+          "type": "integer"
+        }
+      },
+      "title": "ParamsSnapshot",
+      "type": "object"
+    },
+    "Scenario": {
+      "additionalProperties": false,
+      "description": "scenario 层(§4.2)。first_hand:固定首手注入(复现実機首手/逐局校验用)。",
+      "properties": {
+        "deck": {
+          "items": {
+            "$ref": "#/$defs/CardInDeck"
+          },
+          "title": "Deck",
+          "type": "array"
+        },
+        "initial": {
+          "$ref": "#/$defs/InitialExamState"
+        },
+        "p_items": {
+          "$ref": "#/$defs/PItems"
+        },
+        "popular_mode": {
+          "discriminator": {
+            "mapping": {
+              "fixed": "#/$defs/FixedPopular",
+              "j3_random": "#/$defs/J3RandomPopular"
+            },
+            "propertyName": "mode"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/FixedPopular"
+            },
+            {
+              "$ref": "#/$defs/J3RandomPopular"
+            }
+          ],
+          "title": "Popular Mode"
+        },
+        "first_hand": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "First Hand"
+        }
+      },
+      "required": [
+        "deck",
+        "popular_mode"
+      ],
+      "title": "Scenario",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "模拟器输入顶层模型 = scenario + exam_settings + opponent 三层。",
+  "properties": {
+    "scenario": {
+      "$ref": "#/$defs/Scenario"
+    },
+    "exam_settings": {
+      "$ref": "#/$defs/ExamSettings"
+    },
+    "opponent": {
+      "items": {
+        "$ref": "#/$defs/OpponentSpec"
+      },
+      "title": "Opponent",
+      "type": "array"
+    },
+    "note": {
+      "default": "",
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "scenario"
+  ],
+  "title": "ScenarioSpec",
+  "type": "object"
+}

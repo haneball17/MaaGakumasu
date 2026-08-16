@@ -1,0 +1,27 @@
+# 本地环境产物
+.venv/
+node_modules/
+ui/node_modules/
+ui/dist/
+debug/
+.zcode/
+include/
+lib/
+share/
+
+# 生成物(契约文件由工具生成,不手改也不重排)
+ui/src/generated/
+
+# 工具再生成的大数据与 schema(sync/update 脚本自管格式,避免检查漂移)
+assets/data/
+tools/*.schema.json
+
+# 禁区:锁定文件不格式化
+package-lock.json
+ui/package-lock.json
+
+# 大资源/第三方
+assets/resource/
+assets/video/
+sample/
+MaaGakumasu.egg-info/

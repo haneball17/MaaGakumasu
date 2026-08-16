@@ -104,20 +104,20 @@ jobs:
         run: |
           # 查找 MFAAvalonia.exe 的位置
           exe_path=$(find install -name "MFAAvalonia.exe" | head -n 1)
-          
+
           if [ -z "$exe_path" ]; then
             echo "Warning: MFAAvalonia.exe not found in install directory."
             exit 1
           fi
-          
+
           echo "Found MFAAvalonia.exe at: $exe_path"
-          
+
           # 获取目录路径
           exe_dir=$(dirname "$exe_path")
-          
+
           # 重命名为 MaaGakumasu.exe
           mv "$exe_path" "$exe_dir/MaaGakumasu.exe"
-          
+
           if [ $? -eq 0 ]; then
             echo "MFAAvalonia.exe renamed to MaaGakumasu.exe successfully"
           else
@@ -134,30 +134,30 @@ jobs:
           else
             rcedit_url="https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x86.exe"
           fi
-          
+
           # 下载 rcedit
           echo "Downloading rcedit for ${{ matrix.arch }}..."
           curl -L "$rcedit_url" -o rcedit.exe
-          
+
           # 检查 logo.ico 是否存在
           if [ ! -f "logo.ico" ]; then
             echo "Warning: logo.ico not found in project root."
             exit 0
           fi
-          
+
           # 查找 MaaGakumasu.exe 的位置
           exe_path=$(find install -name "MaaGakumasu.exe" | head -n 1)
-          
+
           if [ -z "$exe_path" ]; then
             echo "Warning: MaaGakumasu.exe not found in install directory."
             exit 0
           fi
-          
+
           echo "Found MaaGakumasu.exe at: $exe_path"
-          
+
           # 修改 exe 图标
           ./rcedit.exe "$exe_path" --set-icon "logo.ico"
-          
+
           if [ $? -eq 0 ]; then
             echo "MaaGakumasu icon modified successfully"
           else
@@ -174,9 +174,9 @@ jobs:
           else
             platform_tag="win-arm64"
           fi
-          
+
           echo "Building for platform: ${platform_tag}"
-          
+
           # 运行安装脚本，传入版本号和平台标签
           python ./tools/install.py ${{ needs.meta.outputs.tag }} ${platform_tag}
 
@@ -239,16 +239,16 @@ jobs:
           else
             os_name="osx"
           fi
-          
+
           if [ "${{ matrix.arch }}" == "x86_64" ]; then
             arch_name="x64"
           else
             arch_name="arm64"
           fi
-          
+
           platform_tag="${os_name}-${arch_name}"
           echo "Building for platform: ${platform_tag}"
-          
+
           # 运行安装脚本，传入版本号和平台标签
           python ./tools/install.py ${{ needs.meta.outputs.tag }} ${platform_tag}
 

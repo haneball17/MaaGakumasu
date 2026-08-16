@@ -12,7 +12,7 @@
 | M3 | 专属 P item trigger + 応援棒 | ✅ 完成 | `feat(hif): roundsim M3 P item trigger` | 憧れ続けた輝き(好調≥8+每4张好調系卡→絶好調1T/使用数+1/抽1/体力-1,≤5次,+版好調≥6)单测+完整局 trace 可见;莉波流 R1(20张)+R2(応援棒补足22张)完整局可跑;pytest 171 全绿;ruff 过 |
 | M4 | play.py 三修复 + 贪心基线 + A/B runner | ✅ 完成(C2 被取代点) | `feat(hif): roundsim M4 三修复+贪心+A/B` | **首个 A/B 结论**(N=1000, CRN, bootstrap CI):R1 garakuta 13661[13134,14162] vs greedy 1954[1913,2004] vs first_legal 5841(7.0×,CI 不重叠);R2 garakuta 6359[5710,6987] vs greedy 2046(P50 1651 低于 greedy 2029,方差大=好調门槛依赖)。pytest 181 全绿;ruff 过 |
 | M5 | observed case adapter + 実機回放校验 | ✅ 完成(待実機数据补校准) | `feat(hif): roundsim M5 実機回放校验` | 校准报告生成:`calibrate_roundsim.py --n 50` 出 R1/R2/総合分布+実機総合落点分位(4,756,391 → 100%)+偏差归因(A9/A10/未建模乘区)+数据缺口清单;手工録局 schema 定型+漂移对比单测;実機 R1 分/R2 初始未録 → TODO 标注不阻塞 M-UI;pytest 185 全绿 |
-| M-UIa | FastAPI 骨架 + 回放查看 | ⬜ | | |
+| M-UIa | FastAPI 骨架 + 回放/分布查看 | ✅ 完成 | `feat(hif): roundsim M-UIa WebUI 骨架` | node v24.19.0(winget)+fastapi/uvicorn;localhost:8642 API 全通(presets/trace/distribution/simulate 同步+异步任务/schema);Vue3+Vite+ECharts+singlefile 构建自包含 dist(入库,无 node 者可离线渲染);回放视图 DOM 级验证(総分/回合表/效果链/触发/牌库图表全渲染);render_round_ui.py 离线注入双模式(Vue 模板→降级最小查看器);prettier 欠账还清 |
 | M-UIb | 配置表单 + 模拟驱动 + A/B 视图 | ⬜ | | |
 
 ## M1 记录(2026-08-16)

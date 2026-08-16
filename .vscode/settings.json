@@ -1,50 +1,50 @@
 {
-    "json.schemas": [
-        {
-            "fileMatch": [
-                "/assets/resource/**/*.json"
-            ],
-            "url": "/tools/pipeline.schema.json"
-        },
-        {
-            "fileMatch": [
-                "/assets/interface.json"
-            ],
-            "url": "/tools/interface.schema.json"
-        },
-        {
-            "fileMatch": [
-                "/assets/tasks/**/*.json"
-            ],
-            "url": "/tools/interface_import.schema.json"
-        },
-    ],
-    "json.schemaDownload.enable": true,
-    "json.validate.enable": true,
-    "[json][jsonc]": {
-        "editor.formatOnSave": true,
-        "editor.insertSpaces": true,
-        "editor.tabSize": 4,
-        "editor.indentSize": "tabSize",
-        "editor.quickSuggestions": {
-            "other": true,
-            "strings": true,
-            "comments": false
-        }
-    },
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff",
-        "editor.rulers": [
-            144
-        ]
-    },
-    "files.associations": {
-        "*.json": "jsonc"
-    },
-    "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.diagnosticSeverityOverrides": {
-        "reportAttributeAccessIssue": "none",
-        "reportOptionalMemberAccess": "none",
-        "reportArgumentType": "warning"
-    }
+	"json.schemas": [
+		{
+			"fileMatch": [
+				"/assets/resource/**/*.json"
+			],
+			"url": "/tools/pipeline.schema.json"
+		},
+		{
+			"fileMatch": [
+				"/assets/interface.json"
+			],
+			"url": "/tools/interface.schema.json"
+		},
+		{
+			"fileMatch": [
+				"/assets/tasks/**/*.json"
+			],
+			"url": "/tools/interface_import.schema.json"
+		}
+	],
+	"json.schemaDownload.enable": true,
+	"json.validate.enable": true,
+	"[json][jsonc]": {
+		"editor.formatOnSave": true,
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4,
+		"editor.indentSize": "tabSize",
+		"editor.quickSuggestions": {
+			"other": true,
+			"strings": true,
+			"comments": false
+		}
+	},
+	"[python]": {
+		"editor.defaultFormatter": "charliermarsh.ruff",
+		"editor.rulers": [
+			144
+		]
+	},
+	"files.associations": {
+		"*.json": "jsonc"
+	},
+	"python.analysis.typeCheckingMode": "basic",
+	"python.analysis.diagnosticSeverityOverrides": {
+		"reportAttributeAccessIssue": "none",
+		"reportOptionalMemberAccess": "none",
+		"reportArgumentType": "warning"
+	}
 }

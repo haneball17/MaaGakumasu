@@ -1,6 +1,6 @@
 {
-    "recommendations": [
-        "nekosu.maa-support",
-        "davidanson.vscode-markdownlint"
-    ]
+	"recommendations": [
+		"nekosu.maa-support",
+		"davidanson.vscode-markdownlint"
+	]
 }
