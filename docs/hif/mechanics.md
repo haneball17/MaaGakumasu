@@ -218,6 +218,12 @@ HIF 本戦 = `Produce.yaml produce-008`(ProduceType_HatsuboshiIdolFestival,split
 
 ---
 
+### H13 P アイテム与考试得分【A 数据实证,2026-08-16】
+- **HIF 本戦无得分型 P item**:produce-008 仅挂 `pitem_00-3-330-0`(N.I.A キー,流程钥匙,fireLimit 0 无效果);ProduceItemEffect 911 条考试附魔中 **140 条为 tower 专属**,无 HIF 专属得分效果。
+- **HIF 路径唯一考试相关 P item = 応援棒**:効果=山札<22 补基本卡(D5 已建模,牌库引擎直接实现)。
+- 道具本体体系(不在 HIF 路径):ProduceItem 1018 条,fireLimit 0(不发动)736 / 1-5 次 266——通常育成携带型,效果形态 = ExamStatusEnchant/ProduceEffect(均为模拟器已有执行单元)。
+- **U10 待験**:実機 Interval「Pアイテム」tab(日志 1630 行仅 OCR 锚)可购买什么、是否进 R2 生效——若为得分型,模拟器按 R2 初始状态参数处理(同特别指导模式)。
+
 ### H12 特別指導(カスタマイズ,Interval 强化环节)【A 数据实证,2026-08-16】
 游戏内文本确认:「※カスタマイズは特別指導でおこなえます」(Localization)——特別指導 = カスタマイズ系统,Round1/Round2 之间的准备环节(及変卡流程?)对技能卡强化。
 - **选项表**:`ProduceCardCustomize.yaml` 340 条,每条 = P 点消耗(producePoint 20/40/100)+ 指导次数档(customizeCount 1/2/3)+ **注入 grow effect**(`g_effect-*`)。两种强化:数值提升链(如 block_add 4→13)与新增效果(cost_reduce/aggressive_add 等)。
