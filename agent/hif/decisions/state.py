@@ -27,11 +27,14 @@ class ExamRound(str, Enum):
 
 
 class ActionKind(str, Enum):
-    """出牌决策的动作类型。"""
+    """出牌决策的动作类型。実機 Round 界面唯一独立按钮是 SKIP + 底部饮料栏
+    (roundsim-design §3.3);旧仓库抽象的 DRAW/SWAP_HAND 是失真(卡效果 tag,非按钮),
+    保留枚举值以兼容存量决策日志,新策略禁止返回。"""
 
     PLAY_CARD = "play_card"
-    SWAP_HAND = "swap_hand"
-    DRAW = "draw"
+    SKIP = "skip"
+    SWAP_HAND = "swap_hand"  # 已废弃:実機无「手札交換」独立按钮(roundsim-design §6.3 修复 3)
+    DRAW = "draw"  # 已废弃:実機无「ドロー」独立按钮(是卡效果 tag action:draw)
     USE_P_DRINK = "use_p_drink"
 
 

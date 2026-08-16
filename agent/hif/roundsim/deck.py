@@ -38,13 +38,21 @@ class CardSpec:
     tier: str
     card_id: str
     stamina: int
+    force_stamina: int  # 固定体力消耗(お姉さんの感覚=6 等;消費軽減不可)
     cost_type: str | None
     cost_value: int | None
     effects: tuple[dict, ...]
     move_position: str
     is_lesson_once: bool
+    play_trigger: str = ""  # 使用可门槛(e_trigger-none-parameter_buff_up-4 等;空=无门槛)
+    category: str = ""
     rarity: str = ""
     plan: str = ""
+
+    @property
+    def total_stamina_cost(self) -> int:
+        """出牌体力成本 = 基础 + 固定部分。"""
+        return (self.stamina or 0) + (self.force_stamina or 0)
 
 
 @dataclass(slots=True)
@@ -91,11 +99,14 @@ def resolve_card(entry: CardInDeck) -> CardSpec:
         tier=entry.tier,
         card_id=card.get("card_id", ""),
         stamina=tier.get("stamina") or 0,
+        force_stamina=tier.get("force_stamina") or 0,
         cost_type=tier.get("cost_type"),
         cost_value=tier.get("cost_value"),
         effects=tuple(tier.get("effects") or []),
         move_position=card.get("move_position") or "Grave",
         is_lesson_once=bool(card.get("is_lesson_once")),
+        play_trigger=card.get("play_trigger") or "",
+        category=card.get("category", ""),
         rarity=card.get("rarity", ""),
         plan=card.get("plan", ""),
     )
@@ -180,7 +191,9 @@ class DeckZones:
         return discarded
 
     def move_played(self, card: CardInstance, rng: random.Random) -> str:
-        """出牌后按卡面 playMovePositionType 分流(D1),返回去向名。"""
+        """出牌后按卡面 playMovePositionType 分流(D1),返回去向名。先移出手牌再入区。"""
+        if card in self.hand:
+            self.hand.remove(card)
         dest = card.spec.move_position
         if dest == "Lost":
             self.lost.append(card)

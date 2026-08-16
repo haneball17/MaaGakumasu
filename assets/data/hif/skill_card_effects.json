@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "entity": "hif_card_effects",
-  "updated_at": "2026-08-16T17:42:43+0800",
+  "updated_at": "2026-08-16T23:52:58+0800",
   "pool_note": "planType ∈ {Plan1, Common}(姫崎莉波感性路线池,设计文档 5.5);is_idol_exclusive=非莉波偶像固有/角色标记卡(待定 #6,实证剔除依据 hrnm=莉波、s_card 支援固有保留);master_verified=実機实证层(待定 #7)",
   "sources": [
     {
@@ -31,6 +31,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -40,6 +41,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": []
@@ -59,6 +61,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -68,6 +71,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -90,6 +94,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -112,6 +117,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -134,6 +140,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -169,6 +176,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -178,6 +186,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -215,6 +224,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -252,6 +262,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -289,6 +300,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -339,6 +351,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -348,6 +361,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -385,6 +399,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -422,6 +437,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -459,6 +475,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -509,6 +526,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -518,6 +536,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -540,6 +559,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -562,6 +582,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -584,6 +605,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -619,6 +641,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -628,6 +651,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -665,6 +689,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -702,6 +727,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -739,6 +765,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -789,6 +816,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -798,6 +826,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -835,6 +864,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -872,6 +902,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -909,6 +940,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -959,6 +991,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -968,6 +1001,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1005,6 +1039,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1057,6 +1092,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1109,6 +1145,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1174,6 +1211,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -1183,6 +1221,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1235,6 +1274,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1287,6 +1327,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1339,6 +1380,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1404,6 +1446,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -1413,6 +1456,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1465,6 +1509,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1548,6 +1593,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1631,6 +1677,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1727,6 +1774,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -1736,6 +1784,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1803,6 +1852,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1870,6 +1920,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -1937,6 +1988,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2017,6 +2069,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -2026,6 +2079,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2063,6 +2117,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2100,6 +2155,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2137,6 +2193,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2187,6 +2244,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -2196,6 +2254,7 @@
       "tiers": {
         "無印": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2233,6 +2292,7 @@
         },
         "+": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2270,6 +2330,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2307,6 +2368,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2357,6 +2419,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-exam_start_turn-condition_threshold_multiple_down-1000",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -2366,6 +2429,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2434,6 +2498,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2502,6 +2567,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2570,6 +2636,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2651,6 +2718,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-exam_start_turn-no_block",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -2660,6 +2728,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2728,6 +2797,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2796,6 +2866,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2864,6 +2935,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -2945,6 +3017,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-exam_start_turn-stamina_up_multiple-500",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -2954,6 +3027,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3022,6 +3096,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3090,6 +3165,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3158,6 +3234,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3239,6 +3316,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-exam_start_turn-turn_progress_up-2",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -3248,6 +3326,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3316,6 +3395,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3384,6 +3464,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3452,6 +3533,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3533,6 +3615,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -3542,6 +3625,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3595,6 +3679,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3648,6 +3733,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3716,6 +3802,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3797,6 +3884,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -3806,6 +3894,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3859,6 +3948,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3912,6 +4002,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -3965,6 +4056,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4031,6 +4123,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -4040,6 +4133,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4108,6 +4202,7 @@
         },
         "+": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4176,6 +4271,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4244,6 +4340,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4340,6 +4437,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -4349,6 +4447,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4386,6 +4485,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4423,6 +4523,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4460,6 +4561,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4510,6 +4612,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -4519,6 +4622,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4618,6 +4722,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4717,6 +4822,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4816,6 +4922,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4928,6 +5035,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -4937,6 +5045,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -4974,6 +5083,7 @@
         },
         "+": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5026,6 +5136,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5078,6 +5189,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5158,6 +5270,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -5167,6 +5280,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5251,6 +5365,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5335,6 +5450,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5419,6 +5535,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5516,6 +5633,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -5525,6 +5643,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5562,6 +5681,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5599,6 +5719,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5651,6 +5772,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5716,6 +5838,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -5725,6 +5848,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5762,6 +5886,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5799,6 +5924,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5836,6 +5962,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5886,6 +6013,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -5895,6 +6023,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5932,6 +6061,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -5969,6 +6099,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6006,6 +6137,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6056,6 +6188,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -6065,6 +6198,7 @@
       "tiers": {
         "無印": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6117,6 +6251,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6169,6 +6304,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6236,6 +6372,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6316,6 +6453,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -6325,6 +6463,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6408,6 +6547,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6491,6 +6631,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6574,6 +6715,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6670,6 +6812,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -6679,6 +6822,7 @@
       "tiers": {
         "無印": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6731,6 +6875,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6783,6 +6928,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6835,6 +6981,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6900,6 +7047,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -6909,6 +7057,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6946,6 +7095,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -6983,6 +7133,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7020,6 +7171,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7070,6 +7222,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -7079,6 +7232,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7131,6 +7285,7 @@
         },
         "+": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7183,6 +7338,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7250,6 +7406,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7330,6 +7487,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -7339,6 +7497,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7376,6 +7535,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7413,6 +7573,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7450,6 +7611,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7500,6 +7662,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-exam_start_turn-parameter_buff",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -7509,6 +7672,7 @@
       "tiers": {
         "無印": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7531,6 +7695,7 @@
         },
         "+": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7553,6 +7718,7 @@
         },
         "++": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7575,6 +7741,7 @@
         },
         "+++": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7610,6 +7777,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -7619,6 +7787,7 @@
       "tiers": {
         "無印": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7641,6 +7810,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7663,6 +7833,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7685,6 +7856,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7720,6 +7892,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-parameter_buff_up-2",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -7729,6 +7902,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7751,6 +7925,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7773,6 +7948,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7795,6 +7971,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7830,6 +8007,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -7839,6 +8017,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7876,6 +8055,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7913,6 +8093,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -7950,6 +8131,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8000,6 +8182,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -8009,6 +8192,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8046,6 +8230,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8083,6 +8268,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8120,6 +8306,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8170,6 +8357,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-lesson_buff_up-3",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -8179,6 +8367,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8201,6 +8390,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8223,6 +8413,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8245,6 +8436,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8280,6 +8472,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -8289,6 +8482,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 5,
           "effects": [
@@ -8370,6 +8564,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -8379,6 +8574,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 5,
           "effects": [
@@ -8429,6 +8625,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -8438,6 +8635,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8503,6 +8701,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -8512,6 +8711,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8534,6 +8734,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8556,6 +8757,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8578,6 +8780,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8613,6 +8816,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -8622,6 +8826,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8659,6 +8864,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8696,6 +8902,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8733,6 +8940,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8783,6 +8991,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -8792,6 +9001,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8814,6 +9024,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8836,6 +9047,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8858,6 +9070,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8893,6 +9106,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -8902,6 +9116,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8924,6 +9139,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8946,6 +9162,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -8968,6 +9185,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9003,6 +9221,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-exam_start_turn-parameter_buff",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -9012,6 +9231,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9034,6 +9254,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9056,6 +9277,7 @@
         },
         "++": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9078,6 +9300,7 @@
         },
         "+++": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9113,6 +9336,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -9122,6 +9346,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9159,6 +9384,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9196,6 +9422,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9233,6 +9460,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9283,6 +9511,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -9292,6 +9521,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9329,6 +9559,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9366,6 +9597,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9403,6 +9635,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9453,6 +9686,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -9462,6 +9696,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9499,6 +9734,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9536,6 +9772,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9573,6 +9810,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9623,6 +9861,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -9632,6 +9871,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9684,6 +9924,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9736,6 +9977,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9788,6 +10030,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9853,6 +10096,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -9862,6 +10106,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9914,6 +10159,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -9966,6 +10212,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10018,6 +10265,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10083,6 +10331,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-parameter_buff_multiple_per_turn_up-1",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -10092,6 +10341,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10144,6 +10394,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10196,6 +10447,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10248,6 +10500,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10313,6 +10566,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -10322,6 +10576,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -10374,6 +10629,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 2,
           "effects": [
@@ -10426,6 +10682,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 2,
           "effects": [
@@ -10478,6 +10735,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 2,
           "effects": [
@@ -10543,6 +10801,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -10552,6 +10811,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10604,6 +10864,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10656,6 +10917,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10708,6 +10970,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10773,6 +11036,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -10782,6 +11046,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10804,6 +11069,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10826,6 +11092,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10848,6 +11115,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10883,6 +11151,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -10892,6 +11161,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10929,6 +11199,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -10966,6 +11237,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11003,6 +11275,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11053,6 +11326,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -11062,6 +11336,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11099,6 +11374,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11136,6 +11412,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11173,6 +11450,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11223,6 +11501,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -11232,6 +11511,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11299,6 +11579,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11366,6 +11647,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11433,6 +11715,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11513,6 +11796,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -11522,6 +11806,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11559,6 +11844,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11596,6 +11882,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11633,6 +11920,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11683,6 +11971,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -11692,6 +11981,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 4,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11729,6 +12019,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 4,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11766,6 +12057,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 4,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11803,6 +12095,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 4,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -11853,6 +12146,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -11862,6 +12156,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -11914,6 +12209,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -11966,6 +12262,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -12018,6 +12315,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -12083,6 +12381,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-parameter_buff_up-8",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -12092,6 +12391,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12129,6 +12429,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12166,6 +12467,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12203,6 +12505,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12253,6 +12556,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-exam_start_turn-parameter_buff",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -12262,6 +12566,7 @@
       "tiers": {
         "無印": {
           "stamina": 8,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12346,6 +12651,7 @@
         },
         "+": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12430,6 +12736,7 @@
         },
         "++": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12514,6 +12821,7 @@
         },
         "+++": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12611,6 +12919,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -12620,6 +12929,7 @@
       "tiers": {
         "無印": {
           "stamina": 10,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12673,6 +12983,7 @@
         },
         "+": {
           "stamina": 10,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12726,6 +13037,7 @@
         },
         "++": {
           "stamina": 9,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12779,6 +13091,7 @@
         },
         "+++": {
           "stamina": 8,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12845,6 +13158,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -12854,6 +13168,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12891,6 +13206,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12928,6 +13244,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -12965,6 +13282,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -13015,6 +13333,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "e_trigger-exam_start_turn-parameter_buff",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -13024,6 +13343,7 @@
       "tiers": {
         "無印": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -13046,6 +13366,7 @@
         },
         "+": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -13068,6 +13389,7 @@
         },
         "++": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -13090,6 +13412,7 @@
         },
         "+++": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -13125,6 +13448,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -13134,6 +13458,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -13171,6 +13496,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -13208,6 +13534,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -13245,6 +13572,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -13295,6 +13623,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -13304,6 +13633,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -13326,6 +13656,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 2,
           "effects": [
@@ -13379,6 +13710,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 2,
           "effects": [
@@ -13447,6 +13779,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 2,
           "effects": [
@@ -13528,6 +13861,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-parameter_buff_up-8",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -13537,6 +13871,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuffMultiplePerTurn",
           "cost_value": 1,
           "effects": [
@@ -13574,6 +13909,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuffMultiplePerTurn",
           "cost_value": 1,
           "effects": [
@@ -13611,6 +13947,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuffMultiplePerTurn",
           "cost_value": 1,
           "effects": [
@@ -13648,6 +13985,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuffMultiplePerTurn",
           "cost_value": 1,
           "effects": [
@@ -13698,6 +14036,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -13707,6 +14046,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -13759,6 +14099,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -13811,6 +14152,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -13863,6 +14205,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -13928,6 +14271,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -13937,6 +14281,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14017,6 +14362,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -14026,6 +14372,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14107,6 +14454,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -14116,6 +14464,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14166,6 +14515,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -14175,6 +14525,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14197,6 +14548,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14219,6 +14571,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14241,6 +14594,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14276,6 +14630,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -14285,6 +14640,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14322,6 +14678,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14359,6 +14716,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14396,6 +14754,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14446,6 +14805,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -14455,6 +14815,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14492,6 +14853,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14529,6 +14891,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14566,6 +14929,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14616,6 +14980,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -14625,6 +14990,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14677,6 +15043,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14729,6 +15096,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14781,6 +15149,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14846,6 +15215,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -14855,6 +15225,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14892,6 +15263,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14914,6 +15286,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14936,6 +15309,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -14971,6 +15345,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -14980,6 +15355,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15017,6 +15393,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15054,6 +15431,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15091,6 +15469,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15141,6 +15520,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -15150,6 +15530,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15172,6 +15553,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15194,6 +15576,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15216,6 +15599,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15251,6 +15635,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -15260,6 +15645,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15297,6 +15683,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15334,6 +15721,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15371,6 +15759,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15421,6 +15810,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -15430,6 +15820,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15467,6 +15858,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15504,6 +15896,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15541,6 +15934,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15591,6 +15985,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -15600,6 +15995,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15637,6 +16033,7 @@
         },
         "+": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15674,6 +16071,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15711,6 +16109,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15761,6 +16160,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -15770,6 +16170,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15807,6 +16208,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15844,6 +16246,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15881,6 +16284,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15931,6 +16335,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -15940,6 +16345,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -15977,6 +16383,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16014,6 +16421,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16051,6 +16459,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16101,6 +16510,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -16110,6 +16520,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16147,6 +16558,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16184,6 +16596,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16221,6 +16634,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16271,6 +16685,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -16280,6 +16695,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16317,6 +16733,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16354,6 +16771,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16391,6 +16809,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16441,6 +16860,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -16450,6 +16870,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16472,6 +16893,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16494,6 +16916,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16516,6 +16939,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16551,6 +16975,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -16560,6 +16985,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16582,6 +17008,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16604,6 +17031,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16626,6 +17054,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16661,6 +17090,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -16670,6 +17100,7 @@
       "tiers": {
         "無印": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16707,6 +17138,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16744,6 +17176,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16781,6 +17214,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16831,6 +17265,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -16840,6 +17275,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16877,6 +17313,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16914,6 +17351,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -16951,6 +17389,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17001,6 +17440,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -17010,6 +17450,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17047,6 +17488,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17084,6 +17526,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17121,6 +17564,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17171,6 +17615,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -17180,6 +17625,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17217,6 +17663,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17254,6 +17701,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17291,6 +17739,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17341,6 +17790,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -17350,6 +17800,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17387,6 +17838,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17424,6 +17876,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17461,6 +17914,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17511,6 +17965,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -17520,6 +17975,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17572,6 +18028,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17624,6 +18081,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17676,6 +18134,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17741,6 +18200,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -17750,6 +18210,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17787,6 +18248,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17824,6 +18286,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17861,6 +18324,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17911,6 +18375,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -17920,6 +18385,7 @@
       "tiers": {
         "無印": {
           "stamina": 8,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17942,6 +18408,7 @@
         },
         "+": {
           "stamina": 8,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17964,6 +18431,7 @@
         },
         "++": {
           "stamina": 8,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -17986,6 +18454,7 @@
         },
         "+++": {
           "stamina": 8,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18021,6 +18490,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-exam_card_play-parameter_buff",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -18030,6 +18500,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18067,6 +18538,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18104,6 +18576,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18141,6 +18614,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18191,6 +18665,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -18200,6 +18675,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18267,6 +18743,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18334,6 +18811,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18401,6 +18879,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18481,6 +18960,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -18490,6 +18970,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18542,6 +19023,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18594,6 +19076,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18646,6 +19129,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18711,6 +19195,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -18720,6 +19205,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18757,6 +19243,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18794,6 +19281,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18831,6 +19319,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18881,6 +19370,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -18890,6 +19380,7 @@
       "tiers": {
         "無印": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18927,6 +19418,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -18964,6 +19456,7 @@
         },
         "++": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19001,6 +19494,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19051,6 +19545,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -19060,6 +19555,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19097,6 +19593,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19134,6 +19631,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19171,6 +19669,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19221,6 +19720,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -19230,6 +19730,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19267,6 +19768,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19319,6 +19821,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19371,6 +19874,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19436,6 +19940,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-parameter_buff_up-4",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -19445,6 +19950,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19467,6 +19973,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19489,6 +19996,7 @@
         },
         "++": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19511,6 +20019,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19546,6 +20055,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -19555,6 +20065,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19592,6 +20103,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19629,6 +20141,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19666,6 +20179,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19716,6 +20230,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-lesson_buff_up-6",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -19725,6 +20240,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19778,6 +20294,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19831,6 +20348,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19884,6 +20402,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -19950,6 +20469,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "e_trigger-none-parameter_buff",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -19959,6 +20479,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20011,6 +20532,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20063,6 +20585,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20115,6 +20638,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20180,6 +20704,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -20189,6 +20714,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20288,6 +20814,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20387,6 +20914,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20486,6 +21014,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20598,6 +21127,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -20607,6 +21137,7 @@
       "tiers": {
         "無印": {
           "stamina": 8,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20629,6 +21160,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20651,6 +21183,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20673,6 +21206,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20708,6 +21242,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -20717,6 +21252,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20754,6 +21290,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20791,6 +21328,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20828,6 +21366,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20878,6 +21417,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -20887,6 +21427,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 6,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20909,6 +21450,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20931,6 +21473,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20953,6 +21496,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 2,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -20988,6 +21532,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -20997,6 +21542,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -21081,6 +21627,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -21165,6 +21712,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -21249,6 +21797,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -21346,6 +21895,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -21355,6 +21905,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21377,6 +21928,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 2,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21414,6 +21966,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 2,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21451,6 +22004,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 2,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21501,6 +22055,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -21510,6 +22065,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21562,6 +22118,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21614,6 +22171,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21666,6 +22224,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21731,6 +22290,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -21740,6 +22300,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21762,6 +22323,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21784,6 +22346,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21806,6 +22369,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21841,6 +22405,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -21850,6 +22415,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21872,6 +22438,7 @@
         },
         "+": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21894,6 +22461,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21916,6 +22484,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21951,6 +22520,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -21960,6 +22530,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -21997,6 +22568,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22034,6 +22606,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22071,6 +22644,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22121,6 +22695,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -22130,6 +22705,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -22167,6 +22743,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -22204,6 +22781,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -22241,6 +22819,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -22291,6 +22870,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -22300,6 +22880,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22352,6 +22933,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22404,6 +22986,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22456,6 +23039,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22521,6 +23105,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -22530,6 +23115,7 @@
       "tiers": {
         "無印": {
           "stamina": 8,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22583,6 +23169,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22636,6 +23223,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22689,6 +23277,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22755,6 +23344,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -22764,6 +23354,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22816,6 +23407,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22868,6 +23460,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22920,6 +23513,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -22985,6 +23579,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-parameter_buff_up-4",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -22994,6 +23589,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 6,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23046,6 +23642,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 6,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23098,6 +23695,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 5,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23150,6 +23748,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 4,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23215,6 +23814,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -23224,6 +23824,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 5,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23291,6 +23892,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23358,6 +23960,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 2,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23425,6 +24028,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 1,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23505,6 +24109,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-parameter_buff_up-12",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -23514,6 +24119,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 5,
           "effects": [
@@ -23566,6 +24172,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 5,
           "effects": [
@@ -23618,6 +24225,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 4,
           "effects": [
@@ -23670,6 +24278,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 4,
           "effects": [
@@ -23735,6 +24344,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -23744,6 +24354,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 7,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23796,6 +24407,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 4,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23848,6 +24460,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23900,6 +24513,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 2,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23965,6 +24579,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -23974,6 +24589,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -23996,6 +24612,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24018,6 +24635,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24040,6 +24658,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24075,6 +24694,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -24084,6 +24704,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24121,6 +24742,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24158,6 +24780,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24195,6 +24818,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24245,6 +24869,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -24254,6 +24879,7 @@
       "tiers": {
         "無印": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24291,6 +24917,7 @@
         },
         "+": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24328,6 +24955,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24365,6 +24993,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24415,6 +25044,7 @@
       "master_verified": false,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -24424,6 +25054,7 @@
       "tiers": {
         "無印": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24461,6 +25092,7 @@
         },
         "+": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24498,6 +25130,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24535,6 +25168,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24585,6 +25219,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -24594,6 +25229,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24631,6 +25267,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24668,6 +25305,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24705,6 +25343,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24755,6 +25394,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -24764,6 +25404,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24801,6 +25442,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24838,6 +25480,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24875,6 +25518,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24925,6 +25569,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -24934,6 +25579,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -24971,6 +25617,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25008,6 +25655,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25045,6 +25693,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25095,6 +25744,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": true,
@@ -25104,6 +25754,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25141,6 +25792,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25178,6 +25830,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25215,6 +25868,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25265,6 +25919,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -25274,6 +25929,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25354,6 +26010,7 @@
       "master_verified": false,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -25363,6 +26020,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25443,6 +26101,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -25452,6 +26111,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25489,6 +26149,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25526,6 +26187,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25563,6 +26225,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25613,6 +26276,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -25622,6 +26286,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25644,6 +26309,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25681,6 +26347,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25718,6 +26385,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25768,6 +26436,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -25777,6 +26446,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25814,6 +26484,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25851,6 +26522,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25888,6 +26560,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25938,6 +26611,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -25947,6 +26621,7 @@
       "tiers": {
         "無印": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -25984,6 +26659,7 @@
         },
         "+": {
           "stamina": 7,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26021,6 +26697,7 @@
         },
         "++": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26058,6 +26735,7 @@
         },
         "+++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26108,6 +26786,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -26117,6 +26796,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26216,6 +26896,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26315,6 +26996,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26414,6 +27096,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26526,6 +27209,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -26535,6 +27219,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26572,6 +27257,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26609,6 +27295,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26646,6 +27333,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26696,6 +27384,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": true,
         "is_initial_deck": false,
@@ -26705,6 +27394,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26742,6 +27432,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26779,6 +27470,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26816,6 +27508,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26866,6 +27559,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -26875,6 +27569,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26897,6 +27592,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26919,6 +27615,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26941,6 +27638,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -26976,6 +27674,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -26985,6 +27684,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 2,
           "effects": [
@@ -27022,6 +27722,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -27059,6 +27760,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -27096,6 +27798,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -27146,6 +27849,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -27155,6 +27859,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27192,6 +27897,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27229,6 +27935,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27266,6 +27973,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27316,6 +28024,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -27325,6 +28034,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27362,6 +28072,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27399,6 +28110,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27436,6 +28148,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27486,6 +28199,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -27495,6 +28209,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27532,6 +28247,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27569,6 +28285,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27606,6 +28323,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27656,6 +28374,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -27665,6 +28384,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -27702,6 +28422,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -27739,6 +28460,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -27776,6 +28498,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -27826,6 +28549,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -27835,6 +28559,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27872,6 +28597,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27909,6 +28635,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27946,6 +28673,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -27996,6 +28724,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -28005,6 +28734,7 @@
       "tiers": {
         "無印": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28072,6 +28802,7 @@
         },
         "+": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28139,6 +28870,7 @@
         },
         "++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28206,6 +28938,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28286,6 +29019,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -28295,6 +29029,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28362,6 +29097,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28429,6 +29165,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28496,6 +29233,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28576,6 +29314,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -28585,6 +29324,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28652,6 +29392,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28719,6 +29460,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28786,6 +29528,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28866,6 +29609,7 @@
       "master_verified": true,
       "move_position": "Grave",
       "is_lesson_once": false,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -28875,6 +29619,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -28942,6 +29687,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29009,6 +29755,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29076,6 +29823,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29156,6 +29904,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -29165,6 +29914,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -29202,6 +29952,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -29254,6 +30005,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -29306,6 +30058,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -29371,6 +30124,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -29380,6 +30134,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29432,6 +30187,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29484,6 +30240,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29536,6 +30293,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29601,6 +30359,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -29610,6 +30369,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 5,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29693,6 +30453,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 4,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29776,6 +30537,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 3,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29859,6 +30621,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 2,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -29955,6 +30718,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -29964,6 +30728,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30001,6 +30766,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30038,6 +30804,7 @@
         },
         "++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30090,6 +30857,7 @@
         },
         "+++": {
           "stamina": 1,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30155,6 +30923,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -30164,6 +30933,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -30216,6 +30986,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -30268,6 +31039,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -30320,6 +31092,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamLessonBuff",
           "cost_value": 3,
           "effects": [
@@ -30385,6 +31158,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -30394,6 +31168,7 @@
       "tiers": {
         "無印": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30462,6 +31237,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30530,6 +31306,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30598,6 +31375,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30679,6 +31457,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -30688,6 +31467,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30741,6 +31521,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30794,6 +31575,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30847,6 +31629,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30913,6 +31696,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -30922,6 +31706,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -30975,6 +31760,7 @@
         },
         "+": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31028,6 +31814,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31081,6 +31868,7 @@
         },
         "+++": {
           "stamina": 2,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31147,6 +31935,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -31156,6 +31945,7 @@
       "tiers": {
         "無印": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31224,6 +32014,7 @@
         },
         "+": {
           "stamina": 6,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31292,6 +32083,7 @@
         },
         "++": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31360,6 +32152,7 @@
         },
         "+++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31441,6 +32234,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -31450,6 +32244,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 6,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31503,6 +32298,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 6,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31556,6 +32352,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 6,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31609,6 +32406,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 6,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31675,6 +32473,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -31684,6 +32483,7 @@
       "tiers": {
         "無印": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31721,6 +32521,7 @@
         },
         "+": {
           "stamina": 5,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31758,6 +32559,7 @@
         },
         "++": {
           "stamina": 4,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31795,6 +32597,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31845,6 +32648,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -31854,6 +32658,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31891,6 +32696,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31928,6 +32734,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -31965,6 +32772,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -32015,6 +32823,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -32024,6 +32833,7 @@
       "tiers": {
         "無印": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -32076,6 +32886,7 @@
         },
         "+": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -32128,6 +32939,7 @@
         },
         "++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -32180,6 +32992,7 @@
         },
         "+++": {
           "stamina": 3,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -32245,6 +33058,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "e_trigger-none-turn_progress_up-2",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -32254,6 +33068,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -32307,6 +33122,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -32360,6 +33176,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -32413,6 +33230,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_ExamParameterBuff",
           "cost_value": 1,
           "effects": [
@@ -32479,6 +33297,7 @@
       "master_verified": true,
       "move_position": "Lost",
       "is_lesson_once": true,
+      "play_trigger": "",
       "flags": {
         "is_initial": false,
         "is_initial_deck": false,
@@ -32488,6 +33307,7 @@
       "tiers": {
         "無印": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -32572,6 +33392,7 @@
         },
         "+": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -32656,6 +33477,7 @@
         },
         "++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [
@@ -32740,6 +33562,7 @@
         },
         "+++": {
           "stamina": 0,
+          "force_stamina": 0,
           "cost_type": "ExamCostType_Unknown",
           "cost_value": null,
           "effects": [

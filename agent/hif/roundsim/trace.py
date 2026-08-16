@@ -29,12 +29,16 @@ class StateSnapshot(BaseModel):
 
 
 class ActionTrace(BaseModel):
-    """本回合动作(裁判-选手接口 §3.3:PLAY_CARD / SKIP / USE_P_DRINK)。"""
+    """本回合动作(裁判-选手接口 §3.3:PLAY_CARD / SKIP / USE_P_DRINK)。
+
+    使用数追加可在一回合内多次出牌:action 记首次决策,plays 记全部出牌序列。
+    """
 
     kind: str = "skip"  # play_card / skip / use_p_drink
     card: str | None = None  # PLAY_CARD 时的卡名(含档位)
     reason: str = ""  # 策略给出的决策理由(选手侧,裁判原样落盘)
     illegal: bool = False  # 预检失败(非法动作):裁判拒绝执行并记违约
+    plays: list[str] = Field(default_factory=list)  # 本回合全部出牌 label 序列(含追加発動)
 
 
 class EffectTrace(BaseModel):

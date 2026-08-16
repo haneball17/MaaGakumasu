@@ -37,15 +37,21 @@ def _parse_set(tokens: list[str]) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="HIF Round 考试模拟器(M1 skip-only)")
+    parser = argparse.ArgumentParser(description="HIF Round 考试模拟器(M2:效果引擎+S1 得分)")
     parser.add_argument("--preset", default="hif_r1_rinami", choices=sorted(PRESETS), help="内置预设 ID")
     parser.add_argument("--seed", type=int, default=42, help="随机种子(CRN:同批种子同分布)")
+    parser.add_argument("--strategy", default="skip", choices=["skip", "first_legal"], help="策略(M4 接贪心/GarakutaRinami)")
     parser.add_argument("--set", action="append", default=[], metavar="key=value", help="覆盖字段(点路径,可多次)")
     parser.add_argument("--out", type=Path, default=None, help="trace JSON 输出文件(缺省打印 stdout)")
     args = parser.parse_args(argv)
 
+    strategy = None
+    if args.strategy == "first_legal":
+        from agent.hif.roundsim.runner import FirstLegalStrategy
+
+        strategy = FirstLegalStrategy()
     spec = build_spec(args.preset, _parse_set(args.set))
-    doc = run_exam(spec, seed=args.seed, preset_name=args.preset)
+    doc = run_exam(spec, seed=args.seed, strategy=strategy, preset_name=args.preset)
     payload = doc.model_dump_json(indent=2)
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -55,7 +61,7 @@ def main(argv: list[str] | None = None) -> int:
         print(payload)
     # 摘要行(stderr 不污染管道)
     print(
-        f"[summary] preset={args.preset} seed={args.seed} turns={len(doc.turns)} "
+        f"[summary] preset={args.preset} seed={args.seed} strategy={args.strategy} turns={len(doc.turns)} "
         f"score={doc.final.total_score} rank={doc.final.rank} reshuffles={doc.final.reshuffle_count}",
         file=sys.stderr,
     )

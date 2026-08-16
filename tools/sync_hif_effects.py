@@ -392,6 +392,9 @@ def sync_cards(diff_root: Path, master: dict) -> tuple[dict, dict]:
             # 出牌去向(D1 裁决):Lost=lesson_once 用后除外不回流;Grave=捨て札重洗回流(循环卡)
             "move_position": (base.get("playMovePositionType") or "").replace("ProduceCardMovePositionType_", "") or None,
             "is_lesson_once": (base.get("playMovePositionType") or "").endswith("Lost"),
+            # 使用可门槛(卡级):如 e_trigger-none-parameter_buff_up-4 = 好調4T以上使用可
+            # (roundsim M2:模拟器 gate 解释层消费;空串 = 无门槛)
+            "play_trigger": base.get("playProduceExamTriggerId") or "",
             "flags": {
                 "is_initial": bool(base.get("isInitial")),
                 "is_initial_deck": bool(base.get("isInitialDeckProduceCard")),
@@ -413,6 +416,8 @@ def sync_cards(diff_root: Path, master: dict) -> tuple[dict, dict]:
                     stats["unmapped_types"][t] = stats["unmapped_types"].get(t, 0) + 1
             entry["tiers"][key] = {
                 "stamina": variant.get("stamina"),
+                # 固定体力消耗(消費軽減不可部分;お姉さんの感覚=6 等,roundsim 出牌成本=stamina+force_stamina)
+                "force_stamina": variant.get("forceStamina") or 0,
                 "cost_type": variant.get("costType") or None,
                 "cost_value": variant.get("costValue") or None,
                 "effects": effects,
