@@ -218,11 +218,13 @@ HIF 本戦 = `Produce.yaml produce-008`(ProduceType_HatsuboshiIdolFestival,split
 
 ---
 
-### H13 P アイテム与考试得分【A 数据实证,2026-08-16】
-- **HIF 本戦无得分型 P item**:produce-008 仅挂 `pitem_00-3-330-0`(N.I.A キー,流程钥匙,fireLimit 0 无效果);ProduceItemEffect 911 条考试附魔中 **140 条为 tower 专属**,无 HIF 专属得分效果。
-- **HIF 路径唯一考试相关 P item = 応援棒**:効果=山札<22 补基本卡(D5 已建模,牌库引擎直接实现)。
-- 道具本体体系(不在 HIF 路径):ProduceItem 1018 条,fireLimit 0(不发动)736 / 1-5 次 266——通常育成携带型,效果形态 = ExamStatusEnchant/ProduceEffect(均为模拟器已有执行单元)。
-- **U10 待験**:実機 Interval「Pアイテム」tab(日志 1630 行仅 OCR 锚)可购买什么、是否进 R2 生效——若为得分型,模拟器按 R2 初始状态参数处理(同特别指导模式)。
+### H13 P アイテム与考试得分【A 数据实证,2026-08-16 二次修正】
+- ~~初版结论「HIF 无得分型 P item」~~ **被用户实证推翻:角色专属 P item 逐偶像卡挂载**(`IdolCard.beforeProduceItemId`),実機 HIF 的偶像选择页(hif_idol_select)选定偶像卡后,其专属道具在考试内生效。
+- **実例(莉波流核心引擎)**:ガラクタロード(SSR i_card-hrnm-3-017)→「憧れ続けた輝き」(pitem_01-3-312,SSR,含+版):**好調≥8 ターン时,每使用 4 张好調系卡触发(最多 5 次):絶好調 1 ターン + 使用数追加+1 + 抽 1 张 + 体力消費 1**。数据链:ProduceItem.produceItemEffectIds → ProduceItemEffect(ExamStatusEnchant) → ProduceExamStatusEnchant(trigger=ExamPlayCountInterval-4 + 好調≥8 门槛)。莉波 13 张卡各带不同专属道具。
+- **对模拟器**:R1/R2 输入必须含携带偶像卡(专属 item+初始牌组+成长率);trigger 引擎需支持「计数间隔+状态门槛」类(与 lesson_once 同族);效果执行架构不变(既有单元)。
+- **对评分**:好調卡边际价值在 8 ターン有门槛跃迁(卡组主题协同的实例,synergy 层输入);expected_good_turns 对莉波流偏低,C2 校准单列。
+- produce-008 直挂的 pitem_00-3-330-0(N.I.Aキー)为流程钥匙无效果;応援棒(D5)=另一考试相关 P item。通常育成携带型道具体系(266 可发动)不在 HIF 路径。
+- **U10 待験**:実機 Interval「Pアイテム」tab 贩售内容与 R2 生效性。
 
 ### H12 特別指導(カスタマイズ,Interval 强化环节)【A 数据实证,2026-08-16】
 游戏内文本确认:「※カスタマイズは特別指導でおこなえます」(Localization)——特別指導 = カスタマイズ系统,Round1/Round2 之间的准备环节(及変卡流程?)对技能卡强化。
