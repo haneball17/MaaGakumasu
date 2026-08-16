@@ -67,6 +67,8 @@
   - 决策点分层与优先级
 - [`architecture.md`](architecture.md)
   - 当前架构与后续实现边界
+- [`roundsim-design.md`](roundsim-design.md)
+  - Round 模拟器设计定案（2026-08-16，四轮 grill + 两轮复盘）：出牌级考试模拟、A/B 平台、実機回放校验、Vue/FastAPI 可视化前端；含 ScenarioSpec、假设清单与里程碑 M1-M5/M-UI。未开工。
 
 ### 实现与资源
 
@@ -138,7 +140,7 @@
 
 - 实机驱动下的 HIF 全流程稳定闭环
 - 真实奖励池与真实 HIF 固定日程的完整接入
-- 出牌模拟
+- 出牌模拟（Round 模拟器已设计定案，见 [`roundsim-design.md`](roundsim-design.md)，未开工）
 - 多角色泛化
 - 精确最终高评价公式
 
