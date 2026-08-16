@@ -59,42 +59,42 @@
 - 初流程考试失败自动重试
 - 跟随老师的建议
 - NIA 事件、镜像挑战、指导事件等自动选择逻辑
-- `feat/hif` 分支已加入 HIF 培育入口、Pipeline 骨架与离线模拟器，但尚未完成实机闭环
+- `feat/hif` 分支已实机打通 HIF Day1→Round1 全链自动决策（Round1 到达后观察停止，暂不出牌）
 
 ### HIF 开发分支现状
 
 > [!NOTE]
-> 以下内容记录 `feat/hif` 分支截至 `2026-07-09` 的开发状态。HIF 相关能力仍处于开发与验证阶段，不代表主线稳定功能。
+> 以下内容记录 `feat/hif` 分支截至 `2026-08-16` 的开发状态。HIF 相关能力仍处于开发与验证阶段，不代表主线稳定功能。
 
-当前 `feat/hif` 分支已经完成 HIF 的文档、数据、离线模拟与部分 Pipeline 集成：
+当前 `feat/hif` 分支已完成 HIF 从入口到 Round1 的实机自动决策闭环：
 
-- 任务配置中已加入 `HIF` 培育难度，入口跳转到 `ProduceEntryHIF`。
-- 已新增 `ProduceHIF.json` 作为 HIF Pipeline 状态机骨架。
-- 已新增 HIF 离线模拟器 `agent/hif/simulator.py`，支持样例路线模拟、候选行动评分、Hard/Soft gate、Beam lookahead、奖励排序、选拔快照和评价报告。
-- 已新增 HIF 出牌决策层 `agent/hif/decisions/`，当前重点支持姬崎莉波 `ガラクタロード` 好调路线的再演压缩策略。
-- 已新增 `ExamStateReader` 适配层，负责将 YOLO/OCR 识别结果转换为出牌决策所需的 `ExamState`。
-- 当前测试覆盖 47 个用例，包含 HIF 路线模拟、奖励评分、出牌决策与适配层测试，最近一次本地执行结果为 `47 passed`。
+- 任务配置中已加入 `HIF` 培育难度与 `HIF预设`、`培育倾向`、`HIF 决策微调` 选项，入口跳转到 `ProduceEntryHIF`。
+- `ProduceHIF.json` 作为 HIF Pipeline 状态机（约 37 节点），配合 `agent/custom/action/produce_hif.py` 的自定义动作覆盖日程、授業、P 道具、三选一（饮料/技能卡/変卡）、SP 卡、相談、饮料上限等页面。
+- 三选一采用双评分：结构化评分模型 v2（官方公式对齐）优先，关键词评分兜底，支持重抽与名单优先；决策参数可经 GUI 选项、覆盖文件、培育倾向三层调整。
+- 全决策点自动存档（截图 + JSONL），并提供 HTML 决策日志查看器与复盘总表脚本。
+- HIF 出牌决策层 `agent/hif/decisions/` 已实现姫崎莉波 `ガラクタロード` 好调路线的再演压缩策略并通过离线测试，Round1 目前为“观察手牌后停止”模式，尚未接线实机出牌。
+- 数据链已切换 gakumasu-diff 主干：121 张技能卡全表、效果池关联、社区 tier 榜抓取与评分校准（离线链 A/B 完成）。
+- 当前测试覆盖约 128 个用例（决策全链、出牌策略、ExamState 适配、评分模型）。
 
 当前仍未完成的关键工作：
 
-- HIF Round1/Round2 仍接通用 `ProduceCardsFlag`，尚未接入专用 `ProduceCardsHIF` action。
-- `ExamStateReader` 中多个数值字段 ROI 仍是占位坐标，需要 MuMu 实机截图校准。
-- 出牌点击坐标与执行逻辑仍依赖实机验证。
-- 模拟器目前使用样例候选池，不是真实完整候选池；`HIFボーナス`、真实奖励池、事件随机、公开课收益波动等还没有完整结构化。
+- Round1 出牌执行接线、Round2、Interval、结算、メモリー（回忆卡）评分与整局自动培育；这些页面仍由 `ProduceHIFUnknownStop` 安全停止兜底。
+- 评分模型 C2 人工调参与实机验证；快慢路径路由方案已定待实施。
+- `ExamStateReader` 数值 ROI 部分字段仍待实机校准。
 - `feat/hif` 分支相对当前 `origin/main` 存在主线提交差异，后续合并前需要处理同步与冲突。
 
 后续建议优先级：
 
-1. 补 `ProduceCardsHIF` action 骨架，并接入 `ProduceHIF.json`。
-2. 使用 MuMu 实机校准 HIF 出牌与数值读取 ROI。
-3. 将真实候选池、奖励池与 HIF Bonus 参数补入模拟器。
+1. Round1 出牌接线与实机验证（`GarakutaRinamiStrategy` → `ProduceHIFRound1Observe` 升级为执行模式）。
+2. 评分模型 C2 调参与快慢路径路由实施。
+3. Round2/Interval/结算/メモリー页面覆盖。
 4. 同步主线最新改动后再考虑合并或发布。
 
 ### 后续计划
 
 - [ ] 初 `LEGEND` 培育适配
-- [ ] HIF 实机 ROI 校准与 `ProduceCardsHIF` 接入
-- [ ] HIF 真实候选池、奖励池与 HIF Bonus 数据结构化
+- [ ] HIF Round1 出牌接线与 Round2/Interval/结算覆盖
+- [ ] HIF 评分模型调参、メモリー评分与整局自动培育
 - [ ] 更多语言补充
 - [ ] 更多自动培育样本覆盖
 
