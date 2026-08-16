@@ -13,7 +13,7 @@
 | M4 | play.py 三修复 + 贪心基线 + A/B runner | ✅ 完成(C2 被取代点) | `feat(hif): roundsim M4 三修复+贪心+A/B` | **首个 A/B 结论**(N=1000, CRN, bootstrap CI):R1 garakuta 13661[13134,14162] vs greedy 1954[1913,2004] vs first_legal 5841(7.0×,CI 不重叠);R2 garakuta 6359[5710,6987] vs greedy 2046(P50 1651 低于 greedy 2029,方差大=好調门槛依赖)。pytest 181 全绿;ruff 过 |
 | M5 | observed case adapter + 実機回放校验 | ✅ 完成(待実機数据补校准) | `feat(hif): roundsim M5 実機回放校验` | 校准报告生成:`calibrate_roundsim.py --n 50` 出 R1/R2/総合分布+実機総合落点分位(4,756,391 → 100%)+偏差归因(A9/A10/未建模乘区)+数据缺口清单;手工録局 schema 定型+漂移对比单测;実機 R1 分/R2 初始未録 → TODO 标注不阻塞 M-UI;pytest 185 全绿 |
 | M-UIa | FastAPI 骨架 + 回放/分布查看 | ✅ 完成 | `feat(hif): roundsim M-UIa WebUI 骨架` | node v24.19.0(winget)+fastapi/uvicorn;localhost:8642 API 全通(presets/trace/distribution/simulate 同步+异步任务/schema);Vue3+Vite+ECharts+singlefile 构建自包含 dist(入库,无 node 者可离线渲染);回放视图 DOM 级验证(総分/回合表/效果链/触发/牌库图表全渲染);render_round_ui.py 离线注入双模式(Vue 模板→降级最小查看器);prettier 欠账还清 |
-| M-UIb | 配置表单 + 模拟驱动 + A/B 视图 | ⬜ | | |
+| M-UIb | 配置表单 + 模拟驱动 + A/B 视图 | ✅ 完成 | `feat(hif): roundsim M-UIb 配置驱动+契约锁定` | POST /api/simulate(N≤200 同步/大 N 异步任务轮询取消)验收:零配置 hif_r1_rinami 一键 A/B(garakuta 14217[11785,16732] vs greedy 1887)+代表局回放(seed=0 trace 9 回合)全链通;三档表单(快速预设→标准表单→高级折叠 JSON);配置保存 debug/roundsim/presets/ 与 CLI 同源(save→list→trace 往返验证);pydantic→JSON Schema→TS 契约锁定(export_roundsim_schema + test_ui_contract 漂移检测);pytest 186 全绿 |
 
 ## M1 记录(2026-08-16)
 
@@ -56,6 +56,16 @@
 - **adapter.py**:`spec_from_observed_case`(三围取実機记录链最后值 Da2920/Vi2175、R1 体力 28;缺口显式声明不猜)+ `observed_final_scores`(R2 総合評価 4,756,391 在 case 内;R1 单段分未録 → None/TODO)+ `ManualGameRecord/ManualTurnRecord` 手工録局 schema(extra=forbid 锁死)+ `validate_trace_against_manual` 逐回合漂移对比。
 - **calibrate_roundsim.py**:全局口径报告(R1/R2/総合分布 P10/P50/P90、実機落点分位、越界归因到 §11 条目、数据缺口清单、可选 --manual 逐回合口径)。
 - **当前校准结论(n=50)**:実機総合 475.6 万落点 100% 分位(模拟 P100 ≈ 7.6 万)——系统性偏低,候选归因 A9(预设三围为准备期中段快照,実機入场值更高)+ A10(构筑重构近似)+ 未建模乘区(好印象 S5/得分上升量/S6 分段+親愛度 H7)。**待実機配合项补录后重跑**:① R1 最終得分;② R2 初始状态截图;③ Round 中卡组计数。
+
+## M-UIa/M-UIb 记录(2026-08-16)
+
+- **环境前置**:node v24.19.0(winget,≥22 LTS 满足);fastapi 0.141 + uvicorn 0.52(清华镜像);root devDeps 补 prettier-plugin-multiline-arrays 实装。
+- **架构落地**(§8.2 双模式):`tools/round_sim_app.py`(FastAPI,静态托管 ui/dist + /api)+ `ui/`(Vue3+Vite7+ECharts6+vite-plugin-singlefile,构建自包含单 HTML 1.2MB **入库**——无 node 使用者的离线渲染底板)+ `tools/render_round_ui.py`(注入 `__TRACE_DATA__`,无构建时降级内嵌原生 JS 最小查看器)。
+- **API**:presets(含 custom 标记)/trace/distribution(N≤200)/simulate(同步+异步任务+轮询+取消)/tasks/schema/custom-presets(存 debug/roundsim/presets/ 与 CLI 同源)。
+- **三档配置**(§8.4):快速预设下拉 → 标准表单(策略多选/N/seed0/JSON 粘贴)/高级折叠说明;A/B 表含 CI + 「代表局回放」跳转(App tab 切换 + ReplayView 注入加载)。
+- **契约锁定**(§4.1):`tools/export_roundsim_schema.py` 生成 `ui/src/generated/scenariospec.{schema.json,ts}`;`test_ui_contract` 断言仓库文件与模型导出一致(漂移即红)。vue-tsc 类型检查过。
+- **验证方式注记**:本会话 IAB 面板点击事件不可送达(环境限制),交互路径以 ①注入 trace 的全量渲染 DOM 快照(回放视图総分/回合表/效果链/触发/牌库图全在)②API 全链(presets fetch→simulate→trace)③同源 load() 函数三条证据覆盖;実機浏览器人工复核留待用户。
+- **修 bug**:main.ts 根 props 传 ref 对象恒真 → 离线模式误判(改传值)。
 
 ## 假设清单(§11,随报告输出)
 

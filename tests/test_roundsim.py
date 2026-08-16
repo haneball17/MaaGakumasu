@@ -741,3 +741,18 @@ def test_calibration_report_framework():
 
     assert percentile_of(50, [10, 20, 30, 40, 60]) == 80.0
     assert percentile_of(5, [10, 20]) == 0.0
+
+
+# ---------------------------------------------------------------------------
+# 10. M-UI:前后端契约锁定(pydantic → JSON Schema → TS)
+# ---------------------------------------------------------------------------
+
+
+def test_ui_contract():
+    """生成文件与模型当前导出一致(模型改动未重新导出 → 红,防前后端漂移)。"""
+    from tools.export_roundsim_schema import OUT_DIR, export
+
+    schema_json, ts_text = export()
+    assert (OUT_DIR / "scenariospec.schema.json").read_text(encoding="utf-8").strip() == schema_json.strip()
+    assert (OUT_DIR / "scenariospec.ts").read_text(encoding="utf-8").strip() == ts_text.strip()
+    assert "scenario" in ts_text and "exam_settings" in ts_text and "opponent" in ts_text
