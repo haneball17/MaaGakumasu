@@ -214,6 +214,14 @@ def list_cards() -> dict:
     return {"cards": cards}
 
 
+@app.get("/api/pitems")
+def list_pitems() -> dict:
+    """P item 收录清单(Item B 数据驱动;supported=false 携带会在模拟启动硬失败,UI 标红)。"""
+    from agent.hif.roundsim.triggers import pitem_registry
+
+    return {"items": pitem_registry()}
+
+
 @app.get("/api/trace")
 def get_trace(preset: str = "hif_r1_rinami", seed: int = 42, strategy: str = "garakuta_rinami") -> dict:
     merged = _all_presets()

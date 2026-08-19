@@ -42,7 +42,7 @@ export interface OpponentSpec {
 
 export interface PItems {
     ouenbou?: boolean;
-    idol_exclusive?: string;
+    items?: unknown[];
 }
 
 export interface ParamsSnapshot {

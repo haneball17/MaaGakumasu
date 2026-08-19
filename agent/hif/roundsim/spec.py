@@ -68,12 +68,17 @@ class InitialExamState(BaseModel):
 
 
 class PItems(BaseModel):
-    """P アイテム开关(§4.2:応援棒 R2 固定 on;偶像专属道具随偶像卡挂载,H13)。"""
+    """P item 携带(§4.2;R2-3 定案:培育过程获得、考试前一刻固定 → 确定列表,无随机层)。
+
+    items 为 P item 名列表(如 ["憧れ続けた輝き"]);数据源 pitem_effects.json(153 件),
+    未收录名 / trigger 形态未建模 → 模拟启动时硬失败列出名字(零拟合,不静默近似)。
+    応援棒(HIF R1 后強制配布)单独走 ouenbou 开关(D5:技能卡 <22 补基本卡)。
+    """
 
     model_config = _STRICT
 
-    ouenbou: bool = False  # HIF 応援棒(R1 后強制配布,D5:技能卡 <22 补基本卡)
-    idol_exclusive: str | None = None  # 偶像专属道具名,如「憧れ続けた輝き」;None=不携带
+    ouenbou: bool = False
+    items: list[str] = Field(default_factory=list)
 
 
 class FixedPopular(BaseModel):
@@ -204,7 +209,7 @@ PRESETS: dict[str, ScenarioSpec] = {
         scenario=Scenario(
             deck=list(RINAMI_DECK_20),
             initial=_rinami_initial(good=6, focus=6, stamina=28),
-            p_items=PItems(ouenbou=False, idol_exclusive="憧れ続けた輝き"),
+            p_items=PItems(ouenbou=False, items=["憧れ続けた輝き"]),
             popular_mode=J3RandomPopular(),
         ),
         exam_settings=ExamSettings(turns=R1_TURNS),
@@ -218,7 +223,7 @@ PRESETS: dict[str, ScenarioSpec] = {
         scenario=Scenario(
             deck=_rinami_deck_r2(),
             initial=_rinami_initial(good=0, focus=0, stamina=34),
-            p_items=PItems(ouenbou=True, idol_exclusive="憧れ続けた輝き"),
+            p_items=PItems(ouenbou=True, items=["憧れ続けた輝き"]),
             popular_mode=J3RandomPopular(),
         ),
         exam_settings=ExamSettings(turns=R2_TURNS),

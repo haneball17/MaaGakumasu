@@ -198,24 +198,19 @@
     },
     "PItems": {
       "additionalProperties": false,
-      "description": "P アイテム开关(§4.2:応援棒 R2 固定 on;偶像专属道具随偶像卡挂载,H13)。",
+      "description": "P item 携带(§4.2;R2-3 定案:培育过程获得、考试前一刻固定 → 确定列表,无随机层)。\n\nitems 为 P item 名列表(如 [\"憧れ続けた輝き\"]);数据源 pitem_effects.json(153 件),\n未收录名 / trigger 形态未建模 → 模拟启动时硬失败列出名字(零拟合,不静默近似)。\n応援棒(HIF R1 后強制配布)单独走 ouenbou 开关(D5:技能卡 <22 补基本卡)。",
       "properties": {
         "ouenbou": {
           "default": false,
           "title": "Ouenbou",
           "type": "boolean"
         },
-        "idol_exclusive": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Idol Exclusive"
+        "items": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Items",
+          "type": "array"
         }
       },
       "title": "PItems",

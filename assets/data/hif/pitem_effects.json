@@ -1,0 +1,5624 @@
+{
+  "schema_version": 1,
+  "entity": "hif_pitem_effects",
+  "updated_at": "2026-08-19T20:33:38+0800",
+  "pool_note": "范围 = 莉波偶像卡 origin(hrnm,26 件含+版)+ 支援卡 origin(127 件);R2-3 定案:P item 培育过程获得、考试前固定,spec 为确定列表无随机层;支援卡不发道具,originSupportCardId 是归属标记",
+  "sources": [
+    {
+      "source": "vertesan/gakumasu-diff",
+      "commit": "unknown",
+      "tables": [
+        "ProduceItem.yaml",
+        "ProduceItemEffect.yaml",
+        "ProduceExamStatusEnchant.yaml",
+        "ProduceExamTrigger.yaml",
+        "ProduceExamEffect.yaml",
+        "ProduceCardSearch.yaml",
+        "EffectGroup.yaml",
+        "ProduceDescriptionExamEffect.yaml"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "item_id": "pitem_00-1-005-0",
+      "name": "いつものメイクポーチ",
+      "rarity": "ProduceItemRarity_R",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-1-000",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-1-005-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-1-005-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-stamina_up_multiple-500-p_card_search-active_skill-playing-0_1",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StaminaUpMultiple"
+            ],
+            "field_status_values": [
+              500
+            ],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:focus",
+              "name_jp": "集中",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_buff-0002",
+              "effect_type": "ProduceExamEffectType_ExamLessonBuff",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-1-005-1",
+      "name": "いつものメイクポーチ+",
+      "rarity": "ProduceItemRarity_R",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-1-000",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-1-005-1-enc01",
+          "enchant_id": "enchant-p_item_effect_00-1-005-1-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-stamina_up_multiple-500-p_card_search-active_skill-playing-0_1",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StaminaUpMultiple"
+            ],
+            "field_status_values": [
+              500
+            ],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:focus",
+              "name_jp": "集中",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_buff-0003",
+              "effect_type": "ProduceExamEffectType_ExamLessonBuff",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-001-0",
+      "name": "美鈴からの贈り物",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0001",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-002-0",
+      "name": "打倒！墾田永年私財法",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0003",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0026_0026",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-003-0",
+      "name": "手作りのご褒美",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0005",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0026_0026",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-004-0",
+      "name": "ふわふわでもこもこ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0007",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-drink_set-all-random-02_02",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-005-0",
+      "name": "お姉さま大百科",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0008",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0026_0026",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-006-0",
+      "name": "例のSSDの秘密",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0009",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0013_0013",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-007-0",
+      "name": "一緒にお昼寝ポプリ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0010",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0013_0013",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-008-0",
+      "name": "私が見つけた逸材メモ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0011",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0013_0013",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-013-0",
+      "name": "きみへの差し入れ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-2-000",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_00-2-013-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-2-013-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_buff_up-5",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "LessonBuffUp"
+            ],
+            "field_status_values": [
+              5
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0002",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-013-1",
+      "name": "きみへの差し入れ+",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-2-000",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-04-enchant-pitem_00-2-013-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-2-013-0-enc01",
+          "effect_count": 4,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_buff_up-5",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "LessonBuffUp"
+            ],
+            "field_status_values": [
+              5
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0002",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-028-0",
+      "name": "ハンターの戦利品",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0025",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0060_0060",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-029-0",
+      "name": "朝一の助け舟",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0012",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0015_0015",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-030-0",
+      "name": "誓いの花びら",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0013",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-080-0",
+      "name": "トレーナーの優しさ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0038",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-produce-event_activity-drink-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-081-0",
+      "name": "体ほぐしローラー",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0039",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-produce-event_activity-drink-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-082-0",
+      "name": "うるおいのどケア",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0040",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-produce-event_activity-drink-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-088-0",
+      "name": "お残しにんじん",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0050",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0006_0006",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-2-116-0",
+      "name": "おさぼりタオル",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0022",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-2-116-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-2-116-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:energy_fix",
+              "name_jp": "固定元気",
+              "op": "add",
+              "value": 4,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block_fix-0004",
+              "effect_type": "ProduceExamEffectType_ExamBlockFix",
+              "note": null
+            },
+            {
+              "tag": "container:timer",
+              "name_jp": "発動予約",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_effect_timer-0001-01-e_effect-exam_anti_debuff-01",
+              "effect_type": "ProduceExamEffectType_ExamEffectTimer",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-009-0",
+      "name": "得体のしれないモノ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0000",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_00-3-009-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-009-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_visual",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_gain_mult",
+              "name_jp": "パラメータ上昇量増加",
+              "op": "mult",
+              "value": 500,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_value_multiple-0500-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-010-0",
+      "name": "天川ラーメン巡り",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0001",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-3-010-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-010-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_vocal",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "action:play_add",
+              "name_jp": "スキルカード使用数追加",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_playable_value_add-01",
+              "effect_type": "ProduceExamEffectType_ExamPlayableValueAdd",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-011-0",
+      "name": "星のリトルプリンス",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0007",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-enchant-pitem_00-3-011-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-011-0-enc01",
+          "effect_count": 0,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_visual",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:energy_fix",
+              "name_jp": "固定元気",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block_fix-0002",
+              "effect_type": "ProduceExamEffectType_ExamBlockFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-012-0",
+      "name": "悔しさの象徴",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0004",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_00-3-012-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-012-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_gain_mult",
+              "name_jp": "パラメータ上昇量増加",
+              "op": "mult",
+              "value": 500,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_value_multiple-0500-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-013-0",
+      "name": "曇りをぬぐったタオル",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0012",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_00-3-013-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-013-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-p_card_search-active_skill-playing-0_1-lesson_vocal",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0002",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-014-0",
+      "name": "スカウト遮り帽",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0013",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_00-3-014-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-014-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_play-lesson_vocal",
+            "phase_types": [
+              "StartPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "action:draw",
+              "name_jp": "スキルカードを引く",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_draw-0001",
+              "effect_type": "ProduceExamEffectType_ExamCardDraw",
+              "note": null
+            },
+            {
+              "tag": "resource:energy_fix",
+              "name_jp": "固定元気",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block_fix-0002",
+              "effect_type": "ProduceExamEffectType_ExamBlockFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-015-0",
+      "name": "信頼の証",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0019",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0009_0009",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-016-0",
+      "name": "満開ペアヘアピン",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0003",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_00-3-016-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-016-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-p_card_search-active_skill-playing-0_1-lesson_visual",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0002",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-021-0",
+      "name": "等身大のレディリップ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-000",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_00-3-021-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-021-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-remaining_turn-2",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "RemainingTurn"
+            ],
+            "field_status_values": [
+              2
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_add",
+              "name_jp": "パラメータ",
+              "op": "add",
+              "value": 5,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson-0005-01",
+              "effect_type": "ProduceExamEffectType_ExamLesson",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-021-1",
+      "name": "等身大のレディリップ+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-000",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_00-3-021-1-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-021-1-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-remaining_turn-3",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "RemainingTurn"
+            ],
+            "field_status_values": [
+              3
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_add",
+              "name_jp": "パラメータ",
+              "op": "add",
+              "value": 5,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson-0005-01",
+              "effect_type": "ProduceExamEffectType_ExamLesson",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-026-0",
+      "name": "仲直りのきっかけ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0011",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-3-026-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-026-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_visual",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "action:play_add",
+              "name_jp": "スキルカード使用数追加",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_playable_value_add-01",
+              "effect_type": "ProduceExamEffectType_ExamPlayableValueAdd",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-027-0",
+      "name": "夢にあふれた大荷物",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0017",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-3-027-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-027-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "action:play_add",
+              "name_jp": "スキルカード使用数追加",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_playable_value_add-01",
+              "effect_type": "ProduceExamEffectType_ExamPlayableValueAdd",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-028-0",
+      "name": "みんなの教科書",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0016",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-3-028-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-028-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-stamina_less_multiple-500-lesson_vocal",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StaminaLessMultiple"
+            ],
+            "field_status_values": [
+              500
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 4,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0004",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-053-0",
+      "name": "虹かけるクロス",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0022",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_00-3-053-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-053-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-p_card_search-active_skill-playing-0_1-lesson_dance",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0002",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-054-0",
+      "name": "とうちょーのきろく",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0025",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0015_0015",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0002_0002",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-059-0",
+      "name": "とろけた時間",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0034",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_00-3-059-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-059-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_vocal",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_gain_mult",
+              "name_jp": "パラメータ上昇量増加",
+              "op": "mult",
+              "value": 500,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_value_multiple-0500-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-063-0",
+      "name": "ごちそうさまでした",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0020",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-shop_price_discount_multiple-0200_0200",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-093-0",
+      "name": "すごすぎるバトン",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0046",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0002_0002",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-119-0",
+      "name": "ひとりだちシューズ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0049",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_00-3-119-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-119-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-stamina_less_multiple-500-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StaminaLessMultiple"
+            ],
+            "field_status_values": [
+              500
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "",
+              "op": "mult",
+              "value": 150,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_multiple-0150",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverMultiple",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-125-0",
+      "name": "パワーをくれるモノ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0057",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0010_0010",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_change-0001_0001-p_rd-produce-random-all-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-139-0",
+      "name": "好き嫌い禁止！",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0068",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-3-139-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-139-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-stamina_less_multiple-500-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StaminaLessMultiple"
+            ],
+            "field_status_values": [
+              500
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:energy_fix",
+              "name_jp": "固定元気",
+              "op": "add",
+              "value": 10,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block_fix-0010",
+              "effect_type": "ProduceExamEffectType_ExamBlockFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-141-0",
+      "name": "わいわいタンバリン",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0071",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0006_0006",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-182-0",
+      "name": "勝利より大切なもの",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0067",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-3-182-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-182-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-stamina_less_multiple-500-lesson_visual",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StaminaLessMultiple"
+            ],
+            "field_status_values": [
+              500
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:energy_fix",
+              "name_jp": "固定元気",
+              "op": "add",
+              "value": 10,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block_fix-0010",
+              "effect_type": "ProduceExamEffectType_ExamBlockFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-264-0",
+      "name": "めちゃかわプリ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0086",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_00-3-264-0-enc01",
+          "enchant_id": "enchant-p_item_effect_00-3-264-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_play-play_card_lesson",
+            "phase_types": [
+              "StartPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "PlayCardLesson"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "action:move",
+              "name_jp": "",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": "p_card_search-deck_grave-idol-unique-1",
+              "effect_id": "e_effect-exam_card_move-p_card_search-deck_grave-idol-unique-1-hand-all-0_0",
+              "effect_type": "ProduceExamEffectType_ExamCardMove",
+              "note": null
+            },
+            {
+              "tag": "buff:card_upgrade",
+              "name_jp": "レッスン中強化",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": "p_card_search-hand",
+              "effect_id": "e_effect-exam_card_upgrade-p_card_search-hand-random-1_1",
+              "effect_type": "ProduceExamEffectType_ExamCardUpgrade",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_00-3-323-0",
+      "name": "夢の手助け",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0100",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0070_0070",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-021-0",
+      "name": "ダブルボトル",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0016",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0006_0006",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-025-0",
+      "name": "ウチュウジンデアル",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0021",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0006_0006",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-027-0",
+      "name": "きっかけの帯",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0024",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_delete-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0040_0040",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-035-0",
+      "name": "小さい秋見つけた",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0034",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_01-2-035-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-2-035-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_buff_up-5-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "LessonBuffUp"
+            ],
+            "field_status_values": [
+              5
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_add",
+              "name_jp": "パラメータ",
+              "op": "add",
+              "value": 10,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson-0010-01",
+              "effect_type": "ProduceExamEffectType_ExamLesson",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-036-0",
+      "name": "イケてるセーター",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0035",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_01-2-036-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-2-036-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_buff_up-1-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "LessonBuffUp"
+            ],
+            "field_status_values": [
+              1
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_condition",
+              "name_jp": "好調",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": 3,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_parameter_buff-03",
+              "effect_type": "ProduceExamEffectType_ExamParameterBuff",
+              "note": null
+            },
+            {
+              "tag": "penalty:focus_down",
+              "name_jp": "集中減少",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_buff_reduce-0001",
+              "effect_type": "ProduceExamEffectType_ExamLessonBuffReduce",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-086-0",
+      "name": "ギャルめいきんぐ！",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0048",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-093-0",
+      "name": "お似合いネクタイ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0054",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0005_0005",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-096-0",
+      "name": "ふっかつのアイス",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0058",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_delete-p_card_search-trouble-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-112-0",
+      "name": "びっくり仮装グッズ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0062",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-drink_set-all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-114-0",
+      "name": "ごきげんようレッスン",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0064",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0004_0004",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-118-0",
+      "name": "おひるねブランケット",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0065",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0005_0005",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-121-0",
+      "name": "はじめてのけんか？",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0068",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0015_0015",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-124-0",
+      "name": "お洗濯の必需品",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0070",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_delete-p_card_search-trouble-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0005_0005",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-2-129-0",
+      "name": "懐かしパーティー論争",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0075",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_duplicate-0001_0001-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-034-0",
+      "name": "きみと分け合う夏",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-001",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_01-3-034-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-034-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_play-stamina_consumption_down",
+            "phase_types": [
+              "StartPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StaminaConsumptionDown"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:excellent_condition",
+              "name_jp": "絶好調",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_parameter_buff_multiple_per_turn-01",
+              "effect_type": "ProduceExamEffectType_ExamParameterBuffMultiplePerTurn",
+              "note": null
+            },
+            {
+              "tag": "action:draw",
+              "name_jp": "スキルカードを引く",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_draw-0001",
+              "effect_type": "ProduceExamEffectType_ExamCardDraw",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-034-1",
+      "name": "きみと分け合う夏+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-001",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_01-3-034-1-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-034-1-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_play-stamina_consumption_down",
+            "phase_types": [
+              "StartPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StaminaConsumptionDown"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:excellent_condition",
+              "name_jp": "絶好調",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_parameter_buff_multiple_per_turn-01",
+              "effect_type": "ProduceExamEffectType_ExamParameterBuffMultiplePerTurn",
+              "note": null
+            },
+            {
+              "tag": "action:draw",
+              "name_jp": "スキルカードを引く",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_draw-0001",
+              "effect_type": "ProduceExamEffectType_ExamCardDraw",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-056-0",
+      "name": "オーバーパワーボール",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0027",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_01-3-056-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-056-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_vocal",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:focus",
+              "name_jp": "集中",
+              "op": "add",
+              "value": 4,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_buff-0004",
+              "effect_type": "ProduceExamEffectType_ExamLessonBuff",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_cost_fix",
+              "name_jp": "体力消費",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_reduce_fix-0002",
+              "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-058-0",
+      "name": "ほっこりまんぷく",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0030",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-produce-event_activity-drink-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-061-0",
+      "name": "つやつやでふさふさ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0037",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-select-00_02",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-122-0",
+      "name": "花海メモリアル",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0052",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0035_0035",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-123-0",
+      "name": "夢へのスタートライン",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0055",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_01-3-123-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-123-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-parameter_buff_up-3-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ParameterBuffUp"
+            ],
+            "field_status_values": [
+              3
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_condition",
+              "name_jp": "好調",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": 3,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_parameter_buff-03",
+              "effect_type": "ProduceExamEffectType_ExamParameterBuff",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_cost_fix",
+              "name_jp": "体力消費",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_reduce_fix-0001",
+              "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-127-0",
+      "name": "勝利をその手に",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0059",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_01-3-127-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-127-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_exam_play",
+            "phase_types": [
+              "StartExamPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "action:create",
+              "name_jp": "生成",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_create_id-p_card-01-men-2_035-1-hand-1_1",
+              "effect_type": "ProduceExamEffectType_ExamCardCreateId",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-136-0",
+      "name": "包まれるやさしさ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0064",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_01-3-136-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-136-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-parameter_buff_up-10-lesson_visual",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ParameterBuffUp"
+            ],
+            "field_status_values": [
+              10
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:excellent_condition",
+              "name_jp": "絶好調",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": 4,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_parameter_buff_multiple_per_turn-04",
+              "effect_type": "ProduceExamEffectType_ExamParameterBuffMultiplePerTurn",
+              "note": null
+            },
+            {
+              "tag": "resource:energy",
+              "name_jp": "元気",
+              "op": "add",
+              "value": 10,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block-0010",
+              "effect_type": "ProduceExamEffectType_ExamBlock",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-140-0",
+      "name": "ピークタイムフラッグ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0070",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0005_0005",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-157-0",
+      "name": "世界を救ったマイク",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-012",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_01-3-157-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-157-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-p_card_search-playing-effect_group-visible-exam_lesson_buff-000-0_1",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-playing-effect_group-visible-exam_lesson_buff-000",
+            "card_search_effect_groups": [
+              {
+                "id": "effect_group-visible-exam_lesson_buff-000",
+                "name": "集中",
+                "exam_effect_types": [
+                  "ExamLessonBuff",
+                  "ExamLessonAddMultipleLessonBuff",
+                  "ExamLessonBuffDependParameterBuff",
+                  "ExamLessonBuffPerSearchCount",
+                  "ExamLessonBuffAdditive",
+                  "ExamLessonBuffAdditiveFix"
+                ]
+              }
+            ]
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_cost_down",
+              "name_jp": "消費体力減少",
+              "op": "mult",
+              "value": 0,
+              "value2": null,
+              "turn": 2,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_consumption_down-02",
+              "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionDown",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-157-1",
+      "name": "世界を救ったマイク+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-012",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_01-3-157-1-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-157-1-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-p_card_search-playing-effect_group-visible-exam_lesson_buff-000-0_1",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-playing-effect_group-visible-exam_lesson_buff-000",
+            "card_search_effect_groups": [
+              {
+                "id": "effect_group-visible-exam_lesson_buff-000",
+                "name": "集中",
+                "exam_effect_types": [
+                  "ExamLessonBuff",
+                  "ExamLessonAddMultipleLessonBuff",
+                  "ExamLessonBuffDependParameterBuff",
+                  "ExamLessonBuffPerSearchCount",
+                  "ExamLessonBuffAdditive",
+                  "ExamLessonBuffAdditiveFix"
+                ]
+              }
+            ]
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_cost_down",
+              "name_jp": "消費体力減少",
+              "op": "mult",
+              "value": 0,
+              "value2": null,
+              "turn": 2,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_consumption_down-02",
+              "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionDown",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-256-0",
+      "name": "お礼のティーセット",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0075",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0010_0010",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-304-0",
+      "name": "無我の境地",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0085",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward-0001_0001-produce_drink-pdrink_00-3-001",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0040_0040",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-305-0",
+      "name": "ぴったしコレクション",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0087",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_01-3-305-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-305-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-parameter_buff_up-3-p_card_search-active_skill-playing-0_1-lesson_visual",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ParameterBuffUp"
+            ],
+            "field_status_values": [
+              3
+            ],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:focus",
+              "name_jp": "集中",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_buff-0002",
+              "effect_type": "ProduceExamEffectType_ExamLessonBuff",
+              "note": null
+            },
+            {
+              "tag": "score:parameter_add",
+              "name_jp": "パラメータ",
+              "op": "add",
+              "value": 4,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson-0004-01",
+              "effect_type": "ProduceExamEffectType_ExamLesson",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-307-0",
+      "name": "夢を叶えるために",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0093",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-enchant-pitem_01-3-307-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-307-0-enc01",
+          "effect_count": 0,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-card_search_count_up-7-p_card_search-lost-lesson_visual",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "CardSearchCountUp"
+            ],
+            "field_status_values": [
+              7
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_condition",
+              "name_jp": "好調",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_parameter_buff-01",
+              "effect_type": "ProduceExamEffectType_ExamParameterBuff",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-312-0",
+      "name": "憧れ続けた輝き",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-017",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-05-enchant-pitem_01-3-312-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-312-0-enc01",
+          "effect_count": 5,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_play_count_interval-4-parameter_buff_up-8-p_card_search-target-effect_group-visible-exam_parameter_buff-000",
+            "phase_types": [
+              "ExamPlayCountInterval"
+            ],
+            "phase_values": [
+              4
+            ],
+            "field_status_types": [
+              "ParameterBuffUp"
+            ],
+            "field_status_values": [
+              8
+            ],
+            "card_search_id": "p_card_search-target-effect_group-visible-exam_parameter_buff-000",
+            "card_search_effect_groups": [
+              {
+                "id": "effect_group-visible-exam_parameter_buff-000",
+                "name": "好調",
+                "exam_effect_types": [
+                  "ExamParameterBuff",
+                  "ExamParameterBuffPerSearchCount",
+                  "ExamParameterBuffDependLessonBuff",
+                  "ExamParameterBuffAdditive",
+                  "ExamParameterBuffAdditiveFix"
+                ]
+              }
+            ]
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:excellent_condition",
+              "name_jp": "絶好調",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_parameter_buff_multiple_per_turn-01",
+              "effect_type": "ProduceExamEffectType_ExamParameterBuffMultiplePerTurn",
+              "note": null
+            },
+            {
+              "tag": "action:play_add",
+              "name_jp": "スキルカード使用数追加",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_playable_value_add-01",
+              "effect_type": "ProduceExamEffectType_ExamPlayableValueAdd",
+              "note": null
+            },
+            {
+              "tag": "action:draw",
+              "name_jp": "スキルカードを引く",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_draw-0001",
+              "effect_type": "ProduceExamEffectType_ExamCardDraw",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_cost_fix",
+              "name_jp": "体力消費",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_reduce_fix-0001",
+              "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-312-1",
+      "name": "憧れ続けた輝き+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-017",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-05-enchant-pitem_01-3-312-1-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-312-1-enc01",
+          "effect_count": 5,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_play_count_interval-4-parameter_buff_up-6-p_card_search-target-effect_group-visible-exam_parameter_buff-000",
+            "phase_types": [
+              "ExamPlayCountInterval"
+            ],
+            "phase_values": [
+              4
+            ],
+            "field_status_types": [
+              "ParameterBuffUp"
+            ],
+            "field_status_values": [
+              6
+            ],
+            "card_search_id": "p_card_search-target-effect_group-visible-exam_parameter_buff-000",
+            "card_search_effect_groups": [
+              {
+                "id": "effect_group-visible-exam_parameter_buff-000",
+                "name": "好調",
+                "exam_effect_types": [
+                  "ExamParameterBuff",
+                  "ExamParameterBuffPerSearchCount",
+                  "ExamParameterBuffDependLessonBuff",
+                  "ExamParameterBuffAdditive",
+                  "ExamParameterBuffAdditiveFix"
+                ]
+              }
+            ]
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:excellent_condition",
+              "name_jp": "絶好調",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_parameter_buff_multiple_per_turn-01",
+              "effect_type": "ProduceExamEffectType_ExamParameterBuffMultiplePerTurn",
+              "note": null
+            },
+            {
+              "tag": "action:play_add",
+              "name_jp": "スキルカード使用数追加",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_playable_value_add-01",
+              "effect_type": "ProduceExamEffectType_ExamPlayableValueAdd",
+              "note": null
+            },
+            {
+              "tag": "action:draw",
+              "name_jp": "スキルカードを引く",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_draw-0001",
+              "effect_type": "ProduceExamEffectType_ExamCardDraw",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_01-3-322-0",
+      "name": "想定外のチケット",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0097",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_01-3-322-0-enc01",
+          "enchant_id": "enchant-p_item_effect_01-3-322-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_play-parameter_buff_up-10-lesson_visual",
+            "phase_types": [
+              "StartPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ParameterBuffUp"
+            ],
+            "field_status_values": [
+              10
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_condition",
+              "name_jp": "好調",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": 3,
+              "count": null,
+              "unit": "turns",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_parameter_buff-03",
+              "effect_type": "ProduceExamEffectType_ExamParameterBuff",
+              "note": null
+            },
+            {
+              "tag": "action:move",
+              "name_jp": "",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": "p_card_search-deck_grave-idol-unique-1",
+              "effect_id": "e_effect-exam_card_move-p_card_search-deck_grave-idol-unique-1-hand-all-0_0",
+              "effect_type": "ProduceExamEffectType_ExamCardMove",
+              "note": null
+            },
+            {
+              "tag": "action:play_add",
+              "name_jp": "スキルカード使用数追加",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_playable_value_add-01",
+              "effect_type": "ProduceExamEffectType_ExamPlayableValueAdd",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-1-021-0",
+      "name": "初心の証・莉波",
+      "rarity": "ProduceItemRarity_R",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-1-001",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_02-1-021-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-1-021-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_play_count_interval-3",
+            "phase_types": [
+              "ExamPlayCountInterval"
+            ],
+            "phase_values": [
+              3
+            ],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:motivation",
+              "name_jp": "やる気",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_play_aggressive-0002",
+              "effect_type": "ProduceExamEffectType_ExamCardPlayAggressive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-1-021-1",
+      "name": "初心の証・莉波+",
+      "rarity": "ProduceItemRarity_R",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-1-001",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_02-1-021-1-enc01",
+          "enchant_id": "enchant-p_item_effect_02-1-021-1-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_play_count_interval-3",
+            "phase_types": [
+              "ExamPlayCountInterval"
+            ],
+            "phase_values": [
+              3
+            ],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:motivation",
+              "name_jp": "やる気",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_play_aggressive-0003",
+              "effect_type": "ProduceExamEffectType_ExamCardPlayAggressive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-023-0",
+      "name": "咲季オススメマット",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0018",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0006_0006",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-024-0",
+      "name": "可愛い隠しバスタオル",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0020",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0006_0006",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-031-0",
+      "name": "優しさミルクシュガー",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0027",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_duplicate-0001_0001-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0040_0040",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-032-0",
+      "name": "大きくてつやつや",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0028",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0002_0002",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-033-0",
+      "name": "お嬢様の恩返し",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0029",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_02-2-033-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-2-033-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-review_up-6-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ReviewUp"
+            ],
+            "field_status_values": [
+              6
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_add_cond",
+              "name_jp": "",
+              "op": "add",
+              "value": 800,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_depend_exam_review-0800-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonDependExamReview",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-034-0",
+      "name": "ぜったいマル秘レシピ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0031",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_delete-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0040_0040",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-037-0",
+      "name": "カワイイのつくり方",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0036",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0006_0006",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-087-0",
+      "name": "嚙み締めたタオル",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0049",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-092-0",
+      "name": "へとへとできゅー",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0053",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-109-0",
+      "name": "落ち葉つかみの型",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0059",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-111-0",
+      "name": "メリハリストレッチ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0061",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_delete-p_card_search-trouble-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-113-0",
+      "name": "激痛のちぽかぽか",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0063",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_delete-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0040_0040",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-119-0",
+      "name": "お直し刺繍セット",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0066",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0004_0004",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-122-0",
+      "name": "幸せの詰め合わせ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0069",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-126-0",
+      "name": "演技のたしなみ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0072",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-2-126-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-2-126-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_stamina_reduce_card-lesson_visual",
+            "phase_types": [
+              "ExamStaminaReduceCard"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_impression",
+              "name_jp": "好印象",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review-0002",
+              "effect_type": "ProduceExamEffectType_ExamReview",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_cost_down",
+              "name_jp": "消費体力減少",
+              "op": "mult",
+              "value": 0,
+              "value2": null,
+              "turn": 2,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_consumption_down-02",
+              "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionDown",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-127-0",
+      "name": "もぐもぐ定食",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0017",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_change-0001_0001-p_rd-produce-random-all-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-2-131-0",
+      "name": "ドキドキ目隠し",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0077",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0002_0002",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-045-0",
+      "name": "これでばっちり",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-002",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-045-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-045-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play_after-p_card_search-target-effect_group-visible-stamina_recover_fix-000-0_1",
+            "phase_types": [
+              "ExamCardPlayAfter"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-target-effect_group-visible-stamina_recover_fix-000",
+            "card_search_effect_groups": [
+              {
+                "id": "effect_group-visible-stamina_recover_fix-000",
+                "name": "体力回復",
+                "exam_effect_types": [
+                  "ExamStaminaRecoverFix",
+                  "ExamStaminaRecoverMultiple"
+                ]
+              }
+            ]
+          },
+          "exam_effects": [
+            {
+              "tag": "unmapped",
+              "name_jp": "",
+              "op": null,
+              "value": 500,
+              "value2": 1000,
+              "turn": null,
+              "count": 1,
+              "unit": null,
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review_depend_exam_block-0500-1000-01",
+              "effect_type": "ProduceExamEffectType_ExamReviewDependExamBlock",
+              "note": null
+            },
+            {
+              "tag": "score:parameter_add_cond",
+              "name_jp": "",
+              "op": "add",
+              "value": 2000,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_depend_exam_review-2000-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonDependExamReview",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_cost_fix",
+              "name_jp": "体力消費",
+              "op": "add",
+              "value": 5,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_reduce_fix-0005",
+              "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-045-1",
+      "name": "これでばっちり+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-002",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-045-1-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-045-1-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play_after-p_card_search-target-effect_group-visible-stamina_recover_fix-000-0_1",
+            "phase_types": [
+              "ExamCardPlayAfter"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-target-effect_group-visible-stamina_recover_fix-000",
+            "card_search_effect_groups": [
+              {
+                "id": "effect_group-visible-stamina_recover_fix-000",
+                "name": "体力回復",
+                "exam_effect_types": [
+                  "ExamStaminaRecoverFix",
+                  "ExamStaminaRecoverMultiple"
+                ]
+              }
+            ]
+          },
+          "exam_effects": [
+            {
+              "tag": "unmapped",
+              "name_jp": "",
+              "op": null,
+              "value": 700,
+              "value2": 1000,
+              "turn": null,
+              "count": 1,
+              "unit": null,
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review_depend_exam_block-0700-1000-01",
+              "effect_type": "ProduceExamEffectType_ExamReviewDependExamBlock",
+              "note": null
+            },
+            {
+              "tag": "score:parameter_add_cond",
+              "name_jp": "",
+              "op": "add",
+              "value": 2000,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_depend_exam_review-2000-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonDependExamReview",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_cost_fix",
+              "name_jp": "体力消費",
+              "op": "add",
+              "value": 5,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_reduce_fix-0005",
+              "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-055-0",
+      "name": "負けず嫌いの勲章",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0026",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-enchant-pitem_02-3-055-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-055-0-enc01",
+          "effect_count": 0,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_add_cond",
+              "name_jp": "",
+              "op": "add",
+              "value": 500,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_depend_exam_card_play_aggressive-0500-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonDependExamCardPlayAggressive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-057-0",
+      "name": "873シューター",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0029",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_02-3-057-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-057-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_impression",
+              "name_jp": "好印象",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review-0002",
+              "effect_type": "ProduceExamEffectType_ExamReview",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0001",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-060-0",
+      "name": "いじっぱりバルーン",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0036",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_02-3-060-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-060-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-review_up-3-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ReviewUp"
+            ],
+            "field_status_values": [
+              3
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:motivation",
+              "name_jp": "やる気",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_play_aggressive-0003",
+              "effect_type": "ProduceExamEffectType_ExamCardPlayAggressive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-062-0",
+      "name": "会長の完璧な計画",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0038",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-produce-event_activity-drink-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-064-0",
+      "name": "ぬくもりふたりぶん",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0042",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_02-3-064-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-064-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-card_play_aggressive_up-5-lesson_visual",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "CardPlayAggressiveUp"
+            ],
+            "field_status_values": [
+              5
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:energy",
+              "name_jp": "元気",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block-0002",
+              "effect_type": "ProduceExamEffectType_ExamBlock",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-066-0",
+      "name": "ぱたぱたうちわ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-004",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_02-3-066-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-066-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_play_count_interval-3",
+            "phase_types": [
+              "ExamPlayCountInterval"
+            ],
+            "phase_values": [
+              3
+            ],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:energy",
+              "name_jp": "元気",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block-0001",
+              "effect_type": "ProduceExamEffectType_ExamBlock",
+              "note": null
+            },
+            {
+              "tag": "buff:motivation",
+              "name_jp": "やる気",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_play_aggressive-0003",
+              "effect_type": "ProduceExamEffectType_ExamCardPlayAggressive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-066-1",
+      "name": "ぱたぱたうちわ+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-004",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_02-3-066-1-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-066-1-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_play_count_interval-3",
+            "phase_types": [
+              "ExamPlayCountInterval"
+            ],
+            "phase_values": [
+              3
+            ],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:energy",
+              "name_jp": "元気",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block-0002",
+              "effect_type": "ProduceExamEffectType_ExamBlock",
+              "note": null
+            },
+            {
+              "tag": "buff:motivation",
+              "name_jp": "やる気",
+              "op": "add",
+              "value": 4,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_play_aggressive-0004",
+              "effect_type": "ProduceExamEffectType_ExamCardPlayAggressive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-118-0",
+      "name": "お姉さまビッグラブ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0048",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-118-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-118-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-p_card_search-active_skill-playing-0_1-lesson_vocal",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_gain_mult",
+              "name_jp": "パラメータ上昇量増加",
+              "op": "mult",
+              "value": 500,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_value_multiple-0500-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+              "note": null
+            },
+            {
+              "tag": "resource:energy_cond",
+              "name_jp": "",
+              "op": "add",
+              "value": 2,
+              "value2": 300,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block_add_multiple_aggressive-0002-0300-01",
+              "effect_type": "ProduceExamEffectType_ExamBlockAddMultipleAggressive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-120-0",
+      "name": "ゆうじょーのきろく",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0050",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-124-0",
+      "name": "幼馴染の意地",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0056",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0100_0100",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-128-0",
+      "name": "迷子のお呼び出し",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0060",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-128-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-128-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_exam_play",
+            "phase_types": [
+              "StartExamPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "action:create",
+              "name_jp": "生成",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_create_id-p_card-02-men-2_054-1-hand-1_1",
+              "effect_type": "ProduceExamEffectType_ExamCardCreateId",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-135-0",
+      "name": "おとものミミズク",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0063",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0004_0004",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-137-0",
+      "name": "手作りサブスク弁当",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0065",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-137-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-137-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-block_up-30-lesson_vocal",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "BlockUp"
+            ],
+            "field_status_values": [
+              30
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_impression",
+              "name_jp": "好印象",
+              "op": "add",
+              "value": 4,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review-0004",
+              "effect_type": "ProduceExamEffectType_ExamReview",
+              "note": null
+            },
+            {
+              "tag": "buff:motivation",
+              "name_jp": "やる気",
+              "op": "add",
+              "value": 4,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_play_aggressive-0004",
+              "effect_type": "ProduceExamEffectType_ExamCardPlayAggressive",
+              "note": null
+            },
+            {
+              "tag": "resource:energy",
+              "name_jp": "元気",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block-0002",
+              "effect_type": "ProduceExamEffectType_ExamBlock",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-170-0",
+      "name": "アイドルになりたい",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-013",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_02-3-170-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-170-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_status_change-7-block_up-30-exam_review",
+            "phase_types": [
+              "ExamStatusChange"
+            ],
+            "phase_values": [
+              7
+            ],
+            "field_status_types": [
+              "BlockUp"
+            ],
+            "field_status_values": [
+              30
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_add_cond",
+              "name_jp": "",
+              "op": "add",
+              "value": 2500,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_depend_exam_review-2500-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonDependExamReview",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0003",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-170-1",
+      "name": "アイドルになりたい+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-013",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_02-3-170-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-170-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_status_change-7-block_up-30-exam_review",
+            "phase_types": [
+              "ExamStatusChange"
+            ],
+            "phase_values": [
+              7
+            ],
+            "field_status_types": [
+              "BlockUp"
+            ],
+            "field_status_values": [
+              30
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_add_cond",
+              "name_jp": "",
+              "op": "add",
+              "value": 2500,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_depend_exam_review-2500-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonDependExamReview",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0003",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-183-0",
+      "name": "体力作りの教材？",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0072",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0005_0005",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-185-0",
+      "name": "月刊アニメトーク♪",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0074",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-185-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-185-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_play-lesson_visual",
+            "phase_types": [
+              "StartPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_impression",
+              "name_jp": "好印象",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review-0003",
+              "effect_type": "ProduceExamEffectType_ExamReview",
+              "note": null
+            },
+            {
+              "tag": "action:move",
+              "name_jp": "",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": "p_card_search-ssr-deck_grave",
+              "effect_id": "e_effect-exam_card_move-p_card_search-ssr-deck_grave-hand-random-1_1",
+              "effect_type": "ProduceExamEffectType_ExamCardMove",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-262-0",
+      "name": "寝心地は良好",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0079",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-262-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-262-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_status_change-exam_card_play_aggressive-lesson_dance",
+            "phase_types": [
+              "ExamStatusChange"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_impression_amp",
+              "name_jp": "好印象増加量増加",
+              "op": "add",
+              "value": 500,
+              "value2": null,
+              "turn": 2,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review_additive-0500-02",
+              "effect_type": "ProduceExamEffectType_ExamReviewAdditive",
+              "note": null
+            },
+            {
+              "tag": "buff:motivation_amp",
+              "name_jp": "やる気増加量増加",
+              "op": "add",
+              "value": 500,
+              "value2": null,
+              "turn": 2,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_aggressive_additive-0500-02",
+              "effect_type": "ProduceExamEffectType_ExamAggressiveAdditive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-306-0",
+      "name": "迷子のゆくえ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0090",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-306-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-306-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-stamina_less_multiple-500-lesson_vocal",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StaminaLessMultiple"
+            ],
+            "field_status_values": [
+              500
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:motivation",
+              "name_jp": "やる気",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_play_aggressive-0002",
+              "effect_type": "ProduceExamEffectType_ExamCardPlayAggressive",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_cost_down",
+              "name_jp": "消費体力減少",
+              "op": "mult",
+              "value": 0,
+              "value2": null,
+              "turn": 2,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_consumption_down-02",
+              "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionDown",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-309-0",
+      "name": "咲季の完全食・改",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0092",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-309-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-309-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_play_turn_count_interval-2-p_card_search-target-period810_hotfix",
+            "phase_types": [
+              "ExamPlayTurnCountInterval"
+            ],
+            "phase_values": [
+              2
+            ],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-target",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_impression",
+              "name_jp": "好印象",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review-0002",
+              "effect_type": "ProduceExamEffectType_ExamReview",
+              "note": null
+            },
+            {
+              "tag": "buff:good_impression_amplify",
+              "name_jp": "好印象強化",
+              "op": "mult",
+              "value": 250,
+              "value2": null,
+              "turn": -1,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review_multiple-0250-inf",
+              "effect_type": "ProduceExamEffectType_ExamReviewMultiple",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_02-3-328-0",
+      "name": "全力おうえんうちわ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0103",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_02-3-328-0-enc01",
+          "enchant_id": "enchant-p_item_effect_02-3-328-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-not-block_up-31-p_card_search-active_skill-playing-0_1-lesson_vocal",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "BlockUp"
+            ],
+            "field_status_values": [
+              31
+            ],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:good_impression",
+              "name_jp": "好印象",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_review-0003",
+              "effect_type": "ProduceExamEffectType_ExamReview",
+              "note": null
+            },
+            {
+              "tag": "score:parameter_gain_mult",
+              "name_jp": "パラメータ上昇量増加",
+              "op": "mult",
+              "value": 100,
+              "value2": null,
+              "turn": 5,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_value_multiple-0100-05",
+              "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-038-0",
+      "name": "ほっこりはんぶんこ",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0037",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0050_0050",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-083-0",
+      "name": "ゲレンデを翔ける赤",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0043",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0015_0015",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_duplicate-0001_0001-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-084-0",
+      "name": "たたいてかぶって",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0046",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_03-2-084-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-2-084-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_play-concentration_up-lesson_dance",
+            "phase_types": [
+              "StartPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ConcentrationUp"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "grow:add",
+              "name_jp": "成長",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": "p_card_search-hand",
+              "effect_id": "e_effect-exam_add_grow_effect-p_card_search-hand-all-0_0-g_effect-cost_reduce-3",
+              "effect_type": "ProduceExamEffectType_ExamAddGrowEffect",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-085-0",
+      "name": "絆のなわとび",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0047",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0006_0006",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-089-0",
+      "name": "おもてなしの気持ち",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0051",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-091-0",
+      "name": "のびのびバンド",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0052",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0006_0006",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-094-0",
+      "name": "ビシッバシッ竹刀",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0056",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_delete-p_card_search-trouble-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0040_0040",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-110-0",
+      "name": "かごいっぱいの成果",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0060",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_delete-p_card_search-trouble-deck_all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-120-0",
+      "name": "そっくりワンワン",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0067",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-drink_set-all-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-123-0",
+      "name": "切磋琢磨のタオル",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0073",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-125-0",
+      "name": "ほくほくハンバーガー",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0071",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-vocal_addition-0020_0020",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-128-0",
+      "name": "のんびりアフタヌーン",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0074",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_03-2-128-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-2-128-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_status_change-full_power_up-exam_full_power_point-lesson_visual",
+            "phase_types": [
+              "ExamStatusChange"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "FullPowerUp"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:full_power",
+              "name_jp": "全力値",
+              "op": "add",
+              "value": 6,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_full_power_point-0006",
+              "effect_type": "ProduceExamEffectType_ExamFullPowerPoint",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-130-0",
+      "name": "居眠り注意！",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0076",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0010_0010",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-card_set-r-upgrade_0-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-2-132-0",
+      "name": "きっちりファン装備",
+      "rarity": "ProduceItemRarity_Sr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-2-0079",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_change-0001_0001-p_rd-produce-random-all-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0040_0040",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-065-0",
+      "name": "はいぼくせんげん",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0043",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_03-3-065-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-065-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-full_power_up-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "FullPowerUp"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_add",
+              "name_jp": "パラメータ",
+              "op": "add",
+              "value": 13,
+              "value2": null,
+              "turn": null,
+              "count": 1,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson-0013-01",
+              "effect_type": "ProduceExamEffectType_ExamLesson",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-068-0",
+      "name": "アイドルパワー測定機",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0032",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_03-3-068-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-068-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-preservation_up-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "PreservationUp"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_recover",
+              "name_jp": "体力回復",
+              "op": "add",
+              "value": 5,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_recover_fix-0005",
+              "effect_type": "ProduceExamEffectType_ExamStaminaRecoverFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-077-0",
+      "name": "きみが見つけた私",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-007",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_03-3-077-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-077-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play_after-p_card_search-target-p_card-03-men-1_049-0_1",
+            "phase_types": [
+              "ExamCardPlayAfter"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-target-p_card-03-men-1_049",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_gain_mult",
+              "name_jp": "パラメータ上昇量増加",
+              "op": "mult",
+              "value": 600,
+              "value2": null,
+              "turn": 2,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_value_multiple-0600-02",
+              "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+              "note": null
+            },
+            {
+              "tag": "buff:full_power",
+              "name_jp": "全力値",
+              "op": "add",
+              "value": 10,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_full_power_point-0010",
+              "effect_type": "ProduceExamEffectType_ExamFullPowerPoint",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_cost_fix",
+              "name_jp": "体力消費",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_reduce_fix-0001",
+              "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-077-1",
+      "name": "きみが見つけた私+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-007",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_03-3-077-1-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-077-1-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play_after-p_card_search-target-p_card-03-men-1_049-0_1",
+            "phase_types": [
+              "ExamCardPlayAfter"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "p_card_search-target-p_card-03-men-1_049",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_gain_mult",
+              "name_jp": "パラメータ上昇量増加",
+              "op": "mult",
+              "value": 600,
+              "value2": null,
+              "turn": 2,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_value_multiple-0600-02",
+              "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+              "note": null
+            },
+            {
+              "tag": "buff:full_power",
+              "name_jp": "全力値",
+              "op": "add",
+              "value": 15,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_full_power_point-0015",
+              "effect_type": "ProduceExamEffectType_ExamFullPowerPoint",
+              "note": null
+            },
+            {
+              "tag": "resource:stamina_cost_fix",
+              "name_jp": "体力消費",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_reduce_fix-0001",
+              "effect_type": "ProduceExamEffectType_ExamStaminaReduceFix",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-092-0",
+      "name": "ぜったいいっぱい！",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0045",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_upgrade-0001_0001-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-106-0",
+      "name": "あまいくちどけ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-008",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_03-3-106-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-106-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_end_turn-concentration_up",
+            "phase_types": [
+              "ExamEndTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ConcentrationUp"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "stance:preserve",
+              "name_jp": "温存",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_preservation-0001",
+              "effect_type": "ProduceExamEffectType_ExamPreservation",
+              "note": null
+            },
+            {
+              "tag": "resource:energy",
+              "name_jp": "元気",
+              "op": "add",
+              "value": 2,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block-0002",
+              "effect_type": "ProduceExamEffectType_ExamBlock",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-106-1",
+      "name": "あまいくちどけ+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-008",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_03-3-106-1-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-106-1-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_end_turn-concentration_up",
+            "phase_types": [
+              "ExamEndTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ConcentrationUp"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "stance:preserve",
+              "name_jp": "温存",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_preservation-0001",
+              "effect_type": "ProduceExamEffectType_ExamPreservation",
+              "note": null
+            },
+            {
+              "tag": "resource:energy",
+              "name_jp": "元気",
+              "op": "add",
+              "value": 5,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block-0005",
+              "effect_type": "ProduceExamEffectType_ExamBlock",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-121-0",
+      "name": "体力自慢の本気",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0051",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-visual_addition-0015_0015",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_change-0001_0001-p_rd-produce-random-all-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-126-0",
+      "name": "思い出カタメコイメ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0058",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_card_delete-p_card_search-deck_all-select-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward-0001_0001-produce_card-p_card-03-men-1_039-0",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-129-0",
+      "name": "麻央にぴったし",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0061",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_03-3-129-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-129-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_exam_play",
+            "phase_types": [
+              "StartExamPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "action:create",
+              "name_jp": "生成",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_card_create_id-p_card-03-men-2_066-1-hand-1_1",
+              "effect_type": "ProduceExamEffectType_ExamCardCreateId",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-134-0",
+      "name": "居残りの生徒会室",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0062",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_03-3-134-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-134-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-concentration_change_count_up-3-lesson_dance",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ConcentrationChangeCountUp"
+            ],
+            "field_status_values": [
+              3
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:enthusiasm",
+              "name_jp": "熱意追加",
+              "op": "add",
+              "value": 10,
+              "value2": null,
+              "turn": -1,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_enthusiastic_additive-0010-inf",
+              "effect_type": "ProduceExamEffectType_ExamEnthusiasticAdditive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-138-0",
+      "name": "面白くて心配な子",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0066",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_point_addition-0050_0050",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-stamina_recover_fix-0005_0005",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-184-0",
+      "name": "しぼまない思い出",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0073",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-02-enchant-pitem_03-3-184-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-184-0-enc01",
+          "effect_count": 2,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-stance_change_count_up-4-lesson_vocal",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "StanceChangeCountUp"
+            ],
+            "field_status_values": [
+              4
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "score:parameter_gain_mult",
+              "name_jp": "パラメータ上昇量増加",
+              "op": "mult",
+              "value": 250,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_lesson_value_multiple-0250-01",
+              "effect_type": "ProduceExamEffectType_ExamLessonValueMultiple",
+              "note": null
+            },
+            {
+              "tag": "resource:energy",
+              "name_jp": "元気",
+              "op": "add",
+              "value": 8,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block-0008",
+              "effect_type": "ProduceExamEffectType_ExamBlock",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-263-0",
+      "name": "完全制覇でポン",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0082",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-dance_addition-0030_0030",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        },
+        {
+          "pitem_effect_id": "p_item_effect-produce_effect-p_effect-produce_reward_set-p_rd-produce-event_activity-drink-random-01_01",
+          "effect_type": "ProduceItemEffectType_ProduceEffect",
+          "note": "non_enchant"
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-308-0",
+      "name": "おかいものバッグ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0095",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-enchant-pitem_03-3-308-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-308-0-enc01",
+          "effect_count": 0,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_stance_change_concentration-no_block-lesson_dance",
+            "phase_types": [
+              "ExamStanceChangeConcentration"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "NoBlock"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:stamina_cost_down",
+              "name_jp": "消費体力減少",
+              "op": "mult",
+              "value": 0,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "pct",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_stamina_consumption_down-01",
+              "effect_type": "ProduceExamEffectType_ExamStaminaConsumptionDown",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-316-0",
+      "name": "揺れ動く想い",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "i_card-hrnm-3-018",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-enchant-pitem_03-3-316-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-316-0-enc01",
+          "effect_count": 0,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-concentration_change_count_up-4-p_card_search-active_skill-playing-0_1",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ConcentrationChangeCountUp"
+            ],
+            "field_status_values": [
+              4
+            ],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:confidence",
+              "name_jp": "強気",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_concentration-0001",
+              "effect_type": "ProduceExamEffectType_ExamConcentration",
+              "note": null
+            },
+            {
+              "tag": "buff:enthusiasm",
+              "name_jp": "熱意追加",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_enthusiastic_additive-0003-01",
+              "effect_type": "ProduceExamEffectType_ExamEnthusiasticAdditive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-316-1",
+      "name": "揺れ動く想い+",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": true,
+      "origin_idol_card_id": "i_card-hrnm-3-018",
+      "origin_support_card_id": "",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-enchant-pitem_03-3-316-1-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-316-1-enc01",
+          "effect_count": 0,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_card_play-concentration_change_count_up-3-p_card_search-active_skill-playing-0_1",
+            "phase_types": [
+              "ExamCardPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "ConcentrationChangeCountUp"
+            ],
+            "field_status_values": [
+              3
+            ],
+            "card_search_id": "p_card_search-active_skill-playing",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "buff:confidence",
+              "name_jp": "強気",
+              "op": "add",
+              "value": 1,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_concentration-0001",
+              "effect_type": "ProduceExamEffectType_ExamConcentration",
+              "note": null
+            },
+            {
+              "tag": "buff:enthusiasm",
+              "name_jp": "熱意追加",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": 1,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_enthusiastic_additive-0003-01",
+              "effect_type": "ProduceExamEffectType_ExamEnthusiasticAdditive",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-324-0",
+      "name": "恋心のゆくえ",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0101",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-03-enchant-pitem_03-3-324-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-324-0-enc01",
+          "effect_count": 3,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-start_play-preservation_up-lesson_visual",
+            "phase_types": [
+              "StartPlay"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "PreservationUp"
+            ],
+            "field_status_values": [],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "resource:energy",
+              "name_jp": "元気",
+              "op": "add",
+              "value": 3,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": null,
+              "effect_id": "e_effect-exam_block-0003",
+              "effect_type": "ProduceExamEffectType_ExamBlock",
+              "note": null
+            },
+            {
+              "tag": "action:move",
+              "name_jp": "",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": "p_card_search-deck_grave-effect_group-visible-exam_concentration-000",
+              "effect_id": "e_effect-exam_card_move-p_card_search-deck_grave-effect_group-visible-exam_concentration-000-hand-random-1_1",
+              "effect_type": "ProduceExamEffectType_ExamCardMove",
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "item_id": "pitem_03-3-329-0",
+      "name": "注目インタビュー！",
+      "rarity": "ProduceItemRarity_Ssr",
+      "is_upgraded": false,
+      "origin_idol_card_id": "",
+      "origin_support_card_id": "s_card-3-0104",
+      "effects": [
+        {
+          "pitem_effect_id": "p_item_effect-exam_status_enchant-inf-01-enchant-pitem_03-3-329-0-enc01",
+          "enchant_id": "enchant-p_item_effect_03-3-329-0-enc01",
+          "effect_count": 1,
+          "effect_turn": -1,
+          "trigger": {
+            "trigger_id": "e_trigger-exam_start_turn-preservation_change_count_up-4-lesson_visual",
+            "phase_types": [
+              "ExamStartTurn"
+            ],
+            "phase_values": [],
+            "field_status_types": [
+              "PreservationChangeCountUp"
+            ],
+            "field_status_values": [
+              4
+            ],
+            "card_search_id": "",
+            "card_search_effect_groups": []
+          },
+          "exam_effects": [
+            {
+              "tag": "grow:add",
+              "name_jp": "成長",
+              "op": "add",
+              "value": 0,
+              "value2": null,
+              "turn": null,
+              "count": null,
+              "unit": "flat",
+              "scope": "self",
+              "condition": "p_card_search-active_skill-deck_all",
+              "effect_id": "e_effect-exam_add_grow_effect-p_card_search-active_skill-deck_all-all-0_0-g_effect-lesson_add-22",
+              "effect_type": "ProduceExamEffectType_ExamAddGrowEffect",
+              "note": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

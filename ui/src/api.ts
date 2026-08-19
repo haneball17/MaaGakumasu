@@ -46,6 +46,16 @@ export interface PoolCard {
 
 export const fetchCards = () => fetchJson<{ cards: PoolCard[] }>("/api/cards");
 
+export interface PItemInfo {
+    name: string;
+    origin: "idol" | "support";
+    trigger: boolean;
+    supported: boolean;
+    reason: string;
+}
+
+export const fetchPitems = () => fetchJson<{ items: PItemInfo[] }>("/api/pitems");
+
 export const fetchTrace = (preset: string, seed: number, strategy: string) =>
     fetchJson<TraceDocument>(`/api/trace?preset=${encodeURIComponent(preset)}&seed=${seed}&strategy=${encodeURIComponent(strategy)}`);
 
@@ -129,7 +139,7 @@ export interface TraceDocument {
     schema_version: number;
     seed: number;
     strategy: string;
-    spec_digest: { preset: string; turns: number; deck_size: number; popular_mode: string; ouenbou: boolean; idol_exclusive: string | null; note: string };
+    spec_digest: { preset: string; turns: number; deck_size: number; popular_mode: string; ouenbou: boolean; p_items: string[]; note: string };
     turns: TurnTrace[];
     final: {
         total_score: number;

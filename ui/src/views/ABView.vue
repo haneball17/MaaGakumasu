@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-import { fetchCards, fetchPresetDeck, listPresets, postSimulate, taskStatus, type DeckEntry, type PoolCard, type PresetInfo, type StatRow } from "../api";
+import { fetchCards, fetchPitems, fetchPresetDeck, listPresets, postSimulate, taskStatus, type DeckEntry, type PItemInfo, type PoolCard, type PresetInfo, type StatRow } from "../api";
 
 const emit = defineEmits<{ (e: "jump-replay", preset: string, seed: number, strategy: string): void }>();
 
@@ -72,6 +72,25 @@ function previewText(c: PoolCard): string {
     return t ? `[${t}] ${c.tier_details[t].effect_raw}` : "";
 }
 
+// -- P item 编辑(Item B:确定列表 R2-3;数据驱动,未建模件标红禁选) --
+const pitems = ref<PItemInfo[]>([]);
+const selectedPItems = ref<string[]>([]);
+const pitemSearch = ref("");
+const pitemResults = computed(() => {
+    const q = pitemSearch.value.trim();
+    if (!q) return [];
+    return pitems.value.filter((p) => p.name.includes(q) && p.supported).slice(0, 6);
+});
+
+function addPItem(name: string) {
+    if (!selectedPItems.value.includes(name)) selectedPItems.value.push(name);
+    pitemSearch.value = "";
+}
+
+function removePItem(idx: number) {
+    selectedPItems.value.splice(idx, 1);
+}
+
 function isSynth(c: PoolCard): boolean {
     const t = previewTier(c);
     return !!t && c.tier_details[t].source === "pool";
@@ -93,6 +112,13 @@ async function run() {
         if (deckDirty.value) {
             // 编辑器是 scenario.deck 的真源;JSON 粘贴仍可覆盖其他字段
             overrides = { ...(overrides ?? {}), scenario: { ...(overrides?.scenario ?? {}), deck: deckEntries.value } };
+        }
+        if (selectedPItems.value.length) {
+            const scen = { ...(overrides?.scenario ?? {}) } as Record<string, unknown>;
+            overrides = {
+                ...overrides,
+                scenario: { ...scen, p_items: { ...(scen.p_items ?? {}), items: selectedPItems.value } },
+            };
         }
         const res = await postSimulate({
             preset: preset.value,
@@ -132,6 +158,7 @@ function stopPoll() {
 onMounted(async () => {
     presets.value = (await listPresets()).presets;
     cardPool.value = (await fetchCards()).cards;
+    pitems.value = (await fetchPitems()).items;
     await loadDeck(preset.value);
 });
 </script>
@@ -175,6 +202,27 @@ onMounted(async () => {
                         <div v-if="previewText(c)" class="fx" :class="{ synth: isSynth(c) }">{{ previewText(c) }}</div>
                     </div>
                     <button class="primary small" :disabled="!c.supported" @click="addCard(c)">添加</button>
+                </li>
+            </ul>
+        </div>
+        <div class="pitemeditor">
+            <b>P item 携带</b>(确定列表{{ selectedPItems.length ? " · 已修改" : "" }})
+            <div class="decklist" v-if="selectedPItems.length">
+                <span v-for="(n, i) in selectedPItems" :key="n" class="chip">
+                    {{ n }} <a href="#" @click.prevent="removePItem(i)">×</a>
+                </span>
+            </div>
+            <div v-else class="muted" style="margin: 6px 0">空 = 跟随预设(莉波 = 憧れ続けた輝き)</div>
+            <div class="row">
+                添加:<input v-model="pitemSearch" placeholder="道具名(收录 153 件;未建模件禁选)" style="width: 220px" />
+            </div>
+            <ul v-if="pitemResults.length" class="results">
+                <li v-for="p in pitemResults" :key="p.name">
+                    <span class="cname">{{ p.name }}</span>
+                    <span class="muted">{{ p.origin === "idol" ? "偶像卡" : "支援卡" }} · {{ p.reason || "trigger 型(计数间隔+好調门槛)" }}</span>
+                    <button class="primary small" :disabled="selectedPItems.includes(p.name)" @click="addPItem(p.name)">
+                        {{ selectedPItems.includes(p.name) ? "已选" : "添加" }}
+                    </button>
                 </li>
             </ul>
         </div>
@@ -262,6 +310,12 @@ onMounted(async () => {
     flex-wrap: wrap;
 }
 .deckeditor {
+    margin: 10px 0;
+    padding: 10px;
+    background: #191d23;
+    border-radius: 8px;
+}
+.pitemeditor {
     margin: 10px 0;
     padding: 10px;
     background: #191d23;

@@ -240,10 +240,11 @@ class RoundSimRunner:
         self.popular = generate_popular_sequence(spec.scenario.popular_mode, settings.turns, self.rng)
         # M2 预检:未建模卡硬失败(§5)
         engine.precheck(spec.scenario.deck)
-        # M3:P item trigger(憧れ続けた輝き 等;未注册道具名 → None)
-        from agent.hif.roundsim.triggers import build_trigger
+        # M3:P item trigger(Item B 数据驱动:参数/效果链来自 pitem_effects.json;
+        # 未收录/形态未建模 → 硬失败列出名字,零拟合)
+        from agent.hif.roundsim.triggers import build_triggers
 
-        self.trigger = build_trigger(spec.scenario.p_items.idol_exclusive)
+        self.triggers = build_triggers(spec.scenario.p_items.items)
 
     # -- 视图与合法性 --------------------------------------------------------
 
@@ -360,12 +361,10 @@ class RoundSimRunner:
         # 3. 移动(D1 分流)
         zones.move_played(card, self.rng)
 
-        # 4. P item trigger(M3:憧れ続けた輝き 计数间隔+状态门槛)
-        if self.trigger is not None:
+        # 4. P item trigger(M3:计数间隔+状态门槛;多个 P item 依 items 顺序逐个判定)
+        for trig in self.triggers:
             trigger_events.extend(
-                self.trigger.on_card_played(
-                    spec, runtime, zones, self.rng, turn, self.spec.exam_settings.hand_limit
-                )
+                trig.on_card_played(spec, runtime, zones, self.rng, turn, self.spec.exam_settings.hand_limit)
             )
 
         # 5. 再演判定(R4:任意卡使用後、条件卡在手、本ターン未発動、回数未满)
@@ -488,7 +487,7 @@ class RoundSimRunner:
                 deck_size=len(scenario.deck) + padded,
                 popular_mode=scenario.popular_mode.mode,
                 ouenbou=scenario.p_items.ouenbou,
-                idol_exclusive=scenario.p_items.idol_exclusive,
+                p_items=scenario.p_items.items,
                 note=self.spec.note,
             ),
         )

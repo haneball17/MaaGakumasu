@@ -96,7 +96,7 @@ def test_preset_r1_initial_matches_observation():
     assert init.good_condition_turns == 6
     assert init.focus == 6
     assert (init.params.vocal, init.params.dance, init.params.visual) == (1116, 2920, 2175)
-    assert spec.scenario.p_items.idol_exclusive == "憧れ続けた輝き"
+    assert spec.scenario.p_items.items == ["憧れ続けた輝き"]
     assert not spec.scenario.p_items.ouenbou  # R1 无応援棒
     assert spec.exam_settings.turns == 9
 
@@ -501,7 +501,7 @@ def test_first_legal_full_game_r2():
 # 7. M3:P item trigger(憧れ続けた輝き)
 # ---------------------------------------------------------------------------
 
-from agent.hif.roundsim.triggers import PlayCountIntervalTrigger, build_trigger  # noqa: E402
+from agent.hif.roundsim.triggers import PlayCountIntervalTrigger, build_triggers, pitem_registry  # noqa: E402
 
 
 def _rt(stamina: int = 30) -> object:
@@ -510,8 +510,12 @@ def _rt(stamina: int = 30) -> object:
     return ExamRuntime(stamina=stamina, max_stamina=35)
 
 
+def _akogare_trigger() -> PlayCountIntervalTrigger:
+    return build_triggers(["憧れ続けた輝き"])[0]
+
+
 def test_trigger_unit_interval_and_gate():
-    """每 4 张好調系卡到点;好調≥8 才発動;到点未満门槛作废。"""
+    """每 4 张好調系卡到点;好調≥8 才発動;到点未満门槛作废(数据驱动実例)。"""
     import random
 
     from agent.hif.roundsim.deck import DeckZones
@@ -520,7 +524,7 @@ def test_trigger_unit_interval_and_gate():
 
     good_card = resolve_card(CardInDeck(name="ステップの基本"))  # 好調2T(好調系)
     plain_card = resolve_card(CardInDeck(name="アピールの基本"))  # 无好調(非対象)
-    tr = PlayCountIntervalTrigger(source="憧れ続けた輝き", interval=4, status_key="good_condition", status_threshold=8, max_fires=5)
+    tr = _akogare_trigger()
     rt = _rt()
     zones = DeckZones.build([CardInDeck(name="アピールの基本") for _ in range(10)], random.Random(0))
     # 好調 0:打 4 张好調系卡 → 到点但门槛未満
@@ -530,14 +534,13 @@ def test_trigger_unit_interval_and_gate():
     assert any("门槛未満" in t.note for t in miss)
     assert tr.fired == 0
     # 非対象卡不计数
-    tr2 = PlayCountIntervalTrigger(source="x", interval=4, status_key="good_condition", status_threshold=8, max_fires=5)
     for _ in range(6):
-        tr2.on_card_played(plain_card, rt, zones, random.Random(0), 1, 5)
-    assert tr2.match_count == 0
+        tr.on_card_played(plain_card, rt, zones, random.Random(0), 1, 5)
+    assert tr.match_count == 4
     # 好調≥8:第 4 张好調系卡 → 発動(絶好調1T+使用数+1+抽1+体力-1)
     rt3 = _rt()
     rt3.add_buff("good_condition", 8, granted_turn=0)
-    tr3 = PlayCountIntervalTrigger(source="x", interval=4, status_key="good_condition", status_threshold=8, max_fires=5)
+    tr3 = _akogare_trigger()
     fired = []
     for i in range(4):
         fired = tr3.on_card_played(good_card, rt3, zones, random.Random(0), 1, 5)
@@ -549,18 +552,47 @@ def test_trigger_unit_interval_and_gate():
     # 上限 5 次
     rt4 = _rt()
     rt4.add_buff("good_condition", 20, granted_turn=0)
-    tr4 = PlayCountIntervalTrigger(source="x", interval=4, status_key="good_condition", status_threshold=8, max_fires=5)
+    tr4 = _akogare_trigger()
     total = 0
     for i in range(40):
         total += len(tr4.on_card_played(good_card, rt4, zones, random.Random(0), 1, 5))
     assert tr4.fired == 5 and total == 5
 
 
-def test_trigger_registry_and_plus_variant():
-    assert build_trigger("憧れ続けた輝き").status_threshold == 8
-    assert build_trigger("憧れ続けた輝き+").status_threshold == 6
-    assert build_trigger(None) is None
-    assert build_trigger("N.I.Aキー") is None  # 未注册 = 流程钥匙无效果
+def test_trigger_registry_datadriven():
+    """Item B 数据驱动注册表:憧憬参数 + 効果組 5 型对齐 + 未收录硬失败 + 支持面标记。"""
+    import pytest
+
+    base, plus = build_triggers(["憧れ続けた輝き", "憧れ続けた輝き+"])
+    assert (base.interval, base.status_threshold, base.max_fires) == (4, 8, 5)
+    assert (plus.interval, plus.status_threshold, plus.max_fires) == (4, 6, 5)
+    # 効果組「好調」5 型(旧版只匹配 ExamParameterBuff 一型属窄化,已对齐官方効果組)
+    assert base.target_effect_types == frozenset(
+        {
+            "ExamParameterBuff",
+            "ExamParameterBuffPerSearchCount",
+            "ExamParameterBuffAdditive",
+            "ExamParameterBuffAdditiveFix",
+            "ExamParameterBuffDependLessonBuff",
+        }
+    )
+    # dump 実証:+版発動無体力消費(3 条 vs 無印 4 条)
+    assert len(base.exam_effects) == 4 and len(plus.exam_effects) == 3
+    assert "ExamStaminaReduceFix" not in {_short(e["effect_type"]) for e in plus.exam_effects}
+    # 未收录名硬失败(零拟合:拼错/范围外必报)
+    with pytest.raises(ValueError, match="不在 pitem_effects"):
+        build_triggers(["N.I.Aキー"])
+    # trigger 形态未建模件硬失败;支持面外件在 UI 注册表标红
+    reg = pitem_registry()
+    assert len(reg) == 153
+    assert sum(1 for r in reg if r["trigger"] and r["supported"]) == 2  # 仅憧憬 無印/+
+    assert sum(1 for r in reg if r["supported"] and not r["trigger"]) == 77  # 非考试期效果件
+    unsupported = [r for r in reg if not r["supported"]]
+    assert unsupported and all(r["reason"] for r in unsupported)
+
+
+def _short(enum: str) -> str:
+    return enum.rsplit("_", 1)[-1] if enum else ""
 
 
 def test_trigger_fires_in_full_game_visible_in_trace():

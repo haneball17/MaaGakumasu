@@ -114,7 +114,7 @@ class SpecDigest(BaseModel):
     deck_size: int = 0
     popular_mode: str = ""
     ouenbou: bool = False
-    idol_exclusive: str | None = None
+    p_items: list[str] = Field(default_factory=list)
     note: str = ""
 
 
