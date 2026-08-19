@@ -25,14 +25,23 @@ export interface DeckEntry {
 export const fetchPresetDeck = (preset: string) =>
     fetchJson<{ deck: DeckEntry[] }>(`/api/preset-deck?preset=${encodeURIComponent(preset)}`);
 
+export interface TierDetail {
+    effect_raw: string;
+    source: "master" | "pool" | "";
+    stamina_cost: number | null;
+    focus_cost: number | null;
+}
+
 export interface PoolCard {
     name: string;
+    name_zh: string | null;
     rarity: string;
     category: string;
     move: string | null;
     play_trigger: boolean;
     tiers: string[];
     supported: boolean;
+    tier_details: Record<string, TierDetail>;
 }
 
 export const fetchCards = () => fetchJson<{ cards: PoolCard[] }>("/api/cards");

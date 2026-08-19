@@ -759,7 +759,7 @@ def test_ui_contract():
 
 
 def test_deck_editor_endpoints():
-    """M-UIb 卡组编辑器接口:预设逐卡内容 + 流派池搜索清单(含 supported 标记)。"""
+    """M-UIb 卡组编辑器接口:预设逐卡内容 + 流派池搜索清单(含 supported 标记与效果预览)。"""
     from tools.round_sim_app import get_preset_deck, list_cards
 
     deck = get_preset_deck(preset="hif_r1_rinami")["deck"]
@@ -770,6 +770,26 @@ def test_deck_editor_endpoints():
     assert staged["supported"] is True  # 応援棒池卡已建模
     atsui = next(c for c in cards if c["name"] == "おアツイ視線")
     assert atsui["supported"] is False  # 未建模卡 UI 标红
+
+
+def test_cards_effect_preview():
+    """Item A 效果预览:master 官方文本 + 池外卡结构化合成 + 中文名 join。"""
+    from tools.round_sim_app import list_cards
+
+    cards = list_cards()["cards"]
+    master = next(c for c in cards if c["name"] == "シュプレヒコール")
+    assert master["name_zh"]  # zh join 命中
+    assert master["tier_details"]["無印"]["source"] == "master"
+    assert "パラメータ" in master["tier_details"]["無印"]["effect_raw"]
+    # master 表外的池内基础卡 → 结构化合成(source=pool);眠気 本身零效果
+    basic = next(c for c in cards if c["name"] == "ステージングの基本")
+    assert basic["name_zh"] is None
+    assert basic["tier_details"]["無印"]["source"] == "pool"
+    assert basic["tier_details"]["無印"]["effect_raw"]
+    nemuke = next(c for c in cards if c["name"] == "眠気")
+    assert nemuke["tier_details"]["無印"]["effect_raw"] == ""
+    n_text = sum(1 for c in cards if any(t["effect_raw"] for t in c["tier_details"].values()))
+    assert n_text >= len(cards) - 1  # 除零效果卡外全覆盖
 
 
 def test_simulate_with_deck_override():

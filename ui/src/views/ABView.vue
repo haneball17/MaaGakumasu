@@ -50,6 +50,33 @@ watch(preset, (p) => {
     if (!deckDirty.value) loadDeck(p);
 });
 
+// -- 效果预览(Item A):搜索行内嵌文本 + 卡组 chip 点击弹详情 --
+const TIER_ORDER = ["無印", "+", "++", "+++"];
+const detail = ref<PoolCard | null>(null);
+
+function tierSortKey(t: string) {
+    const i = TIER_ORDER.indexOf(t);
+    return i < 0 ? TIER_ORDER.length : i;
+}
+
+function openDetail(name: string) {
+    detail.value = cardPool.value.find((c) => c.name === name) ?? null;
+}
+
+function previewTier(c: PoolCard): string | null {
+    return TIER_ORDER.find((t) => c.tier_details[t]?.effect_raw) ?? c.tiers.find((t) => c.tier_details[t]?.effect_raw) ?? null;
+}
+
+function previewText(c: PoolCard): string {
+    const t = previewTier(c);
+    return t ? `[${t}] ${c.tier_details[t].effect_raw}` : "";
+}
+
+function isSynth(c: PoolCard): boolean {
+    const t = previewTier(c);
+    return !!t && c.tier_details[t].source === "pool";
+}
+
 function toggleStrategy(s: string) {
     const i = strategies.value.indexOf(s);
     if (i >= 0) strategies.value.splice(i, 1);
@@ -133,17 +160,20 @@ onMounted(async () => {
         <div class="deckeditor">
             <b>卡组编辑</b>({{ deckEntries.length }} 张{{ deckDirty ? " · 已修改" : "" }})
             <div class="decklist">
-                <span v-for="(c, i) in deckEntries" :key="i" class="chip">
-                    {{ c.name }}{{ c.tier === "無印" ? "" : c.tier }} <a href="#" @click.prevent="removeCard(i)">×</a>
+                <span v-for="(c, i) in deckEntries" :key="i" class="chip chipclick" @click="openDetail(c.name)">
+                    {{ c.name }}{{ c.tier === "無印" ? "" : c.tier }} <a href="#" @click.stop.prevent="removeCard(i)">×</a>
                 </span>
             </div>
             <div class="row">
-                搜索添加:<input v-model="deckSearch" placeholder="卡名(流派池 122 张)" style="width: 220px" />
+                搜索添加:<input v-model="deckSearch" placeholder="卡名(流派池 122 张,点击卡名看详情)" style="width: 220px" />
             </div>
             <ul v-if="searchResults.length" class="results">
                 <li v-for="c in searchResults" :key="c.name" :class="{ unsup: !c.supported }">
-                    {{ c.name }}
-                    <span class="muted">{{ c.rarity }} · {{ c.move === "Lost" ? "除外" : "循环" }}{{ c.play_trigger ? " · 有使用门槛" : "" }}{{ c.supported ? "" : " · ⚠ 未建模,加入会预检失败" }}</span>
+                    <div class="hitmain">
+                        <span class="cname">{{ c.name }}<i v-if="c.name_zh" class="zh">({{ c.name_zh }})</i></span>
+                        <span class="muted">{{ c.rarity }} · {{ c.move === "Lost" ? "除外" : "循环" }}{{ c.play_trigger ? " · 有使用门槛" : "" }}{{ c.supported ? "" : " · ⚠ 未建模,加入会预检失败" }}</span>
+                        <div v-if="previewText(c)" class="fx" :class="{ synth: isSynth(c) }">{{ previewText(c) }}</div>
+                    </div>
                     <button class="primary small" :disabled="!c.supported" @click="addCard(c)">添加</button>
                 </li>
             </ul>
@@ -196,6 +226,25 @@ onMounted(async () => {
             </tr>
         </table>
     </div>
+    <div v-if="detail" class="overlay" @click.self="detail = null">
+        <div class="detailcard">
+            <header>
+                <b>{{ detail.name }}</b>
+                <span v-if="detail.name_zh" class="zh">{{ detail.name_zh }}</span>
+                <span class="muted">{{ detail.rarity }} · {{ detail.move === "Lost" ? "除外" : "循环" }}{{ detail.supported ? "" : " · ⚠ 未建模" }}</span>
+                <a href="#" class="close" @click.prevent="detail = null">×</a>
+            </header>
+            <table>
+                <tr v-for="t in detail.tiers.slice().sort((a, b) => tierSortKey(a) - tierSortKey(b))" :key="t">
+                    <th>{{ t }}</th>
+                    <td class="cost">体力{{ detail.tier_details[t]?.stamina_cost ?? "?" }}</td>
+                    <td :class="{ synth: detail.tier_details[t]?.source === 'pool' }">
+                        {{ detail.tier_details[t]?.effect_raw || "(无效果数据)" }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </template>
 
 <style scoped>
@@ -230,6 +279,12 @@ onMounted(async () => {
     padding: 2px 8px;
     font-size: 12px;
 }
+.chip.chipclick {
+    cursor: pointer;
+}
+.chip.chipclick:hover {
+    background: #3a4450;
+}
 .chip a {
     color: #ff7b72;
     text-decoration: none;
@@ -251,6 +306,73 @@ onMounted(async () => {
 }
 .results li.unsup {
     color: #ff9d8f;
+}
+.hitmain {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+}
+.cname {
+    white-space: nowrap;
+}
+.zh {
+    color: #8b949e;
+    font-size: 12px;
+    font-style: normal;
+    margin-left: 2px;
+}
+.fx {
+    flex-basis: 100%;
+    color: #c9d1d9;
+    font-size: 12px;
+}
+.fx.synth {
+    color: #8b949e;
+    font-style: italic;
+}
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+.detailcard {
+    background: #191d23;
+    border: 1px solid #3a4048;
+    border-radius: 10px;
+    padding: 14px 18px;
+    max-width: 560px;
+    width: min(92vw, 560px);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.detailcard header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+.detailcard .close {
+    margin-left: auto;
+    color: #ff7b72;
+    text-decoration: none;
+    font-size: 16px;
+}
+.detailcard .cost {
+    white-space: nowrap;
+    color: #8b949e;
+    font-size: 12px;
+}
+.detailcard td.synth {
+    color: #8b949e;
+    font-style: italic;
 }
 button.small {
     padding: 2px 10px;

@@ -26,6 +26,7 @@ import uuid
 import argparse
 import threading
 from pathlib import Path
+from functools import lru_cache
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -40,7 +41,29 @@ from agent.hif.roundsim.strategies import make_strategy  # noqa: E402
 
 UI_DIST = Path(__file__).resolve().parents[1] / "ui" / "dist"
 CUSTOM_PRESETS_DIR = Path(__file__).resolve().parents[1] / "debug" / "roundsim" / "presets"
+HIF_DATA_DIR = Path(__file__).resolve().parents[1] / "assets" / "data" / "hif"
 SYNC_N_LIMIT = 200
+
+
+@lru_cache(maxsize=1)
+def _card_meta() -> tuple[dict[str, dict[str, dict]], dict[str, str]]:
+    """卡组编辑器效果预览数据源(按 name_jp join;effects 池 170 卡只有 master 表内 ~121 能 join)。"""
+    master = json.loads((HIF_DATA_DIR / "skill_cards_master.json").read_text(encoding="utf-8"))
+    tier_details = {
+        c["name_jp"]: {
+            tier: {
+                "effect_raw": tv.get("effect_raw") or "",
+                "source": "master",
+                "stamina_cost": tv.get("stamina_cost"),
+                "focus_cost": tv.get("focus_cost"),
+            }
+            for tier, tv in (c.get("tiers") or {}).items()
+        }
+        for c in master["cards"]
+    }
+    zh_doc = json.loads((HIF_DATA_DIR / "skill_cards_zh.json").read_text(encoding="utf-8"))
+    zh_by_name = {c["name_jp"]: c["name_zh"] for c in zh_doc["cards"] if c.get("name_zh")}
+    return tier_details, zh_by_name
 
 app = FastAPI(title="HIF Round Simulator", version="0.1")
 
@@ -133,13 +156,40 @@ def get_preset_deck(preset: str) -> dict:
     return {"deck": [{"name": c.name, "tier": c.tier} for c in merged[preset].scenario.deck]}
 
 
+def _pool_fallback_details(card: dict) -> dict[str, dict]:
+    """master 表外的池卡(〜の基本等通用卡,master/zh 两表均不含)用结构化效果合成预览文本。
+
+    合成文本非官方描述,source=pool 供 UI 视觉区分;tag 去掉 score:/state: 前缀保留可读段。
+    """
+    details: dict[str, dict] = {}
+    for tier, tv in (card.get("tiers") or {}).items():
+        parts = []
+        for eff in tv.get("effects") or []:
+            txt = (eff.get("tag") or "").split(":", 1)[-1]
+            if eff.get("value") is not None:
+                txt += f" {eff.get('op') or '+'}{eff['value']}"
+            parts.append(txt)
+        details[tier] = {
+            "effect_raw": " / ".join(parts),
+            "source": "pool",
+            "stamina_cost": tv.get("stamina"),
+            "focus_cost": None,
+        }
+    return details
+
+
 @app.get("/api/cards")
 def list_cards() -> dict:
-    """流派效果池全量(前端搜索增删;supported=false 的卡加入卡组会在预检硬失败,UI 标红)。"""
+    """流派效果池全量(前端搜索增删;supported=false 的卡加入卡组会在预检硬失败,UI 标红)。
+
+    tier_details/name_zh 来自 skill_cards_master/skill_cards_zh(效果预览 Item A):
+    master 与池两表卡集不同,交集 88/122;池外卡退化为结构化合成文本(source=pool)。
+    """
     from agent.hif.roundsim import engine
     from agent.hif.roundsim.deck import DeckPrecheckError, _load_pool
     from agent.hif.roundsim.spec import CardInDeck
 
+    tier_details_by_name, zh_by_name = _card_meta()
     cards = []
     for name, card in sorted(_load_pool().items()):
         entries = [CardInDeck(name=card["name_jp"], tier=tier) for tier in (card.get("tiers") or {})]
@@ -157,6 +207,8 @@ def list_cards() -> dict:
                 "play_trigger": bool(card.get("play_trigger")),
                 "tiers": sorted((card.get("tiers") or {}).keys()),
                 "supported": supported,
+                "name_zh": zh_by_name.get(card["name_jp"]),
+                "tier_details": tier_details_by_name.get(card["name_jp"]) or _pool_fallback_details(card),
             }
         )
     return {"cards": cards}
