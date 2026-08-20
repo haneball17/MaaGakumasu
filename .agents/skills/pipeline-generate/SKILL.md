@@ -7,6 +7,9 @@ description: "通过 Maa MCP 的 OCR 结果生成并合并 MaaFramework OCR Pipe
 
 只处理 OCR 文本节点。节点规范、动作选择和状态机设计见 [pipeline-guide](../pipeline-guide/SKILL.md)；真机验证见 [pipeline-testing](../pipeline-testing/SKILL.md)。
 
+> **自动化路径**：无人化循环（截图→OCR 取 box→sweep→写入→连测）已固化为
+> [pipeline-autodev](../pipeline-autodev/SKILL.md)，优先走它；本 skill 的手动流程保留为降级路径。
+
 ## 工具
 
 本目录脚本：

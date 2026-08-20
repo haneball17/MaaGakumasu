@@ -7,6 +7,10 @@ description: "在真机或窗口上单步验证 MaaFramework Pipeline 节点的�
 
 用 `run_pipeline` 验证单个节点；Pipeline 设计、识别字段和状态机规则见 [pipeline-guide](../pipeline-guide/SKILL.md)。
 
+> **自动化路径**：单节点实机连测已封装为 `tools/maa_dev.py test-node <节点> --n 3`
+> （自动前后截图 + 命中报告，证据落 debug/autodev/）；无人化整循环见
+> [pipeline-autodev](../pipeline-autodev/SKILL.md)。本 skill 为手动降级路径。
+
 ## 流程
 
 1. 连接 ADB 或窗口控制器，加载目标 Pipeline。
