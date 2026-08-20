@@ -331,7 +331,10 @@ def run_recognition_offline(tasker: Any, rtype: str, param: dict[str, Any], imag
     from maa.pipeline import JRecognitionType
 
     img = Image.open(image_path).convert("RGB")
-    arr = np.array(img)
+    # maafw 识别引擎期望 BGR（同 post_screencap 原始序）；PIL 读出为 RGB，
+    # 不翻通道的话 TemplateMatch/ColorMatch 等彩色匹配会 R/B 互换致分数崩
+    # （実機 2026-08-20 好調模板自匹配仅 0.25，OpenCV 对照 1.000）
+    arr = np.array(img)[..., ::-1]
     reco_param = param_to_dataclass(rtype, param, img.size)
     job = tasker.post_recognition(JRecognitionType(rtype), reco_param, arr)
     td = job.wait().get()
