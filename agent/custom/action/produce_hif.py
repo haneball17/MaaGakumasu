@@ -123,7 +123,11 @@ class _ProduceHIFActionBase(CustomAction):
 
     def _find_text_option(self, context: Context, image, phrases: tuple[str, ...], roi: list[int]):
         for phrase in phrases:
-            reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFTextOption", [f".*{phrase}.*"], roi)
+            # 短语是字面量(含 preset 卡名如「アピールの基本+」),+ 等元字符不转义会被
+            # MaaFW regex_valid 拒掉整个 override(実機 2026-08-20)
+            reco_detail = self._run_ocr(
+                context, image, "ProduceRecognitionHIFTextOption", [f".*{re.escape(phrase)}.*"], roi
+            )
             if reco_detail and reco_detail.hit:
                 return reco_detail
         return None
@@ -494,6 +498,8 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
     GOOD_CONDITION_OPTIONS = ("余裕です！", "長い道のりでした")
     TROUBLE_MARKER = "トラブル"
     TRANSITION_DELAY = 1.2
+    # 对话中间页空白推进点(同 ProduceHIFSelectChangeDoneAuto,実機 2026-08-15 逐位试探有效)
+    BLANK_TAP = (360, 1000)
     # 选项文案至少含 2 个日文字符,排除「-50」等数字消耗标记与「T」等图标噪读
     OPTION_TEXT_PATTERN = re.compile(r"[ぁ-んァ-ヶ一-龯a-zA-Z]{2,}")
 
@@ -554,7 +560,9 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
         if not self._click_box_center(context, target.box, double=False):
             return self._stop_unsupported(context, "hif_class_options", "safe_option_click_failed")
         # 流转验证(実機 2026-08-15:选项点击后进预览页,残留授業标题致 Flag 再命中连点 7 次):
-        # 点击后同文本仍在原位 = 点击无效(如预览页文案),安全停止防循环
+        # 点击后同文本仍在原位 = 当时不是选项页(実機 2026-08-20:授業事件对话中间页
+        # 台词被误当选项,点台词无跳变),点空白推进对话后 return True 让 [JumpBack]
+        # 回 ScheduleRoot 重路由;连续多次仍无变化才安全停止防死循环
         time.sleep(self.TRANSITION_DELAY)
         verify = self._run_ocr(context, self._get_screenshot(context), "ProduceRecognitionHIFClassOptions", [".*"], self.OPTION_ROI)
         still_there = any(
@@ -562,7 +570,20 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
             for item in (verify.all_results if verify else [])
         )
         if still_there:
-            return self._stop_unsupported(context, "hif_class_options", f"option_click_no_transition: {target.text}")
+            cls = type(self)
+            cls._blank_tap_count = getattr(cls, "_blank_tap_count", 0) + 1
+            if cls._blank_tap_count > 4:
+                return self._stop_unsupported(
+                    context, "hif_class_options", f"blank_tap_no_transition: {target.text}"
+                )
+            logger.info(
+                f"HIF 授業选项: 「{target.text}」点击无跳变,判定为对话中间页,点空白推进"
+                f"(第{cls._blank_tap_count}次)"
+            )
+            context.tasker.controller.post_click(*self.BLANK_TAP).wait()
+            time.sleep(self.ACTION_DELAY)
+            return True
+        type(self)._blank_tap_count = 0
         recent.append(target.text)
         del recent[:-3]
         logger.info(f"HIF 授業选项: 通用安全策略选择「{target.text}」")
@@ -609,10 +630,22 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
         if _ProduceHIFRewardChoiceAction._CARD_DICT is None:
             _ProduceHIFRewardChoiceAction._CARD_DICT = build_card_name_dict()
         dict_names = _ProduceHIFRewardChoiceAction._CARD_DICT + self._extra_name_dict()
-        reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFCardName", dict_names, self.CARD_NAME_ROI)
-        if not (reco_detail and reco_detail.hit):
+        # 词典 expected 走 maafw IPC 偶发 UTF-8→GBK 乱码(実機 2026-08-20 三选一/手牌
+        # 均出现过,单词条不受影响),且 + 等元字符需转义;改为全量 OCR + Python 侧
+        # 子串匹配词典,绕开大列表传输
+        reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFCardName", [".*"], self.CARD_NAME_ROI)
+        if not (reco_detail and reco_detail.all_results):
             return ""
-        return normalize_card_name(reco_detail.best_result.text)
+        norm_names = {normalize_card_name(name): name for name in dict_names}
+        for item in reco_detail.all_results:
+            text = item.text.strip()
+            hit = norm_names.get(normalize_card_name(text))
+            if hit:
+                return hit
+            for name in dict_names:
+                if name in text:
+                    return name
+        return ""
 
     def _extra_name_dict(self) -> list[str]:
         """子类扩展名词典(如饮料页追加 drinks.json 名单),默认空。"""
@@ -845,6 +878,10 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
     POPUP_TITLE_ROI = [40, 890, 400, 60]
     POPUP_OK_TAP = (325, 1156)
     POPUP_MAX_ROUNDS = 3
+    # 相談商店入场动画/列表渲染需要时间(実機 2026-08-20:Flag 命中后首屏仅顶部标题,
+    # 「終了」按钮晚于 Custom action 到达),整体识别带重试
+    SETTLE_DELAY = 1.2
+    SETTLE_ROUNDS = 3
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
@@ -854,18 +891,27 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
         elif preset.consult_policy != "finish_without_purchase":
             return self._stop_unsupported(context, "consult_shop", "consult_policy_not_supported")
 
-        # 先关掉支援卡事件效果弹窗(可能连续多个),否则「終了」被遮挡找不到
-        for _ in range(self.POPUP_MAX_ROUNDS):
-            image = self._get_screenshot(context)
-            popup = self._find_text_option(context, image, (self.POPUP_TITLE,), self.POPUP_TITLE_ROI)
-            if not popup:
-                break
-            logger.info("HIF 相談:关闭支援卡事件效果弹窗")
-            context.tasker.controller.post_click(*self.POPUP_OK_TAP).wait()
-            time.sleep(self.ACTION_DELAY)
+        # 先关掉支援卡事件效果弹窗(可能连续多个),否则「終了」被遮挡找不到;
+        # 整体带重试:入场动画期间列表/按钮未渲染时等待再试
+        finish_button = None
+        for attempt in range(self.SETTLE_ROUNDS):
+            for _ in range(self.POPUP_MAX_ROUNDS):
+                image = self._get_screenshot(context)
+                popup = self._find_text_option(context, image, (self.POPUP_TITLE,), self.POPUP_TITLE_ROI)
+                if not popup:
+                    break
+                logger.info("HIF 相談:关闭支援卡事件效果弹窗")
+                context.tasker.controller.post_click(*self.POPUP_OK_TAP).wait()
+                time.sleep(self.ACTION_DELAY)
 
-        image = self._get_screenshot(context)
-        finish_button = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
+            image = self._get_screenshot(context)
+            finish_button = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
+            if finish_button:
+                break
+            if attempt < self.SETTLE_ROUNDS - 1:
+                logger.info(f"HIF 相談:「終了」未见(第{attempt + 1}轮),等待商店渲染")
+                time.sleep(self.SETTLE_DELAY)
+
         if not finish_button:
             return self._stop_unsupported(context, "consult_shop", "finish_button_not_found")
         if not self._click_box_center(context, finish_button.best_result.box, double=False):

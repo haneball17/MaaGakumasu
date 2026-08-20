@@ -21,6 +21,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING, Protocol
 from dataclasses import dataclass
 
@@ -211,20 +212,35 @@ class _MaafwOcrAdapter:
         """对指定 ROI 跑 OCR，用 expected 约束候选集。
 
         复用 produce_hif.py 的 pipeline_override 机制调用 maafw OCR。
+        expected 为字面词典;词典经 maafw IPC 偶发 UTF-8→GBK 乱码(実機
+        2026-08-20 Round1 读手牌),大词典(>32 项)改为全量 OCR + Python 侧
+        子串匹配,小列表仍走 expected 约束(需转义元字符)。
         """
+        big_dict = len(expected) > 32
+        if big_dict:
+            override_expected = [".*"]
+        else:
+            override_expected = [re.escape(item) for item in expected]
         detail = self.context.run_recognition(
             name,
             self.context.tasker.controller.post_screencap().wait().get(),
             pipeline_override={
                 name: {
                     "recognition": "OCR",
-                    "expected": expected,
+                    "expected": override_expected,
                     "roi": list(roi),
                 }
             },
         )
-        if detail and detail.hit:
-            return detail.best_result.text
+        if not detail:
+            return None
+        if not big_dict:
+            return detail.best_result.text if detail.hit else None
+        for item in detail.all_results:
+            text = item.text.strip()
+            for dict_name in expected:
+                if dict_name in text:
+                    return dict_name
         return None
 
     def run_yolo_cards(self) -> list[CardDetection]:
@@ -250,10 +266,11 @@ class _MaafwOcrAdapter:
         return detections
 
     def _read_card_name_in_box(self, box: tuple[int, int, int, int]) -> str:
-        """在 YOLO box 内跑 OCR 读卡名（box 上半部为卡名区域）。"""
+        """在 YOLO box 内跑 OCR 读卡名（box 底部为卡名区域）。"""
         x, y, w, h = box
-        # 卡名通常在卡牌上半部：ROI 取 box 上 40% 高度区域。
-        name_roi = (x, y, w, max(1, int(h * 0.4)))
+        # 実機 2026-08-20 Round1:卡名文字在 box 底部约 84%~100% 高度带
+        # (实测「静かな意志」y1102 落在 box y886+250h 的 86% 处),此前取上 40% 恒空
+        name_roi = (x, y + int(h * 0.84), w, max(1, int(h * 0.16)))
         text = self.run_ocr("HIFHandCardName", self._card_dict, name_roi)
         return normalize_card_name(text) if text else ""
 

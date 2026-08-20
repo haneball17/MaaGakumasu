@@ -405,7 +405,8 @@ def test_hif_drink_overflow_and_select_change_done_have_live_actions():
     done = payload["ProduceHIFSelectChangeDoneFlag"]
     assert done["action"]["param"]["custom_action"] == "ProduceHIFSelectChangeDoneAuto"
     # 実機 2026-08-15:完成页两种文案(強化继承版「強化しました」),且 OCR 会断行(チェンジしま+した)
-    assert done["recognition"]["param"]["expected"] == [".*チェンジしま.*", ".*強化しま.*"]
+    # 実機 2026-08-20:断行实测为「…にチェン/ジしました」两行,补「ジしました」变体兜住第二行
+    assert done["recognition"]["param"]["expected"] == [".*チェンジしま.*", ".*強化しま.*", ".*ジしました.*"]
 
 
 def test_hif_preset_splits_reroll_limits_by_scene():
@@ -646,21 +647,37 @@ def test_hif_class_option_stops_when_click_does_not_transition(monkeypatch):
     produce_hif = _load_produce_hif_module()
     action = produce_hif.ProduceChooseHIFClassOptionAuto()
     stops: list[str] = []
+    taps: list[tuple] = []
     option_box = [100, 700, 400, 40]
     ocr_results = [SimpleNamespace(text="楽しみです", box=option_box)]
 
     monkeypatch.setattr(action, "_get_screenshot", lambda ctx: object())
-    # 候选读取与流转验证都返回同一文本同位置 → 点击无效
+    # 候选读取与流转验证都返回同一文本同位置 → 点击无效(実機 2026-08-20:对话中间页)
     monkeypatch.setattr(action, "_run_ocr", lambda *a: SimpleNamespace(all_results=ocr_results, hit=True))
     monkeypatch.setattr(action, "_find_text_option", lambda *args, **kwargs: None)
     monkeypatch.setattr(action, "_click_box_center", lambda *a, **kw: True)
     monkeypatch.setattr(
-        action, "_stop_unsupported", lambda context, screen_state, reason: stops.append(reason) or False
+        action,
+        "_stop_unsupported",
+        lambda context, screen_state, reason: stops.append(reason) or False,
     )
+    def _post_click(x, y):
+        taps.append((x, y))
+        return SimpleNamespace(wait=lambda: None)
 
-    ok = action.run(object(), SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
+    ctrl = SimpleNamespace(post_click=_post_click)
+    context = SimpleNamespace(tasker=SimpleNamespace(controller=ctrl))
+
+    # 前 4 次:对话中间页 → 点空白推进并 return True(回 [JumpBack] 重路由)
+    for i in range(4):
+        ok = action.run(context, SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
+        assert ok is True, f"第{i + 1}次无跳变应空白推进"
+    assert len(taps) == 4 and all(t == (360, 1000) for t in taps)
+
+    # 第 5 次:仍无变化 → 安全停止
+    ok = action.run(context, SimpleNamespace(custom_action_param='{"preset_id":"safe_default"}'))
     assert ok is False
-    assert any("option_click_no_transition" in r for r in stops)
+    assert any("blank_tap_no_transition" in r for r in stops)
 
 
 def test_hif_tendency_option_injects_preference_into_all_keyword_actions():

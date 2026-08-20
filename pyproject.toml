@@ -25,7 +25,10 @@ classifiers = [
 ]
 
 dependencies = [
-    "maafw",
+    # maafw 5.12.x IPC 存在日文 expected UTF-8→GBK 乱码回归(実機 2026-08-20:
+    # AgentClient 反向 run_recognition 收到乱码正则致 OCR 全 miss),锁 5.11.x
+    # 直至上游修复;乱码证据见 debug/autodev/ 会话报告
+    "maafw>=5.11.1,<5.12",
     "loguru",
     "Pillow",
 ]

@@ -64,6 +64,7 @@
             "[JumpBack]ProduceHIFDrinkOverflowFlag",
             "[JumpBack]ProduceHIFConsultFlag",
             "[JumpBack]ProduceHIFSPCardFlag",
+            "[JumpBack]ProduceHIFPGainBlank",
             "[JumpBack]ProduceHIFClassOptionFlag",
             "[JumpBack]ProduceHIFCardShowBlank",
             "[JumpBack]ProduceHIFTapNextFlag",
@@ -599,7 +600,8 @@
             "param": {
                 "expected": [
                     ".*チェンジしま.*",
-                    ".*強化しま.*"
+                    ".*強化しま.*",
+                    ".*ジしました.*"
                 ],
                 "roi": [
                     56,
@@ -616,7 +618,7 @@
             }
         },
         "focus": {
-            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 変卡完成,点空白推进[/color]"
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 変卡完成,点空白推进(実機 2026-08-20:提示层「…にチェン/ジしました」拆两行,补ジしました变体)[/color]"
         }
     },
     "ProduceHIFSupportEventPopup": {
@@ -675,7 +677,8 @@
             "type": "OCR",
             "param": {
                 "expected": [
-                    ".*公開レッス.*"
+                    ".*公開レッス.*",
+                    ".*公開.*"
                 ],
                 "roi": [
                     20,
@@ -689,12 +692,48 @@
             "type": "DoNothing",
             "param": {}
         },
+        "post_delay": 1000,
+        "timeout": 20000,
         "next": [
-            "ProduceHIFDrinkObtainedBlank",
-            "ProduceHIFKnownNextButton",
-            "ProduceHIFLessonSettleBlank",
+            "[JumpBack]ProduceHIFDrinkObtainedBlank",
+            "[JumpBack]ProduceHIFSPCardFlag",
+            "[JumpBack]ProduceHIFPGainBlank",
+            "[JumpBack]ProduceHIFKnownNextButton",
+            "[JumpBack]ProduceHIFLessonSettleBlank"
+        ],
+        "on_error": [
             "ProduceHIFUnknownStop"
-        ]
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 公開レッスン结果序列(実機 2026-08-20:标题残留连播 结算气泡/+50P演出/SP卡选择/饮料获得,推进节点 JumpBack 回路由循环,next 轮询 20s 等渲染)[/color]"
+        }
+    },
+    "ProduceHIFPGainBlank": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*[+＋][0-9]+[pPＰ].*",
+                    ".*[+＋][0-9]+.*"
+                ],
+                "roi": [
+                    200,
+                    600,
+                    320,
+                    150
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: P点获得演出页(実機 2026-08-20:中央大「+50 P」box[308,652],无按钮,点数字推进)[/color]"
+        }
     },
     "ProduceHIFDrinkObtainedBlank": {
         "recognition": {
