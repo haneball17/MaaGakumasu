@@ -1,0 +1,76 @@
+{
+  "crop-1787224860": {
+    "file": "crop-1787224860.png",
+    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787224859.png",
+    "box": [
+      0,
+      1140,
+      720,
+      140
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-20T19:21:00",
+    "note": ""
+  },
+  "crop-1787225450": {
+    "file": "crop-1787225450.png",
+    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787225448.png",
+    "box": [
+      0,
+      240,
+      170,
+      330
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-20T19:30:50",
+    "note": ""
+  },
+  "crop-1787225534": {
+    "file": "crop-1787225534.png",
+    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787225448.png",
+    "box": [
+      150,
+      920,
+      310,
+      140
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-20T19:32:14",
+    "note": ""
+  },
+  "crop-1787225666": {
+    "file": "crop-1787225666.png",
+    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787225665.png",
+    "box": [
+      150,
+      920,
+      310,
+      140
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-20T19:34:26",
+    "note": ""
+  },
+  "hif_status_kacho": {
+    "file": "hif_status_kacho.png",
+    "source_image": "用户実機截图标注(MuMu-20260820-193341)",
+    "image_size": [
+      32,
+      34
+    ],
+    "created": "2026-08-20T19:35:00",
+    "note": "好調状态图标模板:天蓝菱形+内部人形剪影;层数×N白字在图标内(OCR读)"
+  }
+}
