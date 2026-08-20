@@ -75,8 +75,8 @@ HIF（学祭，即学園祭本战）培育为当前活跃开发分支（`feat/hi
 - `assets/lang/`：界面与任务选项翻译。新增任务选项时同步 `zh-CN` 和 `zh-Hant` 等已有语言。
 - `assets/resource/Changelog.md`：发布给用户看的资源更新公告；当前内容已进入 v1.4.2 说明，本轮 HIF 新选项尚未写入公告。
 - `docs/zh_cn/`：中文用户与开发文档。
-- `docs/hif/`：HIF 文档集。首要依据：`mechanics.md`（机制知识库）、`scenes.md`（场景卡设计真源）、`finals-daily-log.md`（実機证据日志）、`scoring-model-design.md` 与 `scoring-model-implementation-plan.md`（评分模型）、`decision-override.md`（参数覆盖链）、`round1-blockers.md`（已完结）。
-- `tools/`：维护脚本。HIF 相关：`simulate_hif.py`（模拟器 CLI）、`hif_decision_viewer.py`（决策日志查看器）、`hif_replay_report.py`（复盘总表）、`replay_scoring.py`（双评分回放）、`calibrate_scoring.py`（tier 榜校准）、`scrape_hif_tiers.py`、`sync_hif_master.py`、`sync_hif_effects.py`、`hif_mine_ocr_variants.py`（OCR 变体挖掘）。
+- `docs/hif/`：HIF 文档集。首要依据：`mechanics.md`（机制知识库）、`scenes.md`（场景卡设计真源）、`finals-daily-log.md`（実機证据日志）、`scoring-model-design.md` 与 `scoring-model-implementation-plan.md`（评分模型）、`decision-override.md`（参数覆盖链）、`round1-blockers.md`（已完结）、`autodev-workflow.md` 与 `autodev-research.md`（无人化管线开发工作流与调研存档）。
+- `tools/`：维护脚本。HIF 相关：`simulate_hif.py`（模拟器 CLI）、`hif_decision_viewer.py`（决策日志查看器）、`hif_replay_report.py`（复盘总表）、`replay_scoring.py`（双评分回放）、`calibrate_scoring.py`（tier 榜校准）、`scrape_hif_tiers.py`、`sync_hif_master.py`、`sync_hif_effects.py`、`hif_mine_ocr_variants.py`（OCR 变体挖掘）。无人化管线开发工具 `maa_dev.py`（snap/ocr/som/crop/reco/test-node/replay/journal，见 `docs/hif/autodev-workflow.md`）。
 - `debug/`：运行日志和调试输出，不应作为功能改动的一部分提交；`debug/decisions/` 是 HIF 决策日志（截图 + JSONL + 会话状态 + `decision_override.json`），同样不入库。
 - `deps/`、`install/`：依赖和打包相关内容，修改时需确认发布影响。
 
@@ -99,6 +99,8 @@ npx maa-tools check
 ```
 
 如果本地缺少测试目录或依赖，说明无法完整执行对应检查即可，不要为了通过检查凭空创建无关测试。
+
+无人化管线开发调试走 pipeline-autodev 工作流（`.agents/skills/pipeline-autodev/SKILL.md`）：主 agent 按五角色循环自主完成"探索→裁素材→生成节点→实机连测→回归→报告"，危险操作（扭蛋/购买/确认弹窗/体力药/开战）必须同步等用户确认，超预算（单节点 5 次重试/15 分钟、会话 90 分钟）即停并落盘 `debug/autodev/`（不入库）。坐标裁决铁律：视觉模型只从 SoM 编号叠加图选编号，精确坐标一律取 OCR/模板/YOLO 检测框中心（vision-qwen 裸坐标实测中位误差 26px，2026-08-20 校准）。回放基准集在 `tests/replay_suite/`，改动存量节点后必须 `python tools/maa_dev.py replay --suite tests/replay_suite`。详见 `docs/hif/autodev-workflow.md` 与调研存档 `docs/hif/autodev-research.md`。
 
 ## 代码与格式约定
 

@@ -1,29 +1,29 @@
 {
-    "description": "maa_dev replay 离线回放基准集（pipeline-autodev M5）。截图取自 2026-08-15 HIF 実機决策日志；正例=该页面锚点节点应命中，负例=其他页面锚点不应命中。跑法：python tools/maa_dev.py replay --suite tests/replay_suite",
-    "cases": [
-        {
-            "image": "hif-round1-initial.png",
-            "node": "ProduceHIFRound1Flag",
-            "pipeline": "ProduceHIF.json",
-            "expect": "hit"
-        },
-        {
-            "image": "hif-drink-reward.png",
-            "node": "ProduceHIFRewardConfirmFlag",
-            "pipeline": "ProduceHIF.json",
-            "expect": "hit"
-        },
-        {
-            "image": "hif-drink-reward.png",
-            "node": "ProduceHIFRound1Flag",
-            "pipeline": "ProduceHIF.json",
-            "expect": "miss"
-        },
-        {
-            "image": "hif-round1-initial.png",
-            "node": "ProduceHIFRewardConfirmFlag",
-            "pipeline": "ProduceHIF.json",
-            "expect": "miss"
-        }
-    ]
+	"description": "maa_dev replay 离线回放基准集（pipeline-autodev M5）。截图取自 2026-08-15 HIF 実機决策日志；正例=该页面锚点节点应命中，负例=其他页面锚点不应命中。跑法：python tools/maa_dev.py replay --suite tests/replay_suite",
+	"cases": [
+		{
+			"image": "hif-round1-initial.png",
+			"node": "ProduceHIFRound1Flag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "hit"
+		},
+		{
+			"image": "hif-drink-reward.png",
+			"node": "ProduceHIFRewardConfirmFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "hit"
+		},
+		{
+			"image": "hif-drink-reward.png",
+			"node": "ProduceHIFRound1Flag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "miss"
+		},
+		{
+			"image": "hif-round1-initial.png",
+			"node": "ProduceHIFRewardConfirmFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "miss"
+		}
+	]
 }

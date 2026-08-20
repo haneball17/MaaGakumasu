@@ -479,9 +479,14 @@ def cmd_test_node(args: argparse.Namespace) -> int:
         started = time.time()
         while not job.done and time.time() - started < TEST_NODE_TIMEOUT_S:
             time.sleep(0.5)
-        status = str(job.status) if job.done else "Timeout"
-        if not job.done:
+        if job.done:
+            status_obj = job.status
+            hit = bool(getattr(status_obj, "succeeded", False))
+            status = getattr(getattr(status_obj, "_status", None), "name", None) or str(status_obj)
+        else:
             tasker.post_stop().wait()
+            hit = False
+            status = "Timeout"
         img_after = ctrl.post_screencap().wait().get()
         after = evidence_dir / f"run{i}-after.png"
         Image.fromarray(img_after[..., ::-1]).save(after)
@@ -491,12 +496,11 @@ def cmd_test_node(args: argparse.Namespace) -> int:
             td = job.get()
             for node_info in getattr(td, "nodes", []) or []:
                 nd = tasker.get_node_detail(node_info.node_id)
-                if nd and nd.recognition and nd.recognition.all_results:
-                    reco_summary = [result_to_dict(r) for r in nd.recognition.all_results]
+                if nd and nd.recognition and nd.recognition.filtered_results:
+                    reco_summary = [result_to_dict(r) for r in nd.recognition.filtered_results]
                     break
         except Exception as exc:  # noqa: BLE001 — 证据采集失败不应中断连测
             reco_summary = [{"warning": f"recognition 证据采集失败: {exc}"}]
-        hit = "Succeeded" in status
         hits += int(hit)
         runs.append({"run": i, "status": status, "hit": hit, "results": reco_summary,
                      "before": str(before), "after": str(after)})
