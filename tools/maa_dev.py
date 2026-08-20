@@ -321,7 +321,11 @@ def result_to_dict(r: Any) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 def run_recognition_offline(tasker: Any, rtype: str, param: dict[str, Any], image_path: Path) -> dict[str, Any]:
-    """对本地截图执行一次识别，返回结果列表。"""
+    """对本地截图执行一次识别。
+
+    hit 用引擎的 RecognitionDetail.hit（含 expected/threshold 过滤语义）；
+    results = filtered_results（命中相关），all_results 另附供诊断。
+    """
     import numpy as np
     from PIL import Image
     from maa.pipeline import JRecognitionType
@@ -332,8 +336,15 @@ def run_recognition_offline(tasker: Any, rtype: str, param: dict[str, Any], imag
     job = tasker.post_recognition(JRecognitionType(rtype), reco_param, arr)
     td = job.wait().get()
     reco = tasker.get_node_detail(td.node_id_list[0]).recognition
-    results = [result_to_dict(r) for r in (reco.all_results or [])] if reco else []
-    return {"image": str(image_path), "type": rtype, "results": results}
+    if not reco:
+        return {"image": str(image_path), "type": rtype, "hit": False, "results": [], "all_results": []}
+    return {
+        "image": str(image_path),
+        "type": rtype,
+        "hit": bool(reco.hit),
+        "results": [result_to_dict(r) for r in (reco.filtered_results or [])],
+        "all_results": [result_to_dict(r) for r in (reco.all_results or [])],
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -527,11 +538,21 @@ def cmd_replay(args: argparse.Namespace) -> int:
             rows.append({"image": case["image"], "node": node_name, "hit": False, "reason": "离线不可复现的识别类型"})
             continue
         rtype, param = extracted
+        expect_hit = case.get("expect", "hit") == "hit"
         try:
             out = run_recognition_offline(tasker, rtype, param, image)
-            rows.append({"image": case["image"], "node": node_name, "hit": bool(out["results"]), "results": out["results"]})
+            actual_hit = bool(out["hit"])
+            rows.append({
+                "image": case["image"],
+                "node": node_name,
+                "expect": "hit" if expect_hit else "miss",
+                "hit": actual_hit == expect_hit,
+                "actual": "hit" if actual_hit else "miss",
+                "results": out["results"],
+            })
         except Exception as exc:  # noqa: BLE001 — 单条失败计入矩阵，不中断整批
-            rows.append({"image": case["image"], "node": node_name, "hit": False, "reason": f"{type(exc).__name__}: {exc}"})
+            rows.append({"image": case["image"], "node": node_name, "expect": case.get("expect", "hit"),
+                         "hit": False, "reason": f"{type(exc).__name__}: {exc}"})
     emit({"ok": True, "suite": str(suite_dir), **build_matrix(rows)})
     return 0
 
