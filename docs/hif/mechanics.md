@@ -134,6 +134,8 @@ P アイテム「HIF 応援棒」効果:試験開始時**山札技能卡不足 2
 每回合分配一个属性,画面 % = 该回合该属性的固有倍率,由**参数值 + 審査基準比率 + 評価档位 + 親愛度 + HIFボーナス**决定;随参数单调上升、有上限。HIF 本戦可叠到 3000%+ 级。
 **官方数据实证(2026-08-16):`ProduceExamBattleScoreConfig.yaml`(4072 条)= 参数→三属性 permil 分段曲线表**。结构:同 id 按 parameter 升序 5-8 个断点,如 `parameter: 1800 → vocalPermil 21600/dancePermil 10800/visualPermil 21600`;id 家族覆盖主线六属性组合(voda/davo/…/vida)、tower、contest-season(コンテスト本戦)、選抜等。挂链:`ProduceExamBattleConfig.produceExamBattleScoreConfigId` / `ProduceStepAuditionDifficulty` / `PvpRateConfig` 三级。
 **玩家侧简化规则(三模拟器一致):流行属性倍率% = 该属性有效参数/100**(実機「ビジュアル 3807%」≈ Vi 有效参数 3807,含親愛度/HIFボーナス的换算后值);BattleScoreConfig 分段表用于 **NPC 对手**。模拟器实现:玩家侧用参数/100、NPC 侧查表,两条路都不需要拟合。
+> **実機补注(2026-08-20,用户确认 A)**:Round1 対局 UI 表盘右侧的百分比(如 ビジュアル 3168%)即**当前回合该タイプ出牌得分倍率**——
+> 実機 UI 直接暴露流行倍率读数,是 roundsim 流行参数(J3 重建权重)的現成実機校验接口(OCR ROI [101,74,125,47])。
 来源:本地 dump + 暇人雑記/萌娘百科(机制表述)。本地「ビジュアル 3807% 含义未解」→ 已解决。
 
 ### S7 △/✕评价全体减衰【B(现象)/D(公式)】
