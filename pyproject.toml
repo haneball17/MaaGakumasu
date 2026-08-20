@@ -39,6 +39,10 @@ Issues = "https://github.com/SuperWaterGod/MaaGakumasu/issues"
 dev = [
     "pytest>=7.0",
     "ruff>=0.1.0",
+    # 无人化管线开发工具链（pipeline-autodev）。maa-mcp 为 AGPL-3.0，仅作开发期
+    # 工具使用（设备控制/OCR/pipeline 运行），不打包进发布产物。
+    "maa-mcp>=1.2.3",
+    "MaaDebugger>=1.20.0",
 ]
 
 [tool.setuptools.packages.find]

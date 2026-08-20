@@ -139,7 +139,7 @@ def main():
     print()
     print("ROI 范围预览:")
     for name, node in nodes.items():
-        print(f"  {name}: roi={node['roi']}")
+        print(f"  {name}: roi={node['recognition']['param']['roi']}")
 
     print()
     print("=" * 60)

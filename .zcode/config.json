@@ -1,0 +1,11 @@
+{
+    "mcp": {
+        "servers": {
+            "maa": {
+                "type": "stdio",
+                "command": "F:\\code\\MaaGakumasu\\.venv\\Scripts\\maa-mcp.exe",
+                "timeoutMs": 60000
+            }
+        }
+    }
+}
