@@ -17,10 +17,11 @@
 来源:game8 783836、wikiwiki HIF/基本情報;本地実機(Round1 残りターン9 実証)。
 
 > **実機补注(2026-08-20,SKIP 语义已修正为 A)**:Round1 対局 UI 存在 SKIP 按钮(右下 [635,786] 附近),
-> **SKIP 语义为「空过 1 回合」**(用户実機实测确认:回合中无牌可出/出牌带来负面效果时选择)。
+> **SKIP 语义为「空过 1 回合 + 回复玩家 2 体力」**(用户実機实测确认:按钮内绿色心形+2 即此提示;
+>典型使用=回合中无牌可出/出牌带来负面效果)。
 > 2026-08-20 首次実機观测曾误判为「跳过整个試験(stage)」:那次单击 SKIP 后 Vi→Da 切换、体力 +2、
-> 手牌全换——实为当时 Vi stage 残りターン恰剩 1,SKIP 空过末回合后 stage 自然收尾,
-> 上述现象均为 stage 切换的伴随效果,非 SKIP 语义。roundsim 按 1 回合建模与実機一致,
+> 手牌全换——Vi→Da 与手牌全换实为当时 Vi stage 残りターン恰剩 1、SKIP 空过末回合后 stage 自然收尾的
+> 伴随现象;体力 +2 则是 SKIP 自身的回复效果(非 stage 切换伴随)。roundsim 按 1 回合建模与実機一致,
 > `GarakutaRinamiStrategy` 的 SKIP 动作可正常接线。Round1 由多个不同タイプ試験串联
 > (每 stage 独立残りターン/手牌)仍成立(见 round1-ui-inventory.md §6.2)。
 
@@ -214,11 +215,16 @@ HIF 本戦 = `Produce.yaml produce-008`(ProduceType_HatsuboshiIdolFestival,split
 
 ### H8 メモリー/HIF ボーナス【A 数据实证】
 選抜試験メモリー = `p_memory_skill-...-for_hif_memory` → 考试内 enchant(`enchant-p_ef-hif_memory-*`,效果链含全力値/参数/打牌数+1),**不是全局数值 buff**。選抜嵌入卡:`ExamContestEmbedProduceCard.yaml` 按 examEffectType 6 组 45 张候选。
+> **実機补注(2026-08-20,用户指认 A)**:Round1 対局左側効果区实测出现**紫/粉菱形图标×4**(各带「1回」),
+> 用户确认为**メモリー(回忆卡)效果**:出特定卡牌时触发,附加效果(例:获得额外出牌机会一次+抽一张牌)。
+> メモリー盲区(U10 相邻)首批実機 UI 证据;触发条目与 enchant 链对应关系待数据核查。
 
 ### H9 指針进入/解除详细【A 数据实证】
 进入:卡效果显式付与(e_effect-exam_concentration/preservation/over_preservation 等,带 1/2 档)。温存解除:元気达 5/8 阈值换 block+5 且使用数+1;のんびり:元気 10 解除→全力转档(LessonAdd+10);全力:×3.0+使用数+1。官方文本(Localization):「指針がのんびりであるため、指針を温存に変更する効果は発動しません」——指針互斥有约束。
 
 ### H10 集中(強気)层级 = 效果显式指定【A 数据实证,修正 S4 表述】
+> **実機 UI 补注(2026-08-20,用户指认 A)**:Round1 対局効果区集中状态显示为蓝菱形(波浪纹)+**纯数值**
+> (实测 7,不带「回/ターン」单位)——集中数值可从 UI 直读。
 不是按集中值自动分层:`e_effect-exam_concentration-0001`(effectValue1=**1**)与 `-0002`(effectValue1=**2**)——**卡效果/GrowEffect/饮料显式给 1 级或 2 级**,倍率 ×2.0/×2.5,体力消耗均 ×2.0,PenetrateReduce 0/1。
 
 ### H11 饮料与检索位置全集【A 数据实证】
@@ -235,6 +241,10 @@ HIF 本戦 = `Produce.yaml produce-008`(ProduceType_HatsuboshiIdolFestival,split
 - **对评分**:好調卡边际价值在 8 ターン有门槛跃迁(卡组主题协同的实例,synergy 层输入);expected_good_turns 对莉波流偏低,C2 校准单列。
 - produce-008 直挂的 pitem_00-3-330-0(N.I.Aキー)为流程钥匙无效果;応援棒(D5)=另一考试相关 P item。通常育成携带型道具体系(266 可发动)不在 HIF 路径。
 - **U10 待験**:実機 Interval「Pアイテム」tab 贩售内容与 R2 生效性。
+- **実機 UI 补注(2026-08-20,用户指认 A)**:Round 対局中右上角直接显示 P item 状态——
+  云朵图标+「N回」=莉波系 P item(用户称「姫崎莉波·荊棘之路」)**剩余触发次数**(实测 4/5),
+  云朵上小字=距下次触发还需的好調增加卡张数(实测 5);其下方蓝卡图标+数字=另一 P item
+  剩余触发次数(实测 1)。P item 剩余次数/触发进度可从 UI 直读,执行器无需纯记账。
 
 ### H12 特別指導(カスタマイズ,Interval 强化环节)【A 数据实证,2026-08-16】
 游戏内文本确认:「※カスタマイズは特別指導でおこなえます」(Localization)——特別指導 = カスタマイズ系统,Round1/Round2 之间的准备环节(及変卡流程?)对技能卡强化。
