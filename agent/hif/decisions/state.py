@@ -119,3 +119,21 @@ class CardAction:
     kind: ActionKind
     target_card: str | None = None
     reason: str = ""
+
+
+# Round1 出牌记录字段（Phase 2 落盘 schema，F3）：前六项对齐 roundsim ManualTurnRecord
+# （agent/hif/roundsim/adapter.py 実機手记口径），后五项为実機执行层扩展
+# （动作/目标卡/理由/dry-run 取证标记/证据 box+OCR 原文）。
+ROUND1_PLAY_RECORD_FIELDS: tuple[str, ...] = (
+    "turn",
+    "flow",
+    "played_cards",
+    "good_condition_turns",
+    "stamina",
+    "turn_score",
+    "action",
+    "target_card",
+    "reason",
+    "dry_run",
+    "evidence",
+)

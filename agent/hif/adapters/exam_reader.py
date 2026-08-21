@@ -54,7 +54,7 @@ class NumericROI:
 
 
 # 数值字段 ROI 占位坐标。全部待 Step3 用 MuMu 截图校准后替换。
-# 坐标基于 1280×720 画面（MuMu12 标准），当前为预估占位，非实测。
+# 坐标基于竖屏 720×1280 画面（MuMu12 竖屏，项目基准），当前为预估占位，非实测。
 _NUMERIC_ROI: dict[str, NumericROI] = {
     "good_condition": NumericROI("好调ターン数", (0, 0, 0, 0)),
     "reprise": NumericROI("再演次数", (0, 0, 0, 0)),
@@ -63,7 +63,16 @@ _NUMERIC_ROI: dict[str, NumericROI] = {
     "flow": NumericROI("当前流 Vo/Da/Vi", (0, 0, 0, 0)),
     "deck_size": NumericROI("山札张数", (0, 0, 0, 0)),
     "p_drinks": NumericROI("持有Pドリンク", (0, 0, 0, 0)),
+    # 体力归属画面读取（Phase 0 実機定标，候选 [553,204,115,55]），占位全 0 由 read_numerics 跳过
+    "stamina": NumericROI("体力", (0, 0, 0, 0)),
 }
+
+# 流属性画面显示日文全称（実機例「ビジュアル 3807%」），英文缩写保留兼容（旧测试/回放）
+_FLOW_TEXT_ALIASES: tuple[tuple[str, str], ...] = (
+    ("ビジュアル", "Vi"),
+    ("ボーカル", "Vo"),
+    ("ダンス", "Da"),
+)
 
 
 # ---------------------------------------------------------------------------
@@ -156,12 +165,20 @@ def build_exam_state(
     round_: ExamRound,
     total_turns: int,
     stamina: int,
+    session: dict | None = None,
 ) -> ExamState:
     """从 HandSummary + 数值字段组装 ExamState（纯逻辑，可单测）。
 
     numerics 缺失字段回退默认值（0/空），保证降级可用——
     即便部分数值字段 OCR 失败，决策大脑仍能基于手牌信息出牌。
+
+    session 为 session-state 的 round1 子树（跨回合局内字段，画面外状态）：
+    cards_played / oneesan_used / natural_finisher_used 直接注入；
+    reprise_count 画面优先（Q6 真值源）——numerics 有值（含 0）信画面，
+    缺失时 session 兜底。session=None 时行为与旧版完全一致。
     """
+    session = session or {}
+
     def _int(key: str) -> int:
         v = numerics.get(key)
         return v.value if v and v.value is not None else 0
@@ -169,6 +186,13 @@ def build_exam_state(
     def _flow() -> str:
         v = numerics.get("flow")
         return v.flow if v and v.flow else "Vi"  # 默认 Vi（姫崎莉波バランス 流1）
+
+    # 再演次数：numerics 有值（含 0）时画面优先，缺失时 session 兜底
+    reprise_read = numerics.get("reprise")
+    if reprise_read and reprise_read.value is not None:
+        reprise_count = reprise_read.value
+    else:
+        reprise_count = int(session.get("reprise_count") or 0)
 
     # P ドリンク列表：OCR raw 按逗号分割（实机时由 read_numerics 解析）
     drinks_raw = numerics.get("p_drinks")
@@ -183,11 +207,11 @@ def build_exam_state(
         focus=_int("focus"),
         stamina=stamina,
         hand=hand,
-        reprise_count=_int("reprise"),
-        cards_played=0,  # 本レッスン已出牌数，当前不识别（决策不依赖此字段）
+        reprise_count=reprise_count,
+        cards_played=int(session.get("cards_played") or 0),  # 跨回合累计，画面不显示（session-state round1 维护）
         deck_size=_int("deck_size"),
-        oneesan_used=False,  # 是否本レッスン已用お姉さん，需跨回合状态（Step4 在 action 内维护）
-        natural_finisher_used=False,  # 同上
+        oneesan_used=bool(session.get("oneesan_used", False)),  # 跨回合状态，画面不可读（session 注入）
+        natural_finisher_used=bool(session.get("natural_finisher_used", False)),  # 同上
         available_p_drinks=p_drinks,
         params=ParamSet(),  # 三维参数，当前不识别（仅影响参数感知告警，非关键）
     )
@@ -314,11 +338,18 @@ class ExamStateReader:
         self,
         round_: ExamRound,
         total_turns: int,
-        stamina: int,
+        stamina: int | None = None,
     ) -> ExamState:
-        """读完整出牌状态：手牌 + 数值 + 组装 ExamState。"""
+        """读完整出牌状态：手牌 + 数值 + 组装 ExamState。
+
+        stamina 显式传参优先；None 时从 numerics["stamina"]（画面 ROI）读取，
+        读不到回退 0（占位 ROI 校准前的安全降级）。
+        """
         hand = self.read_hand()
         numerics = self.read_numerics()
+        if stamina is None:
+            v = numerics.get("stamina")
+            stamina = v.value if v and v.value is not None else 0
         return build_exam_state(hand, numerics, round_, total_turns, stamina)
 
 
@@ -328,6 +359,10 @@ def _parse_numeric(key: str, raw: str) -> NumericRead:
     flow 字段提取 Vo/Da/Vi；其他字段提取整数；解析失败 value=None。
     """
     if key == "flow":
+        # 日文全称优先（実機画面只显示日文，如「ビジュアル 3807%」），英文缩写兜底
+        for jp_text, flow in _FLOW_TEXT_ALIASES:
+            if jp_text in raw:
+                return NumericRead(name=key, raw=raw, value=None, flow=flow)
         for flow in ("Vo", "Da", "Vi"):
             if flow in raw:
                 return NumericRead(name=key, raw=raw, value=None, flow=flow)

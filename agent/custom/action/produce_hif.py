@@ -39,6 +39,8 @@ class _ProduceHIFActionBase(CustomAction):
     # (区分真変卡完成页与日程收尾的支援卡随机强化演出页——后者不记决策日志,用户定案 2026-08-15)
     _SESSION_STATE_FILE = _DECISIONS_DIR / "session-state.json"
     SELECT_CHANGE_FLAG = "select_change_active"
+    # Round1 局内会话命名空间（出牌跨回合字段：turn/cards_played/oneesan_used/natural_finisher_used/reprise_count）
+    ROUND1_STATE_KEY = "round1"
 
     @staticmethod
     def _read_session_state() -> dict:
@@ -67,6 +69,19 @@ class _ProduceHIFActionBase(CustomAction):
     def _set_session_day(cls, day_remaining: Optional[int]) -> None:
         if day_remaining is not None:
             cls._write_session_state({"day_remaining": day_remaining})
+
+    @classmethod
+    def _read_round1_state(cls) -> dict:
+        """读 session-state 的 round1 子树（缺失/非 dict 返回空 dict，不抛异常）。"""
+        round1 = cls._read_session_state().get(cls.ROUND1_STATE_KEY)
+        return round1 if isinstance(round1, dict) else {}
+
+    @classmethod
+    def _write_round1_state(cls, patch: dict) -> None:
+        """对 round1 子树做 patch 合并写入（不动顶层 day_remaining 等字段）。"""
+        round1 = cls._read_round1_state()
+        round1.update(patch)
+        cls._write_session_state({cls.ROUND1_STATE_KEY: round1})
 
     @staticmethod
     def _get_screenshot(context: Context):

@@ -5,14 +5,16 @@
 
 关键场景：
 - build_hand_summary: 3张关键卡判定 / 好调卡计数 / OCR误识修正
-- build_exam_state: 数值缺失降级 / Pドリンク解析 / flow提取
-- _parse_numeric: 整数解析 / flow识别 / 解析失败
-- ExamStateReader: 注入mock OcrPort 验证协调逻辑
+- build_exam_state: 数值缺失降级 / Pドリンク解析 / flow提取 / session 注入（C1）
+- _parse_numeric: 整数解析 / flow识别（日文全称 B2）/ 解析失败
+- ExamStateReader: 注入mock OcrPort 验证协调逻辑 / 体力归属（B6）
+- ROUND1_PLAY_RECORD_FIELDS: 落盘 schema 对齐 roundsim ManualTurnRecord（F3）
 """
 
 from __future__ import annotations
 
-from agent.hif.decisions.state import ExamRound, HandSummary
+from agent.hif.decisions.state import ROUND1_PLAY_RECORD_FIELDS, ExamRound, HandSummary
+from agent.hif.roundsim.adapter import ManualTurnRecord
 from agent.hif.adapters.card_dict import (
     KEY_CARDS,
     normalize_card_name,
@@ -20,6 +22,8 @@ from agent.hif.adapters.card_dict import (
     is_good_condition_card,
 )
 from agent.hif.adapters.exam_reader import (
+    _NUMERIC_ROI,
+    NumericROI,
     NumericRead,
     CardDetection,
     ExamStateReader,
@@ -280,3 +284,135 @@ def test_reader_skips_zero_roi_numerics() -> None:
     numerics = reader.read_numerics()
     # 所有 ROI 当前为占位（全0），应全部跳过
     assert numerics == {}
+
+
+# ---------------------------------------------------------------------------
+# _parse_numeric flow 日文映射（B2：実機画面只显示日文全称）
+# ---------------------------------------------------------------------------
+
+
+def test_parse_numeric_flow_japanese_text() -> None:
+    """flow 日文全称映射：ビジュアル→Vi / ボーカル→Vo / ダンス→Da（実機带百分号数字）。"""
+    assert _parse_numeric("flow", "ビジュアル 3807%").flow == "Vi"
+    assert _parse_numeric("flow", "ボーカル 2480%").flow == "Vo"
+    assert _parse_numeric("flow", "ダンス 1902%").flow == "Da"
+
+
+def test_parse_numeric_flow_japanese_priority_and_miss() -> None:
+    """日文全称优先；英文缩写保留兼容；两者皆无时 flow=None。"""
+    assert _parse_numeric("flow", "ダンス流").flow == "Da"
+    assert _parse_numeric("flow", "Vo").flow == "Vo"
+    assert _parse_numeric("flow", "なし").flow is None
+
+
+# ---------------------------------------------------------------------------
+# read_exam_state 体力归属（B6：显式传参 > 画面 numerics > 回退 0）
+# ---------------------------------------------------------------------------
+
+
+def test_reader_stamina_explicit_param_wins(monkeypatch) -> None:
+    """显式 stamina 传参优先，覆盖画面 numerics 读值。"""
+    monkeypatch.setitem(_NUMERIC_ROI, "stamina", NumericROI("体力", (553, 204, 115, 55)))
+    ocr = _MockOcrPort([], {"stamina": "50/100"})
+    state = ExamStateReader(ocr).read_exam_state(ExamRound.HONSEN_R1, total_turns=9, stamina=80)
+    assert state.stamina == 80
+
+
+def test_reader_stamina_none_reads_numerics(monkeypatch) -> None:
+    """stamina=None 时从画面 numerics 读取（ROI 校准后的目标行为）。"""
+    monkeypatch.setitem(_NUMERIC_ROI, "stamina", NumericROI("体力", (553, 204, 115, 55)))
+    ocr = _MockOcrPort([], {"stamina": "50/100"})
+    state = ExamStateReader(ocr).read_exam_state(ExamRound.HONSEN_R1, total_turns=9)
+    assert state.stamina == 50  # 「50/100」取首个数字段
+
+
+def test_reader_stamina_none_falls_back_to_zero() -> None:
+    """stamina=None 且画面读不到（占位 ROI 跳过）时回退 0。"""
+    state = ExamStateReader(_MockOcrPort([])).read_exam_state(ExamRound.HONSEN_R1, total_turns=9)
+    assert state.stamina == 0
+
+
+# ---------------------------------------------------------------------------
+# build_exam_state session 注入（C1：round1 跨回合字段）
+# ---------------------------------------------------------------------------
+
+
+def test_exam_state_session_injects_cross_turn_fields() -> None:
+    """session（round1 子树）注入跨回合字段；numerics 无 reprise 时 session 兜底。"""
+    hand = HandSummary(
+        has_shizen_no_miryoku=False,
+        has_oneesan_no_kankaku=False,
+        has_kokuminteki_idol=False,
+        good_condition_card_count=0,
+        swap_hand_available=False,
+        draw_available=False,
+    )
+    session = {
+        "cards_played": 5,
+        "oneesan_used": True,
+        "natural_finisher_used": True,
+        "reprise_count": 3,
+    }
+    state = build_exam_state(hand, {}, ExamRound.HONSEN_R1, total_turns=9, stamina=40, session=session)
+    assert state.cards_played == 5
+    assert state.oneesan_used is True
+    assert state.natural_finisher_used is True
+    assert state.reprise_count == 3
+
+
+def test_exam_state_session_none_keeps_defaults() -> None:
+    """session=None 行为与旧版完全一致（跨回合字段默认 0/False）。"""
+    hand = HandSummary(
+        has_shizen_no_miryoku=False,
+        has_oneesan_no_kankaku=False,
+        has_kokuminteki_idol=False,
+        good_condition_card_count=0,
+        swap_hand_available=False,
+        draw_available=False,
+    )
+    state = build_exam_state(hand, {}, ExamRound.HONSEN_R1, total_turns=9, stamina=40, session=None)
+    assert state.cards_played == 0
+    assert state.oneesan_used is False
+    assert state.natural_finisher_used is False
+    assert state.reprise_count == 0
+
+
+def test_exam_state_reprise_numerics_wins_over_session() -> None:
+    """reprise 画面优先（Q6 真值源）：numerics 有值（含 0）时 session 的 reprise_count 不生效。"""
+    hand = HandSummary(
+        has_shizen_no_miryoku=False,
+        has_oneesan_no_kankaku=False,
+        has_kokuminteki_idol=False,
+        good_condition_card_count=0,
+        swap_hand_available=False,
+        draw_available=False,
+    )
+    state = build_exam_state(
+        hand, {"reprise": NumericRead("reprise", "2", 2)}, ExamRound.HONSEN_R1,
+        total_turns=9, stamina=40, session={"reprise_count": 4},
+    )
+    assert state.reprise_count == 2
+    # 画面读到 0 也是真值，优先于 session
+    state0 = build_exam_state(
+        hand, {"reprise": NumericRead("reprise", "0", 0)}, ExamRound.HONSEN_R1,
+        total_turns=9, stamina=40, session={"reprise_count": 4},
+    )
+    assert state0.reprise_count == 0
+    # 画面解析失败（value=None）→ session 兜底
+    state_missing = build_exam_state(
+        hand, {"reprise": NumericRead("reprise", "不明", None)}, ExamRound.HONSEN_R1,
+        total_turns=9, stamina=40, session={"reprise_count": 4},
+    )
+    assert state_missing.reprise_count == 4
+
+
+# ---------------------------------------------------------------------------
+# F3 出牌落盘 schema：对齐 roundsim ManualTurnRecord
+# ---------------------------------------------------------------------------
+
+
+def test_round1_play_record_fields_align_manual_turn_record() -> None:
+    """出牌记录 schema：前六项与 ManualTurnRecord 逐一对齐，后五项为実機执行层扩展。"""
+    manual_fields = tuple(ManualTurnRecord.model_fields.keys())
+    assert ROUND1_PLAY_RECORD_FIELDS[: len(manual_fields)] == manual_fields
+    assert ROUND1_PLAY_RECORD_FIELDS[len(manual_fields):] == ("action", "target_card", "reason", "dry_run", "evidence")
