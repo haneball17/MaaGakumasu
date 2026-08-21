@@ -22,6 +22,7 @@ from agent.hif.presets import (
     build_gui_keyword_overrides,
 )
 from agent.hif.decisions import viewer
+from agent.hif.decisions.state import ROUND1_PLAY_RECORD_FIELDS, ExamState, CardAction
 from agent.hif.decisions.rewards import load_keyword_tables
 from agent.hif.decisions.scoring import DecisionContext, score_card_by_name, score_drink_by_name
 from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict
@@ -41,6 +42,10 @@ class _ProduceHIFActionBase(CustomAction):
     SELECT_CHANGE_FLAG = "select_change_active"
     # Round1 局内会话命名空间（出牌跨回合字段：turn/cards_played/oneesan_used/natural_finisher_used/reprise_count）
     ROUND1_STATE_KEY = "round1"
+    # round1 子树字段清单（D1）：画面外跨回合状态，出牌循环读写，新局开始 reset 清零
+    ROUND1_STATE_FIELDS = ("turn", "cards_played", "oneesan_used", "natural_finisher_used", "reprise_count")
+    # Round1 出牌落盘的 screen_state 名（F3；对应 debug/decisions/<ts>_round1_play.png 命名）
+    ROUND1_PLAY_SCREEN = "round1_play"
 
     @staticmethod
     def _read_session_state() -> dict:
@@ -82,6 +87,22 @@ class _ProduceHIFActionBase(CustomAction):
         round1 = cls._read_round1_state()
         round1.update(patch)
         cls._write_session_state({cls.ROUND1_STATE_KEY: round1})
+
+    @classmethod
+    def _reset_round1_state(cls) -> None:
+        """新局 Round1 开始时整体重置局内字段（防上局残留污染；Phase 2 出牌节点入口调用）。
+
+        整体替换而非 patch 合并——round1 子树里不应有本局之外的键。
+        """
+        cls._write_session_state({
+            cls.ROUND1_STATE_KEY: {
+                "turn": 0,
+                "cards_played": 0,
+                "oneesan_used": False,
+                "natural_finisher_used": False,
+                "reprise_count": 0,
+            }
+        })
 
     @staticmethod
     def _get_screenshot(context: Context):
@@ -230,6 +251,53 @@ class _ProduceHIFActionBase(CustomAction):
             cls._archive_decision(cls._get_screenshot(context), screen_state, record)
         except Exception:
             pass
+
+    @staticmethod
+    def build_round1_play_record(
+        state: ExamState,
+        action: CardAction,
+        played_cards: Optional[List[str]] = None,
+        turn_score: Optional[int] = None,
+        dry_run: bool = False,
+        evidence: Optional[dict] = None,
+    ) -> Dict[str, Any]:
+        """组装 Round1 出牌落盘记录（F3，纯函数可离线单测）。
+
+        前六字段对齐 roundsim ManualTurnRecord（turn/flow/played_cards/good_condition_turns/
+        stamina/turn_score，実機手记口径，供 tools/hif_replay_report.py 回放对比）；
+        后五字段为実機执行层扩展（action/target_card/reason/dry_run/evidence，
+        evidence 含点击 box 坐标与 OCR 原文）。缺省字段显式带 None/[]/{}，
+        保证逐回合 JSONL schema 稳定（缺回合数据可辨「未记录」而非「字段缺失」）。
+        """
+        record: Dict[str, Any] = dict.fromkeys(ROUND1_PLAY_RECORD_FIELDS)
+        record.update({
+            "turn": state.turn,
+            "flow": state.current_flow,
+            "played_cards": list(played_cards or []),
+            "good_condition_turns": state.good_condition_turns,
+            "stamina": state.stamina,
+            "turn_score": turn_score,
+            "action": action.kind.value,
+            "target_card": action.target_card,
+            "reason": action.reason,
+            "dry_run": dry_run,
+            "evidence": evidence or {},
+        })
+        return record
+
+    @classmethod
+    def _archive_round1_play(cls, image, record: dict) -> None:
+        """Round1 出牌决策落盘（F3，Phase 2 ProduceHIFRound1Play 每回合调用）。
+
+        先按 ROUND1_PLAY_RECORD_FIELDS 做防御性重排（调用方乱序/缺键也输出
+        schema 稳定的记录，extra 键保留在后），再走共用存档链
+        （截图 + session JSONL + viewer 刷新，与 _archive_decision 同模式）。
+        """
+        ordered = {key: record.get(key) for key in ROUND1_PLAY_RECORD_FIELDS}
+        for key, value in record.items():
+            if key not in ordered:
+                ordered[key] = value
+        cls._archive_decision(image, cls.ROUND1_PLAY_SCREEN, ordered)
 
 
 @AgentServer.custom_action("ProduceChooseHIFEventAuto")

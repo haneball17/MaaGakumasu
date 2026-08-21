@@ -63,8 +63,8 @@ _NUMERIC_ROI: dict[str, NumericROI] = {
     "flow": NumericROI("当前流 Vo/Da/Vi", (0, 0, 0, 0)),
     "deck_size": NumericROI("山札张数", (0, 0, 0, 0)),
     "p_drinks": NumericROI("持有Pドリンク", (0, 0, 0, 0)),
-    # 体力归属画面读取（Phase 0 実機定标，候选 [553,204,115,55]），占位全 0 由 read_numerics 跳过
-    "stamina": NumericROI("体力", (0, 0, 0, 0)),
+    # 体力归属画面读取（B6）：ROI 为 Phase 0 候选占位 [553,204,115,55]，実機校准后由主线替换
+    "stamina": NumericROI("体力", (553, 204, 115, 55)),
 }
 
 # 流属性画面显示日文全称（実機例「ビジュアル 3807%」），英文缩写保留兼容（旧测试/回放）
@@ -322,8 +322,8 @@ class ExamStateReader:
     def read_numerics(self) -> dict[str, NumericRead]:
         """读数值字段：对每个 ROI 跑 OCR，解析为 NumericRead。
 
-        ROI 坐标当前为占位（_NUMERIC_ROI 全 0），Step3 实机校准前读不到值，
-        build_exam_state 会回退默认值，保证降级运行。
+        除 stamina（B6 已填 Phase 0 候选占位）外，其余 ROI 为占位全 0，
+        Step3 実機校准前跳过不读；build_exam_state 会回退默认值，保证降级运行。
         """
         numerics: dict[str, NumericRead] = {}
         for key, roi_spec in _NUMERIC_ROI.items():
@@ -339,18 +339,22 @@ class ExamStateReader:
         round_: ExamRound,
         total_turns: int,
         stamina: int | None = None,
+        session: dict | None = None,
     ) -> ExamState:
         """读完整出牌状态：手牌 + 数值 + 组装 ExamState。
 
         stamina 显式传参优先；None 时从 numerics["stamina"]（画面 ROI）读取，
-        读不到回退 0（占位 ROI 校准前的安全降级）。
+        解析失败回退 0，不抛异常（占位 ROI 校准前的安全降级）。
+        session 为 session-state 的 round1 子树，透传 build_exam_state 注入跨回合
+        字段（cards_played/oneesan_used/natural_finisher_used/reprise_count 兜底），
+        None 时保持旧默认行为（Phase 2 出牌节点单调用链免二次组装）。
         """
         hand = self.read_hand()
         numerics = self.read_numerics()
         if stamina is None:
             v = numerics.get("stamina")
             stamina = v.value if v and v.value is not None else 0
-        return build_exam_state(hand, numerics, round_, total_turns, stamina)
+        return build_exam_state(hand, numerics, round_, total_turns, stamina, session=session)
 
 
 def _parse_numeric(key: str, raw: str) -> NumericRead:

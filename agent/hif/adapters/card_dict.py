@@ -16,7 +16,14 @@ YOLO(cards.onnx) 只输出 cards/suggestions/useless 三类 + box 位置，不�
 
 from __future__ import annotations
 
-from agent.hif.decisions.hand_meta import _load_skill_cards, _load_effects_pool, _load_skill_master
+from functools import lru_cache
+
+from agent.hif.decisions.hand_meta import (
+    _norm_key,
+    _load_skill_cards,
+    _load_effects_pool,
+    _load_skill_master,
+)
 
 # ガラクタロード策略必中的 3 张关键卡（决策分支 1/2/3 的触发条件）。
 KEY_CARDS = [
@@ -173,13 +180,45 @@ def normalize_card_name(ocr_text: str) -> str:
 def is_good_condition_card(card_name: str) -> bool:
     """判断卡名是否属于好调类卡（用于 good_condition_card_count 计数）。
 
-    简化判定：含「好調」字样或在 COMMON_GOOD_CONDITION_CARDS/KEY_CARDS 中。
-    精确判定依赖 hand_meta 的 effect_summary，待数据完善后升级。
+    B4 分层判定（效果池优先，硬编码名单降为 fallback）：
+    1. 效果池：skill_card_effects.json 中带 ExamParameterBuff 族 buff:good_condition
+       效果的基础卡（実データ 31 张，如「パンプアップ」「軽い足取り」；档位变体
+       「軽い足取り+」剥 + 号查基础名）；池内判负不短路——「国民的アイドル」等
+       KEY_CARDS 池内无好调 buff，仍由名单兜底保持现行为
+    2. 硬编码名单 fallback：KEY_CARDS / COMMON_GOOD_CONDITION_CARDS（「〜の基礎」系
+       基础卡不在 sync 池内）/ 含「好調」字样
+    池数据缺失时全走 fallback，保证降级可用。
     """
     if not card_name:
         return False
+    pool = _good_condition_pool_names()
+    if pool and _norm_key(card_name.rstrip("+")) in pool:
+        return True
     if card_name in KEY_CARDS:
         return True
     if card_name in COMMON_GOOD_CONDITION_CARDS:
         return True
     return "好調" in card_name or "好调" in card_name
+
+
+# 好调 buff 的池内判定信号（B4）：ExamParameterBuff 族效果类型（涵盖
+# ExamParameterBuffMultiplePerTurn 等变体）+ tag=buff:good_condition（絶好調
+# buff:excellent_condition 不算，与 scoring.py 效果建模同口径）。
+_GOOD_CONDITION_TAG = "buff:good_condition"
+_PARAMETER_BUFF_EFFECT_TYPE = "ExamParameterBuff"
+
+
+@lru_cache(maxsize=1)
+def _good_condition_pool_names() -> frozenset[str]:
+    """效果池中带好调 buff 的基础卡名集合（读盘一次；档位变体共享基础名判定）。"""
+    names: set[str] = set()
+    for base_name, card in _load_effects_pool().items():
+        for tier in card.get("tiers", {}).values():
+            for effect in tier.get("effects", []):
+                if (
+                    effect.get("tag") == _GOOD_CONDITION_TAG
+                    and _PARAMETER_BUFF_EFFECT_TYPE in (effect.get("effect_type") or "")
+                ):
+                    names.add(base_name)
+                    break
+    return frozenset(names)

@@ -232,5 +232,165 @@
     ],
     "created": "2026-08-20T20:36:36",
     "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
+  },
+  "crop-1787230026": {
+    "file": "crop-1787230026.png",
+    "source_image": "debug\\autodev\\snaps\\snap-1787229713.png",
+    "box": [
+      540,
+      230,
+      180,
+      150
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-20T20:47:06",
+    "note": ""
+  },
+  "crop-1787230197": {
+    "file": "crop-1787230197.png",
+    "source_image": "debug\\autodev\\snaps\\snap-1787230149.png",
+    "box": [
+      180,
+      950,
+      360,
+      130
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-20T20:49:57",
+    "note": ""
+  },
+  "crop-1787230230": {
+    "file": "crop-1787230230.png",
+    "source_image": "debug\\autodev\\snaps\\snap-1787230149.png",
+    "box": [
+      150,
+      1050,
+      420,
+      180
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-20T20:50:30",
+    "note": ""
+  },
+  "crop-1787230425": {
+    "file": "crop-1787230425.png",
+    "source_image": "debug\\autodev\\snaps\\snap-1787230401.png",
+    "box": [
+      220,
+      740,
+      280,
+      240
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-20T20:53:45",
+    "note": ""
+  },
+  "crop-1787271476": {
+    "file": "crop-1787271476.png",
+    "source_image": "C:\\Users\\haneball\\AppData\\Local\\Temp\\hif_sp_after.png",
+    "box": [
+      560,
+      815,
+      80,
+      60
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-21T08:17:56",
+    "note": ""
+  },
+  "crop-1787271480": {
+    "file": "crop-1787271480.png",
+    "source_image": "C:\\Users\\haneball\\AppData\\Local\\Temp\\hif_sp_after.png",
+    "box": [
+      560,
+      815,
+      80,
+      60
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-21T08:18:00",
+    "note": ""
+  },
+  "hif_buff_good_condition": {
+    "file": "hif_buff_good_condition.png",
+    "source_image": "debug/autodev/round1/turn03_pre.png",
+    "box": [
+      14,
+      253,
+      34,
+      47
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-21T11:41:19",
+    "note": "Round1 play integration Phase0 evidence 2026-08-21"
+  },
+  "hif_buff_excellent_condition": {
+    "file": "hif_buff_excellent_condition.png",
+    "source_image": "debug/autodev/round1/turn03_pre.png",
+    "box": [
+      14,
+      499,
+      34,
+      47
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-21T11:41:19",
+    "note": "Round1 play integration Phase0 evidence 2026-08-21"
+  },
+  "hif_buff_concentration": {
+    "file": "hif_buff_concentration.png",
+    "source_image": "debug/autodev/round1/turn03_pre.png",
+    "box": [
+      14,
+      536,
+      34,
+      47
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-21T11:41:19",
+    "note": "Round1 play integration Phase0 evidence 2026-08-21"
+  },
+  "hif_skip_button": {
+    "file": "hif_skip_button.png",
+    "source_image": "debug/autodev/round1/turn01_stable.png",
+    "box": [
+      598,
+      745,
+      122,
+      115
+    ],
+    "image_size": [
+      720,
+      1280
+    ],
+    "created": "2026-08-21T11:41:19",
+    "note": "Round1 play integration Phase0 evidence 2026-08-21"
   }
 }

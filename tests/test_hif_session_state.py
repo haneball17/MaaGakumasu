@@ -62,3 +62,35 @@ def test_round1_state_does_not_pollute_top_level(monkeypatch, tmp_path) -> None:
     assert "cards_played" not in state  # round1 字段不泄漏到顶层
     assert base._read_round1_state() == {"cards_played": 3, "oneesan_used": True}
     assert base._read_session_day() == 6  # 顶层 day 读取不受影响
+
+
+def test_round1_state_fields_cover_task_fields() -> None:
+    """ROUND1_STATE_FIELDS 覆盖 D1 任务五字段（turn/cards_played/oneesan_used/natural_finisher_used/reprise_count）。"""
+    base = _load_produce_hif_module()._ProduceHIFActionBase  # 只读类常量，无需重定向会话文件
+    assert base.ROUND1_STATE_FIELDS == (
+        "turn",
+        "cards_played",
+        "oneesan_used",
+        "natural_finisher_used",
+        "reprise_count",
+    )
+
+
+def test_reset_round1_state_clears_previous_run(monkeypatch, tmp_path) -> None:
+    """_reset_round1_state：整体替换 round1 子树（上局残留清零，Phase 2 新局入口调用）。"""
+    base = _fresh_base(monkeypatch, tmp_path)
+    # 模拟上局残留 + 局外脏键
+    base._write_round1_state({"turn": 9, "cards_played": 11, "oneesan_used": True, "stale_key": "x"})
+    base._write_session_state({"day_remaining": 2})
+
+    base._reset_round1_state()
+
+    state = base._read_round1_state()
+    assert state == {
+        "turn": 0,
+        "cards_played": 0,
+        "oneesan_used": False,
+        "natural_finisher_used": False,
+        "reprise_count": 0,
+    }  # 脏键一并清除（整体替换而非 patch 合并）
+    assert base._read_session_state()["day_remaining"] == 2  # 顶层字段不受影响

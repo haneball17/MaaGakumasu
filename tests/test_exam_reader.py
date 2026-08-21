@@ -13,7 +13,18 @@
 
 from __future__ import annotations
 
-from agent.hif.decisions.state import ROUND1_PLAY_RECORD_FIELDS, ExamRound, HandSummary
+import sys
+from pathlib import Path
+from importlib import import_module
+
+from agent.hif.decisions.state import (
+    ROUND1_PLAY_RECORD_FIELDS,
+    ExamRound,
+    ExamState,
+    ActionKind,
+    CardAction,
+    HandSummary,
+)
 from agent.hif.roundsim.adapter import ManualTurnRecord
 from agent.hif.adapters.card_dict import (
     KEY_CARDS,
@@ -57,6 +68,29 @@ def test_is_good_condition_card() -> None:
     assert is_good_condition_card("好調ターン") is True
     assert is_good_condition_card("トラブル") is False
     assert is_good_condition_card("") is False
+
+
+def test_is_good_condition_card_effects_pool_hit() -> None:
+    """B4 效果池命中：skill_card_effects.json 带 ExamParameterBuff 族 buff:good_condition
+    效果的卡判 True（档位变体剥 + 号查基础名）。"""
+    assert is_good_condition_card("パンプアップ") is True
+    assert is_good_condition_card("軽い足取り") is True
+    assert is_good_condition_card("軽い足取り+") is True  # 档位变体
+    assert is_good_condition_card("お姉さんの感覚") is True  # 池内带好調 buff 的关键卡
+
+
+def test_is_good_condition_card_pool_miss_falls_back() -> None:
+    """B4 fallback：池外卡（「〜の基礎」系基础卡不在 sync 池内）走硬编码名单判 True。"""
+    assert is_good_condition_card("アピールの基礎") is True  # COMMON 名单 fallback
+    assert is_good_condition_card("ダンスの基礎") is True
+
+
+def test_is_good_condition_card_pool_negative() -> None:
+    """B4 池内判负：在池中且无好调 buff、名单/字样也不沾的卡判 False（不因池外名单误判）。"""
+    # 「アピールの基本」在池内（仅 score:parameter_add，无 buff:good_condition），
+    # 与硬编码名单的「アピールの基礎」（旧 wiki 命名，池外）不同名 → 两者皆 miss
+    assert is_good_condition_card("アピールの基本") is False
+    assert is_good_condition_card("眠気") is False  # Trouble 卡，池内无好调效果
 
 
 def test_normalize_card_name_strips_space() -> None:
@@ -279,11 +313,12 @@ def test_reader_read_hand_uses_yolo_then_ocr() -> None:
 
 
 def test_reader_skips_zero_roi_numerics() -> None:
-    """占位 ROI（全0）跳过 OCR，避免误读（Step3 校准前的安全行为）。"""
+    """占位 ROI（全0）跳过 OCR，避免误读；stamina（B6 已填候选占位）除外。"""
     reader = ExamStateReader(_MockOcrPort([]))
     numerics = reader.read_numerics()
-    # 所有 ROI 当前为占位（全0），应全部跳过
-    assert numerics == {}
+    # 除 stamina 外其余 ROI 仍为占位全 0，应跳过；stamina 尝试读取但 mock 无文本
+    assert set(numerics.keys()) == {"stamina"}
+    assert numerics["stamina"].value is None  # 画面读不到 → 解析失败不抛异常
 
 
 # ---------------------------------------------------------------------------
@@ -327,9 +362,25 @@ def test_reader_stamina_none_reads_numerics(monkeypatch) -> None:
 
 
 def test_reader_stamina_none_falls_back_to_zero() -> None:
-    """stamina=None 且画面读不到（占位 ROI 跳过）时回退 0。"""
+    """stamina=None 且画面读不到（mock OCR 返回空）时回退 0，不抛异常。"""
     state = ExamStateReader(_MockOcrPort([])).read_exam_state(ExamRound.HONSEN_R1, total_turns=9)
     assert state.stamina == 0
+
+
+def test_reader_read_exam_state_injects_session() -> None:
+    """C1 透传：read_exam_state 的 session 参数直达 build_exam_state（Phase 2 单调用链）。"""
+    state = ExamStateReader(_MockOcrPort([])).read_exam_state(
+        ExamRound.HONSEN_R1,
+        total_turns=9,
+        session={"cards_played": 4, "oneesan_used": True, "reprise_count": 2},
+    )
+    assert state.cards_played == 4
+    assert state.oneesan_used is True
+    assert state.reprise_count == 2  # numerics 无 reprise（占位 ROI 跳过）→ session 兜底
+    # 不传 session 保持旧默认行为
+    state_default = ExamStateReader(_MockOcrPort([])).read_exam_state(ExamRound.HONSEN_R1, total_turns=9)
+    assert state_default.cards_played == 0
+    assert state_default.oneesan_used is False
 
 
 # ---------------------------------------------------------------------------
@@ -416,3 +467,99 @@ def test_round1_play_record_fields_align_manual_turn_record() -> None:
     manual_fields = tuple(ManualTurnRecord.model_fields.keys())
     assert ROUND1_PLAY_RECORD_FIELDS[: len(manual_fields)] == manual_fields
     assert ROUND1_PLAY_RECORD_FIELDS[len(manual_fields):] == ("action", "target_card", "reason", "dry_run", "evidence")
+
+
+def _load_produce_hif_module():
+    # 与 test_hif_session_state.py 相同的加载方式：agent/ 进 sys.path 以满足 produce_hif 内 `from utils import logger`
+    agent_path = str(Path(__file__).resolve().parents[1] / "agent")
+    sys.path.insert(0, agent_path)
+    try:
+        return import_module("agent.custom.action.produce_hif")
+    finally:
+        sys.path.remove(agent_path)
+
+
+def _build_state() -> ExamState:
+    """构造带跨回合字段的 ExamState（F3 记录组装测试输入）。"""
+    hand = HandSummary(
+        has_shizen_no_miryoku=False,
+        has_oneesan_no_kankaku=True,
+        has_kokuminteki_idol=False,
+        good_condition_card_count=1,
+        swap_hand_available=False,
+        draw_available=False,
+    )
+    return ExamState(
+        round=ExamRound.HONSEN_R1,
+        turn=3,
+        total_turns=9,
+        current_flow="Vi",
+        good_condition_turns=6,
+        focus=4,
+        stamina=52,
+        hand=hand,
+        reprise_count=1,
+        cards_played=7,
+        deck_size=14,
+        oneesan_used=True,
+        natural_finisher_used=False,
+        available_p_drinks=["初星黒酢"],
+    )
+
+
+def test_build_round1_play_record_schema_and_values() -> None:
+    """F3 build_round1_play_record：字段序与 ROUND1_PLAY_RECORD_FIELDS 一致，值正确映射。"""
+    produce_hif = _load_produce_hif_module()
+    state = _build_state()
+    action = CardAction(kind=ActionKind.PLAY_CARD, target_card="お姉さんの感覚", reason="分支3 循环启动")
+    record = produce_hif._ProduceHIFActionBase.build_round1_play_record(
+        state,
+        action,
+        played_cards=["お姉さんの感覚"],
+        turn_score=52000,
+        dry_run=True,
+        evidence={"target_box": [100, 200, 120, 240], "ocr_text": "お姉さんの感覚"},
+    )
+    assert tuple(record.keys()) == ROUND1_PLAY_RECORD_FIELDS
+    assert record["turn"] == 3
+    assert record["flow"] == "Vi"
+    assert record["played_cards"] == ["お姉さんの感覚"]
+    assert record["good_condition_turns"] == 6
+    assert record["stamina"] == 52
+    assert record["turn_score"] == 52000
+    assert record["action"] == "play_card"
+    assert record["target_card"] == "お姉さんの感覚"
+    assert record["reason"] == "分支3 循环启动"
+    assert record["dry_run"] is True
+    assert record["evidence"]["target_box"] == [100, 200, 120, 240]
+
+
+def test_build_round1_play_record_defaults_explicit() -> None:
+    """F3 缺省参数显式落 None/[]/{}（JSONL schema 稳定，「未记录」可辨）。"""
+    produce_hif = _load_produce_hif_module()
+    state = _build_state()
+    action = CardAction(kind=ActionKind.SKIP, target_card=None, reason="无关键卡")
+    record = produce_hif._ProduceHIFActionBase.build_round1_play_record(state, action)
+    assert record["played_cards"] == []
+    assert record["turn_score"] is None
+    assert record["dry_run"] is False
+    assert record["evidence"] == {}
+    assert record["action"] == "skip"
+
+
+def test_archive_round1_play_reorders_and_delegates(monkeypatch, tmp_path) -> None:
+    """F3 _archive_round1_play：乱序/缺键入参重排为 schema 序后委托 _archive_decision。"""
+    produce_hif = _load_produce_hif_module()
+    base = produce_hif._ProduceHIFActionBase
+    captured: dict = {}
+    monkeypatch.setattr(base, "_archive_decision", staticmethod(lambda image, screen_state, record: captured.update({
+        "image": image, "screen_state": screen_state, "record": record,
+    })))
+    # 乱序 + extra 键入参
+    base._archive_round1_play("fake-image", {"reason": "x", "turn": 5, "extra_note": "retry"})
+    assert captured["screen_state"] == base.ROUND1_PLAY_SCREEN == "round1_play"
+    keys = tuple(captured["record"].keys())
+    assert keys[: len(ROUND1_PLAY_RECORD_FIELDS)] == ROUND1_PLAY_RECORD_FIELDS
+    assert captured["record"]["turn"] == 5
+    assert captured["record"]["turn_score"] is None  # 缺键补 None
+    assert captured["record"]["extra_note"] == "retry"  # extra 键保留在后

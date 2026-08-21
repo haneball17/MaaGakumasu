@@ -518,9 +518,8 @@ def test_trigger_unit_interval_and_gate():
     """每 4 张好調系卡到点;好調≥8 才発動;到点未満门槛作废(数据驱动実例)。"""
     import random
 
-    from agent.hif.roundsim.deck import DeckZones
+    from agent.hif.roundsim.deck import DeckZones, resolve_card
     from agent.hif.roundsim.spec import CardInDeck
-    from agent.hif.roundsim.deck import resolve_card
 
     good_card = resolve_card(CardInDeck(name="ステップの基本"))  # 好調2T(好調系)
     plain_card = resolve_card(CardInDeck(name="アピールの基本"))  # 无好調(非対象)
@@ -688,7 +687,7 @@ def test_ab_crn_same_opponents_across_strategies():
 
 def test_run_ab_small_n():
     """A/B runner 小样本:三策略统计产出 + 报告格式含假设清单。"""
-    from agent.hif.roundsim.ab import format_report, run_ab
+    from agent.hif.roundsim.ab import run_ab, format_report
 
     stats = run_ab(PRESETS["hif_r1_rinami"], ["garakuta_rinami", "greedy"], n=12, bootstrap=False)
     assert len(stats) == 2
@@ -699,7 +698,7 @@ def test_run_ab_small_n():
 
 def test_combined_mode_r1r2():
     """優勝组合模式:R1 第 1 位 ×1.2 + R2 vs 双対手合计;総合分 > 单段 R1 分。"""
-    from agent.hif.roundsim.ab import _combined_total, run_ab
+    from agent.hif.roundsim.ab import run_ab, _combined_total
 
     stats = run_ab(
         PRESETS["hif_r1_rinami"], ["greedy"], n=5, preset_name="hif_r1_rinami",
@@ -714,9 +713,9 @@ def test_combined_mode_r1r2():
 # ---------------------------------------------------------------------------
 
 from agent.hif.roundsim.adapter import (  # noqa: E402
+    ObservedCaseGap,
     ManualGameRecord,
     ManualTurnRecord,
-    ObservedCaseGap,
     observed_final_scores,
     spec_from_observed_case,
     validate_trace_against_manual,
@@ -792,7 +791,7 @@ def test_ui_contract():
 
 def test_deck_editor_endpoints():
     """M-UIb 卡组编辑器接口:预设逐卡内容 + 流派池搜索清单(含 supported 标记与效果预览)。"""
-    from tools.round_sim_app import get_preset_deck, list_cards
+    from tools.round_sim_app import list_cards, get_preset_deck
 
     deck = get_preset_deck(preset="hif_r1_rinami")["deck"]
     assert len(deck) == 20 and {"name", "tier"} <= set(deck[0])

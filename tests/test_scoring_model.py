@@ -15,10 +15,10 @@ from pathlib import Path
 import pytest
 
 from agent.hif.decisions.scoring import (
-    DecisionContext,
     ScoringParams,
-    score_card_by_name,
+    DecisionContext,
     score_effects,
+    score_card_by_name,
 )
 
 _DATA = Path(__file__).resolve().parents[1] / "assets" / "data" / "hif" / "skill_card_effects.json"
