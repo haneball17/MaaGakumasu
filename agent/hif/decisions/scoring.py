@@ -354,3 +354,109 @@ def score_drink_by_name(
     if drink is None:
         return None
     return score_effects(drink.get("effects", []), None, context or DecisionContext(), params)
+
+
+# -----------------------------------------------------------------------
+# 対局资源名称→本地库匹配三件套(五轮验证 2026-08-22):
+#   P 道具 → pitem_effects.json(权威库 153 件)
+#   P 饮料 → drinks.json(29 种)/drink_effects.json
+#   牌库卡名 → skill_cards 复用 card_dict.normalize_card_name(调用方直接用)
+# 匹配容错链:NFKC 归一 → 精确 → 部分匹配(道具名长 OCR 易截断) → 编辑距离唯一最近邻。
+# -----------------------------------------------------------------------
+
+_PITEM_EFFECTS_PATH = Path(__file__).resolve().parents[3] / "assets" / "data" / "hif" / "pitem_effects.json"
+_DRINKS_PATH = Path(__file__).resolve().parents[3] / "assets" / "data" / "hif" / "drinks.json"
+
+
+@lru_cache(maxsize=1)
+def _load_pitem_effects() -> dict[str, dict]:
+    """P 道具权威库(pitem_effects.json 153 件,名称→原始记录),键 NFKC 归一名称。"""
+    if not _PITEM_EFFECTS_PATH.exists():
+        return {}
+    raw = json.loads(_PITEM_EFFECTS_PATH.read_text(encoding="utf-8"))
+    return {
+        unicodedata.normalize("NFKC", item["name"]): item
+        for item in raw.get("items", [])
+        if item.get("name")
+    }
+
+
+@lru_cache(maxsize=1)
+def _load_all_drinks() -> dict[str, dict]:
+    """全量饮料表(drinks.json 29 种,対局槽位可能持有 in_pool 外种类),键 NFKC。"""
+    if not _DRINKS_PATH.exists():
+        return {}
+    raw = json.loads(_DRINKS_PATH.read_text(encoding="utf-8"))
+    return {
+        unicodedata.normalize("NFKC", d["name_jp"]): d
+        for d in raw.get("drinks", [])
+        if d.get("name_jp")
+    }
+
+
+def _fuzzy_match_name(text: str, names: list[str]) -> str | None:
+    """编辑距离兜底(照 card_dict._fuzzy_match 语义本地实现,避免评分模块反向依赖适配层):
+    唯一最近邻且距离 ≤(≤5 字限 1,≥6 字限 2)才采纳。"""
+    best_name: str | None = None
+    best_dist = float("inf")
+    ties = 0
+    limit = 1 if len(text) <= 5 else 2
+    for name in names:
+        if text == name:
+            continue
+        # Levenshtein(名短,O(n·m) 足够)
+        prev = list(range(len(name) + 1))
+        for i, ca in enumerate(text, 1):
+            cur = [i]
+            for j, cb in enumerate(name, 1):
+                cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+            prev = cur
+        dist = prev[-1]
+        if dist < best_dist:
+            best_name, best_dist, ties = name, dist, 0
+        elif dist == best_dist:
+            ties += 1
+    if best_name is None or best_dist > limit or ties:
+        return None
+    return best_name
+
+
+def match_pitem_name(ocr_text: str) -> tuple[str | None, dict | None]:
+    """OCR 文本 → P 道具库(规范名, 原始记录);未命中 (None, None) 不乱猜。
+
+    容错链:NFKC → 精确 → 部分匹配(OCR 串含库名,或库名含 OCR 串且长度过半
+    ——道具详情弹窗换行会截断长名) → 编辑距离唯一最近邻。
+    """
+    text = unicodedata.normalize("NFKC", (ocr_text or "").strip().replace(" ", "").replace("　", ""))
+    if not text:
+        return None, None
+    pool = _load_pitem_effects()
+    exact = pool.get(text)
+    if exact is not None:
+        return text, exact
+    for name, record in pool.items():
+        if text in name or (name in text and len(name) >= max(3, len(text) // 2)):
+            return name, record
+    fuzzy = _fuzzy_match_name(text, list(pool))
+    if fuzzy:
+        return fuzzy, pool[fuzzy]
+    return None, None
+
+
+def match_drink_name(ocr_text: str) -> tuple[str | None, dict | None]:
+    """OCR 文本 → 饮料表(规范名, 原始记录);容错链同 match_pitem_name(部分匹配
+    适配瓶名短截断:name in text 需长度过半)。"""
+    text = unicodedata.normalize("NFKC", (ocr_text or "").strip().replace(" ", "").replace("　", ""))
+    if not text:
+        return None, None
+    pool = _load_all_drinks()
+    exact = pool.get(text)
+    if exact is not None:
+        return text, exact
+    for name, record in pool.items():
+        if name in text or (text in name and len(text) >= max(3, len(name) // 2)):
+            return name, record
+    fuzzy = _fuzzy_match_name(text, list(pool))
+    if fuzzy:
+        return fuzzy, pool[fuzzy]
+    return None, None

@@ -103,6 +103,14 @@ class ExamState:
     oneesan_used: bool  # お姉さんの感覚本レッスン已用
     natural_finisher_used: bool  # 自然体の魅力本レッスン已用
     available_p_drinks: list[str]
+    # 対局资源全景（五轮验证 2026-08-22 接口）：识别层读取→决策层只读消费。
+    # 现策略 GarakutaRinami 暂不消费；字段语义：
+    #   p_items: [{name(库内规范名), raw(OCR 原文), progress_left, effects(库内效果列表)}]
+    #   p_drinks: [{slot(1-4), name, raw, effects}]
+    #   deck: {draw: [...], discard: [...], exclude: [...], hand: [...]}（卡名清单）
+    p_items: list[dict] = field(default_factory=list)
+    p_drinks: list[dict] = field(default_factory=list)
+    deck: dict = field(default_factory=dict)
     # 横切参数：识别层填充后用于参数感知告警，默认空值不破坏旧构造。
     params: ParamSet = field(default_factory=ParamSet)
     judge_thresholds: JudgeThresholds = field(default_factory=JudgeThresholds)

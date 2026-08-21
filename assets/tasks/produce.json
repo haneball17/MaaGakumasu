@@ -611,6 +611,7 @@
 					"pipeline_override": {
 						"ProduceHIFRound1Flag": {
 							"next": [
+								"ProduceHIFRound2Flag",
 								"ProduceHIFRound1PlayFlag"
 							]
 						}

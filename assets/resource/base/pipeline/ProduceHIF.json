@@ -12,6 +12,7 @@
             "ProduceExit",
             "ProduceHIFFinishedFlag",
             "ProduceHIFFailedFlag",
+            "ProduceHIFCompleteFlag",
             "[JumpBack]ProduceHIFRound1Flag",
             "[JumpBack]ProduceHIFRound2Flag",
             "[JumpBack]ProduceHIFPrepRoot"
@@ -30,6 +31,7 @@
             "param": {}
         },
         "next": [
+            "[JumpBack]ProduceHIFLackAPFlag",
             "[JumpBack]ProduceHIFStartConfirmFlag",
             "[JumpBack]ProduceHIFIdolSelectFlag",
             "[JumpBack]ProduceChooseHIFPItemFlag",
@@ -40,7 +42,101 @@
             "ProduceHIFScheduleRoot"
         ],
         "focus": {
-            "Node.Action.Succeeded": "[color:LimeGreen]HIF: 准备段路由(開始確認优先/偶像选择/PItem)[/color]"
+            "Node.Action.Succeeded": "[color:LimeGreen]HIF: 准备段路由(AP不足/開始確認优先/偶像选择/PItem)[/color]"
+        }
+    },
+    "ProduceHIFLackAPFlag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/ap_lack.png"
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFLackAPRestoreFlag"
+        ],
+        "post_wait_freezes": 200,
+        "focus": {
+            "Node.Action.Succeeded": "[color:orange]HIF: 体力不足弹窗(复用初流程ap_lack模板;HIF专属接入,「使用体力药」=Yes授权)[/color]"
+        }
+    },
+    "ProduceHIFLackAPRestoreFlag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/ap_restore.png"
+                ],
+                "roi": [
+                    26,
+                    750,
+                    670,
+                    465
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFLackAPDecideFlag",
+            "[JumpBack]ProduceHIFLackAPUseFlag"
+        ],
+        "post_wait_freezes": 200
+    },
+    "ProduceHIFLackAPUseFlag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/ap_use.png"
+                ],
+                "roi": [
+                    26,
+                    750,
+                    666,
+                    412
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_wait_freezes": 200
+    },
+    "ProduceHIFLackAPDecideFlag": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "produce/ap_restore.png"
+                ],
+                "roi": [
+                    26,
+                    750,
+                    670,
+                    465
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFPrepRoot"
+        ],
+        "post_wait_freezes": 200,
+        "focus": {
+            "Node.Action.Succeeded": "[color:green]HIF: 已使用体力药(链尾回PrepRoot继续開始確認)[/color]"
         }
     },
     "ProduceHIFScheduleRoot": {
@@ -55,6 +151,19 @@
   "next": [
     "[JumpBack]ProduceHIFSupportEventPopup",
     "[JumpBack]ProduceHIFRound1Flag",
+    "[JumpBack]ProduceHIFTapNextFlag",
+    "[JumpBack]ProduceHIFRound2ResultFlag",
+    "[JumpBack]ProduceHIFRound2DefeatFlag",
+    "[JumpBack]ProduceHIFRetryConfirmFlag",
+    "[JumpBack]ProduceHIFScoreSettlementFlag",
+    "[JumpBack]ProduceHIFMemoryFlag",
+    "[JumpBack]ProduceHIFMemoryDetailNextFlag",
+    "[JumpBack]ProduceHIFItemGainFlag",
+    "[JumpBack]ProduceHIFRewardPageFlag",
+    "[JumpBack]ProduceHIFGashaAdCloseFlag",
+    "ProduceHIFCompleteFlag",
+    "[JumpBack]ProduceHIFIntervalFlag",
+    "[JumpBack]ProduceHIFR2ConditionFlag",
     "[JumpBack]ProduceHIFPDrinkObtainedBlank",
     "[JumpBack]ProduceHIFSelectChangeTargetFlag",
             "[JumpBack]ProduceHIFSelectChangeSourceFlag",
@@ -68,14 +177,10 @@
             "[JumpBack]ProduceHIFPGainBlank",
             "[JumpBack]ProduceHIFClassOptionFlag",
             "[JumpBack]ProduceHIFCardShowBlank",
-            "[JumpBack]ProduceHIFTapNextFlag",
             "[JumpBack]ProduceChooseHIFEventFlag",
-            "[JumpBack]ProduceHIFPublicLessonResultFlag",
-            "[JumpBack]ProduceHIFIntervalFlag",
-            "[JumpBack]ProduceHIFScoreSettlementFlag",
-            "[JumpBack]ProduceHIFMemoryFlag"
+            "[JumpBack]ProduceHIFPublicLessonResultFlag"
         ],
-        "timeout": 40000,
+        "timeout": 90000,
         "on_error": [
             "ProduceHIFUnknownStop"
         ],
@@ -156,10 +261,11 @@
             "param": {}
         },
         "next": [
+            "ProduceHIFRound2Flag",
             "ProduceHIFRound1ObserveFlag"
         ],
         "focus": {
-            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=Round1对局(残りターン盘锚)[/color]"
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=Round1对局(残りターン盘锚,两位数先判R2消歧)[/color]"
         }
     },
     "ProduceHIFRound2Flag": {
@@ -167,15 +273,13 @@
             "type": "OCR",
             "param": {
                 "expected": [
-                    ".*Round\\s*2.*",
-                    ".*ROUND\\s*2.*",
-                    ".*2nd.*Round.*"
+                    ".*1[0-2].*"
                 ],
                 "roi": [
-                    40,
-                    40,
-                    640,
-                    220
+                    35,
+                    60,
+                    55,
+                    55
                 ]
             }
         },
@@ -184,10 +288,43 @@
             "param": {}
         },
         "next": [
-            "ProduceHIFUnknownStop"
+            "ProduceHIFRound2PlayFlag"
         ],
         "focus": {
-            "Node.Recognition.Succeeded": "[color:Orange]HIF: Round2(首版外,记录后停止)[/color]"
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=Round2对局(残りターン两位数锚10-12,実機 2026-08-20 実測 box[39,68,56,41];废弃推测文案Round 2)[/color]"
+        }
+    },
+    "ProduceHIFRound2PlayFlag": {
+        "recognition": {
+            "type": "DirectHit",
+            "param": {}
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFRound1Play",
+                "custom_action_param": {
+                    "round1_mode": "play",
+                    "total_turns": 12,
+                    "round": "r2",
+                    "round_tag": "round2"
+                }
+            }
+        },
+        "next": [
+            "[JumpBack]ProduceHIFRound2ResultFlag",
+            "[JumpBack]ProduceHIFRound2DefeatFlag",
+            "[JumpBack]ProduceHIFRound1ResultFlag",
+            "[JumpBack]ProduceHIFRound1StarGainFlag",
+            "[JumpBack]ProduceHIFTapNextFlag",
+            "ProduceHIFRetryConfirmFlag"
+        ],
+        "timeout": 20000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "[color:LimeGreen]HIF: Round2出牌完成(12回合,复用Round1Play大包参数化),出口轮询R2結果/敗退/再挑戦確認[/color]"
         }
     },
     "ProduceHIFFinishedFlag": {
@@ -397,6 +534,7 @@
             "[JumpBack]ProduceHIFRound1StarGainFlag",
             "[JumpBack]ProduceHIFRound1SummaryFlag",
             "[JumpBack]ProduceHIFTapNextFlag",
+            "[JumpBack]ProduceHIFCheerStickBlank",
             "ProduceHIFIntervalFlag"
         ],
         "timeout": 20000,
@@ -404,7 +542,39 @@
             "ProduceHIFScheduleRoot"
         ],
         "focus": {
-            "Node.Action.Succeeded": "[color:LimeGreen]HIF: Round1出牌大包完成(9回合读画面→决策→点击→验证→落盘),出口轮询結果页/过渡页/Interval;仅「Round1出牌」选项开启时经override进入,默认走Observe观察链[/color]"
+            "Node.Action.Succeeded": "[color:LimeGreen]HIF: Round1出牌大包完成(9回合读画面→决策→点击→验证→落盘),出口轮询結果页/応援棒/Interval;仅「Round1出牌」选项开启时经override进入,默认走Observe观察链[/color]"
+        }
+    },
+    "ProduceHIFCheerStickBlank": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*試験開始時.*",
+                    ".*ランダムな位置に生成.*"
+                ],
+                "roi": [
+                    40,
+                    300,
+                    640,
+                    400
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    500,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 応援棒展示页(実機 2026-08-20 取证:効果文「試験開始時…ランダムな位置に生成」,点空白(360,500)进Interval)[/color]"
         }
     },
     "ProduceHIFRound1ResultFlag": {
@@ -599,7 +769,10 @@
             "type": "OCR",
             "param": {
                 "expected": [
-                    ".*タップして次へ.*"
+                    ".*タップして次へ.*",
+                    ".*TAP.*次へ.*",
+                    ".*TAPで次へ.*",
+                    "^TAP$"
                 ],
                 "roi": [
                     140,
@@ -617,7 +790,7 @@
         },
         "post_delay": 800,
         "focus": {
-            "Node.Recognition.Succeeded": "[color:Orange]HIF: 演出页「タップして次へ」(実機 2026-08-15:中盘順位展示等)[/color]"
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 演出页「タップして次へ/TAPで次へ」(実機 2026-08-15/08-20:中盘順位展示/最終評価完了页;TAP变体 2026-08-22 补)[/color]"
         }
     },
     "ProduceHIFDrinkRewardFlag": {
@@ -851,9 +1024,9 @@
             }
         },
         "action": {
-            "type": "Click",
+            "type": "Custom",
             "param": {
-                "target": true
+                "custom_action": "ProduceHIFPDrinkObtainedAuto"
             }
         },
         "post_delay": 800,
@@ -1042,28 +1215,75 @@
             }
         },
         "action": {
-            "type": "DoNothing",
-            "param": {}
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFIntervalAuto"
+            }
         },
         "next": [
-            "ProduceHIFUnknownStop"
+            "ProduceHIFR2ConditionFlag"
+        ],
+        "timeout": 15000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
         ],
         "focus": {
-            "Node.Recognition.Succeeded": "[color:Orange]HIF 未覆盖：Interval[/color]"
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: Interval页(実機 2026-08-20 取证:終了(663,1082)容点1-2次;首版策略直接終了,P点消费探索轮补)[/color]"
         }
     },
-    "ProduceHIFScoreSettlementFlag": {
+    "ProduceHIFR2ConditionFlag": {
         "recognition": {
             "type": "OCR",
             "param": {
                 "expected": [
-                    ".*優勝.*"
+                    ".*合計評価で.*",
+                    ".*優勝を競.*",
+                    ".*優勝条件.*"
                 ],
                 "roi": [
                     20,
-                    20,
-                    240,
-                    160
+                    300,
+                    680,
+                    220
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    1150,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1500,
+        "next": [
+            "ProduceHIFRound2Flag"
+        ],
+        "timeout": 20000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: R2優勝条件页(実機 2026-08-22 校准:横幅「ラウンド1、ラウンド2の合計評価でH.I.F優勝を競います」box[52,408,628,30],旧锚「合計スコア」不匹配已废;点底部(360,1150)进R2,未生效回ScheduleRoot重路由再点)[/color]"
+        }
+    },
+    "ProduceHIFRound2ResultFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*ラウンド2結果.*",
+                    ".*ラウンド２結果.*"
+                ],
+                "roi": [
+                    0,
+                    100,
+                    260,
+                    70
                 ]
             }
         },
@@ -1072,10 +1292,297 @@
             "param": {}
         },
         "next": [
-            "ProduceHIFUnknownStop"
+            "ProduceHIFRound2ResultNextButton"
         ],
         "focus": {
-            "Node.Recognition.Succeeded": "[color:Orange]HIF 未覆盖：结算[/color]"
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: Round2結果页(勝利版;同页再挑戦危険禁点,只经NextButton点次へ;敗退版走DefeatFlag)[/color]"
+        }
+    },
+    "ProduceHIFRound2ResultNextButton": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*次へ.*"
+                ],
+                "roi": [
+                    300,
+                    1100,
+                    140,
+                    60
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: Round2結果页次へ按钮(ROI同R1版,与再挑戦[88,1116]无重叠)[/color]"
+        }
+    },
+    "ProduceHIFRound2DefeatFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*敗退.*"
+                ],
+                "roi": [
+                    0,
+                    80,
+                    300,
+                    60
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFRound2ResultNextButton"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: Round2敗退页(実機 2026-08-20 取证:标题「敗退」[22,93];点次へ→再挑戦確認弹窗→プロデュース終了走正常结算,敗退非故障)[/color]"
+        }
+    },
+    "ProduceHIFRetryConfirmFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*再挑戦が可能.*",
+                    ".*本当に終了.*"
+                ],
+                "roi": [
+                    40,
+                    700,
+                    640,
+                    180
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFRetryConfirmAuto"
+            }
+        },
+        "next": [
+            "ProduceHIFScoreSettlementFlag"
+        ],
+        "timeout": 30000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 再挑戦確認弹窗(実機 2026-08-20 取证:プロデュース終了(210,1155)=接受结果进结算,非中断;再挑戦[471,1133]默认不点,探索轮放开;終了后直连最終評価结算链)[/color]"
+        }
+    },
+    "ProduceHIFScoreSettlementFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*プロデュース評価.*",
+                    ".*最終.*評価.*"
+                ],
+                "roi": [
+                    20,
+                    40,
+                    680,
+                    100
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    1140,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 最終プロデュース評価页(実機 2026-08-20 取证:評価点+「TAPで次へ」[273,1128]→点(360,1140)推进;旧「優勝」锚废弃——与R2優勝条件页冲突)[/color]"
+        }
+    },
+    "ProduceHIFMemoryGenerateFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*生成.*"
+                ],
+                "roi": [
+                    240,
+                    920,
+                    240,
+                    100
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {}
+        },
+        "post_delay": 1500,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: MEMORY生成页(実機 2026-08-20 取证:生成按钮(360,973);敗退也生成メモリー;ROI锁按钮区防误点他处「生成」)[/color]"
+        }
+    },
+    "ProduceHIFMemoryDetailNextFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*獲得可能.*",
+                    ".*メモリー変換.*"
+                ],
+                "roi": [
+                    20,
+                    100,
+                    680,
+                    300
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFMemoryDetailNextAuto"
+            }
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: メモリー詳細页(実機 2026-08-22:次へ OCR 锚定点击(固定坐标会误入浏览详细页),Custom 内 BACK 自愈误入分支;再生成/一覧默认不点,探索轮放开)[/color]"
+        }
+    },
+    "ProduceHIFItemGainFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*獲得.*"
+                ],
+                "roi": [
+                    200,
+                    300,
+                    320,
+                    300
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    1200,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1200,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: イテム獲得演出页(実機 2026-08-20 取证:逐项动画,推进点×(360,1200)画面其他点击无效;[JumpBack]循环多次获得)[/color]"
+        }
+    },
+    "ProduceHIFRewardPageFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*HIF報酬.*",
+                    ".*報酬.*成長.*",
+                    ".*プロデュース履歴.*"
+                ],
+                "roi": [
+                    20,
+                    100,
+                    680,
+                    600
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    377,
+                    1159,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1200,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: HIF報酬/成長页(実機 2026-08-22 校准:次へbox[352,1144,51,30]→点(377,1159);旧位(560,1150)误点プロデュース履歴[505,1137,183,40],次へ×2 循环点击)[/color]"
+        }
+    },
+    "ProduceHIFGashaAdCloseFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*ガシヤ.*",
+                    ".*ガシャ.*",
+                    ".*ガチャ.*"
+                ],
+                "roi": [
+                    100,
+                    300,
+                    500,
+                    200
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    1175,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1500,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:Red]HIF: ガシャ広告页(危険区!実機取证「福井公演記念ガシヤ有償限定」;絶不点ガシャへ[324,1034],只点底部×(360,1175)关闭;expected含ガシヤ実測变体)[/color]"
+        }
+    },
+    "ProduceHIFCompleteFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*プロデュース.*"
+                ],
+                "roi": [
+                    20,
+                    1080,
+                    220,
+                    140
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 回到主页面(プロデュース菜单锚)——本轮培育完整走完,任务成功[/color]"
         }
     },
     "ProduceHIFMemoryFlag": {
@@ -1099,10 +1606,15 @@
             "param": {}
         },
         "next": [
-            "ProduceHIFUnknownStop"
+            "ProduceHIFMemoryGenerateFlag",
+            "ProduceHIFMemoryDetailNextFlag"
+        ],
+        "timeout": 8000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
         ],
         "focus": {
-            "Node.Recognition.Succeeded": "[color:Orange]HIF 未覆盖：Memory[/color]"
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: メモリー系页面(生成/詳細分流路由)[/color]"
         }
     },
     "ProduceHIFIdolSelectFlag": {

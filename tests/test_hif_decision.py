@@ -270,7 +270,8 @@ def test_rinami_hif_preset_uses_daily_schedule_observed_in_finals_log():
 def test_hif_pipeline_routes_round1_to_observe_stop_not_generic_card_action():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
-    assert payload["ProduceHIFRound1Flag"]["next"] == ["ProduceHIFRound1ObserveFlag"]
+    # 两位数 R2 锚排首位消歧（2026-08-22 五轮验证）；默认（无 override）走 Observe 观察链
+    assert payload["ProduceHIFRound1Flag"]["next"] == ["ProduceHIFRound2Flag", "ProduceHIFRound1ObserveFlag"]
     assert payload["ProduceHIFRound1ObserveFlag"]["action"]["param"]["custom_action"] == "ProduceHIFRound1Observe"
     assert payload["ProduceHIFRound1ReachedStop"]["action"]["type"] == "StopTask"
     assert "ProduceCardsFlag" not in payload["ProduceHIFRound1Flag"]["next"]
@@ -279,9 +280,13 @@ def test_hif_pipeline_routes_round1_to_observe_stop_not_generic_card_action():
 def test_hif_pipeline_sends_unsupported_pages_to_safe_stop():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
-    assert payload["ProduceHIFIntervalFlag"]["next"] == ["ProduceHIFUnknownStop"]
-    assert payload["ProduceHIFScoreSettlementFlag"]["next"] == ["ProduceHIFUnknownStop"]
-    assert payload["ProduceHIFMemoryFlag"]["next"] == ["ProduceHIFUnknownStop"]
+    # 2026-08-22 五轮验证：Interval/结算/メモリー 已入主线（next 指后续链不再兜底停止）；
+    # UnknownStop 只保留在最外层主路由 ScheduleRoot 的 on_error（子序列宿主一律指上层路由根）
+    assert payload["ProduceHIFScheduleRoot"]["on_error"] == ["ProduceHIFUnknownStop"]
+    assert payload["ProduceHIFIntervalFlag"]["next"] == ["ProduceHIFR2ConditionFlag"]
+    assert payload["ProduceHIFIntervalFlag"]["on_error"] == ["ProduceHIFScheduleRoot"]
+    assert payload["ProduceHIFMemoryFlag"]["next"] == ["ProduceHIFMemoryGenerateFlag", "ProduceHIFMemoryDetailNextFlag"]
+    assert payload["ProduceHIFMemoryFlag"]["on_error"] == ["ProduceHIFScheduleRoot"]
 
 
 def test_hif_preset_option_injects_the_same_preset_into_round1_and_event_actions():

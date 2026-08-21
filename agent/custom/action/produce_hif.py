@@ -33,7 +33,13 @@ from agent.hif.decisions.state import (
 )
 from agent.hif.decisions.config import ProfilePayload
 from agent.hif.decisions.rewards import load_keyword_tables
-from agent.hif.decisions.scoring import DecisionContext, score_card_by_name, score_drink_by_name
+from agent.hif.decisions.scoring import (
+    DecisionContext,
+    match_drink_name,
+    match_pitem_name,
+    score_card_by_name,
+    score_drink_by_name,
+)
 from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict
 from agent.hif.decisions.schedule import classify_class_option
 from agent.hif.adapters.exam_reader import ExamStateReader
@@ -295,18 +301,19 @@ class _ProduceHIFActionBase(CustomAction):
         return record
 
     @classmethod
-    def _archive_round1_play(cls, image, record: dict) -> None:
-        """Round1 出牌决策落盘（F3，Phase 2 ProduceHIFRound1Play 每回合调用）。
+    def _archive_round1_play(cls, image, record: dict, screen_state: str = "") -> None:
+        """Round1/Round2 出牌决策落盘（F3，ProduceHIFRound1Play 每回合调用）。
 
         先按 ROUND1_PLAY_RECORD_FIELDS 做防御性重排（调用方乱序/缺键也输出
         schema 稳定的记录，extra 键保留在后），再走共用存档链
         （截图 + session JSONL + viewer 刷新，与 _archive_decision 同模式）。
+        screen_state 空时用默认 round1_play（R2 参数化传 round2_play）。
         """
         ordered = {key: record.get(key) for key in ROUND1_PLAY_RECORD_FIELDS}
         for key, value in record.items():
             if key not in ordered:
                 ordered[key] = value
-        cls._archive_decision(image, cls.ROUND1_PLAY_SCREEN, ordered)
+        cls._archive_decision(image, screen_state or cls.ROUND1_PLAY_SCREEN, ordered)
 
 
 @AgentServer.custom_action("ProduceChooseHIFEventAuto")
@@ -1518,6 +1525,156 @@ class ProduceHIFChooseFinalModeAuto(_ProduceHIFActionBase):
         return True
 
 
+@AgentServer.custom_action("ProduceHIFPDrinkObtainedAuto")
+class ProduceHIFPDrinkObtainedAuto(_ProduceHIFActionBase):
+    """P 饮料获得弹窗：读瓶名→库匹配（match_drink_name）落盘 JSONL→点弹窗推进。
+
+    実機 2026-08-21 取证：饮料名大字行 y838-900（drinks.json 28 名称池可命中），
+    效果文本随饮料变。识别锚由 Flag 侧 expected 名称池承担，本 action 读名称行
+    OCR 落盘后点名称行中心推进。
+    """
+
+    NAME_ROI = [180, 810, 400, 110]
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        image = self._get_screenshot(context)
+        detail = self._run_ocr(context, image, "HIFPDrinkObtainedName", [".*"], self.NAME_ROI)
+        raw = detail.best_result.text.strip() if (detail and detail.hit) else ""
+        name, record = match_drink_name(raw) if raw else (None, None)
+        if raw and name is None:
+            logger.warning(f"HIF P饮料获得: 名称匹配失败 raw={raw!r}")
+        self._archive_decision(image, "p_drink_obtained", {
+            "action": "obtain",
+            "raw": raw or None,
+            "matched": name,
+            "effects": (record or {}).get("effects") if record else None,
+            "evidence_empty": not raw,
+        })
+        box = detail.best_result.box if (detail and detail.hit) else [340, 850, 40, 60]
+        self._click_box_center(context, box, double=False)
+        time.sleep(self.ACTION_DELAY)
+        return True
+
+
+@AgentServer.custom_action("ProduceHIFIntervalAuto")
+class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
+    """Interval 页推进：首版策略=直接終了（P 点消费探索轮补，goal 裁决放开但不强制）。
+
+    実機 2026-08-20 取证（round2-settlement-ui-inventory §4）：終了按钮
+    [629,1064]→(663,1082)，**需点 1-2 次**（首次偶发无响应）；点击后进 R2 優勝条件页。
+    流转验证：Interval 锚（提示文）消失=終了已生效；锚在=再点（容点 2 次）后放行
+    交回路由（防止转场窗口内 Flag 重复命中在未渲染页面上 stop）。
+    """
+
+    FINISH_ROI = [560, 1020, 140, 90]
+    FINISH_TAP = (663, 1082)
+    ANCHOR_TEXT = ("Pポイントで利用する",)
+    ANCHOR_ROI = [60, 260, 600, 120]
+    MAX_ROUNDS = 4
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        clicked = 0
+        for _ in range(self.MAX_ROUNDS):
+            image = self._get_screenshot(context)
+            if not self._find_text_option(context, image, self.ANCHOR_TEXT, self.ANCHOR_ROI):
+                logger.info("HIF Interval: 锚已消失(終了已生效/页面已推进),放行")
+                return True
+            finish = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
+            if not finish:
+                # 按钮未渲染时等待重试;多轮仍无按钮但锚在=页面异常,安全停止
+                time.sleep(self.ACTION_DELAY)
+                image = self._get_screenshot(context)
+                finish = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
+                if not finish:
+                    if clicked:
+                        return True  # 点过終了且按钮已消失,视为推进中放行
+                    return self._stop_unsupported(context, "hif_interval", "finish_button_not_found")
+            self._click_box_center(context, finish.best_result.box, double=False)
+            clicked += 1
+            time.sleep(self.ACTION_DELAY)
+        self._archive_decision(self._get_screenshot(context), "hif_interval", {
+            "action": "finish_interval", "clicked": clicked,
+        })
+        return True
+
+
+@AgentServer.custom_action("ProduceHIFRetryConfirmAuto")
+class ProduceHIFRetryConfirmAuto(_ProduceHIFActionBase):
+    """再挑戦確認弹窗（R2 敗退后点次へ出現）：选プロデュース終了进入正常结算链。
+
+    goal 裁决（2026-08-21）：一轮终点=完成整局培育（R2→结算→メモリー→回主页面），
+    敗退不是故障；此弹窗选「プロデュース終了」=接受结果进结算，非ギブアップ中断
+    （黑名单的「中途放弃」指培育进行中主动中断）。「再挑戦」探索轮放开但默认不走。
+    実機坐标（inventory §7.2）：×プロデュース終了 [87,1102]≈(210,1155)；
+    再挑戦 [471,1133] 禁点。弹窗文案「再挑戦が可能ですが本当に終了しますか?」。
+    """
+
+    END_TAP = (216, 1154)
+    ANCHOR_TEXT = ("再挑戦が可能", "本当に終了")
+    ANCHOR_ROI = [40, 700, 640, 180]
+    MAX_ROUNDS = 4
+    SETTLE_DELAY = 1.5  # 弹窗入场动画内点击会丢失(実機 2026-08-22 轮0:段内 4 连点未生效,手动同坐标单点即中)
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        # 首轮锚命中后先等入场动画稳定再点
+        time.sleep(self.SETTLE_DELAY)
+        for _ in range(self.MAX_ROUNDS):
+            image = self._get_screenshot(context)
+            if not self._find_text_option(context, image, self.ANCHOR_TEXT, self.ANCHOR_ROI):
+                logger.info("HIF 再挑戦確認: 弹窗已消失(終了已生效),放行")
+                return True
+            context.tasker.controller.post_click(*self.END_TAP).wait()
+            time.sleep(self.ACTION_DELAY)
+        self._archive_decision(self._get_screenshot(context), "hif_retry_confirm", {
+            "action": "produce_end",
+        })
+        return True
+
+
+@AgentServer.custom_action("ProduceHIFMemoryDetailNextAuto")
+class ProduceHIFMemoryDetailNextAuto(_ProduceHIFActionBase):
+    """メモリー詳細页推进（正式确认页→次へ）。
+
+    実機 2026-08-22 轮0 三个发现：
+    - 正式確認页（メモリー変換「あとN回可能」+再生成+次へ+獲得可能スキルカード）的
+      次へ用固定坐标 (360,1156) 点击会**误点进メモリー浏览詳細页**（全屏アビリティ
+      页，无次へ、<< 点击无效）——改为 OCR 锚定「次へ」box 精确点击；
+    - 浏览詳細页唯一可靠出口=Android BACK 键（adb keyevent 4 実証生效，<< 按钮无效）；
+    - BACK 从浏览页回正式確認页（再 BACK 会到メモリー一覧页——多按会漂移，控次数）。
+    """
+
+    DETAIL_ANCHOR = ("メモリー変換", "獲得可能")
+    DETAIL_ANCHOR_ROI = [20, 80, 680, 400]
+    BROWSER_MARK = "専用アビリティ"
+    NEXT_ROI = [240, 1080, 240, 130]
+    KEY_BACK = 4
+    MAX_ROUNDS = 4
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        for _ in range(self.MAX_ROUNDS):
+            image = self._get_screenshot(context)
+            if self._find_text_option(context, image, self.DETAIL_ANCHOR, self.DETAIL_ANCHOR_ROI):
+                nxt = self._find_text_option(context, image, ("次へ",), self.NEXT_ROI)
+                if not nxt:
+                    return self._stop_unsupported(context, "hif_memory_detail", "next_button_not_found")
+                self._click_box_center(context, nxt.best_result.box, double=False)
+                time.sleep(self.ACTION_DELAY)
+                verify = self._get_screenshot(context)
+                if not self._find_text_option(context, verify, self.DETAIL_ANCHOR, self.DETAIL_ANCHOR_ROI):
+                    logger.success("HIF メモリー詳細: 次へ已生效")
+                    return True
+                logger.info("HIF メモリー詳細: 次へ点击后锚仍在(误入浏览页?),BACK 自愈")
+            # 非正式页（浏览詳細页/其他）：BACK 一次回正式確認页
+            browser = self._find_text_option(context, image, (self.BROWSER_MARK,), [0, 0, 720, 400])
+            if browser:
+                context.tasker.controller.post_click_key(self.KEY_BACK).wait()
+                time.sleep(self.ACTION_DELAY)
+                continue
+            # 既非正式页也无浏览页标记：放行交回路由
+            return True
+        return self._stop_unsupported(context, "hif_memory_detail", "memory_detail_loop_limit")
+
+
 @AgentServer.custom_action("ProduceHIFRound1Observe")
 class ProduceHIFRound1Observe(_ProduceHIFActionBase):
     """记录 Round1 初始手牌，首版不执行出牌。"""
@@ -1588,26 +1745,43 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         if preset.round1_mode != "play":
             return self._stop_unsupported(context, "round1_play", "round1_mode_not_play")
 
+        total_turns, exam_round, round_tag = self._round_config(argv)
+        screen_state = f"{round_tag}_play"
         _ProduceHIFActionBase._reset_round1_state()
         played_history: List[str] = []
         no_progress = 0
-        logger.success("HIF Round1 出牌开始（play 模式）")
-        # 开局全量一次（实证修正 2026-08-21 probe4 round5：首行详情面板=组合视图无再演行,
-        # 完整清单面板仅溢出态省略号入口——非溢出时状态带本就全量可见,走枚举即可）
-        rows0 = self._enumerate_buff_rows(context, self._get_screenshot(context))
-        if any(r.get("overflow") for r in rows0):
-            opening_panel = self._read_state_panel(context, self.PANEL_ENTRY_ELLIPSIS)
-            if opening_panel:
-                logger.info(f"Round1 开局溢出完整面板: {len(opening_panel['items'])} 条, "
-                            f"集中={opening_panel['focus']}, 再演剩余={opening_panel['reprise_left']}")
+        logger.success(f"HIF {round_tag} 出牌开始（play 模式，{total_turns} 回合）")
+        # 対局页确认（実機 2026-08-22 轮0：Round 已结束重入时画面在結果页，
+        # 开局槽探测会误点結果页元素——残りターン锚 miss 即跳过全部开局探测）
+        opening_image = self._get_screenshot(context)
+        on_battle_page = self._read_turn_left(context, opening_image) is not None
+        opening_panel = None
+        p_drink_slots = []
+        p_items = None
+        deck_state = None
+        if on_battle_page:
+            # 开局全量一次（实证修正 2026-08-21 probe4 round5：首行详情面板=组合视图无再演行,
+            # 完整清单面板仅溢出态省略号入口——非溢出时状态带本就全量可见,走枚举即可）
+            rows0 = self._enumerate_buff_rows(context, opening_image)
+            if any(r.get("overflow") for r in rows0):
+                opening_panel = self._read_state_panel(context, self.PANEL_ENTRY_ELLIPSIS)
+                if opening_panel:
+                    logger.info(f"{round_tag} 开局溢出完整面板: {len(opening_panel['items'])} 条, "
+                                f"集中={opening_panel['focus']}, 再演剩余={opening_panel['reprise_left']}")
+                else:
+                    logger.warning(f"{round_tag} 溢出面板读取失败,降级状态带可见行")
             else:
-                logger.warning("Round1 溢出面板读取失败,降级状态带可见行")
+                logger.info(f"{round_tag} 开局非溢出,状态带枚举 {sum(1 for r in rows0 if r.get('words'))} 行全量可见")
+            # P 饮料槽探测（R1-Q1/R2：槽位前缀固定，点开弹窗实锤，缓存 session）
+            p_drink_slots = self._probe_p_drink_slots(context)
+            logger.info(f"{round_tag} P饮料槽探测={self._available_drinks_from_slots(p_drink_slots)}")
+            # 対局资源全景开局读取（五轮验证 A/B）：P item 详情 + 牌堆全状态，缓存 session 供 _build_state
+            p_items = self._read_p_item_details(context)
+            logger.info(f"{round_tag} P道具详情读取={len(p_items) if p_items is not None else 'FAIL'}件")
+            deck_state = self._read_deck_state(context)
+            logger.info(f"{round_tag} 牌堆状态读取={ {k: len(v) for k, v in (deck_state or {}).items()} if deck_state else 'FAIL' }")
         else:
-            opening_panel = None
-            logger.info(f"Round1 开局非溢出,状态带枚举 {sum(1 for r in rows0 if r.get('words'))} 行全量可见")
-        # P 饮料槽探测（R1-Q1/R2：槽位前缀固定，点开弹窗实锤，缓存 session）
-        p_drink_slots = self._probe_p_drink_slots(context)
-        logger.info(f"Round1 P饮料槽探测={self._available_drinks_from_slots(p_drink_slots)}")
+            logger.warning(f"{round_tag} 开局非対局页(重入/已结束?),跳过开局探测直接出口判定")
 
         while True:
             image = self._get_screenshot(context)
@@ -1618,22 +1792,36 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 image = self._get_screenshot(context)
                 turn_left = self._read_turn_left(context, image)
             if turn_left is None:
-                return self._stop_unsupported(context, "round1_play", "turn_counter_unreadable")
+                # 残りターン消失≠异常：Round 结束转結果页时本来就没有（実機 2026-08-22
+                # 轮0：turn9 出完牌转場被误判 turn_counter_unreadable）。轮询出口锚
+                # 60s：結果页(ラウンドN結果/敗退)/Interval 出现=完成 return True 交
+                # 出口路由；60s 仍无锚才是真异常 stop。
+                if self._wait_round_exit(context):
+                    logger.success(f"HIF {round_tag} 出牌完成（出口页已到，共出 {len(played_history)} 张）")
+                    return True
+                return self._stop_unsupported(context, screen_state, "turn_counter_unreadable")
             if turn_left == 0:
-                logger.success(f"HIF Round1 出牌完成：共出 {len(played_history)} 张")
+                logger.success(f"HIF {round_tag} 出牌完成：共出 {len(played_history)} 张")
                 return True
 
             hand = ExamStateReader.from_context(context).read_hand()
             if not hand.card_names:
-                if not self._wait_transition(context, turn_left):
+                # 面板/弹窗残留自愈（実機 2026-08-22 轮0 两次 stop 根因：出牌循环
+                # 打开的 buff 面板/P item 弹窗关闭失败后遮挡手牌，YOLO 恒 miss）
+                if self._dissolve_blocking_overlays(context):
+                    time.sleep(self.ACTION_DELAY)
+                    hand = ExamStateReader.from_context(context).read_hand()
+            if not hand.card_names:
+                # 空手=回合转场/抽卡动画中，长窗口等 turn 变化（与出牌后短等待区分）
+                if not self._wait_transition(context, turn_left, timeout_s=30):
                     no_progress += 1
                     if no_progress >= self.NO_PROGRESS_LIMIT:
-                        return self._stop_unsupported(context, "round1_play", "evidence_empty_hand")
+                        return self._stop_unsupported(context, screen_state, "evidence_empty_hand")
                     continue
                 continue
             no_progress = 0
 
-            state = self._build_state(context, image, turn_left, hand)
+            state = self._build_state(context, image, turn_left, hand, exam_round, total_turns)
             evidence = self._collect_evidence(context, image, turn_left)
             evidence["hand"] = list(hand.card_names)
             # 指纹变化触发面板重读（grill R1-Q3：新 buff 出现指纹必变）
@@ -1647,7 +1835,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 _ProduceHIFActionBase._write_round1_state({"last_buff_fingerprint": fp})
             action = GarakutaRinamiStrategy(ProfilePayload.default()).decide(state)
             logger.info(
-                f"Round1 turn={state.turn} 残り{turn_left} gc={state.good_condition_turns} "
+                f"{round_tag} turn={state.turn} 残り{turn_left} gc={state.good_condition_turns} "
                 f"focus={state.focus} stamina={state.stamina} flow={state.current_flow} "
                 f"score={evidence.get('total_score')} → {action.kind.value}"
                 f"{('/' + action.target_card) if action.target_card else ''}"
@@ -1655,18 +1843,18 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
             if action.kind is ActionKind.USE_P_DRINK:
                 # Q9+A5:瓶位语义未定案,拦截只记录,降级 SKIP 回体(禁猜测性点击)
-                logger.warning(f"Round1 USE_P_DRINK 拦截(记录不点): {action.target_card}")
+                logger.warning(f"{round_tag} USE_P_DRINK 拦截(记录不点): {action.target_card}")
                 self._archive_round1_play(image, self.build_round1_play_record(
                     state, action, played_history[-1:], dry_run=True,
                     evidence={**evidence, "intercepted": "p_drink_semantics_undefined"},
-                ))
+                ), screen_state)
                 action = CardAction(ActionKind.SKIP, None, f"[P饮料拦截降级] {action.reason}")
 
             ok, played_card = self._execute_action(context, action, hand)
             if not ok:
                 no_progress += 1
                 if no_progress >= self.NO_PROGRESS_LIMIT:
-                    return self._stop_unsupported(context, "round1_play", "action_execute_failed")
+                    return self._stop_unsupported(context, screen_state, "action_execute_failed")
                 continue
 
             if played_card:
@@ -1676,14 +1864,45 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             self._archive_round1_play(image, self.build_round1_play_record(
                 state, action, [played_card] if played_card else [],
                 turn_score=evidence.get("total_score"), evidence=evidence,
-            ))
+            ), screen_state)
 
             # 等回合转场（残りターン变化）；未变化则继续同回合下一步
             self._wait_transition(context, turn_left)
 
+    @staticmethod
+    def _round_config(argv: CustomAction.RunArg) -> tuple[int, ExamRound, str]:
+        """参数化回合配置（R1/R2 共用大包）：custom_action_param 的
+        total_turns(9/12)/round("r1"/"r2")/round_tag(落盘 screen 前缀)。"""
+        try:
+            params = json.loads(argv.custom_action_param) if argv.custom_action_param else {}
+        except ValueError:
+            params = {}
+        if not isinstance(params, dict):
+            params = {}
+        total = params.get("total_turns") or 9
+        exam_round = ExamRound.HONSEN_R2 if params.get("round") == "r2" else ExamRound.HONSEN_R1
+        tag = params.get("round_tag") or ("round2" if exam_round is ExamRound.HONSEN_R2 else "round1")
+        return int(total), exam_round, tag
+
     # ------------------------------------------------------------------
     # 画面读取（Q6 画面优先；读不到回退 session/默认值并告警）
     # ------------------------------------------------------------------
+
+    def _wait_round_exit(self, context: Context) -> bool:
+        """等待 Round 出口页（結果/敗退/Interval/優勝条件），60s 轮询。
+        出口锚宽扫顶部区——区分「转場窗口」与「真异常」（画面冻结/未知页）。"""
+        deadline = time.time() + self.TRANSITION_TIMEOUT_S
+        while time.time() < deadline:
+            image = self._get_screenshot(context)
+            hit = self._find_text_option(
+                context, image,
+                ("ラウンド1結果", "ラウンド2結果", "敗退", "インターバル", "優勝条件"),
+                [0, 0, 720, 300],
+            )
+            if hit:
+                return True
+            time.sleep(2.0)
+        return False
 
     def _read_turn_left(self, context: Context, image) -> Optional[int]:
         detail = self._run_ocr(
@@ -1806,7 +2025,8 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         return max(values) if values else None
 
 
-    def _build_state(self, context: Context, image, turn_left: int, hand) -> ExamState:
+    def _build_state(self, context: Context, image, turn_left: int, hand,
+                     exam_round: ExamRound = ExamRound.HONSEN_R1, total_turns: int = 9) -> ExamState:
         session = _ProduceHIFActionBase._read_round1_state()
         good = self._read_buff_turns(context, image, self.TPL_GOOD)
         focus = self._read_buff_turns(context, image, self.TPL_CONC)
@@ -1828,10 +2048,14 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         if reprise_used is not None:
             # 双源告警（R1-Q5）：旧源右上 N 回实为 P item 剩余，实测 diff 定案前保留+告警
             logger.warning(f"reprise 旧源(右上,疑 P item 误标)={reprise_used}, 出牌 diff 后切换新源")
+        # 対局资源全景（五轮验证接口）：开局读取缓存 session，决策从这里消费
+        p_drink_slots = session.get("p_drink_slots") or []
+        p_items = session.get("p_items") or []
+        deck_state = session.get("deck_state") or {}
         return ExamState(
-            round=ExamRound.HONSEN_R1,
-            turn=self.TOTAL_TURNS - turn_left + 1,
-            total_turns=self.TOTAL_TURNS,
+            round=exam_round,
+            turn=total_turns - turn_left + 1,
+            total_turns=total_turns,
             current_flow=self._read_flow(context, image),
             good_condition_turns=good if good is not None else int(session.get("good_condition_turns") or 0),
             focus=focus if focus is not None else 0,
@@ -1842,7 +2066,10 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             deck_size=max(0, 22 - int(session.get("cards_played") or 0)),  # A4:画面不可读,session 自维护近似
             oneesan_used=bool(session.get("oneesan_used", False)),
             natural_finisher_used=bool(session.get("natural_finisher_used", False)),
-            available_p_drinks=self._available_drinks_from_slots(session.get("p_drink_slots") or []),
+            available_p_drinks=self._available_drinks_from_slots(p_drink_slots),
+            p_items=p_items,
+            p_drinks=p_drink_slots,
+            deck=deck_state,
         )
 
     def _collect_evidence(self, context: Context, image, turn_left: int) -> Dict[str, Any]:
@@ -1941,16 +2168,18 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             time.sleep(1.0)
         return False
 
-    def _wait_transition(self, context: Context, prev_turn_left: int) -> bool:
-        """等待回合转场：残りターン变化（实测 <2s，轮询到 60s 超时，Q13）。"""
-        deadline = time.time() + self.TRANSITION_TIMEOUT_S
+    def _wait_transition(self, context: Context, prev_turn_left: int, timeout_s: int = 8) -> bool:
+        """等待回合转场（残りターン变化）：短窗口轮询（実機 2026-08-22 轮0 复盘：
+        同回合连续出牌时 turn 不变，60s 死等让 9 回合拖到 25 分钟）。超时返回 False
+        交回主循环重读画面（转场动画期容错由主循环 turn None 重试承担），
+        转场真正超过 8s 的大动画由 no_progress 守卫兜底而非此处死等。"""
+        deadline = time.time() + timeout_s
         while time.time() < deadline:
-            time.sleep(2.0)
+            time.sleep(1.5)
             image = self._get_screenshot(context)
             turn_left = self._read_turn_left(context, image)
             if turn_left is not None and turn_left != prev_turn_left:
                 return True
-        logger.warning(f"Round1 转场超时 {self.TRANSITION_TIMEOUT_S}s（残りターン未变化）")
         return False
 
     # ------------------------------------------------------------------
@@ -1982,12 +2211,21 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         return False
 
     def _verify_p_drink(self, context: Context, slot_xy: tuple[int, int]) -> Optional[str]:
-        """用药复核读取（grill R2-Q2 前半，纯读取不使う）：点槽→弹窗验证→读名→关→验证关。"""
+        """用药复核读取（grill R2-Q2 前半，纯读取不使う）：点槽→弹窗验证→读名→关→验证关。
+
+        弹窗渲染慢时锚会 miss（実機 2026-08-22 轮0：槽2 ビタミンドリンク 弹窗
+        渲染慢被误判 empty 且未关，残留弹窗遮挡手牌识别致 evidence_empty_hand），
+        验证带一次重试；判 empty 前兜底关一次弹窗防残留。"""
         self._click_box_center(context, [slot_xy[0] - 20, slot_xy[1] - 20, 40, 40], double=False)
         time.sleep(self.PANEL_CLICK_DELAY)
         image = self._get_screenshot(context)
         if not self._popup_is_pdrink(context, image):
-            return None  # 空槽/槽不存在（同语义，grill R2 用户确认）
+            time.sleep(self.ACTION_DELAY)
+            image = self._get_screenshot(context)
+            if not self._popup_is_pdrink(context, image):
+                # 未开弹窗也兜底关一次（防半开态残留污染后续读取）
+                self._close_pdrink_popup(context)
+                return None  # 空槽/槽不存在（同语义，grill R2 用户确认）
         name_detail = self._run_ocr(context, image, "HIFPDrinkName", [".*"], self.PDRINK_NAME_ROI)
         name = name_detail.best_result.text.strip() if (name_detail and name_detail.hit) else ""
         self._close_pdrink_popup(context)
@@ -1995,19 +2233,37 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     def _probe_p_drink_slots(self, context: Context) -> list[dict]:
         """开局槽探测（grill R1-Q1/R2 用户确认：槽位前缀固定，点开弹窗为实锤）。
-        结果缓存 session.p_drink_slots；空槽/槽不存在同记 empty。"""
+        结果（名称经 match_drink_name 匹配库内属性后）缓存 session.p_drink_slots；
+        空槽/槽不存在同记 empty（3-4 格随亲密度，grill 用户约束）。"""
         slots = []
         for i, xy in enumerate(self.PDRINK_SLOTS, 1):
-            name = self._verify_p_drink(context, xy)
-            slots.append({"slot": i, "xy": list(xy), "name": name})
-            logger.info(f"Round1 P饮料槽{i}: {name or '(empty)'}")
+            raw = self._verify_p_drink(context, xy)
+            name, record = (None, None)
+            if raw:
+                name, record = match_drink_name(raw)
+                if name is None:
+                    logger.warning(f"Round P饮料槽{i} 名匹配失败 raw={raw!r}")
+            slots.append({
+                "slot": i,
+                "xy": list(xy),
+                "raw": raw,
+                "name": name,
+                "effects": (record or {}).get("effects"),
+            })
+            logger.info(f"Round P饮料槽{i}: raw={raw or '(empty)'} matched={name or '(unmatched)'}")
         _ProduceHIFActionBase._write_round1_state({"p_drink_slots": slots})
         return slots
 
     @classmethod
     def _available_drinks_from_slots(cls, slots: list[dict]) -> list[str]:
-        """纯逻辑（可单测）：缓存槽表 → available_p_drinks 名单（去空+保持槽序）。"""
-        return [s["name"] for s in slots if s.get("name")]
+        """纯逻辑（可单测）：缓存槽表 → available_p_drinks 名单（去空+保持槽序；
+        库内规范名优先，匹配失败的回退 OCR 原文——语义与実機瓶名一致可用）。"""
+        names = []
+        for s in slots:
+            name = s.get("name") or s.get("raw")
+            if name:
+                names.append(name)
+        return names
 
     def _buff_fingerprint(self, context: Context, image) -> str:
         """整带指纹（触发层）：数字+单位词序列 join，回合间 diff 用（grill R1-Q1 触发细读）。"""
@@ -2235,3 +2491,234 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             if digits:
                 items.append({"box": list(i.box), "raw": text, "progress_left": int(digits)})
         return items
+
+    # ------------------------------------------------------------------
+    # 対局资源全景读取（五轮验证 2026-08-22）：P item 详情弹窗 + 牌堆查看器
+    # 実機依据 pitem2_detail.png（debug/autodev/round1，2026-08-21 取证）：
+    # P item 弹窗=全部道具效果流式列表，× 关闭 [316,710,86,90] 中心(359,755)
+    # 与 buff 面板 X 同位；效果文案均带「(試験・ステージ内N回)」可作锚。
+    # ------------------------------------------------------------------
+
+    PITEM_POPUP_CLOSE = (359, 755)                 # × 中心（実機 pitem2_detail OCR）
+    PITEM_POPUP_CONTENT_ROI = [40, 40, 640, 660]   # 弹窗内容区（效果文本流式区）
+    PITEM_ICON_LEFT_OFFSET = 55                    # 数字框中心 → 图标中心 x 左移（実測纵列）
+    PITEM_SCROLL_MAX = 6
+    PITEM_CLOSE_CONFIRM = 2                        # 连续 N 次锚仍在 = 关闭失败
+
+    def _pitem_popup_anchor_hit(self, context: Context, image) -> bool:
+        """P item 弹窗打开判定：内容区「試験・ステージ」锚（実機両道具均带）。"""
+        anchor = self._run_ocr(
+            context, image, "HIFPItemPopupAnchor",
+            [".*試験.*ステー.*|.*ステージ内.*"], self.PITEM_POPUP_CONTENT_ROI,
+        )
+        return bool(anchor and anchor.hit)
+
+    # 残留自愈（実機 2026-08-22 轮0）：出牌循环打开的浮层关闭失败会遮挡手牌致
+    # read_hand 恒空 → evidence_empty_hand stop。三类浮层：buff 完整面板/P item
+    # 弹窗（× 同位 (359,755)，実測 buff X (360,757) 与 pitem × [316,710,86,90]）、
+    # P 饮料弹窗（キャンセル左下）。命中锚才点关，验证消失。
+    OVERLAY_CLOSE_TAP = (359, 755)
+
+    def _dissolve_blocking_overlays(self, context: Context) -> bool:
+        """探测并关闭遮挡画面的浮层；有任何关闭动作返回 True（调用方重读手牌）。"""
+        acted = False
+        for _ in range(2):
+            image = self._get_screenshot(context)
+            has_panel = self._panel_anchor_hit(context, image)
+            has_pitem = self._pitem_popup_anchor_hit(context, image)
+            has_pdrink = self._popup_is_pdrink(context, image)
+            if not (has_panel or has_pitem or has_pdrink):
+                break
+            acted = True
+            logger.warning(
+                f"Round 浮层残留自愈: buff面板={has_panel} Pitem弹窗={has_pitem} P饮料弹窗={has_pdrink}"
+            )
+            if has_pdrink:
+                self._close_pdrink_popup(context)
+            else:
+                context.tasker.controller.post_click(*self.OVERLAY_CLOSE_TAP).wait()
+                time.sleep(1.2)
+        return acted
+
+    def _read_p_item_details(self, context: Context) -> Optional[list[dict]]:
+        """P item 全量详情读取（纯读取）：点纵列图标 → 弹窗（全部道具效果列表）→
+        右缘滚动到底（連2無新增+长音符归一，同 _read_state_panel 骨架）→ 词行级
+        match_pitem_name 定名 + 效果文本按名字行分段归属 → 关闭验证 → 缓存 session。
+
+        名字行 OCR miss 的段落记 name=None 保 raw（不乱猜，探索轮校准）；
+        打不开/点错面板（入口位与 buff 带/排名区交叠会误开 buff 完整面板，
+        実機 2026-08-22 轮0 两次 stop 根因）→ 关闭后降级 return None（不 stop）；
+        关闭失败也 return None 由调用方残留自愈兜底。
+        """
+        # 入口：纵列首个数字框左移定图标；纵列空则点 ROI 顶中心兜底
+        image = self._get_screenshot(context)
+        p_items_seen = self._enumerate_p_items(context, image)
+        if p_items_seen:
+            bx, by = p_items_seen[0]["box"][0], p_items_seen[0]["box"][1] + p_items_seen[0]["box"][3] // 2
+            entry = (max(600, bx - self.PITEM_ICON_LEFT_OFFSET), by)
+        else:
+            entry = (self.ROI_PITEM_COLUMN[0] + self.ROI_PITEM_COLUMN[2] // 2,
+                     self.ROI_PITEM_COLUMN[1] + 40)
+        self._click_box_center(context, [entry[0] - 15, entry[1] - 15, 30, 30], double=False)
+        time.sleep(self.PANEL_CLICK_DELAY)
+        image = self._get_screenshot(context)
+        if not self._pitem_popup_anchor_hit(context, image):
+            logger.warning("P item 详情弹窗未打开(锚 miss),关闭可能的误开面板后降级跳过")
+            self._dissolve_blocking_overlays(context)
+            return None
+
+        # 滚动收集全词行（y 排序；連2屏无新增词到底）
+        collected: dict[str, dict] = {}
+        no_new = 0
+        for _ in range(self.PITEM_SCROLL_MAX):
+            detail = self._run_ocr(context, image, "HIFPItemDetailWords", [".*"], self.PITEM_POPUP_CONTENT_ROI)
+            words = [
+                {"text": i.text.strip(), "y": i.box[1], "h": i.box[3]}
+                for i in (detail.all_results or []) if i.text.strip()
+            ]
+            new_words = [w for w in words if self._panel_item_key(w["text"]) not in collected]
+            for w in new_words:
+                collected[self._panel_item_key(w["text"])] = w
+            if not new_words:
+                no_new += 1
+                if no_new >= self.PANEL_BOTTOM_CONFIRM:
+                    break
+            else:
+                no_new = 0
+            context.tasker.controller.post_swipe(*self.PANEL_SCROLL_STEP, duration=400).wait()
+            time.sleep(1.3)
+            image = self._get_screenshot(context)
+
+        items = self._segment_pitem_words(list(collected.values()))
+        if not self._close_pitem_popup(context):
+            return None  # 关闭失败=弹窗残留污染画面,整体降级(调用方按 None 处理)
+        if items:
+            _ProduceHIFActionBase._write_round1_state({"p_items": items})
+            self._archive_static(context, "round_p_item_details", {
+                "action": "read_p_items", "items": items,
+            })
+        return items or None
+
+    @staticmethod
+    def _segment_pitem_words(words: list[dict]) -> list[dict]:
+        """纯逻辑（可单测）：弹窗词行 → P item 分段。名字行=match_pitem_name 命中词；
+        效果文本=名字行 y 到下一名字行之间。名字 miss 的头部段落记 name=None。"""
+        ordered = sorted(words, key=lambda w: w["y"])
+        segments: list[dict] = []
+        current: dict | None = None
+        for w in ordered:
+            name, record = match_pitem_name(w["text"])
+            if name is not None:
+                if current:
+                    segments.append(current)
+                current = {
+                    "name": name,
+                    "raw": w["text"],
+                    "progress_left": None,
+                    "effects": (record or {}).get("effects"),
+                    "ocr_lines": [],  # 效果行从名字行之后开始归属
+                }
+            else:
+                if current is None:
+                    current = {"name": None, "raw": w["text"], "progress_left": None, "effects": None, "ocr_lines": []}
+                current["ocr_lines"].append(w["text"])
+        if current:
+            segments.append(current)
+        # 纯噪声段（无名字且行数 <2）丢弃
+        return [s for s in segments if s["name"] or len(s["ocr_lines"]) >= 2]
+
+    def _close_pitem_popup(self, context: Context) -> bool:
+        """关闭 P item 弹窗并验证（× 固定位 + 锚消失验证；実機 × 与 buff 面板同位）。"""
+        for _ in range(3):
+            self._click_box_center(context, [self.PITEM_POPUP_CLOSE[0] - 20, self.PITEM_POPUP_CLOSE[1] - 15, 40, 30], double=False)
+            time.sleep(1.2)
+            if not self._pitem_popup_anchor_hit(context, self._get_screenshot(context)):
+                return True
+        logger.warning("P item 详情弹窗关闭失败")
+        return False
+
+    # 牌堆查看器 UI 未実機取证（goal 1.3 裁决：按假设设计、探索轮校准）。
+    # 假设：対局页手牌区两侧有山札/捨て札指示器；查看器与変卡网格同构（滚动+词行）。
+    PILE_DRAW_TAP = (60, 1150)        # 山札指示器假设位 [待実機校准]
+    PILE_DISCARD_TAP = (660, 1150)    # 捨て札指示器假设位 [待実機校准]
+    PILE_VIEWER_ROI = [20, 100, 680, 900]  # 查看器内容区假设 [待実機校准]
+    PILE_ANCHOR_WORDS = (".*山札.*", ".*捨て札.*", ".*デッキ.*")
+    PILE_SCROLL_MAX = 6
+    PILE_CLOSE_TAP = (360, 1170)      # 查看器关闭假设位 [待実機校准]
+
+    def _pile_viewer_anchor_hit(self, context: Context, image) -> bool:
+        detail = self._find_text_option(context, image, self.PILE_ANCHOR_WORDS, self.PILE_VIEWER_ROI)
+        return detail is not None
+
+    def _read_deck_state(self, context: Context) -> Optional[dict]:
+        """牌堆全状态读取（纯读取，UI 假设设计待探索轮校准）：点山札指示器 →
+        查看器 → 滚动枚举全卡名（词典归一+计数）→ 按锚词分段归属
+        （draw/discard/exclude）→ 关闭 → 缓存 session.deck_state。
+
+        查看器打不开（指示器假设位失效）降级 return None 不 stop；
+        手牌沿用 ExamStateReader（run 主循环每回合读），此处只补三堆。
+        """
+        self._click_box_center(context, [self.PILE_DRAW_TAP[0] - 20, self.PILE_DRAW_TAP[1] - 20, 40, 40], double=False)
+        time.sleep(self.PANEL_CLICK_DELAY)
+        image = self._get_screenshot(context)
+        if not self._pile_viewer_anchor_hit(context, image):
+            logger.warning("牌堆查看器未打开(指示器假设位 miss),降级跳过")
+            return None
+
+        # 滚动收集全部词行（卡名行+堆锚词行）
+        lines: list[str] = []
+        no_new = 0
+        for _ in range(self.PILE_SCROLL_MAX):
+            detail = self._run_ocr(context, image, "HIFDeckViewerWords", [".*"], self.PILE_VIEWER_ROI)
+            words = [i.text.strip() for i in (detail.all_results or []) if i.text.strip()]
+            new_words = [t for t in words if t not in lines]
+            lines.extend(new_words)
+            if not new_words:
+                no_new += 1
+                if no_new >= self.PANEL_BOTTOM_CONFIRM:
+                    break
+            else:
+                no_new = 0
+            context.tasker.controller.post_swipe(*self.PANEL_SCROLL_STEP, duration=400).wait()
+            time.sleep(1.3)
+            image = self._get_screenshot(context)
+
+        deck = self._segment_pile_lines(lines)
+        self._close_pile_viewer(context)
+        if deck:
+            _ProduceHIFActionBase._write_round1_state({"deck_state": deck})
+            self._archive_static(context, "round_deck_state", {"action": "read_deck", "deck": deck})
+        return deck or None
+
+    @staticmethod
+    def _segment_pile_lines(lines: list[str]) -> dict:
+        """纯逻辑（可单测）：查看器词行 → {draw,discard,exclude,hand:[]}。
+        锚词（山札/捨て札・捨札/除外）后段归属对应堆；无锚头部归 draw；
+        卡名经 normalize_card_name 归一（+档保留），非卡名噪声行丢弃。"""
+        piles: dict[str, list[str]] = {"draw": [], "discard": [], "exclude": [], "hand": []}
+        current = "draw"
+        for text in lines:
+            compact = text.replace(" ", "")
+            if "山札" in compact:
+                current = "draw"
+                continue
+            if "捨て札" in compact or "捨札" in compact:
+                current = "discard"
+                continue
+            if "除外" in compact:
+                current = "exclude"
+                continue
+            name = normalize_card_name(compact)
+            # 卡名有效性（同変卡 _read_cell_name 噪声口径）：含日文且 ≥4 字
+            if len(name) >= 4 and any("\u3040" <= ch <= "\u30ff" or "\u4e00" <= ch <= "\u9fff" for ch in name):
+                piles[current].append(name)
+        return piles
+
+    def _close_pile_viewer(self, context: Context) -> bool:
+        for _ in range(3):
+            context.tasker.controller.post_click(*self.PILE_CLOSE_TAP).wait()
+            time.sleep(1.2)
+            if not self._pile_viewer_anchor_hit(context, self._get_screenshot(context)):
+                return True
+        logger.warning("牌堆查看器关闭失败(假设位,探索轮校准)")
+        return False
