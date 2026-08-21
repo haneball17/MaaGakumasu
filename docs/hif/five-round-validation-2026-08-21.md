@@ -64,7 +64,50 @@
 - deck：堆查看器假设位未命中（UI 未取证，预期内降级）
 - P 饮料获得弹窗：Custom action 落盘就绪（p_drink_obtained），本轮未触发获得场景
 
-## 轮 1（待跑）
+## 轮 1：探索优先（2026-08-22 02:30-07:15）
+
+### 时间线（要点）
+
+| 时间 | 事件 |
+| --- | --- |
+| 02:30-02:55 | 入口段失败×3：StartUp 在主页 miss（改 --produce-only）；Produce 链不认日程页（改 --entry ScheduleRoot）；本戦 tab 点击丢失（手动）；FinalModeFlag ROI 右界截断「本戦」box 2px（ROI 放宽 [140,850,500,80]） |
+| 02:55 | Day1 开场コミュ页 SKIP 手动（HIF 管线无コミュ节点，记录缺口） |
+| 03:05-03:49 | Day1-3 自动推进：授業选项/日程选择/差し入れ事件（对话页无节点手动+补 GiftTalkBlank 节点）/P 饮料三选一/上限取舍/**p_drink_obtained Custom 実証**（goal 1.6 ✓） |
+| 02:44-04:30 | **変卡"hang"三次**（实为 ItemGainFlag 泛锚「獲得」吸住変卡页循环点击空转）→根因修复：锚收窄「イテム獲得/アイテム獲得」+変卡 reroll=0（预防性） |
+| 04:30-04:39 | 変卡源卡 scroll_back_failed 循环（残留カスタマイズ確認弹窗挡网格）→修复：源卡 Custom 入口弹窗接管（锚 y484 校准+点チェンジ (520,1157)） |
+| 04:40-05:25 | 日付変更演出页卡（无节点+ROI 错位 y1036+挂载位太深 90s 轮不完）→修复：DayChangeBlank+ROI+前移横切节点（TapNext/DayChange/GiftTalk 至 pos 3-4） |
+| 05:25 | **游戏画面冻结**（64s 零像素变化，Unity 卡死）→ force-stop 重启游戏→StartUp→プロデュース再開→Day5 继续 |
+| 05:45-06:00 | Day5-6 自动推进；R2 対局两位数锚 ROI 太窄（12 box[29,66,72,47] 宽于预估）→R1 版 Play 误跑 R2 页 turn_counter_unreadable×3→修复：Round2Flag ROI [20,55,100,60]+Play ROI_TURN 同步放宽 |
+| 06:00-06:30 | R1 出牌完成→応援棒→Interval→R2 優勝条件→R2 出牌 12T（P 饮料弹窗残留 turn None stop 一次→turn None 分支加 dissolve 自愈） |
+| 06:35-07:10 | R2 敗退→再挑戦確認→終了→スター性→評価→MEMORY→完了→詳細→イテム→HIF 報酬（次へ点击段内多次丢失，段间接力推进） |
+| 07:15 | **回到主页面 ✓ 轮 1 完整走完**（探索轮：含手动干预 8 次，符合轮 1-2 探索优先设计） |
+
+### 是否按要求操作
+
+- 主线：培育 Day1-6→R1 出牌→R2 出牌 12T→敗退→结算→メモリー→**主页面** 全通 ✓
+- 危险操作：无（×タイトルヘ/再挑戦/ガシャへ 均未误触；ガシャ広告页未出现于敗退流）
+- USE_P_DRINK 拦截：生效（初星黒酢/センブリソーダ 记录不点）✓
+- p_drink_obtained 库匹配落盘 ✓（goal 1.6 実証）
+
+### 意外 + 根因 + 修复（轮 1 新增 bug 清单 #14-22）
+
+| # | 现象 | 根因 | 修复 | 验证 |
+| --- | --- | --- | --- | --- |
+| 14 | 本戦 tab/プロデュース終了 IPC 点击丢失 | adb 点击偶发静默丢失（入场动画窗口） | RetryConfirm 加 SETTLE_DELAY；入口 tab 手动+FinalModeFlag ROI 修正 | 部分手动 |
+| 15 | 変卡页"hang"×3（实为空转） | ItemGainFlag 泛锚「獲得」吸住変卡页（说明文在 ROI），循环无效点击 | 锚收窄「イテム獲得」；変卡 reroll=0 预防 | 修复后変卡自动跑通 ✓ |
+| 16 | 変卡源卡 scroll_back_failed 循环 | 段重启时残留カスタマイズ確認弹窗挡网格扫描 | 源卡 Custom 入口弹窗接管（チェンジ (520,1157)） | ✓ |
+| 17 | 日付変更页卡死×5 段 | 无节点+ROI 错位（文字 y1036 vs ROI y200）+挂载第 29 位 90s 轮不到 | DayChangeBlank+ROI [30,930,500,160]+前移 | ✓ |
+| 18 | 游戏画面冻结（非管线） | Unity 卡死（64s 零像素） | force-stop 重启+プロデュース再開续跑 | ✓ |
+| 19 | R2 两位数锚 miss→R1 版误跑 R2 页 | 12 box[29,66,72,47] 宽于 ROI [35,60,55,55] 右界 | Round2Flag/ROI_TURN 放宽 [20,55,100,60] | ✓ |
+| 20 | P 饮料弹窗残留→turn None stop | 槽探测弹窗渲染慢关失败（开局重入时） | turn None 分支加 _dissolve_blocking_overlays | ✓ |
+| 21 | 報酬页次へ段内点击丢失 | IPC 点击丢失+次へ×2 多页 | 段间接力+手动 3 连点过 | 待轮 2 验证自动路径 |
+| 22 | 开场コミュ无节点 | HIF 管线缺コミュ SKIP 处理 | 手动 SKIP；缺口记录（低频：仅局首） | 缺口 |
+
+### 决策接口检查（轮 1 增量）
+
+- p_drinks：P 饮料三选一（hif_drink_reward confirm）+获得捕获（p_drink_obtained）+上限取舍全链 ✓
+- 変卡：select_change_source_deck deck_snapshot 落盘 ✓（全库扫描+名称归一）
+- R2 出牌：round2 tag 12 回合参数化実証 ✓
 
 ## 轮 2（待跑）
 

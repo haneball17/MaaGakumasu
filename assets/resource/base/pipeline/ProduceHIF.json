@@ -152,6 +152,8 @@
     "[JumpBack]ProduceHIFSupportEventPopup",
     "[JumpBack]ProduceHIFRound1Flag",
     "[JumpBack]ProduceHIFTapNextFlag",
+    "[JumpBack]ProduceHIFDayChangeBlank",
+    "[JumpBack]ProduceHIFGiftTalkBlank",
     "[JumpBack]ProduceHIFRound2ResultFlag",
     "[JumpBack]ProduceHIFRound2DefeatFlag",
     "[JumpBack]ProduceHIFRetryConfirmFlag",
@@ -227,9 +229,9 @@
                 ],
                 "roi": [
                     140,
-                    860,
-                    460,
-                    60
+                    850,
+                    500,
+                    80
                 ]
             }
         },
@@ -276,10 +278,10 @@
                     ".*1[0-2].*"
                 ],
                 "roi": [
-                    35,
-                    60,
+                    20,
                     55,
-                    55
+                    100,
+                    60
                 ]
             }
         },
@@ -291,7 +293,7 @@
             "ProduceHIFRound2PlayFlag"
         ],
         "focus": {
-            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=Round2对局(残りターン两位数锚10-12,実機 2026-08-20 実測 box[39,68,56,41];废弃推测文案Round 2)[/color]"
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 页面=Round2对局(残りターン两位数锚10-12;実機 2026-08-22 轮1 校准:OCR box[29,66,72,47] 两位数宽于一位数,ROI 放宽 x20-120 防 miss→R1版误跑)[/color]"
         }
     },
     "ProduceHIFRound2PlayFlag": {
@@ -317,6 +319,8 @@
             "[JumpBack]ProduceHIFRound1ResultFlag",
             "[JumpBack]ProduceHIFRound1StarGainFlag",
             "[JumpBack]ProduceHIFTapNextFlag",
+    "[JumpBack]ProduceHIFDayChangeBlank",
+    "[JumpBack]ProduceHIFGiftTalkBlank",
             "ProduceHIFRetryConfirmFlag"
         ],
         "timeout": 20000,
@@ -534,6 +538,8 @@
             "[JumpBack]ProduceHIFRound1StarGainFlag",
             "[JumpBack]ProduceHIFRound1SummaryFlag",
             "[JumpBack]ProduceHIFTapNextFlag",
+    "[JumpBack]ProduceHIFDayChangeBlank",
+    "[JumpBack]ProduceHIFGiftTalkBlank",
             "[JumpBack]ProduceHIFCheerStickBlank",
             "ProduceHIFIntervalFlag"
         ],
@@ -1470,7 +1476,8 @@
             "type": "OCR",
             "param": {
                 "expected": [
-                    ".*獲得.*"
+                    ".*イテム獲得.*",
+                    ".*アイテム獲得.*"
                 ],
                 "roi": [
                     200,
@@ -1560,6 +1567,68 @@
         "post_delay": 1500,
         "focus": {
             "Node.Recognition.Succeeded": "[color:Red]HIF: ガシャ広告页(危険区!実機取证「福井公演記念ガシヤ有償限定」;絶不点ガシャへ[324,1034],只点底部×(360,1175)关闭;expected含ガシヤ実測变体)[/color]"
+        }
+    },
+    "ProduceHIFGiftTalkBlank": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*差し入れ.*"
+                ],
+                "roi": [
+                    30,
+                    20,
+                    220,
+                    60
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    640,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 差し入れ事件对话页(実機 2026-08-22 轮1:获得弹窗过后停对话页,标题「差し入れ」[67,36],点中央推进;[JumpBack]循环到选项/获得页接管)[/color]"
+        }
+    },
+    "ProduceHIFDayChangeBlank": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*日付が変わりました.*"
+                ],
+                "roi": [
+                    30,
+                    930,
+                    500,
+                    160
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    640,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1000,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 日付変更演出页(実機 2026-08-22 轮1:锚「日付が変わりました」,点中央空白推进;×タイトルヘ危险禁点)[/color]"
         }
     },
     "ProduceHIFCompleteFlag": {

@@ -939,8 +939,10 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
         # 変卡流程在途标记:完成页据此区分真変卡与日程收尾的支援卡随机强化演出页
         _ProduceHIFActionBase._write_session_state({_ProduceHIFActionBase.SELECT_CHANGE_FLAG: True})
         preset = self._get_preset(argv)
-        reroll = preset.select_change_reroll_override or preset.select_change_reroll_limit
-        return self._choose_keyword_reward(context, preset, reroll_limit=reroll, screen_state="select_change_target")
+        # reroll 强制 0(2026-08-22 轮1 実機 3 次 IPC hang 均在変卡 reroll 循环内——
+        # 重抽点击+加载窗口的高密度 run_recognition 触发 maafw 5.11 死锁;直选最高分
+        # 不重抽,决策质量损失可接受,后续 maafw 修复后恢复 preset 重抽上限)
+        return self._choose_keyword_reward(context, preset, reroll_limit=0, screen_state="select_change_target")
 
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeSourceAuto")
@@ -974,8 +976,29 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
     CELL_CLICK_DELAY = 1.6
     FALLBACK_MAX_TRIES = 4  # トラブル格按钮不亮时的顺延重试上限
 
+    CUSTOMIZE_CONFIRM_ROI = [20, 430, 680, 220]  # カスタマイズ確認/強化確認弹窗标题带(実機 y484/y433)
+    CUSTOMIZE_CONFIRM_TAP = (520, 1157)          # 弹窗チェンジ按钮（実機 2026-08-22 手动成功位）
+
+    def _dismiss_customize_confirm(self, context: Context) -> bool:
+        """段重启时残留的源卡確認弹窗接管（実機 2026-08-22 轮1:上段选中源卡后弹窗
+        出现即 stop,下段扫描被弹窗遮挡 scroll_back 恒败死循环）。命中即点チェンジ
+        完成変卡——比取消好（选中态已就绪）。"""
+        image = self._get_screenshot(context)
+        hit = self._find_text_option(context, image, ("カスタマイズ確認",), self.CUSTOMIZE_CONFIRM_ROI)
+        if not hit:
+            return False
+        logger.info("HIF 変卡: 接管残留カスタマイズ確認弹窗,点チェンジ完成")
+        context.tasker.controller.post_click(*self.CUSTOMIZE_CONFIRM_TAP).wait()
+        time.sleep(self.ACTION_DELAY)
+        self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
+            "action": "resume_confirm_changi", "note": "残留弹窗接管",
+        })
+        return True
+
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
+        if self._dismiss_customize_confirm(context):
+            return True
         names = preset.select_change_source_names
         deck = self._scan_full_deck(context)
 
@@ -1721,8 +1744,8 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     TOTAL_TURNS = 9
     # 実機校准 ROI（720×1280，Phase 0 取证；勿用预估占位值覆盖）
-    ROI_TURN = [35, 60, 55, 55]        # 残りターン数值（3.3.0 校准 2026-08-21：左界 25 引入
-    # 仪表盘刻度噪声致 9→a 误读 0.37，收窄后 1.0；杂讯 M/• 靠整数提取跳过）
+    ROI_TURN = [20, 55, 100, 60]        # 残りターン数值（実機 2026-08-22 轮1:两位数 12 box[29,66,72,47]
+    # 宽于一位数,原 [35,60,55,55] 右界截断致 R2 恒读空 turn_counter_unreadable;杂讯 M/• 靠整数提取跳过）
     ROI_STAMINA = [555, 200, 120, 60]  # 体力（全屏 OCR 曾把 29 误读 0，勿缩小）
     ROI_FLOW_NAME = [90, 45, 145, 42]  # flow 分带-日文名行（grill R1-Q3）
     ROI_FLOW_NUM = [95, 75, 135, 52]   # flow 分带-百分数行
@@ -1787,8 +1810,12 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             image = self._get_screenshot(context)
             turn_left = self._read_turn_left(context, image)
             if turn_left is None:
-                # 动画/转场窗口重试一次（実機首跑：面板关闭动画内截图致读空误停）
+                # 动画/转场窗口重试一次（実機首跑：面板关闭动画内截图致读空误停）；
+                # 弹窗残留也挡仪表（実機 2026-08-22 轮1 R1:槽探测 P饮料弹窗残留
+                # turn None stop）——先自愈浮层再重读
                 time.sleep(self.ACTION_DELAY)
+                if self._dissolve_blocking_overlays(context):
+                    time.sleep(self.ACTION_DELAY)
                 image = self._get_screenshot(context)
                 turn_left = self._read_turn_left(context, image)
             if turn_left is None:
