@@ -187,3 +187,41 @@ def test_cluster_buff_words_real_layout():
     ]
     rows = Play._cluster_buff_words_to_rows(words)
     assert len(rows) == 5
+
+
+# ------------------------------------------------------------------
+# 统一面板法纯逻辑（grill 三轮共识，2026-08-21）
+# ------------------------------------------------------------------
+
+
+def test_merge_panel_items_counts_duplicates():
+    Play = _load_play()
+    items: dict = {}
+    Play._merge_panel_items(items, ["スキルカード使用数追加", "集中 13"])
+    Play._merge_panel_items(items, ["スキルカード使用数追加"])  # 第二屏重叠再现
+    assert items == {"スキルカド使用数追加": 2, "集中 13": 1}  # 键归一化去长音符
+
+
+def test_merge_panel_items_long_note_variants_merge():
+    """OCR 长音符变体（ターン内/タン内）归并为同一键（probe4 round2 実証）。"""
+    Play = _load_play()
+    items: dict = {}
+    Play._merge_panel_items(items, ["3回ターン内0回"])
+    Play._merge_panel_items(items, ["3回タン内0回"])
+    assert items == {"3回タン内0回": 2}
+
+
+def test_extract_reprise_from_items():
+    Play = _load_play()
+    items = {"お姉さんの感覚+(再演)": 1, "3回ターン内0回": 1, "好調 29ターン": 1}
+    assert Play._extract_reprise_from_items(items) == 3
+
+
+def test_extract_reprise_missing_returns_none():
+    assert _load_play()._extract_reprise_from_items({"好調 29ターン": 1}) is None
+
+
+def test_extract_focus_from_items():
+    Play = _load_play()
+    assert Play._extract_focus_from_items({"集中 13": 1, "好調 29ターン": 1}) == 13
+    assert Play._extract_focus_from_items({"好調 29ターン": 1}) is None

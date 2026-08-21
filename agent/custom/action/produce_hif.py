@@ -1592,9 +1592,19 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         played_history: List[str] = []
         no_progress = 0
         logger.success("HIF Round1 出牌开始（play 模式）")
-        # 开局全量一次（grill R1-Q1 分层）：集中面板缓存（R1-Q4b 兜底）
-        focus_cached = self._read_focus_from_panel(context)
-        logger.info(f"Round1 开局面板读集中={focus_cached}")
+        # 开局全量一次（实证修正 2026-08-21 probe4 round5：首行详情面板=组合视图无再演行,
+        # 完整清单面板仅溢出态省略号入口——非溢出时状态带本就全量可见,走枚举即可）
+        rows0 = self._enumerate_buff_rows(context, self._get_screenshot(context))
+        if any(r.get("overflow") for r in rows0):
+            opening_panel = self._read_state_panel(context, self.PANEL_ENTRY_ELLIPSIS)
+            if opening_panel:
+                logger.info(f"Round1 开局溢出完整面板: {len(opening_panel['items'])} 条, "
+                            f"集中={opening_panel['focus']}, 再演剩余={opening_panel['reprise_left']}")
+            else:
+                logger.warning("Round1 溢出面板读取失败,降级状态带可见行")
+        else:
+            opening_panel = None
+            logger.info(f"Round1 开局非溢出,状态带枚举 {sum(1 for r in rows0 if r.get('words'))} 行全量可见")
         # P 饮料槽探测（R1-Q1/R2：槽位前缀固定，点开弹窗实锤，缓存 session）
         p_drink_slots = self._probe_p_drink_slots(context)
         logger.info(f"Round1 P饮料槽探测={self._available_drinks_from_slots(p_drink_slots)}")
@@ -1626,6 +1636,15 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             state = self._build_state(context, image, turn_left, hand)
             evidence = self._collect_evidence(context, image, turn_left)
             evidence["hand"] = list(hand.card_names)
+            # 指纹变化触发面板重读（grill R1-Q3：新 buff 出现指纹必变）
+            fp = evidence.get("buff_fingerprint") or ""
+            if fp and fp != _ProduceHIFActionBase._read_round1_state().get("last_buff_fingerprint"):
+                rows_now = self._enumerate_buff_rows(context, image)
+                if any(r.get("overflow") for r in rows_now):
+                    refreshed = self._read_state_panel(context, self.PANEL_ENTRY_ELLIPSIS)
+                    if refreshed:
+                        evidence["panel_refreshed"] = True
+                _ProduceHIFActionBase._write_round1_state({"last_buff_fingerprint": fp})
             action = GarakutaRinamiStrategy(ProfilePayload.default()).decide(state)
             logger.info(
                 f"Round1 turn={state.turn} 残り{turn_left} gc={state.good_condition_turns} "
@@ -1786,40 +1805,6 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 values.append(int(digits))
         return max(values) if values else None
 
-    def _read_focus_from_panel(self, context: Context) -> Optional[int]:
-        """集中面板法（grill R1-Q4b 兜底）：点好調行开组合面板 → OCR 集中条目
-        （実機 2026-08-21 锚：标题 y246/值 y285，ROI [100,230,300,130]）→ 关面板。
-        集中状态带模板本局 MISS（图标样式随局异动），面板法开局读一次缓存 session。
-        実機首跑教训：开/关都要验证（面板没开读到 None、没关挡住 turn ROI——
-        关闭动画窗口内主循环截图致 turn_counter_unreadable 误停）。"""
-        value = None
-        for dy in (0, -12, 12):
-            self._click_box_center(context, [7, 253 + dy, 48, 48], double=False)
-            time.sleep(self.PANEL_CLICK_DELAY)
-            image = self._get_screenshot(context)
-            panel = self._run_ocr(context, image, "HIFRound1PanelAnchor", [".*好調.*"], [100, 40, 420, 140])
-            if not (panel and panel.hit):
-                continue  # 面板没开，微调 y 重试
-            focus = self._run_ocr(context, image, "HIFRound1FocusPanel", [".*集中.*"], [100, 230, 300, 130])
-            if focus and focus.hit:
-                # 実測「集中」标题(y246)与数值(y285)是两个独立 OCR 框,best_result 只含
-                # 标题二字——数值行单独读（[100,275,300,50] 実測校准）
-                num = self._run_ocr(context, image, "HIFRound1FocusPanelNum", [".*"], [100, 275, 300, 50])
-                source_text = (num.best_result.text if (num and num.hit) else "") or focus.best_result.text
-                digits = re.sub(r"\D", "", source_text)
-                value = int(digits) if digits else None
-            break
-        # 关面板并验证真关（title 区「好調」锚消失）
-        for _ in range(3):
-            self._click_box_center(context, [330, 730, 55, 45], double=False)  # 面板底部 ×(357,753)
-            time.sleep(1.2)
-            image = self._get_screenshot(context)
-            panel = self._run_ocr(context, image, "HIFRound1PanelAnchor", [".*好調.*"], [100, 40, 420, 140])
-            if not (panel and panel.hit):
-                break
-        if value is not None:
-            _ProduceHIFActionBase._write_round1_state({"focus_cached": value})
-        return value
 
     def _build_state(self, context: Context, image, turn_left: int, hand) -> ExamState:
         session = _ProduceHIFActionBase._read_round1_state()
@@ -1830,7 +1815,14 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             focus = int(session.get("focus_cached") or 0) or None
             if focus is not None:
                 logger.info(f"集中模板 MISS，用面板缓存={focus}")
-        reprise_used = self._read_reprise_used(context, image)
+        # reprise 源（实证修正）：溢出面「(再演)」权威缓存优先；非溢出=状态带「ーン内」行
+        # 新源；旧右上源（P item 误标）仅 debug 落盘
+        pool_left = session.get("reprise_pool_left")
+        if pool_left is not None:
+            reprise_used = 4 - int(pool_left)
+        else:
+            new_src = self._read_reprise_new_source(context, image)
+            reprise_used = new_src if new_src is not None else self._read_reprise_used(context, image)
         if good is None:
             logger.warning(f"好調行模板定行失败，session 兜底={session.get('good_condition_turns')}")
         if reprise_used is not None:
@@ -2054,48 +2046,143 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             rows.append({"y": -1, "words": ["OVERFLOW_MARKER"], "known": None, "overflow": True})
         return rows
 
-    OVERFLOW_PANEL_CLICK = (31, 620)  # 省略号行位（実証 2026-08-21:竖两点「:」,y~620 随行数浮动±40）
-    OVERFLOW_PANEL_ROI = [40, 50, 560, 680]  # 完整状态面板内容区
-    OVERFLOW_SCROLL_MAX = 5  # 滚动兜底上限（连续两屏无新增=到底）
+    PANEL_ENTRY_FIRST_ROW = 262   # 非溢出入口=状态带首行（好調行,実測 y~262）
+    PANEL_ENTRY_ELLIPSIS = 620    # 溢出入口=省略号行（実証 竖两点「:」 y~620±40）
+    PANEL_CONTENT_ROI = [40, 50, 560, 680]  # 状态面板内容区（两种入口同容器）
+    PANEL_SCROLL_STEP = (545, 640, 545, 340)  # 右缘滚动 ~300px（実証:中央起点落面板条目区被消费致滚动时灵时不灵,右缘稳定）
+    PANEL_SCROLL_MAX = 8
+    PANEL_BOTTOM_CONFIRM = 2  # 连续 N 次滚动无新增才判到底（防单次 OCR 全漏误判）
 
-    def _read_overflow_panel(self, context: Context) -> list[str]:
-        """溢出兜底（実証 2026-08-21 用户提示画面）:点省略号位展开完整状态面板——
-        全量文字清单含被折叠 buff（絶好調/再演/追加系実測在列）与再演权威行
-        「お姉さんの感覚+(再演) N回/ターン内M回」。替代已失败的滚动方案。"""
-        texts: list[str] = []
+    def _read_state_panel(self, context: Context, entry_y: int) -> Optional[dict]:
+        """统一面板法（grill 三轮共识 2026-08-21）：点开（首行 or 省略号位）→ 小步滚动
+        到底 → 全量清单（整行去重+count）→ 提取集中/再演 → 关闭验证。失败降级 return None
+        （退回状态带可见行+告警，不 stop——面板是感知增强非决策必需）。
+
+        防漏读（用户 grill 滚动规范）：半屏滚动+重叠锚（相邻屏零重叠=跳屏→回滚重读）+
+        连续 2 次无新增到底 + 底部物理信号（到底后两帧 OCR 全同）。
+        防重读（语义不丢）：整行文本为键，同名同值 count 计数，同名不同值不误并。
+        """
+        opened = False
         for dy in (0, -40, 40):
-            self._click_box_center(context, [7, self.OVERFLOW_PANEL_CLICK[1] + dy - 24, 48, 48], double=False)
+            self._click_box_center(context, [7, entry_y + dy - 24, 48, 48], double=False)
             time.sleep(self.PANEL_CLICK_DELAY)
             image = self._get_screenshot(context)
-            # 面板判定:内容区出现「再演|絶好調|ターン内」类清单词（无固定标题,以清单词为锚）
-            anchor = self._run_ocr(context, image, "HIFOverflowPanelAnchor",
-                                   [".*再演.*|.*絶好調.*"], self.OVERFLOW_PANEL_ROI)
-            if anchor and anchor.hit:
-                # 完整面板内容超一屏(用户实证 2026-08-21:不滑动显示不全),滚到底拼接
-                # 実証:此面板 swipe 有效(与好調详情面板不同),× 滚后仍有效
-                seen: list[str] = []
-                for _ in range(self.OVERFLOW_SCROLL_MAX):
-                    detail = self._run_ocr(context, image, "HIFOverflowPanelFull", [".*"], self.OVERFLOW_PANEL_ROI)
-                    seen.extend(i.text for i in (detail.all_results or []) if i.text.strip())
-                    context.tasker.controller.post_swipe(250, 640, 250, 340, duration=500).wait()
-                    time.sleep(1.5)
-                    image = self._get_screenshot(context)
-                    nxt = self._run_ocr(context, image, "HIFOverflowPanelFull", [".*"], self.OVERFLOW_PANEL_ROI)
-                    new_items = [i.text for i in (nxt.all_results or []) if i.text.strip() and i.text not in seen]
-                    if not new_items:
-                        break  # 到底（连续两屏无新增）
-                # 保序去重
-                dedup = list(dict.fromkeys(seen))
-                texts = dedup
+            # 锚词+条数下限双验证（probe4 実測教训:半开态锚词可误中,首屏<8 条非真开）
+            if self._panel_anchor_hit(context, image) and len(self._ocr_panel_items(context, image)) >= 8:
+                opened = True
                 break
+        if not opened:
+            logger.warning(f"Round1 面板未打开(entry_y={entry_y}),降级状态带可见行")
+            return None
+
+        items: dict[str, int] = {}
+        no_new_streak = 0
+        for _ in range(self.PANEL_SCROLL_MAX):
+            cur = self._ocr_panel_items(context, image)
+            self._merge_panel_items(items, cur)
+            prev_set = set(cur)
+            # 半屏滚动（重叠锚:新屏应与上屏有重叠词,零重叠=跳屏→回滚半屏重读）
+            context.tasker.controller.post_swipe(*self.PANEL_SCROLL_STEP, duration=400).wait()
+            time.sleep(1.3)
+            image = self._get_screenshot(context)
+            nxt = self._ocr_panel_items(context, image)
+            new_items = [t for t in nxt if t not in items]
+            if prev_set and nxt and not (set(nxt) & prev_set) and not new_items:
+                # 跳屏且无新增——回滚重读一次
+                context.tasker.controller.post_swipe(self.PANEL_SCROLL_STEP[2], self.PANEL_SCROLL_STEP[3],
+                                                     self.PANEL_SCROLL_STEP[0], self.PANEL_SCROLL_STEP[1],
+                                                     duration=400).wait()
+                time.sleep(1.3)
+                image = self._get_screenshot(context)
+                nxt = self._ocr_panel_items(context, image)
+                new_items = [t for t in nxt if t not in items]
+            self._merge_panel_items(items, nxt)
+            if new_items:
+                no_new_streak = 0
+            else:
+                no_new_streak += 1
+                if no_new_streak >= self.PANEL_BOTTOM_CONFIRM:
+                    # 底部物理信号:再滚一帧对比,全同确认到底
+                    context.tasker.controller.post_swipe(*self.PANEL_SCROLL_STEP, duration=400).wait()
+                    time.sleep(1.0)
+                    probe = self._ocr_panel_items(context, self._get_screenshot(context))
+                    if set(probe) <= set(items):
+                        break
+                    no_new_streak = 0
+
+        record = {
+            "items": [{"text": t, "count": c} for t, c in items.items()],
+            "focus": self._extract_focus_from_items(items),
+            "reprise_left": self._extract_reprise_from_items(items),
+        }
+        self._close_state_panel(context)
+        # 缓存跨回合字段（reprise 权威源/集中兜底缓存）
+        patch: Dict[str, Any] = {}
+        if record["reprise_left"] is not None:
+            patch["reprise_pool_left"] = record["reprise_left"]
+        if record["focus"] is not None:
+            patch["focus_cached"] = record["focus"]
+        if patch:
+            _ProduceHIFActionBase._write_round1_state(patch)
+        return record
+
+    def _panel_anchor_hit(self, context: Context, image) -> bool:
+        """面板打开判定：内容区出现清单词（再演/絶好調——状態带没有的词;
+        「ターン内」状態带同词不可用作锚,実機误报教训）。"""
+        anchor = self._run_ocr(context, image, "HIFStatePanelAnchor",
+                               [".*再演.*|.*絶好調.*"], self.PANEL_CONTENT_ROI)
+        return bool(anchor and anchor.hit)
+
+    def _ocr_panel_items(self, context: Context, image) -> list[str]:
+        detail = self._run_ocr(context, image, "HIFStatePanelItems", [".*"], self.PANEL_CONTENT_ROI)
+        raw = [i.text.strip() for i in (detail.all_results or []) if i.text.strip()]
+        # 噪声过滤:<4 字符且非数字的残读丢弃（「č」「ć」类,実証出现过）
+        return [t for t in raw if len(t) >= 4 or t.isdigit()]
+
+    @staticmethod
+    def _panel_item_key(text: str) -> str:
+        """条目键归一化（実証 probe4 round2:同一行两跑读出「ターン内/タン内」长音符
+        变体致 count 分裂+自一致性误报）——去长音符 ー 后为键。"""
+        return text.replace("ー", "")
+
+    @classmethod
+    def _merge_panel_items(cls, items: dict[str, int], screen: list[str]) -> None:
+        """纯逻辑（可单测）：归一化文本为键合并,count 计数——同名同值重复保留一条+count
+        （面板真有两份该状态,信息不丢）,OCR 长音符变体归并为同一键。"""
+        for t in screen:
+            key = cls._panel_item_key(t)
+            items[key] = items.get(key, 0) + 1
+
+    @staticmethod
+    def _extract_reprise_from_items(items: dict[str, int]) -> Optional[int]:
+        """纯逻辑（可单测）：面板「(再演)」权威行提取剩余 N 回（文字锚零歧义,
+        grill R2-Q1 第三源）。行样例実測:「お姉さんの感覚+(再演)」+「3回ターン内0回」。"""
+        joined = " ".join(items)
+        m = re.search(r"\(再演\).*?(\d+)\s*回", joined)
+        return int(m.group(1)) if m else None
+
+    @staticmethod
+    def _extract_focus_from_items(items: dict[str, int]) -> Optional[int]:
+        """纯逻辑（可单测）：面板「集中 N」条目提取（実測 集中/13 相邻条目）。"""
+        keys = [k for k in items if "集中" in k]
+        if not keys:
+            return None
+        m = re.search(r"(\d+)", keys[0])
+        return int(m.group(1)) if m else None
+
+    def _close_state_panel(self, context: Context) -> bool:
         for _ in range(3):
             self._click_box_center(context, [337, 740, 47, 34], double=False)  # X 実測中心(360,757)
             time.sleep(1.2)
-            anchor = self._run_ocr(context, self._get_screenshot(context), "HIFOverflowPanelAnchor",
-                                   [".*再演.*|.*絶好調.*"], self.OVERFLOW_PANEL_ROI)
-            if not (anchor and anchor.hit):
-                break
-        return texts
+            if not self._panel_anchor_hit(context, self._get_screenshot(context)):
+                return True
+        logger.warning("Round1 状态面板关闭失败")
+        return False
+
+    def _read_overflow_panel(self, context: Context) -> list[str]:
+        """溢出场景入口（兼容保留）：省略号位入口的统一面板法调用。"""
+        record = self._read_state_panel(context, self.PANEL_ENTRY_ELLIPSIS)
+        return [i["text"] for i in (record or {}).get("items", [])]
 
     @staticmethod
     def _cluster_buff_words_to_rows(words: list[dict], row_tolerance: int = 15) -> list[dict]:
