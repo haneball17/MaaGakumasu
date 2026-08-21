@@ -281,6 +281,7 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
             "day_remaining": day_remaining,
             "health": f"{health_data['current']}/{health_data['max']}",
             "candidates": [e["name"] for e in events],
+            "all_options": self._survey_all_options(context, image),
             "chosen": best_event["name"],
             "priority": choose_schedule_priority(preset, day_remaining),
         })
@@ -351,6 +352,27 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         if log_names:
             logger.info(f"HIF 可用日程: {', '.join(log_names)}")
         return events
+
+    # 全量选项探测(仅存档不参与决策):低阈值模板捕获 0.78 决策线以下的真实选项
+    # (実機 2026-08-21 Day3 差し入れ 0.4775 盲区教训——candidates 只记识别命中的,
+    # 页面实有未识别项事后要 vision 复核截图才能还原,决策模块切换行动项缺数据)
+    SURVEY_TEMPLATE_THRESHOLD = 0.4
+    EVENT_ROI = [0, 840, 720, 280]
+
+    def _survey_all_options(self, context: Context, image) -> List[Dict[str, Any]]:
+        options: List[Dict[str, Any]] = []
+        for event in self._scan_attribute_cards(image):
+            options.append({"name": event["name"], "box": event["box"], "source": "color_scan"})
+        for lesson in self._scan_public_lessons(context, image):
+            options.append({"name": lesson["name"], "box": lesson["box"], "source": "ocr"})
+        for event_name, template in self.EVENT_CONFIG.items():
+            reco_detail = self._run_template(
+                context, image, "ProduceRecognitionHIFEventSurvey", template, self.EVENT_ROI, threshold=self.SURVEY_TEMPLATE_THRESHOLD
+            )
+            if reco_detail and reco_detail.all_results:
+                best = max(reco_detail.all_results, key=lambda r: r.score)
+                options.append({"name": event_name, "box": best.box, "score": round(best.score, 3), "source": "template_survey"})
+        return options
 
     def _scan_public_lessons(self, context: Context, image) -> List[Dict[str, Any]]:
         """识别公開レッスン候选卡:OCR 底部横条固定文字,前缀映射 Vo/Da/Vi。"""
