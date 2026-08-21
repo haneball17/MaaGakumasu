@@ -100,11 +100,18 @@ npx maa-tools check
 
 如果本地缺少测试目录或依赖，说明无法完整执行对应检查即可，不要为了通过检查凭空创建无关测试。
 
-无人化管线开发调试走 pipeline-autodev 工作流（`.agents/skills/pipeline-autodev/SKILL.md`）：主 agent 按五角色循环自主完成"探索→裁素材→生成节点→实机连测→回归→报告"，危险操作（扭蛋/购买/确认弹窗/体力药/开战）必须同步等用户确认，超预算（单节点 5 次重试/15 分钟、会话 90 分钟）即停并落盘 `debug/autodev/`（不入库）。坐标裁决铁律：视觉模型只从 SoM 编号叠加图选编号，精确坐标一律取 OCR/模板/YOLO 检测框中心（vision-qwen 裸坐标实测中位误差 26px，2026-08-20 校准）。回放基准集在 `tests/replay_suite/`，改动存量节点后必须 `python tools/maa_dev.py replay --suite tests/replay_suite`。详见 `docs/hif/autodev-workflow.md` 与调研存档 `docs/hif/autodev-research.md`。
+无人化管线开发调试走 pipeline-autodev 工作流（`.agents/skills/pipeline-autodev/SKILL.md`）：主 agent 按五角色循环自主完成"探索→裁素材→生成节点→实机连测→回归→报告"，危险操作（扭蛋/购买/确认弹窗/体力药/开战）必须同步等用户确认，超预算（单节点 5 次重试/15 分钟、会话 90 分钟）即停并落盘 `debug/autodev/`（不入库）。坐标裁决铁律：视觉模型只从 SoM 编号叠加图选编号，精确坐标一律取 OCR/模板/YOLO 检测框中心（vision-qwen 裸坐标实测中位误差 26px，2026-08-20 校准）。语义裁决铁律：UI 图标/按钮/数值的语义结论必须经用户指认或実機文本（详情页/日志原文）佐证，vision 的形状描述只作辅助不作依据（2026-08-20 好調图标「天鹅↔力量手势」翻案教训）。実機点击裁决：adb click `posted:true` 不等于生效（偶发静默失效），关键点击后必须用 OCR 锚或画面对比验证，无效先原坐标重试 1-2 次再怀疑坐标。回放基准集在 `tests/replay_suite/`，改动存量节点后必须 `python tools/maa_dev.py replay --suite tests/replay_suite`。详见 `docs/hif/autodev-workflow.md` 与调研存档 `docs/hif/autodev-research.md`。MuMu 的 adb 端口跨会话会漂移，实机操作前先 `adb devices` 查实际端口并经 `MAA_DEV_ADDR` 注入，不要假设 16416。
+
+実機 Custom action 单点连测（不跑完整管线）走 `debug/autodev/round1/ipc_task.py <节点名>`（AgentClient 直连自管 agent 子进程：bind(res)→connect→register_sink→post_task）。不要用 MaaMCP `run_pipeline` 做此事——2026-08-21 实测其 agent 拉起有时序竞态，连续两次调用各带 Custom action 时第二次返回 succeeded 但 action 零执行。配套：interface.json 的 `agent.child_exec: "python"` 在本机被 Microsoft Store 别名劫持，跑前临时 patch 为 `.venv` 绝对路径、跑完恢复（正式 interface 勿留绝对路径）；MCP `run_pipeline` 的 `pipeline_path` 数组参数会被序列化成单字符串（改单文件多次调用 + `on_conflict: overwrite`，节点驻留可累积），`Produce*.json` 为 JSONC 会被其严格 json 预校验拒载（去注释+去尾逗号的 strict 副本绕过）。
+
+識別新件（读数/枚举/面板交互类 Custom action 方法）的実機验证纪律：先 probe 直连（Tasker.post_recognition 同源调用，参照 debug/autodev/round1/probe_state*.py 模式）做单元验证——每件 ≥3 轮跨画面时点+关键件自一致性双跑，修复后该件轮次清零重计；全绿才接管线集成（2026-08-21 用户叫停「未验证就 PlayFlag 连测」确立，probe2/3/4 三次实践成型）。设计対局页识别方案前先向用户要已知 UI 约束清单（元素数量上下限/位置稳定性/溢出行为/形态随内容浮动）——P item 随养成增长、饮料格数 3-4 由亲密度决定、buff 溢出省略号、弹窗标题随内容浮动四个关键约束全部来自用户告知。
+
+対局页（Round 対战）UI 动态锚定规则（2026-08-21 四连坑实证）：弹窗标题/瓶名随内容浮动（同弹窗不同瓶 y722/838）——先 OCR 锚定位再取锚相对带，禁固定 ROI；面板/buff 行入口 y 随状态增减漂移——从当次枚举动态取；关闭验证锚必须选背景不出现的词（「ターン内」状態带同词曾误报）；面板滚动 swipe 用容器右缘起点 (545,640)（中央起点落可交互条目会被消费致滚动时灵时不灵）；清单条目键去长音符 ー 归一化（ターン内/タン内 OCR 变体）。
 
 ## 代码与格式约定
 
 - Python 代码遵循 `pyproject.toml` 中 Ruff 配置：目标版本 `py312`，行宽 `144`，仅启用 `I`（isort）规则且开启 `length-sort`/`length-sort-straight`（按 import 长度排序）。改 import 时注意这一点。
+- 大段重写类或函数后，必须 grep 旧标识符（旧常量名/方法名）确认已删除——Python 类体中后定义的方法会静默覆盖前者，旧 `run()` 残留会让新版从未执行且编译/单测全绿掩盖（2026-08-21 変卡重写実機教训，db1c772）。入口方法替换用 `inspect.getsource` 断言新逻辑确实在目标方法内。
 - JSON/YAML 使用 Prettier 配置：默认缩进 4 空格，YAML 缩进 2 空格，JSON 覆盖配置使用 tab。
 - Markdown 文档遵循 `docs/.markdownlint.yaml`，但根目录 `AGENTS.md` 主要服务代理协作，优先清晰准确。
 - 修改 JSON、JSONC 或流水线文件时保持原有排序、注释风格和缩进风格；不要做无关格式化。
@@ -118,6 +125,9 @@ npx maa-tools check
 - `TemplateMatch` 应明确模板路径、ROI、阈值和必要的匹配方法。新增模板时使用与现有资源一致的分辨率基准。
 - `OCR` 只在文本稳定、语言明确时使用；游戏 UI 文案变动风险较高时优先保留模板或自定义识别。
 - `Custom` recognition/action 名称必须与 `agent/` 中实现一致，参数结构要向后兼容。
+- next 链尾的 `DirectHit` 兜底节点（如 UnknownStop）会**立即命中**，抢在前序识别节点的渲染等待窗口之前——「等内容渲染」用节点 `timeout`（next 全 miss 时按 timeout 轮询重试）+ `on_error` 兜底表达，不要把 DirectHit 混进会因内容未渲染而 miss 的 next 链（実機 2026-08-20 公開レッスン序列教训）。
+- 非 `[JumpBack]` 前缀的子节点执行完成即**终止任务链**；需要执行完继续路由循环的推进节点（点击/翻页类），在引用它的 next 列表里加 `[JumpBack]` 前缀。
+- agent 侧把字面文本（卡名/按钮文案）传入 OCR expected 前必须 `re.escape()`（`+`/`.`/`!` 等元字符会被 MaaFW regex_valid 拒掉整个 override）；超过 ~32 项的词典不要经 expected 传输（maafw IPC 对日文大列表有 UTF-8→GBK 乱码风险，5.11/5.12 均有），改为 expected `[".*"]` 全量 OCR + Python 侧子串匹配。
 - 自动培育相关改动风险较高。修改 `Produce.json` 时重点验证：
   - 入口与中断继续流程：`Produce`、`ProduceLoop`、`ProduceSkipPreparation`、`ProduceEntry`。
   - 难度入口：`初` 走 `ProduceEntry`，`NIA` 走 `ProduceEntryNIA`；不要把 NIA 覆盖项误合到初流程。
@@ -137,6 +147,9 @@ HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动�
 - 准备阶段循环子流程用 `[JumpBack]` 返回路由根节点；每个状态节点设置 `focus` 日志（页面名、预设 ID、匹配证据、下一动作）。
 - 离线模拟器（`agent/hif/algorithms/` 束搜索与路线规划）与实机决策解耦，不要把未验证的模拟器输出直接接到管线；实机三选一已接的评分模型 v2 改动须跑 `tests/test_scoring_model.py` 并用 `tools/replay_scoring.py` 回放对比。
 - 快慢路径路由（`docs/superpowers/specs/2026-08-14-hif-fastpath-routing-design.md`）实施时保持“降级全量”兜底：快路径未命中必须回落全量路由或安全停止，不允许新增猜测性点击。
+- 横切页面（弹窗/演出页，可出现在任意行动后，如 P 饮料弹窗、支援卡事件弹窗）双层挂载：主路由根 `ProduceHIFScheduleRoot` 的 next 前部挂全量横切节点保证完备性；子序列宿主（如 `ProduceHIFPublicLessonResultFlag`）只挂已知会在此序列上下文出现的横切节点做快速路径。**子序列宿主的 `on_error` 一律指向上层路由根，禁止直指 `ProduceHIFUnknownStop`**——`UnknownStop` 只保留在最外层主路由的 `on_error`（実機 2026-08-21 结果序列孤岛教训：JumpBack 循环控制流回不到主路由，直指 UnknownStop 会切断收敛路径）。
+- Flag 锚在多个页面共有时，页面专属锚必须排在通用锚前面（如 `ProduceHIFStartConfirmFlag` 先于 `ProduceHIFIdolSelectFlag`——步骤条「アイドル選択」文字在步骤 1/2 两页共有）；Custom action 的重试循环内先自检本页锚，锚失活即放行 `return True` 交回路由——转场/LOADING 窗口内 JumpBack 回环会重复路由命中同一 Flag，在未渲染页面上 miss 即 stop 是系统性失败模式（実機 2026-08-21 偶像选择/開始確認/相談三处中招）。
+- 无固定文案的封闭池页面（如 P 饮料弹窗，饮料名/效果随种类变）用数据源名称池做 OCR expected 锚（`drinks.json` 29 名称，静态 JSON 定义无 IPC 乱码风险），ROI 收窄到名称一行；不要用框架装饰模板（sparkle/横条在背景页无区分度，実機 2026-08-21 负例 0.875 > 正例 0.847）。
 
 ## 任务配置规则
 
