@@ -985,16 +985,14 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             return self._stop_unsupported(context, "select_change_source_deck", "deck_scan_empty")
 
         mode = "named" if any(self._norm(n) == chosen["name"] for n in names) else "fallback_first_cell"
-        logger.info(f"HIF 変卡: 源卡选定「{chosen['name']}」mode={mode} screen={chosen['screen']}")
+        logger.info(f"HIF 変卡: 源卡选定「{chosen['name']}」mode={mode}")
 
-        # 选中卡可能不在当前屏（扫描滚到底）：反向滚回目标屏再点格
-        last_screen = max(e["screen"] for e in deck)
-        for _ in range(last_screen - chosen["screen"]):
-            context.tasker.controller.post_swipe(*self.SCROLL_TO, *self.SCROLL_FROM, duration=300).wait()
-            time.sleep(self.ACTION_DELAY)
-
-        if not self._select_cell_with_verify(context, chosen, names):
-            return self._stop_unsupported(context, "select_change_source_deck", "source_select_failed")
+        # 选中定位（実機 13:34 复盘：滚动后坐标重放不可靠——回弹/偏移致复核错卡）：
+        # 滚回顶部（首格卡名==deck[0] 探测验证）→ chosen≠deck[0] 时顺序点选扫描到目标
+        if not self._scroll_top_verified(context, deck[0]["name"]):
+            return self._stop_unsupported(context, "select_change_source_deck", "scroll_back_failed")
+        if chosen["name"] != deck[0]["name"] and not self._scan_until_card(context, chosen["name"]):
+            return self._stop_unsupported(context, "select_change_source_deck", "source_relocate_failed")
 
         self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
             "action": "pick_source", "mode": mode,
@@ -1054,26 +1052,34 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         )
         if not (detail and detail.hit):
             return ""
-        return cls._norm(detail.best_result.text)
+        name = cls._norm(detail.best_result.text)
+        # 噪声过滤（実機 13:34 复盘：详情区未渲染好时 OCR 出 'D'/'0'/'5' 单字符）：
+        # 卡名必须含日文（假名/汉字）且 ≥4 字，否则视为未读到
+        if len(name) < 4 or not any("\u3040" <= ch <= "\u30ff" or "\u4e00" <= ch <= "\u9fff" for ch in name):
+            return ""
+        return name
 
     def _scan_full_deck(self, context: Context) -> list[dict]:
-        """逐屏逐格点选读卡名，全库收集（含滚动，Q2 裁决）→ 去重清单。"""
+        """逐屏逐格点选读卡名，全库收集（含滚动，Q2 裁决）→ 去重清单。
+
+        判底（実機 13:34 复盘：单格探针会被滚动重叠误判「到底」——300px 滚 2 行
+        必有重叠行）改为首行 3 格探针签名：全部 ∈ 已见集合才算真到底。
+        """
         entries: list[dict] = []
         for screen in range(self.MAX_SCREENS):
             for ri, y in enumerate(self.GRID_ROWS, 1):
                 for ci, x in enumerate(self.GRID_COLS, 1):
-                    self._click_box_center(context, [x - 24, y - 24, 48, 48], double=False)
-                    time.sleep(self.CELL_CLICK_DELAY)
-                    name = self._read_cell_name(context, self._get_screenshot(context))
+                    name = self._read_cell_name_after_click(context, x, y)
                     entries.append({"screen": screen, "cell": f"s{screen}r{ri}c{ci}", "xy": [x, y], "name": name})
                     logger.debug(f"HIF 変卡扫描: s{screen}r{ri}c{ci} = {name!r}")
             if screen < self.MAX_SCREENS - 1:
-                before = {e["name"] for e in entries}
+                seen = {e["name"] for e in entries if e["name"]}
                 context.tasker.controller.post_swipe(*self.SCROLL_FROM, *self.SCROLL_TO, duration=300).wait()
                 time.sleep(self.ACTION_DELAY)
-                probe = self._read_cell_name_after_click(context, self.GRID_COLS[0], self.GRID_ROWS[0])
-                if probe and probe in before:
-                    break  # 滚不动了（已到底），当前屏与前屏重复
+                probe_row = [self._read_cell_name_after_click(context, x, self.GRID_ROWS[0])
+                             for x in self.GRID_COLS[:3]]
+                if all(p and p in seen for p in probe_row):
+                    break  # 首行签名完全重复 = 真到底
         return self._dedupe_deck(entries)
 
     def _read_cell_name_after_click(self, context: Context, x: int, y: int) -> str:
@@ -1081,16 +1087,27 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         time.sleep(self.CELL_CLICK_DELAY)
         return self._read_cell_name(context, self._get_screenshot(context))
 
-    def _select_cell_with_verify(self, context: Context, chosen: dict, names: tuple[str, ...]) -> bool:
-        """点选目标格 → 卡名复核（OCR 噪声容差：名单命中词或词典前缀即可）。"""
-        x, y = chosen["xy"]
-        for _ in range(2):
-            self._click_box_center(context, [x - 24, y - 24, 48, 48], double=False)
-            time.sleep(self.CELL_CLICK_DELAY)
-            got = self._read_cell_name(context, self._get_screenshot(context))
-            if got and (got == chosen["name"] or chosen["name"].startswith(got) or got.startswith(chosen["name"])):
+    def _scroll_top_verified(self, context: Context, top_name: str) -> bool:
+        """滚回牌库顶部并以首格卡名==deck[0] 验证（实测反向滚动有回弹，坐标推算不可靠）。"""
+        got = self._read_cell_name_after_click(context, self.GRID_COLS[0], self.GRID_ROWS[0])
+        for _ in range(self.MAX_SCREENS * 2):
+            if got == top_name:
                 return True
-        logger.warning(f"HIF 変卡: 选中复核失败 chosen={chosen['name']} got={got!r}")
+            context.tasker.controller.post_swipe(*self.SCROLL_TO, *self.SCROLL_FROM, duration=300).wait()
+            time.sleep(self.ACTION_DELAY)
+            got = self._read_cell_name_after_click(context, self.GRID_COLS[0], self.GRID_ROWS[0])
+        return got == top_name
+
+    def _scan_until_card(self, context: Context, target: str) -> bool:
+        """从当前位置逐格点选扫描直到读到目标卡（该格保持选中态），含翻屏。"""
+        for _ in range(self.MAX_SCREENS):
+            for y in self.GRID_ROWS:
+                for x in self.GRID_COLS:
+                    got = self._read_cell_name_after_click(context, x, y)
+                    if got == target:
+                        return True
+            context.tasker.controller.post_swipe(*self.SCROLL_FROM, *self.SCROLL_TO, duration=300).wait()
+            time.sleep(self.ACTION_DELAY)
         return False
 
     def _click_change_verified(self, context: Context) -> bool:
@@ -1110,44 +1127,6 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             self._click_box_center(context, [cells[idx][0] - 24, cells[idx][1] - 24, 48, 48], double=False)
             time.sleep(self.CELL_CLICK_DELAY)
         return self._stop_unsupported(context, "select_change_source_deck", "change_button_not_found")
-
-    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        preset = self._get_preset(argv)
-        source = None
-        scrolls_used = 0
-        for scroll_index in range(self.MAX_DECK_SCROLLS + 1):
-            source = self._find_text_option(context, self._get_screenshot(context), preset.select_change_source_names, self.DECK_ROI)
-            if source:
-                break
-            if scroll_index < self.MAX_DECK_SCROLLS:
-                scrolls_used += 1
-                context.tasker.controller.post_swipe(360, 1040, 360, 680, duration=300).wait()
-                time.sleep(self.ACTION_DELAY)
-        if not source:
-            logger.info("HIF 変卡: 预设源卡未命中,回退选择牌库第一格(首版推进策略)")
-            self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
-                "action": "pick_source", "mode": "fallback_first_cell",
-                "names": list(preset.select_change_source_names), "scrolls": scrolls_used,
-            })
-            if not self._click_box_center(context, self.FIRST_DECK_CELL_BOX, double=False):
-                return self._stop_unsupported(context, "select_change_source_deck", "fallback_source_click_failed")
-        else:
-            logger.info(f"HIF 変卡: 源卡名单命中「{source.best_result.text}」")
-            self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
-                "action": "pick_source", "mode": "named",
-                "names": list(preset.select_change_source_names), "scrolls": scrolls_used,
-                "chosen": source.best_result.text,
-            })
-            if not self._click_box_center(context, source.best_result.box, double=False):
-                return self._stop_unsupported(context, "select_change_source_deck", "source_card_click_failed")
-        time.sleep(self.ACTION_DELAY)
-
-        change_button = self._find_text_option(context, self._get_screenshot(context), ("チェンジ",), self.CHANGE_ROI)
-        if not change_button:
-            return self._stop_unsupported(context, "select_change_source_deck", "change_button_not_found")
-        if not self._click_box_center(context, change_button.best_result.box, double=False):
-            return self._stop_unsupported(context, "select_change_source_deck", "change_button_click_failed")
-        return True
 
 
 @AgentServer.custom_action("ProduceHIFConsultAuto")
