@@ -846,7 +846,16 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeSourceAuto")
 class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
-    """在变卡第二阶段选择预设源卡并确认;预设未命中时回退选牌库第一格。"""
+    """在变卡第二阶段选择预设源卡并确认;预设未命中时回退选牌库第一格。
+
+    已知缺陷(実機 2026-08-21 取证,docs/hif/finals-daily-log.md 末节):牌库网格卡面
+    无任何卡名文字,_find_text_option 扫名单从未命中(日志两次 scrolls=4 全 miss),
+    现状全靠 fallback 推进。正确做法=逐格点选→详情区 OCR 卡名(选中后显示卡名+效果,
+    见文档 2026-07-09 実機记录)→名单匹配;等実機到変卡环节再重写。
+    网格几何(2026-08-21 投影实测):4 列 x≈83/229/376/523 行 y≈683/829/976,格 ~113px;
+    FIRST_DECK_CELL_BOX 行缘 623 与实测 683 差 60px,点击成功疑似靠上边缘容差待复核;
+    fallback 亦未跳过 トラブルカード(不可被変)。
+    """
 
     DECK_ROI = [60, 600, 600, 500]
     CHANGE_ROI = [350, 1080, 320, 140]
