@@ -882,6 +882,9 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
     # 「終了」按钮晚于 Custom action 到达),整体识别带重试
     SETTLE_DELAY = 1.2
     SETTLE_ROUNDS = 3
+    # 商店页说明文锚(同 ConsultFlag);点「終了」后转场窗口内 Flag 可被重复路由命中,
+    # 锚消失=商店已关闭(排名转场页無終了可寻),放行让路由接管 タップして次へ(実機 2026-08-21)
+    SHOP_ANCHOR_ROI = [100, 250, 520, 120]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
@@ -905,6 +908,9 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
                 time.sleep(self.ACTION_DELAY)
 
             image = self._get_screenshot(context)
+            if not self._find_text_option(context, image, ("Pポイントと交換",), self.SHOP_ANCHOR_ROI):
+                logger.info("HIF 相談: 商店锚已消失(終了已点击转场中?),放行")
+                return True
             finish_button = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
             if finish_button:
                 break
@@ -1131,6 +1137,8 @@ class ProduceHIFChooseIdolAuto(_ProduceHIFActionBase):
     NEXT_BUTTON_ROI = [150, 1000, 420, 200]
     IDOL_SIMILARITY_THRESHOLD = 0.9
     SONG_SIMILARITY_THRESHOLD = 0.7
+    # 步骤1/2 页顶共有的步骤条锚;action 重试期间锚消失=页面已推进(培育已开始),放行交回路由
+    STEP_BAR_ROI = [0, 0, 720, 80]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         # MaaFW 对未定义 custom_action_param 的节点传 "null" 字符串,loads 结果需兜底为空 dict
@@ -1166,8 +1174,19 @@ class ProduceHIFChooseIdolAuto(_ProduceHIFActionBase):
                     )
 
         # 底部中央大按钮:普通偶像页为「プロデュース開始」(box 约 [247,1059,225,33]);
-        # True End 姫崎莉波页(実機 2026-08-15)首屏为「次へ」(box [351,1074,53,32]),按序找两者
-        next_button = self._find_text_option(context, image, ("プロデュース開始", "次へ"), self.NEXT_BUTTON_ROI)
+        # True End 姫崎莉波页(実機 2026-08-15)首屏为「次へ」(box [351,1074,53,32]),按序找两者。
+        # miss 时等待重截(防转场/LOADING 窗口,実機 2026-08-21);步骤条也消失说明已离开选择流程,
+        # 放行让 PrepRoot 路由接管(培育开始加载页無锚可依)
+        next_button = None
+        for attempt in range(3):
+            image = self._get_screenshot(context)
+            if not self._find_text_option(context, image, ("アイドル選択",), self.STEP_BAR_ROI):
+                logger.info("HIF 偶像选择: 步骤条已消失(页面已推进),放行")
+                return True
+            next_button = self._find_text_option(context, image, ("プロデュース開始", "次へ"), self.NEXT_BUTTON_ROI)
+            if next_button:
+                break
+            time.sleep(self.ACTION_DELAY)
         if not next_button:
             return self._stop_unsupported(context, "hif_idol_select", "next_button_not_found")
         if not self._click_box_center(context, next_button.best_result.box, double=False):
@@ -1186,10 +1205,22 @@ class ProduceHIFStartConfirmAuto(_ProduceHIFActionBase):
     """HIF 開始確認页(步骤2)：直接以页面默认编成点击「プロデュース開始」开始培育。"""
 
     START_BUTTON_ROI = [150, 1000, 420, 200]
+    # 步骤2 独有锚(步骤1 的「選抜試験メモリー」无「選択中の」前缀,不会误命中)
+    ANCHOR_ROI = [0, 530, 720, 80]
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
-        image = self._get_screenshot(context)
-        start_button = self._find_text_option(context, image, ("プロデュース開始",), self.START_BUTTON_ROI)
+        # miss 时等待重截(防转场/LOADING 窗口);锚消失=培育已被前序点击启动(加载页無锚),
+        # 放行交回路由,Day1 日程由 ScheduleRoot 接管(実機 2026-08-21)
+        start_button = None
+        for attempt in range(3):
+            image = self._get_screenshot(context)
+            if not self._find_text_option(context, image, ("選択中の選抜試験",), self.ANCHOR_ROI):
+                logger.info("HIF 開始確認: 锚已消失(培育已开始?),放行")
+                return True
+            start_button = self._find_text_option(context, image, ("プロデュース開始",), self.START_BUTTON_ROI)
+            if start_button:
+                break
+            time.sleep(self.ACTION_DELAY)
         if not start_button:
             return self._stop_unsupported(context, "hif_start_confirm", "start_button_not_found")
         if not self._click_box_center(context, start_button.best_result.box, double=False):

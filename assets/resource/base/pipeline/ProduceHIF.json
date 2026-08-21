@@ -30,8 +30,8 @@
             "param": {}
         },
         "next": [
-            "[JumpBack]ProduceHIFIdolSelectFlag",
             "[JumpBack]ProduceHIFStartConfirmFlag",
+            "[JumpBack]ProduceHIFIdolSelectFlag",
             "[JumpBack]ProduceChooseHIFPItemFlag",
             "[JumpBack]ProduceHIFFinalModeFlag"
         ],
@@ -40,7 +40,7 @@
             "ProduceHIFScheduleRoot"
         ],
         "focus": {
-            "Node.Action.Succeeded": "[color:LimeGreen]HIF: 准备段路由(偶像选择/開始確認/PItem)[/color]"
+            "Node.Action.Succeeded": "[color:LimeGreen]HIF: 准备段路由(開始確認优先/偶像选择/PItem)[/color]"
         }
     },
     "ProduceHIFScheduleRoot": {
@@ -52,10 +52,11 @@
             "type": "DoNothing",
             "param": {}
         },
-        "next": [
-            "[JumpBack]ProduceHIFSupportEventPopup",
-            "[JumpBack]ProduceHIFRound1Flag",
-            "[JumpBack]ProduceHIFSelectChangeTargetFlag",
+  "next": [
+    "[JumpBack]ProduceHIFSupportEventPopup",
+    "[JumpBack]ProduceHIFRound1Flag",
+    "[JumpBack]ProduceHIFPDrinkObtainedBlank",
+    "[JumpBack]ProduceHIFSelectChangeTargetFlag",
             "[JumpBack]ProduceHIFSelectChangeSourceFlag",
             "[JumpBack]ProduceHIFSelectChangeDoneFlag",
             "[JumpBack]ProduceHIFDrinkRewardFlag",
@@ -672,6 +673,60 @@
             }
         }
     },
+    "ProduceHIFPDrinkObtainedBlank": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    "初星水",
+                    "烏龍茶",
+                    "ミックススムージー",
+                    "リカバリドリンク",
+                    "フレッシュビネガー",
+                    "ブーストエキス",
+                    "パワフル漢方ドリンク",
+                    "センブリソーダ",
+                    "初星ホエイプロテイン",
+                    "初星スペシャル青汁",
+                    "初星スペシャル青汁X",
+                    "ビタミンドリンク",
+                    "アイスコーヒー",
+                    "スタミナ爆発ドリンク",
+                    "厳選初星マキアート",
+                    "初星ブーストエナジー",
+                    "初星黒酢",
+                    "ルイボスティー",
+                    "ホットコーヒー",
+                    "おしゃれハーブティー",
+                    "厳選初星ティー",
+                    "厳選初星ブレンド",
+                    "特製ハツボシエキス",
+                    "ジンジャーエール",
+                    "ほうじ茶",
+                    "ほっと緑茶",
+                    "厳選初星チャイ",
+                    "初星スーパーソーダ",
+                    "初星湯"
+                ],
+                "roi": [
+                    200,
+                    838,
+                    400,
+                    62
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: Pドリンク获得弹窗(実機 2026-08-21 取证:饮料名大字行 y838-900 命中 drinks.json 28 名称池,效果文本随饮料变;点弹窗推进,連弾与「ランダムなPドリンクを2つ獲得」SP卡对应)[/color]"
+        }
+    },
     "ProduceHIFPublicLessonResultFlag": {
         "recognition": {
             "type": "OCR",
@@ -693,17 +748,19 @@
             "param": {}
         },
         "post_delay": 1000,
-        "timeout": 20000,
-        "next": [
-            "[JumpBack]ProduceHIFDrinkObtainedBlank",
-            "[JumpBack]ProduceHIFSPCardFlag",
-            "[JumpBack]ProduceHIFPGainBlank",
-            "[JumpBack]ProduceHIFKnownNextButton",
-            "[JumpBack]ProduceHIFLessonSettleBlank"
-        ],
-        "on_error": [
-            "ProduceHIFUnknownStop"
-        ],
+  "timeout": 20000,
+  "next": [
+    "[JumpBack]ProduceHIFPDrinkObtainedBlank",
+    "[JumpBack]ProduceHIFDrinkObtainedBlank",
+    "[JumpBack]ProduceHIFDrinkOverflowFlag",
+    "[JumpBack]ProduceHIFSPCardFlag",
+    "[JumpBack]ProduceHIFPGainBlank",
+    "[JumpBack]ProduceHIFKnownNextButton",
+    "[JumpBack]ProduceHIFLessonSettleBlank"
+  ],
+  "on_error": [
+    "ProduceHIFScheduleRoot"
+  ],
         "focus": {
             "Node.Recognition.Succeeded": "[color=Orange]HIF: 公開レッスン结果序列(実機 2026-08-20:标题残留连播 结算气泡/+50P演出/SP卡选择/饮料获得,推进节点 JumpBack 回路由循环,next 轮询 20s 等渲染)[/color]"
         }
