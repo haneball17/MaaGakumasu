@@ -1564,10 +1564,13 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     TOTAL_TURNS = 9
     # 実機校准 ROI（720×1280，Phase 0 取证；勿用预估占位值覆盖）
-    ROI_TURN = [25, 50, 90, 70]        # 残りターン数值（杂讯 M/• 靠整数提取跳过）
+    ROI_TURN = [35, 60, 55, 55]        # 残りターン数值（3.3.0 校准 2026-08-21：左界 25 引入
+    # 仪表盘刻度噪声致 9→a 误读 0.37，收窄后 1.0；杂讯 M/• 靠整数提取跳过）
     ROI_STAMINA = [555, 200, 120, 60]  # 体力（全屏 OCR 曾把 29 误读 0，勿缩小）
-    ROI_FLOW = [90, 45, 145, 80]       # 日文名+百分数两行
-    ROI_REPRISE = [550, 240, 170, 60]  # 右上「N回」再演剩余池
+    ROI_FLOW_NAME = [90, 45, 145, 42]  # flow 分带-日文名行（grill R1-Q3）
+    ROI_FLOW_NUM = [95, 75, 135, 52]   # flow 分带-百分数行
+    ROI_TOTAL_SCORE = [350, 110, 180, 60]  # 右上総分（probe 2609 実測）
+    ROI_REPRISE = [550, 240, 170, 60]  # 右上「N回」——実機复核实为 P item 触发剩余（旧 reprise 源，双读落盘中）
     ROI_SELECT = [80, 1080, 640, 70]   # SELECT 确认按钮（跟随选中卡漂移）
     CLICK_SKIP = (660, 800)            # SKIP 文字锚 [636,786,54,30] 中心（绿心+2 回体）
     ROI_BUFF_BAND = [0, 230, 140, 420]  # 状态带（好調/絶好調/集中图标模板定行）
@@ -1588,6 +1591,9 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         played_history: List[str] = []
         no_progress = 0
         logger.success("HIF Round1 出牌开始（play 模式）")
+        # 开局全量一次（grill R1-Q1 分层）：集中面板缓存（R1-Q4b 兜底）
+        focus_cached = self._read_focus_from_panel(context)
+        logger.info(f"Round1 开局面板读集中={focus_cached}")
 
         while True:
             image = self._get_screenshot(context)
@@ -1609,10 +1615,13 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             no_progress = 0
 
             state = self._build_state(context, image, turn_left, hand)
+            evidence = self._collect_evidence(context, image, turn_left)
+            evidence["hand"] = list(hand.card_names)
             action = GarakutaRinamiStrategy(ProfilePayload.default()).decide(state)
             logger.info(
                 f"Round1 turn={state.turn} 残り{turn_left} gc={state.good_condition_turns} "
-                f"stamina={state.stamina} flow={state.current_flow} → {action.kind.value}"
+                f"focus={state.focus} stamina={state.stamina} flow={state.current_flow} "
+                f"score={evidence.get('total_score')} → {action.kind.value}"
                 f"{('/' + action.target_card) if action.target_card else ''}"
             )
 
@@ -1621,7 +1630,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 logger.warning(f"Round1 USE_P_DRINK 拦截(记录不点): {action.target_card}")
                 self._archive_round1_play(image, self.build_round1_play_record(
                     state, action, played_history[-1:], dry_run=True,
-                    evidence={"intercepted": "p_drink_semantics_undefined", "reason": action.reason},
+                    evidence={**evidence, "intercepted": "p_drink_semantics_undefined"},
                 ))
                 action = CardAction(ActionKind.SKIP, None, f"[P饮料拦截降级] {action.reason}")
 
@@ -1638,7 +1647,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
             self._archive_round1_play(image, self.build_round1_play_record(
                 state, action, [played_card] if played_card else [],
-                evidence={"turn_left": turn_left, "hand": list(hand.card_names)},
+                turn_score=evidence.get("total_score"), evidence=evidence,
             ))
 
             # 等回合转场（残りターン变化）；未变化则继续同回合下一步
@@ -1665,16 +1674,19 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         return int(digits) if digits else None
 
     def _read_flow(self, context: Context, image) -> str:
-        detail = self._run_ocr(context, image, "HIFRound1Flow", [".*"], self.ROI_FLOW)
-        if not (detail and detail.hit):
-            return "Vi"
-        raw = detail.best_result.text
+        """分带双 OCR（grill 定案 2026-08-21 R1-Q3）：名带/数带各一次紧裁 OCR，
+        名带命中日文映射优先；两带都无名 → "Vi" 缺省（実機曾整带 OCR 丢名致
+        ダンス误判 Vi，probe 实测）。"""
         for jp, flow in (("ビジュアル", "Vi"), ("ボーカル", "Vo"), ("ダンス", "Da")):
-            if jp in raw:
+            detail = self._run_ocr(context, image, "HIFRound1FlowName", [f".*{jp}.*"], self.ROI_FLOW_NAME)
+            if detail and detail.hit:
                 return flow
-        for flow in ("Vo", "Da", "Vi"):
-            if flow in raw:
-                return flow
+        num_detail = self._run_ocr(context, image, "HIFRound1FlowNum", [".*"], self.ROI_FLOW_NUM)
+        if num_detail and num_detail.hit:
+            raw = num_detail.best_result.text
+            for flow in ("Vo", "Da", "Vi"):
+                if flow in raw:
+                    return flow
         return "Vi"
 
     def _read_buff_turns(self, context: Context, image, template: str) -> Optional[int]:
@@ -1711,19 +1723,69 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         return int(digits) if digits else None
 
     def _read_reprise_used(self, context: Context, image) -> Optional[int]:
-        """右上「N回」= 再演剩余池 → 已用 = 4 - N（お姉さん打出重置 4，実機 2026-08-21）。"""
+        """再演剩余 → 已用。実機 2026-08-21 复盘：右上「N回」实为 P item 触发剩余
+        （云朵详情=憧れ続けた輝き类效果链实锤），旧源错误；真身疑状态带
+        「ターン内1回」行（お姉さん面板「4回まで・ターン内1回まで」同构文案）。
+        grill R1-Q5 裁决：双读落盘，决策暂用旧源+告警，出牌 diff 实测后切换。"""
         left = self._read_int_ocr(context, image, "HIFRound1Reprise", self.ROI_REPRISE)
         if left is None or left < 0 or left > 4:
             return None
         return 4 - left
 
+    def _read_reprise_new_source(self, context: Context, image) -> Optional[int]:
+        """新源（待実機 diff 定案后切换）：状态带 OCR 锚「ターン内1回」→ 同行数字 → 已用 = 4-N。"""
+        detail = self._run_ocr(
+            context, image, "HIFRound1RepriseRow", [".*ターン内1回.*"], list(self.ROI_BUFF_BAND[:2]) + [130, 420],
+        )
+        if not (detail and detail.hit):
+            return None
+        digits = re.sub(r"\D", "", detail.best_result.text)
+        n = int(digits) if digits else None
+        if n is None or n < 0 or n > 4:
+            return None
+        return 4 - n
+
+    def _read_p_item_progress(self, context: Context, image) -> Optional[int]:
+        """右上 P item 触发剩余（云朵旁数字，原 reprise ROI 改标；仅落盘不进决策）。"""
+        return self._read_int_ocr(context, image, "HIFRound1PItemProgress", self.ROI_REPRISE)
+
+    def _read_total_score(self, context: Context, image) -> Optional[int]:
+        """右上総分（probe 実測 2609 可读 @ [350,110,180,60]）→ turn_score 落盘来源。"""
+        return self._read_int_ocr(context, image, "HIFRound1TotalScore", self.ROI_TOTAL_SCORE)
+
+    def _read_focus_from_panel(self, context: Context) -> Optional[int]:
+        """集中面板法（grill R1-Q4b 兜底）：点好調行开组合面板 → OCR 集中条目
+        （実機 2026-08-21 锚：标题 y246/值 y285，ROI [100,230,300,130]）→ 关面板。
+        集中状态带模板本局 MISS（图标样式随局异动），面板法开局读一次缓存 session。"""
+        self._click_box_center(context, [7, 253, 48, 48], double=False)
+        time.sleep(self.CELL_CLICK_DELAY)
+        image = self._get_screenshot(context)
+        detail = self._run_ocr(context, image, "HIFRound1FocusPanel", [".*集中.*"], [100, 230, 300, 130])
+        value = None
+        if detail and detail.hit:
+            digits = re.sub(r"\D", "", detail.best_result.text)
+            value = int(digits) if digits else None
+        self._click_box_center(context, [330, 730, 55, 45], double=False)  # 面板底部 ×(357,753)
+        time.sleep(1.0)
+        if value is not None:
+            _ProduceHIFActionBase._write_round1_state({"focus_cached": value})
+        return value
+
     def _build_state(self, context: Context, image, turn_left: int, hand) -> ExamState:
         session = _ProduceHIFActionBase._read_round1_state()
         good = self._read_buff_turns(context, image, self.TPL_GOOD)
         focus = self._read_buff_turns(context, image, self.TPL_CONC)
+        if focus is None:
+            # 集中双保险（grill R1-Q4）：状态带模板 MISS 时用开局面板缓存+告警
+            focus = int(session.get("focus_cached") or 0) or None
+            if focus is not None:
+                logger.info(f"集中模板 MISS，用面板缓存={focus}")
         reprise_used = self._read_reprise_used(context, image)
         if good is None:
             logger.warning(f"好調行模板定行失败，session 兜底={session.get('good_condition_turns')}")
+        if reprise_used is not None:
+            # 双源告警（R1-Q5）：旧源右上 N 回实为 P item 剩余，实测 diff 定案前保留+告警
+            logger.warning(f"reprise 旧源(右上,疑 P item 误标)={reprise_used}, 出牌 diff 后切换新源")
         return ExamState(
             round=ExamRound.HONSEN_R1,
             turn=self.TOTAL_TURNS - turn_left + 1,
@@ -1740,6 +1802,20 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             natural_finisher_used=bool(session.get("natural_finisher_used", False)),
             available_p_drinks=[],
         )
+
+    def _collect_evidence(self, context: Context, image, turn_left: int) -> Dict[str, Any]:
+        """落盘扩展（grill R1-Q6）：evidence 增 p_item_progress/total_score/flow_raw/
+        reprise 双源，供 diff 定案与 roundsim 校准。"""
+        flow_raw = self._run_ocr(context, image, "HIFRound1FlowNum", [".*"], self.ROI_FLOW_NUM)
+        flow_text = flow_raw.best_result.text if (flow_raw and flow_raw.hit) else None
+        return {
+            "turn_left": turn_left,
+            "p_item_progress": self._read_p_item_progress(context, image),
+            "total_score": self._read_total_score(context, image),
+            "flow_raw": flow_text,
+            "reprise_legacy": self._read_reprise_used(context, image),
+            "reprise_new": self._read_reprise_new_source(context, image),
+        }
 
     def _record_session_progress(self, played_card: str) -> None:
         """出牌后更新 session round1 跨回合字段（Q6：session 只存画面外字段）。"""
