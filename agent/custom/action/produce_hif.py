@@ -2054,26 +2054,33 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             rows.append({"y": -1, "words": ["OVERFLOW_MARKER"], "known": None, "overflow": True})
         return rows
 
-    def _read_panel_scrolled(self, context: Context, screens: int = 3) -> list[list[str]]:
-        """溢出兜底：点好調行开面板→逐屏滚动 OCR 效果文案（実証:面板可滚且滚动区
-        含メモリー能力全效果——状态带 1回 行的文字版;固定 ROI 面板非全量,滚动后才是）。"""
-        self._click_box_center(context, [7, 253, 48, 48], double=False)
-        time.sleep(self.PANEL_CLICK_DELAY)
-        collected: list[list[str]] = []
-        for _ in range(screens):
+    OVERFLOW_PANEL_CLICK = (31, 620)  # 省略号行位（実証 2026-08-21:竖两点「:」,y~620 随行数浮动±40）
+    OVERFLOW_PANEL_ROI = [40, 50, 560, 680]  # 完整状态面板内容区
+
+    def _read_overflow_panel(self, context: Context) -> list[str]:
+        """溢出兜底（実証 2026-08-21 用户提示画面）:点省略号位展开完整状态面板——
+        全量文字清单含被折叠 buff（絶好調/再演/追加系実測在列）与再演权威行
+        「お姉さんの感覚+(再演) N回/ターン内M回」。替代已失败的滚动方案。"""
+        texts: list[str] = []
+        for dy in (0, -40, 40):
+            self._click_box_center(context, [7, self.OVERFLOW_PANEL_CLICK[1] + dy - 24, 48, 48], double=False)
+            time.sleep(self.PANEL_CLICK_DELAY)
             image = self._get_screenshot(context)
-            detail = self._run_ocr(context, image, "HIFBuffPanelScroll", [".*"], [40, 150, 460, 560])
-            collected.append([i.text for i in (detail.all_results or []) if i.text.strip()])
-            context.tasker.controller.post_swipe(250, 640, 250, 340, duration=400).wait()
-            time.sleep(1.2)
+            # 面板判定:内容区出现「再演|絶好調|ターン内」类清单词（无固定标题,以清单词为锚）
+            anchor = self._run_ocr(context, image, "HIFOverflowPanelAnchor",
+                                   [".*再演.*|.*絶好調.*"], self.OVERFLOW_PANEL_ROI)
+            if anchor and anchor.hit:
+                detail = self._run_ocr(context, image, "HIFOverflowPanelFull", [".*"], self.OVERFLOW_PANEL_ROI)
+                texts = [i.text for i in (detail.all_results or []) if i.text.strip()]
+                break
         for _ in range(3):
-            self._click_box_center(context, [330, 730, 55, 45], double=False)
+            self._click_box_center(context, [337, 740, 47, 34], double=False)  # X 実測中心(360,757)
             time.sleep(1.2)
-            anchor = self._run_ocr(context, self._get_screenshot(context), "HIFBuffPanelAnchor",
-                                   [".*好調.*|.*アビリティ詳細.*"], [100, 40, 420, 140])
+            anchor = self._run_ocr(context, self._get_screenshot(context), "HIFOverflowPanelAnchor",
+                                   [".*再演.*|.*絶好調.*"], self.OVERFLOW_PANEL_ROI)
             if not (anchor and anchor.hit):
                 break
-        return collected
+        return texts
 
     @staticmethod
     def _cluster_buff_words_to_rows(words: list[dict], row_tolerance: int = 15) -> list[dict]:
