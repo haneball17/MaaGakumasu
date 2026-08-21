@@ -1,6 +1,6 @@
 ---
 name: maa-customaction-ipc-test
-description: 用 MaaFramework AgentClient/AgentServer IPC 実機验证 Python CustomAction。需要对单个 Custom action 节点做实机执行验证（不跑完整管线）、排查 action 未执行/静默失败，或以 nekosu.maa-support 在 VS Code 断点观察时使用。
+description: 用 MaaFramework AgentClient/AgentServer IPC 実機验证 Python CustomAction。需要对单个 Custom action 节点做实机执行验证（不跑完整管线）、对新写的识别读取方法做 probe 单元実機验证（多轮纪律）、排查 action 未执行/静默失败，或以 nekosu.maa-support 在 VS Code 断点观察时使用。
 ---
 
 # Maa CustomAction 调试
@@ -40,6 +40,21 @@ MAA_DEV_ADDR=127.0.0.1:16448 .venv/Scripts/python.exe tools/hif_ipc_runner.py \
 3. **决策落盘 + 画面后态**：`debug/decisions/session-*.jsonl` 出现该 action 的决策记录（若有落盘逻辑），且実機画面 OCR 与该单步的预期后态一致。
 
 只看 manifest/journal 的旧验收法已随 hif_live_runner.py 消亡，勿再寻找那两类文件。
+
+## 识别新件单元验证（probe 模式，管线集成前的前置关卡）
+
+新写的识别/读取类方法（OCR 读数、枚举、面板交互）**先 probe 直连单元验证，全绿才接管线**——纸面实现+单测绿≠実機可用（2026-08-21 用户叫停「未验证就 PlayFlag 连测」确立；probe2/3/4 三轮实践抓出 11 个実機 bug）。参照模板：`debug/autodev/round1/probe_state.py`（数值/手牌）、`probe_state2.py`（分带/面板/双源）、`probe3.py`（槽探测/枚举/懒定案）、`probe4.py`（面板滚动+自一致性）。
+
+probe 要点：
+
+1. **线上同源调用**：`maa_dev.bind(need_device=True)` + `tasker.post_recognition(JRecognitionType.X, JX(...), img)`——与 agent 线上 run_recognition 同引擎同参数；截图用 `ctrl.post_screencap().wait().get()`（BGR，与线上一致）。结果取法：`job.wait().get()` → `tasker.get_node_detail(td.node_id_list[0]).recognition`。
+2. **不能 import produce_hif**：`@AgentServer` 装饰器会把 maa 库切到 AgentServer 模式，与 AdbController 互斥（MaaAgentServerNotImpl）——常量内联并注明「与 Play 类同步」。
+3. **多轮纪律**：每件 ≥3 轮跨画面时点（実機画面活跃，轮间自然变化；件间加画面稳定检查——探测类操作 40s 期间可能转场拍到空帧）；验证标准=「读出值与该时点放大复核/vision 交叉一致」而非固定数值；**修复后该件轮次清零重计**（杜绝修一次验一次就过）。
+4. **自一致性双跑**：同一画面完整读两次，清单比对须一致——差异条目先查 OCR 变体（长音符 ー 归一化后再判），残余 ≤1 条属单次漏检（双跑并集可达全量）。
+5. **复刻漂移警告**：probe 复刻正式方法逻辑两度与真实行为分叉——复刻版只作首验，最终验证以「手动实证流程固化的简化版」为准，复杂复刻弃用。
+6. **UI 约束前置**：写识别方案前先向用户要已知 UI 约束（元素数量上下限/位置稳定性/溢出行为/形态随内容浮动）——实测撞出来代价高（弹窗标题随瓶浮动、P item 随养成增长、buff 溢出省略号等约束全部来自用户告知）。
+
+対局页动态锚定（四连坑实证）：弹窗标题/瓶名随内容浮动→先 OCR 锚定位再取相对带（禁固定 ROI）；入口 y 漂移→从当次枚举动态取；关闭验证锚选背景不出现的词；面板滚动用右缘起点 (545,640)（中央起点落可交互条目会被消费致滚动时灵时不灵）；清单条目键去长音符归一化。
 
 ## 前置与安全
 
