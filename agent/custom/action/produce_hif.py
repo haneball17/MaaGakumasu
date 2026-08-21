@@ -1578,6 +1578,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     TPL_CONC = "autodev/hif_buff_concentration.png"
 
     SETTLE_DELAY = 3.5        # 出牌结算动画等待（実機转场 <2s + 卡牌动画余量）
+    PANEL_CLICK_DELAY = 1.6   # 面板/详情点开后渲染等待（実機校准）
     TRANSITION_TIMEOUT_S = 60 # 转场窗口 60s（Q13 起步值，実機 2s 后续收紧）
     NO_PROGRESS_LIMIT = 3     # F4 守卫：同回合连续无进展步数上限
     EVIDENCE_RETRY = 2        # 手牌读空重试次数（Q12 禁盲点）
@@ -1598,6 +1599,11 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         while True:
             image = self._get_screenshot(context)
             turn_left = self._read_turn_left(context, image)
+            if turn_left is None:
+                # 动画/转场窗口重试一次（実機首跑：面板关闭动画内截图致读空误停）
+                time.sleep(self.ACTION_DELAY)
+                image = self._get_screenshot(context)
+                turn_left = self._read_turn_left(context, image)
             if turn_left is None:
                 return self._stop_unsupported(context, "round1_play", "turn_counter_unreadable")
             if turn_left == 0:
@@ -1677,10 +1683,20 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         """分带双 OCR（grill 定案 2026-08-21 R1-Q3）：名带/数带各一次紧裁 OCR，
         名带命中日文映射优先；两带都无名 → "Vi" 缺省（実機曾整带 OCR 丢名致
         ダンス误判 Vi，probe 实测）。"""
-        for jp, flow in (("ビジュアル", "Vi"), ("ボーカル", "Vo"), ("ダンス", "Da")):
-            detail = self._run_ocr(context, image, "HIFRound1FlowName", [f".*{jp}.*"], self.ROI_FLOW_NAME)
-            if detail and detail.hit:
-                return flow
+        # 名带是小字（ダンス ~59x24px 実測原尺寸 OCR 读不出），crop 放大 3 倍再读
+        # ROI 惯例 [x,y,w,h]（実機首验 y 切片反向致空图,勿当 x1y1x2y2 用）
+        fx, fy, fw, fh = self.ROI_FLOW_NAME
+        crop = image[fy:fy + fh, fx:fx + fw]
+        if crop.size:
+            pil = Image.fromarray(crop[..., ::-1]).resize((fw * 3, fh * 3), Image.LANCZOS)
+            zoomed = np.array(pil)[..., ::-1]
+            for jp, flow in (("ビジュアル", "Vi"), ("ボーカル", "Vo"), ("ダンス", "Da")):
+                detail = self._run_ocr(
+                    context, zoomed, "HIFRound1FlowName", [f".*{jp}.*"],
+                    [0, 0, zoomed.shape[1], zoomed.shape[0]],
+                )
+                if detail and detail.hit:
+                    return flow
         num_detail = self._run_ocr(context, image, "HIFRound1FlowNum", [".*"], self.ROI_FLOW_NUM)
         if num_detail and num_detail.hit:
             raw = num_detail.best_result.text
@@ -1734,12 +1750,17 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     def _read_reprise_new_source(self, context: Context, image) -> Optional[int]:
         """新源（待実機 diff 定案后切换）：状态带 OCR 锚「ターン内1回」→ 同行数字 → 已用 = 4-N。"""
+        # 锚放宽：実測该行 OCR 常残读（「ターン内1回」→「一ン内」），全词锚必 miss；
+        # 行数字（N回）在锚左侧同行（実測 锚[81,635] 数字[58,602]），取行带内数字
         detail = self._run_ocr(
-            context, image, "HIFRound1RepriseRow", [".*ターン内1回.*"], list(self.ROI_BUFF_BAND[:2]) + [130, 420],
+            context, image, "HIFRound1RepriseRowAnchor", [".*ン内.*"], [14, 580, 130, 90],
         )
         if not (detail and detail.hit):
             return None
-        digits = re.sub(r"\D", "", detail.best_result.text)
+        row = self._run_ocr(context, image, "HIFRound1RepriseRowNum", [".*"], [40, 585, 90, 60])
+        if not (row and row.hit):
+            return None
+        digits = re.sub(r"\D", "", row.best_result.text)
         n = int(digits) if digits else None
         if n is None or n < 0 or n > 4:
             return None
@@ -1750,23 +1771,49 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         return self._read_int_ocr(context, image, "HIFRound1PItemProgress", self.ROI_REPRISE)
 
     def _read_total_score(self, context: Context, image) -> Optional[int]:
-        """右上総分（probe 実測 2609 可读 @ [350,110,180,60]）→ turn_score 落盘来源。"""
-        return self._read_int_ocr(context, image, "HIFRound1TotalScore", self.ROI_TOTAL_SCORE)
+        """右上総分 → turn_score 落盘来源。実測 ROI 内含邻位小数字（70/0），
+        best_result 会选错框——取 all_results 最大数值（総分单调增且远大于邻数）。"""
+        detail = self._run_ocr(context, image, "HIFRound1TotalScore", [".*"], self.ROI_TOTAL_SCORE)
+        if not (detail and detail.hit):
+            return None
+        values = []
+        for item in (detail.all_results or []):
+            digits = re.sub(r"\D", "", item.text)
+            if digits:
+                values.append(int(digits))
+        return max(values) if values else None
 
     def _read_focus_from_panel(self, context: Context) -> Optional[int]:
         """集中面板法（grill R1-Q4b 兜底）：点好調行开组合面板 → OCR 集中条目
         （実機 2026-08-21 锚：标题 y246/值 y285，ROI [100,230,300,130]）→ 关面板。
-        集中状态带模板本局 MISS（图标样式随局异动），面板法开局读一次缓存 session。"""
-        self._click_box_center(context, [7, 253, 48, 48], double=False)
-        time.sleep(self.CELL_CLICK_DELAY)
-        image = self._get_screenshot(context)
-        detail = self._run_ocr(context, image, "HIFRound1FocusPanel", [".*集中.*"], [100, 230, 300, 130])
+        集中状态带模板本局 MISS（图标样式随局异动），面板法开局读一次缓存 session。
+        実機首跑教训：开/关都要验证（面板没开读到 None、没关挡住 turn ROI——
+        关闭动画窗口内主循环截图致 turn_counter_unreadable 误停）。"""
         value = None
-        if detail and detail.hit:
-            digits = re.sub(r"\D", "", detail.best_result.text)
-            value = int(digits) if digits else None
-        self._click_box_center(context, [330, 730, 55, 45], double=False)  # 面板底部 ×(357,753)
-        time.sleep(1.0)
+        for dy in (0, -12, 12):
+            self._click_box_center(context, [7, 253 + dy, 48, 48], double=False)
+            time.sleep(self.PANEL_CLICK_DELAY)
+            image = self._get_screenshot(context)
+            panel = self._run_ocr(context, image, "HIFRound1PanelAnchor", [".*好調.*"], [100, 40, 420, 140])
+            if not (panel and panel.hit):
+                continue  # 面板没开，微调 y 重试
+            focus = self._run_ocr(context, image, "HIFRound1FocusPanel", [".*集中.*"], [100, 230, 300, 130])
+            if focus and focus.hit:
+                # 実測「集中」标题(y246)与数值(y285)是两个独立 OCR 框,best_result 只含
+                # 标题二字——数值行单独读（[100,275,300,50] 実測校准）
+                num = self._run_ocr(context, image, "HIFRound1FocusPanelNum", [".*"], [100, 275, 300, 50])
+                source_text = (num.best_result.text if (num and num.hit) else "") or focus.best_result.text
+                digits = re.sub(r"\D", "", source_text)
+                value = int(digits) if digits else None
+            break
+        # 关面板并验证真关（title 区「好調」锚消失）
+        for _ in range(3):
+            self._click_box_center(context, [330, 730, 55, 45], double=False)  # 面板底部 ×(357,753)
+            time.sleep(1.2)
+            image = self._get_screenshot(context)
+            panel = self._run_ocr(context, image, "HIFRound1PanelAnchor", [".*好調.*"], [100, 40, 420, 140])
+            if not (panel and panel.hit):
+                break
         if value is not None:
             _ProduceHIFActionBase._write_round1_state({"focus_cached": value})
         return value
