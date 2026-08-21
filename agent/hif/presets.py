@@ -290,6 +290,40 @@ def choose_first_matching(candidates: Iterable[str], priority: Iterable[str]) ->
     return next((name for name in priority if name in candidate_set), None)
 
 
+def validate_select_change_source_names(
+    names: tuple[str, ...], valid_names: "Iterable[str] | None" = None
+) -> list[str]:
+    """変卡源卡名单启动校验（grill Q9 裁决 2026-08-21）：告警不阻断。
+
+    valid_names 传入词典卡名集合（调用方用 build_card_name_dict()）；None 跳过
+    词典校验（降级：只做トラブル嫌疑判定）。告警清单：
+    - 名单卡不在词典（配置拼写错 → 実機扫描必然 miss，提前告知）
+    - トラブル嫌疑（效果池 ProduceCardCategory_Trouble 卡不可被変，配了也是 miss）
+    """
+    warnings: list[str] = []
+    name_set = set(valid_names) if valid_names is not None else None
+    for name in names:
+        base = str(name).rstrip("+")
+        if not base:
+            continue
+        if name_set is not None and base not in name_set and str(name) not in name_set:
+            warnings.append(f"source_name_not_in_dict:{name}")
+        if _is_trouble_card_name(base):
+            warnings.append(f"source_name_trouble_card:{name}")
+    return warnings
+
+
+def _is_trouble_card_name(card_name: str) -> bool:
+    """トラブル系卡名判定（效果池 category，读盘失败返回 False 降级）。"""
+    try:
+        from agent.hif.decisions.hand_meta import _load_effects_pool
+
+        card = _load_effects_pool().get(card_name)
+        return bool(card and "Trouble" in str(card.get("category", "")))
+    except Exception:
+        return False
+
+
 def choose_schedule_priority(preset: HIFPreset, day_remaining: int | None) -> tuple[str, ...] | None:
     """返回当前剩余日数的日程优先级（GUI daily_override > preset daily 表 > 全局序）。"""
 

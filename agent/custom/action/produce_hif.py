@@ -20,6 +20,7 @@ from agent.hif.presets import (
     choose_first_matching,
     choose_schedule_priority,
     build_gui_keyword_overrides,
+    validate_select_change_source_names,
 )
 from agent.hif.decisions import viewer
 from agent.hif.decisions.play import GarakutaRinamiStrategy
@@ -937,21 +938,178 @@ class ProduceChooseHIFSelectChangeTargetAuto(_ProduceHIFRewardChoiceAction):
 
 @AgentServer.custom_action("ProduceChooseHIFSelectChangeSourceAuto")
 class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
-    """在变卡第二阶段选择预设源卡并确认;预设未命中时回退选牌库第一格。
+    """変卡第二阶段：逐格点选读卡名 → 全库收集 → 名单优先选源卡 → チェンジ确认。
 
-    已知缺陷(実機 2026-08-21 取证,docs/hif/finals-daily-log.md 末节):牌库网格卡面
-    无任何卡名文字,_find_text_option 扫名单从未命中(日志两次 scrolls=4 全 miss),
-    现状全靠 fallback 推进。正确做法=逐格点选→详情区 OCR 卡名(选中后显示卡名+效果,
-    见文档 2026-07-09 実機记录)→名单匹配;等実機到変卡环节再重写。
-    网格几何(2026-08-21 投影实测):4 列 x≈83/229/376/523 行 y≈683/829/976,格 ~113px;
-    FIRST_DECK_CELL_BOX 行缘 623 与实测 683 差 60px,点击成功疑似靠上边缘容差待复核;
-    fallback 亦未跳过 トラブルカード(不可被変)。
+    実機校准 2026-08-21（debug/autodev/round1/stage2_screen*_sample.json，本 action
+    首次実行即命中名单[0]大胆不敵并完成チェンジ）：
+    - 网格 3 行×4 列（YOLO 实测，与 98496e9 投影差 45px 以实测为准）：列中心
+      x=139/285/431/578，行中心 y=695/845/995
+    - 选中态卡名带 [60,255,560,315]（y315 以下压到效果首行会混入噪声，勿放宽），
+      crop 放大 2 倍 OCR；卡面本身无任何卡名文字（旧 _find_text_option 扫名单
+      设计性 miss 的根因）
+    - チェンジ按钮（选中态）[465,1141,115,36]；トラブル卡选中时按钮不亮 →
+      以按钮 OCR 不到为不可変信号，fallback 顺延下一格（本局牌库无トラブル，
+      形态未直采，按钮不亮重试路径为保守实现）
+    - 滚动 300px（2 行）保持网格对齐；360px 会偏 44px 导致行粘连（実測）
+
+    grill 共识（2026-08-21，9 项裁决）：全库收集+deck snapshot 落盘（roundsim
+    校准输入）；名单 miss → 非トラブル第一格 fallback 告警不停机；验收四条
+    （mode=named 落盘/链路推进/全库≤45s/纯逻辑单测），実機验收挂 Phase 4+日常兜底。
     """
 
-    DECK_ROI = [60, 600, 600, 500]
-    CHANGE_ROI = [350, 1080, 320, 140]
-    FIRST_DECK_CELL_BOX = [80, 623, 118, 118]
-    MAX_DECK_SCROLLS = 4
+    GRID_COLS = (139, 285, 431, 578)
+    GRID_ROWS = (695, 845, 995)
+    NAME_ZONE = (60, 255, 560, 315)
+    CHANGE_BUTTON_ROI = [380, 1100, 280, 110]
+    SCROLL_FROM = (360, 1040)
+    SCROLL_TO = (360, 740)  # 300px = 2 行对齐滚动
+    MAX_SCREENS = 4
+    CELL_CLICK_DELAY = 1.6
+    FALLBACK_MAX_TRIES = 4  # トラブル格按钮不亮时的顺延重试上限
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        preset = self._get_preset(argv)
+        names = preset.select_change_source_names
+        deck = self._scan_full_deck(context)
+
+        self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
+            "action": "deck_snapshot",
+            "names": list(names),
+            "deck_size": len(deck),
+            "deck": [e["name"] for e in deck],
+        })
+
+        chosen = self._pick_source_by_list(names, deck)
+        if chosen is None:
+            logger.warning("HIF 変卡: 牌库扫描为空,安全停止")
+            return self._stop_unsupported(context, "select_change_source_deck", "deck_scan_empty")
+
+        mode = "named" if any(self._norm(n) == chosen["name"] for n in names) else "fallback_first_cell"
+        logger.info(f"HIF 変卡: 源卡选定「{chosen['name']}」mode={mode} screen={chosen['screen']}")
+
+        # 选中卡可能不在当前屏（扫描滚到底）：反向滚回目标屏再点格
+        last_screen = max(e["screen"] for e in deck)
+        for _ in range(last_screen - chosen["screen"]):
+            context.tasker.controller.post_swipe(*self.SCROLL_TO, *self.SCROLL_FROM, duration=300).wait()
+            time.sleep(self.ACTION_DELAY)
+
+        if not self._select_cell_with_verify(context, chosen, names):
+            return self._stop_unsupported(context, "select_change_source_deck", "source_select_failed")
+
+        self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
+            "action": "pick_source", "mode": mode,
+            "names": list(names), "chosen": chosen["name"],
+            "deck_size": len(deck),
+        })
+        return self._click_change_verified(context)
+
+    # ------------------------------------------------------------------
+    # 纯逻辑（可单测）
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _norm(name: str) -> str:
+        return normalize_card_name(name or "").rstrip("+")
+
+    @classmethod
+    def _pick_source_by_list(cls, names: tuple[str, ...], deck: list[dict]) -> Optional[dict]:
+        """名单优先（名单序 = 优先序）→ miss 回退牌库首格（Q3 裁决）。"""
+        wanted = [cls._norm(n) for n in names if n and cls._norm(n)]
+        for target in wanted:
+            for entry in deck:
+                if entry["name"] == target:
+                    return entry
+        return deck[0] if deck else None
+
+    @staticmethod
+    def _dedupe_deck(entries: list[dict]) -> list[dict]:
+        """滚动重叠屏去重：同名卡保留首次出现的（更靠近牌库顶部的格位）。"""
+        seen: set[str] = set()
+        out: list[dict] = []
+        for e in entries:
+            if e["name"] and e["name"] not in seen:
+                seen.add(e["name"])
+                out.append(e)
+        return out
+
+    # ------------------------------------------------------------------
+    # 画面交互
+    # ------------------------------------------------------------------
+
+    @classmethod
+    def _read_cell_name(cls, context: Context, image) -> str:
+        """选中格卡名：crop 卡名带放大 2 倍 OCR → 词典归一 → 剥档位后缀。"""
+        x1, y1, x2, y2 = cls.NAME_ZONE
+        crop = image[y1:y2, x1:x2]
+        if crop.size == 0:
+            return ""
+        pil = Image.fromarray(crop[..., ::-1]).resize(((x2 - x1) * 2, (y2 - y1) * 2), Image.LANCZOS)
+        zoomed = np.array(pil)[..., ::-1]
+        detail = context.run_recognition(
+            "HIFChangeCellName", zoomed,
+            pipeline_override={"HIFChangeCellName": {
+                "recognition": "OCR", "expected": [".*"],
+                "roi": [0, 0, zoomed.shape[1], zoomed.shape[0]],
+            }},
+        )
+        if not (detail and detail.hit):
+            return ""
+        return cls._norm(detail.best_result.text)
+
+    def _scan_full_deck(self, context: Context) -> list[dict]:
+        """逐屏逐格点选读卡名，全库收集（含滚动，Q2 裁决）→ 去重清单。"""
+        entries: list[dict] = []
+        for screen in range(self.MAX_SCREENS):
+            for ri, y in enumerate(self.GRID_ROWS, 1):
+                for ci, x in enumerate(self.GRID_COLS, 1):
+                    self._click_box_center(context, [x - 24, y - 24, 48, 48], double=False)
+                    time.sleep(self.CELL_CLICK_DELAY)
+                    name = self._read_cell_name(context, self._get_screenshot(context))
+                    entries.append({"screen": screen, "cell": f"s{screen}r{ri}c{ci}", "xy": [x, y], "name": name})
+                    logger.debug(f"HIF 変卡扫描: s{screen}r{ri}c{ci} = {name!r}")
+            if screen < self.MAX_SCREENS - 1:
+                before = {e["name"] for e in entries}
+                context.tasker.controller.post_swipe(*self.SCROLL_FROM, *self.SCROLL_TO, duration=300).wait()
+                time.sleep(self.ACTION_DELAY)
+                probe = self._read_cell_name_after_click(context, self.GRID_COLS[0], self.GRID_ROWS[0])
+                if probe and probe in before:
+                    break  # 滚不动了（已到底），当前屏与前屏重复
+        return self._dedupe_deck(entries)
+
+    def _read_cell_name_after_click(self, context: Context, x: int, y: int) -> str:
+        self._click_box_center(context, [x - 24, y - 24, 48, 48], double=False)
+        time.sleep(self.CELL_CLICK_DELAY)
+        return self._read_cell_name(context, self._get_screenshot(context))
+
+    def _select_cell_with_verify(self, context: Context, chosen: dict, names: tuple[str, ...]) -> bool:
+        """点选目标格 → 卡名复核（OCR 噪声容差：名单命中词或词典前缀即可）。"""
+        x, y = chosen["xy"]
+        for _ in range(2):
+            self._click_box_center(context, [x - 24, y - 24, 48, 48], double=False)
+            time.sleep(self.CELL_CLICK_DELAY)
+            got = self._read_cell_name(context, self._get_screenshot(context))
+            if got and (got == chosen["name"] or chosen["name"].startswith(got) or got.startswith(chosen["name"])):
+                return True
+        logger.warning(f"HIF 変卡: 选中复核失败 chosen={chosen['name']} got={got!r}")
+        return False
+
+    def _click_change_verified(self, context: Context) -> bool:
+        """点チェンジ（按钮不亮=トラブル格不可変时顺延下一格重试，Q3 配套）。"""
+        cells = [(x, y) for y in self.GRID_ROWS for x in self.GRID_COLS]
+        idx = 0
+        for _ in range(self.FALLBACK_MAX_TRIES):
+            image = self._get_screenshot(context)
+            button = self._find_text_option(context, image, ("チェンジ",), self.CHANGE_BUTTON_ROI)
+            if button:
+                if self._click_box_center(context, button.best_result.box, double=False):
+                    time.sleep(self.ACTION_DELAY)
+                    return True
+            if idx + 1 >= len(cells):
+                break
+            idx += 1
+            self._click_box_center(context, [cells[idx][0] - 24, cells[idx][1] - 24, 48, 48], double=False)
+            time.sleep(self.CELL_CLICK_DELAY)
+        return self._stop_unsupported(context, "select_change_source_deck", "change_button_not_found")
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
@@ -1347,6 +1505,17 @@ class ProduceHIFStartConfirmAuto(_ProduceHIFActionBase):
             time.sleep(self.ACTION_DELAY)
         if not start_button:
             return self._stop_unsupported(context, "hif_start_confirm", "start_button_not_found")
+        # 変卡源卡名单启动校验（grill Q9 2026-08-21）：非法名/トラブル名落盘告警不阻断
+        preset = self._get_preset(argv)
+        source_warnings = validate_select_change_source_names(
+            preset.select_change_source_names, build_card_name_dict()
+        )
+        if source_warnings:
+            logger.warning(f"HIF 開始確認: 変卡源卡名单告警 {source_warnings}")
+            self._archive_decision(image, "hif_start_confirm", {
+                "action": "source_names_warning", "warnings": source_warnings,
+                "names": list(preset.select_change_source_names),
+            })
         if not self._click_box_center(context, start_button.best_result.box, double=False):
             return self._stop_unsupported(context, "hif_start_confirm", "start_button_click_failed")
         logger.success("HIF 開始確認：以默认编成开始培育")
