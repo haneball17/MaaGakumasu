@@ -2040,7 +2040,40 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 known[round(d.best_result.box[1])] = label
         for row in rows:
             row["known"] = next((label for y, label in known.items() if abs(y - row["y"]) < 30), None)
+        rows = self._mark_buff_overflow(context, image, rows)
         return rows
+
+    BUFF_CAPACITY = 8  # 状态带容量実測上限（用户报告:溢出时末行折叠省略号,2026-08-21）
+
+    def _mark_buff_overflow(self, context: Context, image, rows: list[dict]) -> list[dict]:
+        """溢出检测（双信号）:OCR 检出省略号词 或 行数≥容量上限。决策不受影响
+        （好調/集中实证恒在顶部不被截）,溢出标记驱动面板滚动兜底读取完整清单。"""
+        ellipsis = self._run_ocr(context, image, "HIFBuffEllipsis", [".*….*|.*･･.*"], self.ROI_BUFF_ENUM)
+        overflow = bool(ellipsis and ellipsis.hit) or len(rows) >= self.BUFF_CAPACITY
+        if overflow:
+            rows.append({"y": -1, "words": ["OVERFLOW_MARKER"], "known": None, "overflow": True})
+        return rows
+
+    def _read_panel_scrolled(self, context: Context, screens: int = 3) -> list[list[str]]:
+        """溢出兜底：点好調行开面板→逐屏滚动 OCR 效果文案（実証:面板可滚且滚动区
+        含メモリー能力全效果——状态带 1回 行的文字版;固定 ROI 面板非全量,滚动后才是）。"""
+        self._click_box_center(context, [7, 253, 48, 48], double=False)
+        time.sleep(self.PANEL_CLICK_DELAY)
+        collected: list[list[str]] = []
+        for _ in range(screens):
+            image = self._get_screenshot(context)
+            detail = self._run_ocr(context, image, "HIFBuffPanelScroll", [".*"], [40, 150, 460, 560])
+            collected.append([i.text for i in (detail.all_results or []) if i.text.strip()])
+            context.tasker.controller.post_swipe(250, 640, 250, 340, duration=400).wait()
+            time.sleep(1.2)
+        for _ in range(3):
+            self._click_box_center(context, [330, 730, 55, 45], double=False)
+            time.sleep(1.2)
+            anchor = self._run_ocr(context, self._get_screenshot(context), "HIFBuffPanelAnchor",
+                                   [".*好調.*|.*アビリティ詳細.*"], [100, 40, 420, 140])
+            if not (anchor and anchor.hit):
+                break
+        return collected
 
     @staticmethod
     def _cluster_buff_words_to_rows(words: list[dict], row_tolerance: int = 15) -> list[dict]:
