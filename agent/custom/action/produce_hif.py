@@ -22,7 +22,15 @@ from agent.hif.presets import (
     build_gui_keyword_overrides,
 )
 from agent.hif.decisions import viewer
-from agent.hif.decisions.state import ROUND1_PLAY_RECORD_FIELDS, ExamState, CardAction
+from agent.hif.decisions.play import GarakutaRinamiStrategy
+from agent.hif.decisions.state import (
+    ROUND1_PLAY_RECORD_FIELDS,
+    ExamRound,
+    ExamState,
+    ActionKind,
+    CardAction,
+)
+from agent.hif.decisions.config import ProfilePayload
 from agent.hif.decisions.rewards import load_keyword_tables
 from agent.hif.decisions.scoring import DecisionContext, score_card_by_name, score_drink_by_name
 from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict
@@ -1387,3 +1395,289 @@ class ProduceHIFRound1Observe(_ProduceHIFActionBase):
             "evidence_empty": not hand.card_names,
         })
         return True
+
+
+@AgentServer.custom_action("ProduceHIFRound1Play")
+class ProduceHIFRound1Play(_ProduceHIFActionBase):
+    """Round1 出牌执行（Phase 2 单 action 大包，Q11 裁决架构）。
+
+    実機取证 2026-08-21（debug/autodev/round1/session-evidence.jsonl）：
+    - 出牌交互：点卡 → SELECT 确认（按钮跟随选中卡，x∈[80,720] 漂移）→ 结算动画
+    - 回合推进：出牌数尽 or 手牌空 → 自动转场（<2s），画面残りターン递减
+    - 再演：右上「N回」剩余池（お姉さん打出重置 4）
+    - 好調/集中：状态带行位置随 buff 增减重排，须图标模板定行（Q6 画面优先）
+    - 山札张数画面不可读 → deck_size 走 session 自维护
+    - flow 回合内轮换（Vi/Da/Vo），动画期 +10000% 峰值，须等稳定值
+
+    循环内每步失败按 Q12 处理：原坐标重试 ≤2 → UnknownStop；
+    USE_P_DRINK 一律拦截只记录（Q9；瓶位语义 A5 未定案，禁猜测性点击）。
+    残りターン=0 时 return True 交回 pipeline 出口路由（結果页→TapNext→順位→Interval）。
+    """
+
+    TOTAL_TURNS = 9
+    # 実機校准 ROI（720×1280，Phase 0 取证；勿用预估占位值覆盖）
+    ROI_TURN = [25, 50, 90, 70]        # 残りターン数值（杂讯 M/• 靠整数提取跳过）
+    ROI_STAMINA = [555, 200, 120, 60]  # 体力（全屏 OCR 曾把 29 误读 0，勿缩小）
+    ROI_FLOW = [90, 45, 145, 80]       # 日文名+百分数两行
+    ROI_REPRISE = [550, 240, 170, 60]  # 右上「N回」再演剩余池
+    ROI_SELECT = [80, 1080, 640, 70]   # SELECT 确认按钮（跟随选中卡漂移）
+    CLICK_SKIP = (660, 800)            # SKIP 文字锚 [636,786,54,30] 中心（绿心+2 回体）
+    ROI_BUFF_BAND = [0, 230, 140, 420]  # 状态带（好調/絶好調/集中图标模板定行）
+    TPL_GOOD = "autodev/hif_buff_good_condition.png"
+    TPL_CONC = "autodev/hif_buff_concentration.png"
+
+    SETTLE_DELAY = 3.5        # 出牌结算动画等待（実機转场 <2s + 卡牌动画余量）
+    TRANSITION_TIMEOUT_S = 60 # 转场窗口 60s（Q13 起步值，実機 2s 后续收紧）
+    NO_PROGRESS_LIMIT = 3     # F4 守卫：同回合连续无进展步数上限
+    EVIDENCE_RETRY = 2        # 手牌读空重试次数（Q12 禁盲点）
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        preset = self._get_preset(argv)
+        if preset.round1_mode != "play":
+            return self._stop_unsupported(context, "round1_play", "round1_mode_not_play")
+
+        _ProduceHIFActionBase._reset_round1_state()
+        played_history: List[str] = []
+        no_progress = 0
+        logger.success("HIF Round1 出牌开始（play 模式）")
+
+        while True:
+            image = self._get_screenshot(context)
+            turn_left = self._read_turn_left(context, image)
+            if turn_left is None:
+                return self._stop_unsupported(context, "round1_play", "turn_counter_unreadable")
+            if turn_left == 0:
+                logger.success(f"HIF Round1 出牌完成：共出 {len(played_history)} 张")
+                return True
+
+            hand = ExamStateReader.from_context(context).read_hand()
+            if not hand.card_names:
+                if not self._wait_transition(context, turn_left):
+                    no_progress += 1
+                    if no_progress >= self.NO_PROGRESS_LIMIT:
+                        return self._stop_unsupported(context, "round1_play", "evidence_empty_hand")
+                    continue
+                continue
+            no_progress = 0
+
+            state = self._build_state(context, image, turn_left, hand)
+            action = GarakutaRinamiStrategy(ProfilePayload.default()).decide(state)
+            logger.info(
+                f"Round1 turn={state.turn} 残り{turn_left} gc={state.good_condition_turns} "
+                f"stamina={state.stamina} flow={state.current_flow} → {action.kind.value}"
+                f"{('/' + action.target_card) if action.target_card else ''}"
+            )
+
+            if action.kind is ActionKind.USE_P_DRINK:
+                # Q9+A5:瓶位语义未定案,拦截只记录,降级 SKIP 回体(禁猜测性点击)
+                logger.warning(f"Round1 USE_P_DRINK 拦截(记录不点): {action.target_card}")
+                self._archive_round1_play(image, self.build_round1_play_record(
+                    state, action, played_history[-1:], dry_run=True,
+                    evidence={"intercepted": "p_drink_semantics_undefined", "reason": action.reason},
+                ))
+                action = CardAction(ActionKind.SKIP, None, f"[P饮料拦截降级] {action.reason}")
+
+            ok, played_card = self._execute_action(context, action, hand)
+            if not ok:
+                no_progress += 1
+                if no_progress >= self.NO_PROGRESS_LIMIT:
+                    return self._stop_unsupported(context, "round1_play", "action_execute_failed")
+                continue
+
+            if played_card:
+                played_history.append(played_card)
+                self._record_session_progress(played_card)
+
+            self._archive_round1_play(image, self.build_round1_play_record(
+                state, action, [played_card] if played_card else [],
+                evidence={"turn_left": turn_left, "hand": list(hand.card_names)},
+            ))
+
+            # 等回合转场（残りターン变化）；未变化则继续同回合下一步
+            self._wait_transition(context, turn_left)
+
+    # ------------------------------------------------------------------
+    # 画面读取（Q6 画面优先；读不到回退 session/默认值并告警）
+    # ------------------------------------------------------------------
+
+    def _read_turn_left(self, context: Context, image) -> Optional[int]:
+        detail = self._run_ocr(
+            context, image, "HIFRound1TurnLeft", [".*"], self.ROI_TURN,
+        )
+        if not (detail and detail.hit):
+            return None
+        digits = re.sub(r"\D", "", detail.best_result.text)
+        return int(digits) if digits else None
+
+    def _read_int_ocr(self, context: Context, image, name: str, roi: list[int]) -> Optional[int]:
+        detail = self._run_ocr(context, image, name, [".*"], roi)
+        if not (detail and detail.hit):
+            return None
+        digits = re.sub(r"\D", "", detail.best_result.text)
+        return int(digits) if digits else None
+
+    def _read_flow(self, context: Context, image) -> str:
+        detail = self._run_ocr(context, image, "HIFRound1Flow", [".*"], self.ROI_FLOW)
+        if not (detail and detail.hit):
+            return "Vi"
+        raw = detail.best_result.text
+        for jp, flow in (("ビジュアル", "Vi"), ("ボーカル", "Vo"), ("ダンス", "Da")):
+            if jp in raw:
+                return flow
+        for flow in ("Vo", "Da", "Vi"):
+            if flow in raw:
+                return flow
+        return "Vi"
+
+    def _read_buff_turns(self, context: Context, image, template: str) -> Optional[int]:
+        """图标模板在状态带定行 → 同行右侧数字 OCR（行位置动态重排，坐标定行不可靠）。
+
+        threshold 0.85：好調/絶好調图标同族相似（离线交叉实测 2026-08-21：自匹配 1.0、
+        互配 0.704/0.729），0.85 以上才能区分两行；集中模板同带亦适用。
+        数字带（好調 9ターン/絶好調 3ターン/集中 8 均离线实测 1.0）位于图标右下，
+        原始尺寸仅 ~14×16px 直接 OCR 读不出，须 crop 放大 3 倍再读。
+        """
+        detail = self._run_template(
+            context, image, "HIFRound1BuffIcon", template, self.ROI_BUFF_BAND, threshold=0.85,
+        )
+        if not (detail and detail.hit):
+            return None
+        box = detail.best_result.box
+        # 数字带相对图标 box 的偏移（実機 turn03_pre 校准）：右侧 x+box.w-6 起，
+        # 纵向 icon.y-13 ~ icon.y+64（数字在图标右下方，比图标中心低 ~12px）
+        x1 = box[0] + box[2] - 6
+        y1 = max(0, box[1] - 13)
+        y2 = min(1280, box[1] + 64)
+        cropped = image[y1:y2, x1:140]
+        if cropped.size == 0:
+            return None
+        pil = Image.fromarray(cropped[..., ::-1])  # maafw 截图为 BGR
+        pil = pil.resize((pil.width * 3, pil.height * 3), Image.LANCZOS)
+        zoomed = np.array(pil)[..., ::-1]
+        detail_num = self._run_ocr(
+            context, zoomed, "HIFRound1BuffNum", [".*"], [0, 0, zoomed.shape[1], zoomed.shape[0]],
+        )
+        if not (detail_num and detail_num.hit):
+            return None
+        digits = re.sub(r"\D", "", detail_num.best_result.text)
+        return int(digits) if digits else None
+
+    def _read_reprise_used(self, context: Context, image) -> Optional[int]:
+        """右上「N回」= 再演剩余池 → 已用 = 4 - N（お姉さん打出重置 4，実機 2026-08-21）。"""
+        left = self._read_int_ocr(context, image, "HIFRound1Reprise", self.ROI_REPRISE)
+        if left is None or left < 0 or left > 4:
+            return None
+        return 4 - left
+
+    def _build_state(self, context: Context, image, turn_left: int, hand) -> ExamState:
+        session = _ProduceHIFActionBase._read_round1_state()
+        good = self._read_buff_turns(context, image, self.TPL_GOOD)
+        focus = self._read_buff_turns(context, image, self.TPL_CONC)
+        reprise_used = self._read_reprise_used(context, image)
+        if good is None:
+            logger.warning(f"好調行模板定行失败，session 兜底={session.get('good_condition_turns')}")
+        return ExamState(
+            round=ExamRound.HONSEN_R1,
+            turn=self.TOTAL_TURNS - turn_left + 1,
+            total_turns=self.TOTAL_TURNS,
+            current_flow=self._read_flow(context, image),
+            good_condition_turns=good if good is not None else int(session.get("good_condition_turns") or 0),
+            focus=focus if focus is not None else 0,
+            stamina=self._read_int_ocr(context, image, "HIFRound1Stamina", self.ROI_STAMINA) or 0,
+            hand=hand,
+            reprise_count=reprise_used if reprise_used is not None else int(session.get("reprise_count") or 0),
+            cards_played=int(session.get("cards_played") or 0),
+            deck_size=max(0, 22 - int(session.get("cards_played") or 0)),  # A4:画面不可读,session 自维护近似
+            oneesan_used=bool(session.get("oneesan_used", False)),
+            natural_finisher_used=bool(session.get("natural_finisher_used", False)),
+            available_p_drinks=[],
+        )
+
+    def _record_session_progress(self, played_card: str) -> None:
+        """出牌后更新 session round1 跨回合字段（Q6：session 只存画面外字段）。"""
+        base = normalize_card_name(played_card).rstrip("+")
+        session = _ProduceHIFActionBase._read_round1_state()
+        patch: Dict[str, Any] = {"cards_played": int(session.get("cards_played") or 0) + 1}
+        if base == "お姉さんの感覚":
+            patch["oneesan_used"] = True
+        elif base == "自然体の魅力":
+            patch["natural_finisher_used"] = True
+        _ProduceHIFActionBase._write_round1_state(patch)
+
+    # ------------------------------------------------------------------
+    # 执行层（Q12：原坐标重试 ≤2；SELECT 跟随选中卡漂移）
+    # ------------------------------------------------------------------
+
+    def _execute_action(self, context: Context, action: CardAction, hand) -> tuple[bool, Optional[str]]:
+        if action.kind is ActionKind.SKIP:
+            return self._click_skip(context), None
+
+        target = (normalize_card_name(action.target_card).rstrip("+")
+                  if action.target_card else None)
+        reader = ExamStateReader.from_context(context)
+        detections = reader.ocr.run_yolo_cards()
+        chosen = None
+        for d in detections:
+            name = normalize_card_name(d.card_name).rstrip("+") if d.card_name else ""
+            if target and name == target:
+                chosen = d
+                break
+            if not target and name:
+                chosen = chosen or d  # target=None 时按 YOLO 顺序取首张可读卡
+        if chosen is None:
+            logger.warning(f"Round1 目标卡未命中 target={target}，hand={list(hand.card_names)}")
+            return False, None
+
+        box = list(chosen.box)
+        for attempt in range(3):
+            if not self._click_box_center(context, box, double=False):
+                return False, None
+            time.sleep(1.6)
+            if self._click_select(context):
+                time.sleep(self.SETTLE_DELAY)
+                return True, chosen.card_name
+            logger.info(f"Round1 SELECT 未出现/未生效，重试 {attempt + 1}/3")
+        return False, None
+
+    def _click_select(self, context: Context) -> bool:
+        for attempt in range(2):
+            image = self._get_screenshot(context)
+            detail = self._run_ocr(
+                context, image, "HIFRound1Select", [".*SELECT.*"], self.ROI_SELECT,
+            )
+            if detail and detail.hit:
+                if self._click_box_center(context, detail.best_result.box, double=False):
+                    return True
+        return False
+
+    def _click_skip(self, context: Context) -> bool:
+        for attempt in range(3):
+            context.tasker.controller.post_click(*self.CLICK_SKIP).wait()
+            time.sleep(2.0)
+            image = self._get_screenshot(context)
+            # SKIP 后转场（残りターン变化）或手牌空提示消失即视为生效
+            if not self._find_text_option(context, image, ("SKIP",), [600, 760, 110, 70]):
+                return True
+        return self._wait_transition_click(context)
+
+    def _wait_transition_click(self, context: Context) -> bool:
+        """SKIP 兜底：等待画面脱离当前可操作态（実機 SKIP 后 <2s 转场）。"""
+        deadline = time.time() + 10
+        while time.time() < deadline:
+            image = self._get_screenshot(context)
+            if not self._find_text_option(context, image, ("SKIP",), [600, 760, 110, 70]):
+                return True
+            time.sleep(1.0)
+        return False
+
+    def _wait_transition(self, context: Context, prev_turn_left: int) -> bool:
+        """等待回合转场：残りターン变化（实测 <2s，轮询到 60s 超时，Q13）。"""
+        deadline = time.time() + self.TRANSITION_TIMEOUT_S
+        while time.time() < deadline:
+            time.sleep(2.0)
+            image = self._get_screenshot(context)
+            turn_left = self._read_turn_left(context, image)
+            if turn_left is not None and turn_left != prev_turn_left:
+                return True
+        logger.warning(f"Round1 转场超时 {self.TRANSITION_TIMEOUT_S}s（残りターン未变化）")
+        return False

@@ -378,6 +378,140 @@
             }
         }
     },
+    "ProduceHIFRound1PlayFlag": {
+        "recognition": {
+            "type": "DirectHit",
+            "param": {}
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFRound1Play",
+                "custom_action_param": {
+                    "round1_mode": "play"
+                }
+            }
+        },
+        "next": [
+            "[JumpBack]ProduceHIFRound1ResultFlag",
+            "[JumpBack]ProduceHIFRound1StarGainFlag",
+            "[JumpBack]ProduceHIFRound1SummaryFlag",
+            "[JumpBack]ProduceHIFTapNextFlag",
+            "ProduceHIFIntervalFlag"
+        ],
+        "timeout": 20000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "[color:LimeGreen]HIF: Round1出牌大包完成(9回合读画面→决策→点击→验证→落盘),出口轮询結果页/过渡页/Interval;仅「Round1出牌」选项开启时经override进入,默认走Observe观察链[/color]"
+        }
+    },
+    "ProduceHIFRound1ResultFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*ラウンド1結果.*"
+                ],
+                "roi": [
+                    0,
+                    100,
+                    260,
+                    70
+                ]
+            }
+        },
+        "action": {
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFRound1ResultNextButton"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: Round1結果页(実機 2026-08-21 校准:锚box[23,117,188,36];同页「再挑戦」[88,1116]危险禁点,只经NextButton点次へ)[/color]"
+        }
+    },
+    "ProduceHIFRound1ResultNextButton": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*次へ.*"
+                ],
+                "roi": [
+                    300,
+                    1100,
+                    140,
+                    60
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 1000,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: Round1結果页次へ按钮(実機 2026-08-21 校准 box[352,1117,51,31];ROI[300,1100,140,60]锁定次へ区域,与再挑戦[88,1116,81,33]无重叠)[/color]"
+        }
+    },
+    "ProduceHIFRound1StarGainFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*スター性獲得.*"
+                ],
+                "roi": [
+                    160,
+                    350,
+                    400,
+                    110
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: スター性獲得演出页(実機 2026-08-21 校准:锚box[181,372,360,68],点锚文字推进)[/color]"
+        }
+    },
+    "ProduceHIFRound1SummaryFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*審査基準.*",
+                    ".*審查基準.*"
+                ],
+                "roi": [
+                    520,
+                    10,
+                    190,
+                    60
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": true
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: Round1総合页(実機 2026-08-21:锚「審査基準」[546,38];推进点未実機校准,target true点锚文字,不推进时回上层路由兜底)[/color]"
+        }
+    },
     "ProduceHIFSPCardFlag": {
         "recognition": {
             "type": "OCR",

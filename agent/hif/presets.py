@@ -191,6 +191,11 @@ def parse_hif_preset(raw: str | None) -> HIFPreset:
         value = payload.get(field_name)
         if isinstance(value, str) and value.strip():
             updates[field_name] = value.strip()
+    # Round1 出牌模式分流（Phase 2 G1）：GUI/override 注入 round1_mode="play" 打开
+    # ProduceHIFRound1Play；非法值回落 preset 默认（observe_and_stop，观察停止现状）
+    round1_mode = payload.get("round1_mode")
+    if isinstance(round1_mode, str) and round1_mode in ("play", "observe_and_stop"):
+        updates["round1_mode"] = round1_mode
 
     return replace(preset, **updates) if updates else preset
 

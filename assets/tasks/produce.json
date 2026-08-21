@@ -8,6 +8,7 @@
 				"HIF预设",
 				"培育倾向",
 				"HIF 决策微调",
+				"Round1 出牌",
 				"培育偶像",
 				"培育次数",
 				"使用体力药",
@@ -599,6 +600,27 @@
 					}
 				}
 			}
+		},
+		"Round1 出牌": {
+			"type": "switch",
+			"default_case": "No",
+			"description": "$Round1 出牌说明",
+			"cases": [
+				{
+					"name": "Yes",
+					"pipeline_override": {
+						"ProduceHIFRound1Flag": {
+							"next": [
+								"ProduceHIFRound1PlayFlag"
+							]
+						}
+					}
+				},
+				{
+					"name": "No"
+				}
+			],
+			"label": "$Round1 出牌"
 		},
 		"「初」难度": {
 			"type": "select",

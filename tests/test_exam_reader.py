@@ -41,6 +41,7 @@ from agent.hif.adapters.exam_reader import (
     _parse_numeric,
     build_exam_state,
     build_hand_summary,
+    filter_card_detections,
 )
 
 # ---------------------------------------------------------------------------
@@ -165,6 +166,80 @@ def test_hand_summary_ocr_variant_normalized() -> None:
     assert hand.has_shizen_no_miryoku is True
 
 
+def test_hand_summary_key_card_with_plus_suffix() -> None:
+    """実機 2026-08-21 漏检修复：带档位 + 后缀的关键卡名命中三标志。
+
+    実機 OCR 读出的卡名带档位后缀（「自然体の魅力+」等），此前精确列表
+    成员检查全部 miss → 决策分支 1/2/3 系统性失效。
+    """
+    detections = [
+        CardDetection(label="cards", box=(0, 0, 150, 250), card_name="自然体の魅力+"),
+        CardDetection(label="cards", box=(150, 0, 150, 250), card_name="お姉さんの感覚+"),
+        CardDetection(label="cards", box=(300, 0, 150, 250), card_name="国民的アイドル+"),
+    ]
+    hand = build_hand_summary(detections)
+    assert hand.has_shizen_no_miryoku is True
+    assert hand.has_oneesan_no_kankaku is True
+    assert hand.has_kokuminteki_idol is True
+
+
+def test_hand_summary_key_card_plain_still_matches() -> None:
+    """向后兼容：剥 + 后缀匹配不影响無印卡名命中（决策分支照常触发）。"""
+    detections = [
+        CardDetection(label="cards", box=(0, 0, 150, 250), card_name="国民的アイドル"),
+    ]
+    hand = build_hand_summary(detections)
+    assert hand.has_kokuminteki_idol is True
+    assert hand.has_shizen_no_miryoku is False
+
+
+def test_hand_summary_plus_suffix_no_false_positive() -> None:
+    """剥 + 后缀不误命中无关卡：带 + 的其他卡不触发三标志。"""
+    detections = [
+        CardDetection(label="cards", box=(0, 0, 150, 250), card_name="アピールの基礎+"),
+        CardDetection(label="cards", box=(150, 0, 150, 250), card_name="国民的アイドル+"),
+    ]
+    hand = build_hand_summary(detections)
+    assert hand.has_shizen_no_miryoku is False
+    assert hand.has_oneesan_no_kankaku is False
+    assert hand.has_kokuminteki_idol is True  # 仅同名基础卡命中
+
+
+# ---------------------------------------------------------------------------
+# filter_card_detections: YOLO 检测框去重过滤（実機 2026-08-21 取证修复）
+# ---------------------------------------------------------------------------
+
+
+def test_filter_card_detections_dedup_same_card() -> None:
+    """同卡重复框去重：中心横向距离 <60px 视为同卡，保留高分框（低分 ~0.61 実機例）。"""
+    high = CardDetection(label="cards", box=(100, 900, 150, 250), card_name="自然体の魅力", score=0.92)
+    low = CardDetection(label="cards", box=(105, 905, 148, 245), card_name="", score=0.61)
+    result = filter_card_detections([low, high])
+    assert result == [high]  # 高分框胜出，返回保持输入顺序
+
+
+def test_filter_card_detections_keeps_adjacent_cards() -> None:
+    """相邻不同卡（中心横向距离 ≥60px，正常卡宽 130~185）不被误去重。"""
+    cards = [
+        CardDetection(label="cards", box=(0, 900, 140, 250), card_name="A", score=0.9),
+        CardDetection(label="cards", box=(150, 900, 140, 250), card_name="B", score=0.85),
+        CardDetection(label="cards", box=(300, 900, 140, 250), card_name="C", score=0.8),
+    ]
+    assert filter_card_detections(cards) == cards  # 中心间距 150px，全部保留
+
+
+def test_filter_card_detections_drops_narrow_boxes() -> None:
+    """过窄误检框（宽 <90px）丢弃，即便 score 更高（宽度检查优先于去重）。"""
+    normal = CardDetection(label="cards", box=(100, 900, 150, 250), card_name="A", score=0.9)
+    narrow = CardDetection(label="cards", box=(400, 900, 60, 250), card_name="", score=0.95)
+    assert filter_card_detections([normal, narrow]) == [normal]
+
+
+def test_filter_card_detections_empty() -> None:
+    """空输入安全返回空列表。"""
+    assert filter_card_detections([]) == []
+
+
 # ---------------------------------------------------------------------------
 # _parse_numeric: 数值解析
 # ---------------------------------------------------------------------------
@@ -181,6 +256,19 @@ def test_parse_numeric_no_digit() -> None:
     """无数字时 value=None（build_exam_state 会降级为 0）。"""
     result = _parse_numeric("focus", "不明")
     assert result.value is None
+
+
+def test_parse_numeric_turn_noise_hardened() -> None:
+    """turn ROI 実機杂讯加固（Phase 2 取证 2026-08-21）：首个连续数字段提取。
+
+    実機 turn ROI 内偶现「M」「•」纯文字杂讯（跳过）；带尾随标点「6）」
+    正确取 6；空文本不抛异常。
+    """
+    assert _parse_numeric("turn", "9").value == 9
+    assert _parse_numeric("turn", "8").value == 8
+    assert _parse_numeric("turn", "6）").value == 6  # 带尾随全角括号
+    assert _parse_numeric("turn", "M").value is None  # 纯文字杂讯
+    assert _parse_numeric("turn", "").value is None  # 空文本
 
 
 def test_parse_numeric_flow() -> None:
@@ -313,12 +401,14 @@ def test_reader_read_hand_uses_yolo_then_ocr() -> None:
 
 
 def test_reader_skips_zero_roi_numerics() -> None:
-    """占位 ROI（全0）跳过 OCR，避免误读；stamina（B6 已填候选占位）除外。"""
+    """占位 ROI（全0）跳过 OCR，避免误读；実機校准项（turn/stamina/flow）会尝试读取。"""
     reader = ExamStateReader(_MockOcrPort([]))
     numerics = reader.read_numerics()
-    # 除 stamina 外其余 ROI 仍为占位全 0，应跳过；stamina 尝试读取但 mock 无文本
-    assert set(numerics.keys()) == {"stamina"}
-    assert numerics["stamina"].value is None  # 画面读不到 → 解析失败不抛异常
+    # Phase 2 実機校准（2026-08-21）后 turn/stamina/flow 有真实 ROI，会尝试
+    # 读取（mock 无文本 → 解析失败不抛异常）；其余（good_condition/reprise/
+    # focus/deck_size/p_drinks）仍为占位全 0，应跳过。
+    assert set(numerics.keys()) == {"turn", "stamina", "flow"}
+    assert all(v.value is None and v.flow is None for v in numerics.values())
 
 
 # ---------------------------------------------------------------------------
