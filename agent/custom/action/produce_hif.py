@@ -1595,6 +1595,9 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         # 开局全量一次（grill R1-Q1 分层）：集中面板缓存（R1-Q4b 兜底）
         focus_cached = self._read_focus_from_panel(context)
         logger.info(f"Round1 开局面板读集中={focus_cached}")
+        # P 饮料槽探测（R1-Q1/R2：槽位前缀固定，点开弹窗实锤，缓存 session）
+        p_drink_slots = self._probe_p_drink_slots(context)
+        logger.info(f"Round1 P饮料槽探测={self._available_drinks_from_slots(p_drink_slots)}")
 
         while True:
             image = self._get_screenshot(context)
@@ -1847,7 +1850,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             deck_size=max(0, 22 - int(session.get("cards_played") or 0)),  # A4:画面不可读,session 自维护近似
             oneesan_used=bool(session.get("oneesan_used", False)),
             natural_finisher_used=bool(session.get("natural_finisher_used", False)),
-            available_p_drinks=[],
+            available_p_drinks=self._available_drinks_from_slots(session.get("p_drink_slots") or []),
         )
 
     def _collect_evidence(self, context: Context, image, turn_left: int) -> Dict[str, Any]:
@@ -1855,13 +1858,18 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         reprise 双源，供 diff 定案与 roundsim 校准。"""
         flow_raw = self._run_ocr(context, image, "HIFRound1FlowNum", [".*"], self.ROI_FLOW_NUM)
         flow_text = flow_raw.best_result.text if (flow_raw and flow_raw.hit) else None
+        p_items = self._enumerate_p_items(context, image)
         return {
             "turn_left": turn_left,
             "p_item_progress": self._read_p_item_progress(context, image),
+            "p_items": p_items,
             "total_score": self._read_total_score(context, image),
             "flow_raw": flow_text,
             "reprise_legacy": self._read_reprise_used(context, image),
             "reprise_new": self._read_reprise_new_source(context, image),
+            "buff_rows": self._enumerate_buff_rows(context, image),
+            "buff_fingerprint": self._buff_fingerprint(context, image),
+            "p_drink_slots": _ProduceHIFActionBase._read_round1_state().get("p_drink_slots") or [],
         }
 
     def _record_session_progress(self, played_card: str) -> None:
@@ -1952,3 +1960,136 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 return True
         logger.warning(f"Round1 转场超时 {self.TRANSITION_TIMEOUT_S}s（残りターン未变化）")
         return False
+
+    # ------------------------------------------------------------------
+    # 完整状态识别：开局全量层 + 触发层（grill 三层设计，2026-08-21 计划批准）
+    # 全部为纯读取动作（不点使う/不做决策），probe3 可独立実機验证
+    # ------------------------------------------------------------------
+
+    PDRINK_SLOTS = ((60, 1215), (150, 1215), (240, 1215), (330, 1215))
+    PDRINK_POPUP_ANCHOR_ROI = [40, 700, 500, 80]   # 弹窗标题「Pドリンク詳細」(y722 実測)
+    PDRINK_NAME_ROI = [40, 780, 400, 80]           # 弹窗瓶名带（初星黒酢 [187,805] 実測）
+    PDRINK_CANCEL_SCAN_ROI = [0, 1050, 400, 130]   # キャンセル按钮扫描带（[96,1124] 実測）
+    ROI_BUFF_ENUM = [14, 237, 130, 420]            # buff 带全量（枚举+指纹）
+    ROI_PITEM_COLUMN = [600, 230, 120, 150]        # P item 纵列（云朵/票券 実測 x620-720,y240-340）
+
+    def _popup_is_pdrink(self, context: Context, image) -> bool:
+        detail = self._run_ocr(context, image, "HIFPDrinkPopupAnchor", [".*ドリンク詳細.*"], self.PDRINK_POPUP_ANCHOR_ROI)
+        return bool(detail and detail.hit)
+
+    def _close_pdrink_popup(self, context: Context) -> bool:
+        """OCR 锁定キャンセル点击并验证关闭（実機教训：固定坐标+不验证=弹窗残留污染后续读取）。"""
+        for _ in range(3):
+            image = self._get_screenshot(context)
+            cancel = self._run_ocr(context, image, "HIFPDrinkCancel", [".*キャンセル.*"], self.PDRINK_CANCEL_SCAN_ROI)
+            if cancel and cancel.hit:
+                self._click_box_center(context, cancel.best_result.box, double=False)
+                time.sleep(1.2)
+            if not self._popup_is_pdrink(context, self._get_screenshot(context)):
+                return True
+        return False
+
+    def _verify_p_drink(self, context: Context, slot_xy: tuple[int, int]) -> Optional[str]:
+        """用药复核读取（grill R2-Q2 前半，纯读取不使う）：点槽→弹窗验证→读名→关→验证关。"""
+        self._click_box_center(context, [slot_xy[0] - 20, slot_xy[1] - 20, 40, 40], double=False)
+        time.sleep(self.PANEL_CLICK_DELAY)
+        image = self._get_screenshot(context)
+        if not self._popup_is_pdrink(context, image):
+            return None  # 空槽/槽不存在（同语义，grill R2 用户确认）
+        name_detail = self._run_ocr(context, image, "HIFPDrinkName", [".*"], self.PDRINK_NAME_ROI)
+        name = name_detail.best_result.text.strip() if (name_detail and name_detail.hit) else ""
+        self._close_pdrink_popup(context)
+        return name or None
+
+    def _probe_p_drink_slots(self, context: Context) -> list[dict]:
+        """开局槽探测（grill R1-Q1/R2 用户确认：槽位前缀固定，点开弹窗为实锤）。
+        结果缓存 session.p_drink_slots；空槽/槽不存在同记 empty。"""
+        slots = []
+        for i, xy in enumerate(self.PDRINK_SLOTS, 1):
+            name = self._verify_p_drink(context, xy)
+            slots.append({"slot": i, "xy": list(xy), "name": name})
+            logger.info(f"Round1 P饮料槽{i}: {name or '(empty)'}")
+        _ProduceHIFActionBase._write_round1_state({"p_drink_slots": slots})
+        return slots
+
+    @classmethod
+    def _available_drinks_from_slots(cls, slots: list[dict]) -> list[str]:
+        """纯逻辑（可单测）：缓存槽表 → available_p_drinks 名单（去空+保持槽序）。"""
+        return [s["name"] for s in slots if s.get("name")]
+
+    def _buff_fingerprint(self, context: Context, image) -> str:
+        """整带指纹（触发层）：数字+单位词序列 join，回合间 diff 用（grill R1-Q1 触发细读）。"""
+        detail = self._run_ocr(context, image, "HIFBuffFingerprint", [".*"], self.ROI_BUFF_ENUM)
+        if not (detail and detail.hit):
+            return ""
+        parts = sorted((i.text.strip() for i in (detail.all_results or []) if i.text.strip()))
+        return "|".join(parts)
+
+    def _enumerate_buff_rows(self, context: Context, image) -> list[dict]:
+        """buff 带枚举（开局全量层）。行定位=数字词框 y 聚行（実測行距~63，数字框 y 聚类
+        误差 ±15 内同行）+已知模板识别（好調✅/絶好調・集中待素材）；ColorMatch 菱形
+        底方案为 probe3 验证后的升级路径，首版用 OCR 词行+模板组合（计划允许的降级）。
+        未知行记录 y+数字词，懒定案另法（_lazy_identify_row）。"""
+        detail = self._run_ocr(context, image, "HIFBuffEnum", [".*"], self.ROI_BUFF_ENUM)
+        words = [dict(text=i.text.strip(), box=list(i.box)) for i in (detail.all_results or []) if i.text.strip()]
+        rows = self._cluster_buff_words_to_rows(words)
+        known = {}
+        for label, tpl in (("好調", self.TPL_GOOD), ("絶好調", "autodev/hif_buff_excellent_condition.png"), ("集中", self.TPL_CONC)):
+            d = self._run_template(context, image, "HIFBuffKnown", tpl, self.ROI_BUFF_ENUM, threshold=0.85)
+            if d and d.hit:
+                known[round(d.best_result.box[1])] = label
+        for row in rows:
+            row["known"] = next((label for y, label in known.items() if abs(y - row["y"]) < 30), None)
+        return rows
+
+    @staticmethod
+    def _cluster_buff_words_to_rows(words: list[dict], row_tolerance: int = 15) -> list[dict]:
+        """纯逻辑（可单测）：OCR 词框按 y 聚行（同词行容差内合并），行 y=词框 y 中位。"""
+        rows: list[dict] = []
+        for w in sorted(words, key=lambda w: w["box"][1]):
+            y = w["box"][1]
+            for row in rows:
+                if abs(row["y"] - y) <= row_tolerance:
+                    row["words"].append(w["text"])
+                    row["y"] = round((row["y"] + y) / 2)
+                    break
+            else:
+                rows.append({"y": y, "words": [w["text"]]})
+        return rows
+
+    def _lazy_identify_row(self, context: Context, row_y: int) -> Optional[dict]:
+        """懒定案读取（grill R2-Q1：仅 debug 报告不碰 assets/）：点未知行→面板名称+效果→关。"""
+        self._click_box_center(context, [7, row_y - 24, 48, 48], double=False)
+        time.sleep(self.PANEL_CLICK_DELAY)
+        image = self._get_screenshot(context)
+        panel = self._run_ocr(context, image, "HIFBuffPanelAnchor", [".*好調.*|.*アビリティ詳細.*"], [100, 40, 420, 140])
+        if not (panel and panel.hit):
+            return None
+        title = self._run_ocr(context, image, "HIFBuffPanelTitle", [".*"], [100, 40, 420, 140])
+        body = self._run_ocr(context, image, "HIFBuffPanelBody", [".*"], [40, 150, 460, 560])
+        record = {
+            "row_y": row_y,
+            "title": title.best_result.text.strip() if (title and title.hit) else "",
+            "body": [i.text for i in (body.all_results or [])][:10] if body else [],
+        }
+        for _ in range(3):
+            self._click_box_center(context, [330, 730, 55, 45], double=False)
+            time.sleep(1.2)
+            anchor = self._run_ocr(context, self._get_screenshot(context), "HIFBuffPanelAnchor",
+                                   [".*好調.*|.*アビリティ詳細.*"], [100, 40, 420, 140])
+            if not (anchor and anchor.hit):
+                break
+        logger.info(f"Round1 懒定案行@y{row_y}: {record['title'][:30]}")
+        return record
+
+    def _enumerate_p_items(self, context: Context, image) -> list[dict]:
+        """P item 枚举（右上纵列，数量随局养成增长）：OCR 扫描数字词（N回/N）→ 每个
+        数字框 y 定一个 P item（图标在数字左侧同行）+ 触发剩余值。详情读取属懒定案层。"""
+        detail = self._run_ocr(context, image, "HIFPItemEnum", [".*"], self.ROI_PITEM_COLUMN)
+        items = []
+        for i in (detail.all_results or []) if detail else []:
+            text = i.text.strip()
+            digits = re.sub(r"\D", "", text)
+            if digits:
+                items.append({"box": list(i.box), "raw": text, "progress_left": int(digits)})
+        return items

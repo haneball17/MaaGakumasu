@@ -129,3 +129,61 @@ def test_validate_none_dict_skips_dict_check():
     """词典不可用时降级：只做トラブル判定，不误报 not_in_dict。"""
     w = validate_select_change_source_names(("任意卡",), None)
     assert all("not_in_dict" not in x for x in w)
+
+
+# ------------------------------------------------------------------
+# 完整状态识别纯逻辑（grill 三层设计，2026-08-21 计划批准）
+# ------------------------------------------------------------------
+
+_play_cls = None
+
+
+def _load_play():
+    global _play_cls
+    if _play_cls is None:
+        agent_path = str(Path("agent").resolve())
+        sys.path.insert(0, agent_path)
+        try:
+            mod = import_module("agent.custom.action.produce_hif")
+            _play_cls = mod.ProduceHIFRound1Play
+        finally:
+            sys.path.remove(agent_path)
+    return _play_cls
+
+
+def test_available_drinks_from_slots_filters_empty_keeps_order():
+    Play = _load_play()
+    slots = [{"slot": 1, "name": "初星黒酢"}, {"slot": 2, "name": None},
+             {"slot": 3, "name": "ビタミンドリンク"}, {"slot": 4, "name": None}]
+    assert Play._available_drinks_from_slots(slots) == ["初星黒酢", "ビタミンドリンク"]
+
+
+def test_available_drinks_empty_slots():
+    assert _load_play()._available_drinks_from_slots([]) == []
+
+
+def test_cluster_buff_words_same_row_tolerance():
+    Play = _load_play()
+    words = [
+        {"text": "19ターン", "box": [55, 261, 86, 25]},
+        {"text": "1回", "box": [57, 268, 42, 27]},   # y 差 7 → 同行
+        {"text": "1回", "box": [57, 384, 42, 27]},   # y 差 >15 → 新行
+    ]
+    rows = Play._cluster_buff_words_to_rows(words)
+    assert len(rows) == 2
+    assert rows[0]["words"] == ["19ターン", "1回"]
+    assert rows[1]["words"] == ["1回"]
+
+
+def test_cluster_buff_words_real_layout():
+    """実機 2026-08-21 実测行位（273/398/458/520/615 五行）聚行验证。"""
+    Play = _load_play()
+    words = [
+        {"text": "30ターン", "box": [55, 261, 86, 25]},
+        {"text": "1回", "box": [57, 390, 42, 27]},
+        {"text": "回", "box": [67, 452, 30, 27]},
+        {"text": "回", "box": [74, 514, 20, 19]},
+        {"text": "4回", "box": [58, 605, 40, 26]},
+    ]
+    rows = Play._cluster_buff_words_to_rows(words)
+    assert len(rows) == 5
