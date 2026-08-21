@@ -226,7 +226,9 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         "相談": "produce/chat.png",
         "おでかけ": "produce/go_out.png",
         "课程": "produce/lesson.png",
-        "活动": "produce/event.png",
+        # HIF 専用差し入れ模板(実機 2026-08-21 Day3 取证卡 [371,939,139,121];
+        # 旧 produce/event.png 对当前 UI 仅 0.4775,且与初流程共用不可覆盖)
+        "活动": "produce/event_hif.png",
     }
     EVENT_PRESET_KEYS = {
         "相談": "consult",
