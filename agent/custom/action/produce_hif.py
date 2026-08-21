@@ -2056,6 +2056,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     OVERFLOW_PANEL_CLICK = (31, 620)  # 省略号行位（実証 2026-08-21:竖两点「:」,y~620 随行数浮动±40）
     OVERFLOW_PANEL_ROI = [40, 50, 560, 680]  # 完整状态面板内容区
+    OVERFLOW_SCROLL_MAX = 5  # 滚动兜底上限（连续两屏无新增=到底）
 
     def _read_overflow_panel(self, context: Context) -> list[str]:
         """溢出兜底（実証 2026-08-21 用户提示画面）:点省略号位展开完整状态面板——
@@ -2070,8 +2071,22 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             anchor = self._run_ocr(context, image, "HIFOverflowPanelAnchor",
                                    [".*再演.*|.*絶好調.*"], self.OVERFLOW_PANEL_ROI)
             if anchor and anchor.hit:
-                detail = self._run_ocr(context, image, "HIFOverflowPanelFull", [".*"], self.OVERFLOW_PANEL_ROI)
-                texts = [i.text for i in (detail.all_results or []) if i.text.strip()]
+                # 完整面板内容超一屏(用户实证 2026-08-21:不滑动显示不全),滚到底拼接
+                # 実証:此面板 swipe 有效(与好調详情面板不同),× 滚后仍有效
+                seen: list[str] = []
+                for _ in range(self.OVERFLOW_SCROLL_MAX):
+                    detail = self._run_ocr(context, image, "HIFOverflowPanelFull", [".*"], self.OVERFLOW_PANEL_ROI)
+                    seen.extend(i.text for i in (detail.all_results or []) if i.text.strip())
+                    context.tasker.controller.post_swipe(250, 640, 250, 340, duration=500).wait()
+                    time.sleep(1.5)
+                    image = self._get_screenshot(context)
+                    nxt = self._run_ocr(context, image, "HIFOverflowPanelFull", [".*"], self.OVERFLOW_PANEL_ROI)
+                    new_items = [i.text for i in (nxt.all_results or []) if i.text.strip() and i.text not in seen]
+                    if not new_items:
+                        break  # 到底（连续两屏无新增）
+                # 保序去重
+                dedup = list(dict.fromkeys(seen))
+                texts = dedup
                 break
         for _ in range(3):
             self._click_box_center(context, [337, 740, 47, 34], double=False)  # X 実測中心(360,757)
