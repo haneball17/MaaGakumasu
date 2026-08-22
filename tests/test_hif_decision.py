@@ -325,10 +325,12 @@ def test_hif_idol_select_flag_routes_before_selection_mode_to_avoid_misrouting()
     # 実機 2026-08-15: 活动主页同屏含 選抜試験/本戦 两按钮,SelectionModeFlag(選抜試験锚)误触风险高,已移出本战准备路由
     assert "[JumpBack]ProduceHIFSelectionModeFlag" not in prep_routing
     assert prep_routing.index("[JumpBack]ProduceHIFIdolSelectFlag") < prep_routing.index("[JumpBack]ProduceHIFFinalModeFlag")
-    # FinalModeFlag 実機取证:ROI 覆盖按钮区,Click 点「本戦」,无 next 回跳 PrepRoot
+    # FinalModeFlag 実機 2026-08-22 轮2:ROI 放宽 [140,850,500,80](本戦 box 右缘旧界截断 2px);
+    # 裸 Click 偶发静默丢失→Custom ProduceHIFFinalModeAuto(验证+重试)
     final_mode = payload["ProduceHIFFinalModeFlag"]
-    assert final_mode["recognition"]["param"]["roi"] == [140, 860, 460, 60]
-    assert final_mode["action"]["type"] == "Click"
+    assert final_mode["recognition"]["param"]["roi"] == [140, 850, 500, 80]
+    assert final_mode["action"]["param"]["custom_action"] == "ProduceHIFFinalModeAuto"
+    assert final_mode["action"]["type"] == "Custom"
     assert "next" not in final_mode
     flag = payload["ProduceHIFIdolSelectFlag"]
     assert flag["recognition"]["param"]["expected"] == [".*アイドル選択.*"]

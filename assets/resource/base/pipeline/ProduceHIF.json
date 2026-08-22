@@ -153,7 +153,6 @@
     "[JumpBack]ProduceHIFRound1Flag",
     "[JumpBack]ProduceHIFTapNextFlag",
     "[JumpBack]ProduceHIFDayChangeBlank",
-    "[JumpBack]ProduceHIFGiftTalkBlank",
     "[JumpBack]ProduceHIFRound2ResultFlag",
     "[JumpBack]ProduceHIFRound2DefeatFlag",
     "[JumpBack]ProduceHIFRetryConfirmFlag",
@@ -180,7 +179,8 @@
             "[JumpBack]ProduceHIFClassOptionFlag",
             "[JumpBack]ProduceHIFCardShowBlank",
             "[JumpBack]ProduceChooseHIFEventFlag",
-            "[JumpBack]ProduceHIFPublicLessonResultFlag"
+            "[JumpBack]ProduceHIFPublicLessonResultFlag",
+            "[JumpBack]ProduceHIFGiftTalkBlank"
         ],
         "timeout": 90000,
         "on_error": [
@@ -236,11 +236,13 @@
             }
         },
         "action": {
-            "type": "Click",
-            "param": {}
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFFinalModeAuto"
+            }
         },
         "focus": {
-            "Node.Recognition.Succeeded": "[color:Orange]HIF: 活动主页本戦按钮(実機 2026-08-15 取证 box[538,870,64,35],点后进偶像选择回 PrepRoot)[/color]"
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 活动主页本戦tab(実機 2026-08-22 轮2:管线 Click 偶发静默丢失,Custom 验证+重试;ROI[140,850,500,80] 覆盖本戦 box[538,870,64,35] 右缘)[/color]"
         }
     },
     "ProduceHIFRound1Flag": {
@@ -320,7 +322,6 @@
             "[JumpBack]ProduceHIFRound1StarGainFlag",
             "[JumpBack]ProduceHIFTapNextFlag",
     "[JumpBack]ProduceHIFDayChangeBlank",
-    "[JumpBack]ProduceHIFGiftTalkBlank",
             "ProduceHIFRetryConfirmFlag"
         ],
         "timeout": 20000,
@@ -539,7 +540,6 @@
             "[JumpBack]ProduceHIFRound1SummaryFlag",
             "[JumpBack]ProduceHIFTapNextFlag",
     "[JumpBack]ProduceHIFDayChangeBlank",
-    "[JumpBack]ProduceHIFGiftTalkBlank",
             "[JumpBack]ProduceHIFCheerStickBlank",
             "ProduceHIFIntervalFlag"
         ],
@@ -1585,19 +1585,18 @@
             }
         },
         "action": {
-            "type": "Click",
+            "type": "Custom",
             "param": {
-                "target": [
-                    360,
-                    640,
-                    1,
-                    1
-                ]
+                "custom_action": "ProduceHIFGuardedTapAuto",
+                "custom_action_param": {
+                    "anchor_expected": [".*差し入れ.*"],
+                    "anchor_roi": [30, 20, 220, 60],
+                    "tap": [360, 640]
+                }
             }
         },
-        "post_delay": 800,
         "focus": {
-            "Node.Recognition.Succeeded": "[color=Orange]HIF: 差し入れ事件对话页(実機 2026-08-22 轮1:获得弹窗过后停对话页,标题「差し入れ」[67,36],点中央推进;[JumpBack]循环到选项/获得页接管)[/color]"
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 差し入れ事件对话页(実機 2026-08-22 轮2:泛锚「差し入れ」在三选一子页残留致裸点击死循环×2,GuardedTap 守卫+尾部兜底位双保险)[/color]"
         }
     },
     "ProduceHIFDayChangeBlank": {
@@ -1616,19 +1615,18 @@
             }
         },
         "action": {
-            "type": "Click",
+            "type": "Custom",
             "param": {
-                "target": [
-                    360,
-                    640,
-                    1,
-                    1
-                ]
+                "custom_action": "ProduceHIFGuardedTapAuto",
+                "custom_action_param": {
+                    "anchor_expected": [".*日付が変わりました.*"],
+                    "anchor_roi": [30, 930, 500, 160],
+                    "tap": [360, 640]
+                }
             }
         },
-        "post_delay": 1000,
         "focus": {
-            "Node.Recognition.Succeeded": "[color=Orange]HIF: 日付変更演出页(実機 2026-08-22 轮1:锚「日付が変わりました」,点中央空白推进;×タイトルヘ危险禁点)[/color]"
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 日付変更演出页(実機 2026-08-22 轮2 GuardedTap 化:裸点击被回环吞 timeout;×タイトルヘ危险禁点)[/color]"
         }
     },
     "ProduceHIFCompleteFlag": {

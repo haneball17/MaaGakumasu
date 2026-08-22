@@ -150,6 +150,9 @@ HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动�
 - 横切页面（弹窗/演出页，可出现在任意行动后，如 P 饮料弹窗、支援卡事件弹窗）双层挂载：主路由根 `ProduceHIFScheduleRoot` 的 next 前部挂全量横切节点保证完备性；子序列宿主（如 `ProduceHIFPublicLessonResultFlag`）只挂已知会在此序列上下文出现的横切节点做快速路径。**子序列宿主的 `on_error` 一律指向上层路由根，禁止直指 `ProduceHIFUnknownStop`**——`UnknownStop` 只保留在最外层主路由的 `on_error`（実機 2026-08-21 结果序列孤岛教训：JumpBack 循环控制流回不到主路由，直指 UnknownStop 会切断收敛路径）。
 - Flag 锚在多个页面共有时，页面专属锚必须排在通用锚前面（如 `ProduceHIFStartConfirmFlag` 先于 `ProduceHIFIdolSelectFlag`——步骤条「アイドル選択」文字在步骤 1/2 两页共有）；Custom action 的重试循环内先自检本页锚，锚失活即放行 `return True` 交回路由——转场/LOADING 窗口内 JumpBack 回环会重复路由命中同一 Flag，在未渲染页面上 miss 即 stop 是系统性失败模式（実機 2026-08-21 偶像选择/開始確認/相談三处中招）。
 - 无固定文案的封闭池页面（如 P 饮料弹窗，饮料名/效果随种类变）用数据源名称池做 OCR expected 锚（`drinks.json` 29 名称，静态 JSON 定义无 IPC 乱码风险），ROI 收窄到名称一行；不要用框架装饰模板（sparkle/横条在背景页无区分度，実機 2026-08-21 负例 0.875 > 正例 0.847）。
+- 泛词锚与空白点击的死循环铁律（実機 2026-08-22 轮 1/2 三例：ItemGainFlag「獲得」吸住変卡页、GiftTalkBlank「差し入れ」标题在事件全部子页面残留、両者均为裸 Click+[JumpBack] 回环）：`[JumpBack]` 回环命中即重置轮询，**永远走不到 timeout**——误命中的裸点击=无限空转且无任何报错。规则：①泛词锚（页面残留标题词：獲得/差し入れ/再開类）必须挂 ScheduleRoot 尾部兜底位或换专有词锚，禁止挂前部抢路由；②空白/中央点击类推进节点必须用 `ProduceHIFGuardedTapAuto`（Custom：锚验证→指纹对比→点击→验证推进，连续 3 次无变化 return False 段退），禁用裸 Click action；③新挂载节点先问「这个词在哪些**其他**页面也出现」再定位次。
+- agent 侧操作日志链（2026-08-22 轮 2 grill 裁决）：全部点击/滑动/按键必须走 `_tap/_swipe/_key` 守卫包装（`_ProduceHIFActionBase`）——记录坐标+操作后截图 `debug/decisions/ops/` + ops JSONL（含前后 64x64 指纹对比 scene_changed）；禁止直调 `controller.post_click/post_swipe`（IPC 点击丢失类 bug 复盘全靠此链）。管线侧 Click 节点的坐标在 `debug/maafw.log` 有事件记录可交叉查。
+- 滚动枚举类读取（牌库网格/详情面板）判底必须「**整屏确认**」：滚动后读完整屏，全部条目 ∈ 已见才判到底；禁止用「滚动后首行/单点探针」预判——滚动重叠行必然全命中已见集合，会跳过真正的新内容（実機 2026-08-22 変卡牌库只读一排即断底教训）。
 
 ## 任务配置规则
 

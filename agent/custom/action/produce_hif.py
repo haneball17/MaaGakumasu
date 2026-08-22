@@ -119,21 +119,97 @@ class _ProduceHIFActionBase(CustomAction):
             }
         })
 
+    # ------------------------------------------------------------------
+    # 操作日志链（2026-08-22 轮2 grill 裁决）：决策日志之外,记录每次点击/滑动/按键
+    # + 操作后结果截图(debug/decisions/ops/)。IPC 点击丢失类 bug(#14/21)复盘用。
+    # _tap/_swipe/_key 为唯一入口,post_click/post_swipe 直调一律替换。
+    # ------------------------------------------------------------------
+
+    _OPS_DIR = _DECISIONS_DIR / "ops"
+    _OP_SEQ = 0
+
+    @classmethod
+    def _fingerprint(cls, image) -> str:
+        """画面指纹：64x64 灰度缩略图 sha1（变化判定用,非精确感知哈希）。"""
+        try:
+            arr = np.asarray(image)
+            if arr.ndim != 3:
+                return ""
+            pil = Image.fromarray(arr[..., ::-1]).convert("L").resize((64, 64))
+            import hashlib
+            return hashlib.sha1(np.asarray(pil).tobytes()).hexdigest()[:16]
+        except Exception:
+            return ""
+
+    @classmethod
+    def _safe_fingerprint(cls, context: Context) -> str:
+        """操作前指纹（截图失败返回空串=放弃变化判定,操作照常执行）。"""
+        try:
+            return cls._fingerprint(cls._get_screenshot(context))
+        except Exception:
+            return ""
+
+    @classmethod
+    def _op_log(cls, context: Context, op: str, detail: dict, before_fp: str = "") -> None:
+        """操作后记录：截图落盘 + ops JSONL(scene_changed 由前后指纹对比)。"""
+        try:
+            time.sleep(0.8)
+            image = cls._get_screenshot(context)
+            cls._OPS_DIR.mkdir(parents=True, exist_ok=True)
+            cls._OP_SEQ += 1
+            ts = time.strftime("%Y%m%d-%H%M%S")
+            png = cls._OPS_DIR / f"{ts}_{cls._OP_SEQ:04d}.png"
+            after_fp = cls._fingerprint(image)
+            try:
+                Image.fromarray(np.ascontiguousarray(image[..., ::-1])).save(png)
+            except Exception:
+                png = None
+            record = {"ts": time.strftime("%H:%M:%S"), "op": op, "seq": cls._OP_SEQ, **detail}
+            if png:
+                record["after_png"] = str(png)
+            if before_fp:
+                record["scene_changed"] = bool(after_fp) and after_fp != before_fp
+            with (cls._DECISIONS_DIR / f"ops-{time.strftime('%Y%m%d')}.jsonl").open("a", encoding="utf-8") as fh:
+                fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+        except Exception as err:
+            logger.debug(f"HIF 操作日志失败(不阻断): {err}")
+
+    @classmethod
+    def _tap(cls, context: Context, x: int, y: int) -> None:
+        """守卫点击：全 agent 侧点击唯一入口（记录坐标+结果截图+画面变化）。"""
+        before = cls._safe_fingerprint(context)
+        context.tasker.controller.post_click(x, y).wait()
+        cls._op_log(context, "click", {"x": x, "y": y}, before_fp=before)
+
+    @classmethod
+    def _swipe(cls, context: Context, x1: int, y1: int, x2: int, y2: int, duration: int) -> None:
+        """守卫滑动：全 agent 侧滑动唯一入口。"""
+        before = cls._safe_fingerprint(context)
+        context.tasker.controller.post_swipe(x1, y1, x2, y2, duration=duration).wait()
+        cls._op_log(context, "swipe", {"from": [x1, y1], "to": [x2, y2], "duration": duration}, before_fp=before)
+
+    @classmethod
+    def _key(cls, context: Context, keycode: int) -> None:
+        """守卫按键（BACK 等）。"""
+        before = cls._safe_fingerprint(context)
+        context.tasker.controller.post_click_key(keycode).wait()
+        cls._op_log(context, "key", {"keycode": keycode}, before_fp=before)
+
     @staticmethod
     def _get_screenshot(context: Context):
         return context.tasker.controller.post_screencap().wait().get()
 
-    @staticmethod
-    def _click_box_center(context: Context, box: List[int], double: bool = True, y_offset: int = 0) -> bool:
+    @classmethod
+    def _click_box_center(cls, context: Context, box: List[int], double: bool = True, y_offset: int = 0) -> bool:
         if not box or len(box) < 4:
             return False
 
         x = box[0] + box[2] // 2
         y = box[1] + box[3] // 2 + y_offset
-        context.tasker.controller.post_click(x, y).wait()
+        cls._tap(context, x, y)
         if double:
             time.sleep(_ProduceHIFActionBase.CLICK_DELAY)
-            context.tasker.controller.post_click(x, y).wait()
+            cls._tap(context, x, y)
         return True
 
     @staticmethod
@@ -703,7 +779,7 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
                 f"HIF 授業选项: 「{target.text}」点击无跳变,判定为对话中间页,点空白推进"
                 f"(第{cls._blank_tap_count}次)"
             )
-            context.tasker.controller.post_click(*self.BLANK_TAP).wait()
+            self._tap(context, *self.BLANK_TAP)
             time.sleep(self.ACTION_DELAY)
             return True
         type(self)._blank_tap_count = 0
@@ -971,8 +1047,8 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
     NAME_ZONE = (60, 255, 560, 315)
     CHANGE_BUTTON_ROI = [380, 1100, 280, 110]
     SCROLL_FROM = (360, 1040)
-    SCROLL_TO = (360, 740)  # 300px = 2 行对齐滚动
-    MAX_SCREENS = 4
+    SCROLL_TO = (360, 740)  # 300px 滚动（実機滚动量随网格回弹浮动,重叠行由整屏判底吸收）
+    MAX_SCREENS = 6  # 22 基本卡+応援棒补卡 ≈26 张/12 格=3 屏+判底屏+余量（2026-08-22 轮2）
     CELL_CLICK_DELAY = 1.6
     FALLBACK_MAX_TRIES = 4  # トラブル格按钮不亮时的顺延重试上限
 
@@ -988,7 +1064,7 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         if not hit:
             return False
         logger.info("HIF 変卡: 接管残留カスタマイズ確認弹窗,点チェンジ完成")
-        context.tasker.controller.post_click(*self.CUSTOMIZE_CONFIRM_TAP).wait()
+        self._tap(context, *self.CUSTOMIZE_CONFIRM_TAP)
         time.sleep(self.ACTION_DELAY)
         self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
             "action": "resume_confirm_changi", "note": "残留弹窗接管",
@@ -1092,8 +1168,10 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
     def _scan_full_deck(self, context: Context) -> list[dict]:
         """逐屏逐格点选读卡名，全库收集（含滚动，Q2 裁决）→ 去重清单。
 
-        判底（実機 13:34 复盘：单格探针会被滚动重叠误判「到底」——300px 滚 2 行
-        必有重叠行）改为首行 3 格探针签名：全部 ∈ 已见集合才算真到底。
+        判底（実機 2026-08-22 轮2 用户实证修正）：整屏确认模式——滚动后读完整屏
+        3 行×12 格，**本屏全部非空卡名 ∈ 已见集合**才判到底。旧版「滚动后首行探针
+        预判」是错的：滚动 300px 后新屏首行必然是重叠行（旧屏第三排），探针全
+        命中已见即 break，新屏第二三排的新卡全部跳过（実機表现=只读一排就结束）。
         """
         entries: list[dict] = []
         for screen in range(self.MAX_SCREENS):
@@ -1102,14 +1180,18 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
                     name = self._read_cell_name_after_click(context, x, y)
                     entries.append({"screen": screen, "cell": f"s{screen}r{ri}c{ci}", "xy": [x, y], "name": name})
                     logger.debug(f"HIF 変卡扫描: s{screen}r{ri}c{ci} = {name!r}")
+            if screen > 0:
+                # 整屏确认：本屏非空卡名全部已在前屏见过 = 到底（重叠行不算新）
+                cur = [e["name"] for e in entries if e["screen"] == screen and e["name"]]
+                prior = {e["name"] for e in entries if e["screen"] < screen and e["name"]}
+                new_count = sum(1 for n in cur if n not in prior)
+                logger.info(f"HIF 変卡扫描: 第 {screen + 1} 屏读完,新增 {new_count}/{len(cur)} 张")
+                if cur and new_count == 0:
+                    logger.info(f"HIF 変卡扫描: 整屏重复,判到底(累计 {len(prior)} 张)")
+                    break
             if screen < self.MAX_SCREENS - 1:
-                seen = {e["name"] for e in entries if e["name"]}
-                context.tasker.controller.post_swipe(*self.SCROLL_FROM, *self.SCROLL_TO, duration=300).wait()
+                self._swipe(context, *self.SCROLL_FROM, *self.SCROLL_TO, 300)
                 time.sleep(self.ACTION_DELAY)
-                probe_row = [self._read_cell_name_after_click(context, x, self.GRID_ROWS[0])
-                             for x in self.GRID_COLS[:3]]
-                if all(p and p in seen for p in probe_row):
-                    break  # 首行签名完全重复 = 真到底
         return self._dedupe_deck(entries)
 
     def _read_cell_name_after_click(self, context: Context, x: int, y: int) -> str:
@@ -1123,7 +1205,7 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         for _ in range(self.MAX_SCREENS * 2):
             if got == top_name:
                 return True
-            context.tasker.controller.post_swipe(*self.SCROLL_TO, *self.SCROLL_FROM, duration=300).wait()
+            self._swipe(context, *self.SCROLL_TO, *self.SCROLL_FROM, 300)
             time.sleep(self.ACTION_DELAY)
             got = self._read_cell_name_after_click(context, self.GRID_COLS[0], self.GRID_ROWS[0])
         return got == top_name
@@ -1136,7 +1218,7 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
                     got = self._read_cell_name_after_click(context, x, y)
                     if got == target:
                         return True
-            context.tasker.controller.post_swipe(*self.SCROLL_FROM, *self.SCROLL_TO, duration=300).wait()
+            self._swipe(context, *self.SCROLL_FROM, *self.SCROLL_TO, 300)
             time.sleep(self.ACTION_DELAY)
         return False
 
@@ -1195,7 +1277,7 @@ class ProduceHIFConsultAuto(_ProduceHIFActionBase):
                 if not popup:
                     break
                 logger.info("HIF 相談:关闭支援卡事件效果弹窗")
-                context.tasker.controller.post_click(*self.POPUP_OK_TAP).wait()
+                self._tap(context, *self.POPUP_OK_TAP)
                 time.sleep(self.ACTION_DELAY)
 
             image = self._get_screenshot(context)
@@ -1305,14 +1387,14 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
             stagnant = 0
             while remain > 0 and pending and stagnant < 2:
                 x, y = pending.pop(0)
-                context.tasker.controller.post_click(x, y).wait()
+                self._tap(context, x, y)
                 time.sleep(self.ACTION_DELAY)
                 new_remain = self._read_digits_text(context, self._get_screenshot(context))
                 if new_remain is None:
                     return self._stop_unsupported(context, "hif_drink_overflow", "remain_counter_lost_after_tap")
                 if new_remain > remain:
                     # 颜色误判点中已勾框:撤销勾选并放弃该框
-                    context.tasker.controller.post_click(x, y).wait()
+                    self._tap(context, x, y)
                     time.sleep(self.ACTION_DELAY)
                     stagnant += 1
                     continue
@@ -1324,7 +1406,7 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
             if remain == 0:
                 break
             if scroll_round + 1 < self.SCROLL_ROUNDS:
-                context.tasker.controller.post_swipe(360, 900, 360, 500, duration=300).wait()
+                self._swipe(context, 360, 900, 360, 500, 300)
                 time.sleep(self.ACTION_DELAY)
 
         if remain != 0:
@@ -1410,7 +1492,7 @@ class ProduceHIFSelectChangeDoneAuto(_ProduceHIFActionBase):
             self._archive_decision(self._get_screenshot(context), "select_change_done", {
                 "action": "blank_tap", "tap": list(self.BLANK_TAP),
             })
-        context.tasker.controller.post_click(*self.BLANK_TAP).wait()
+        self._tap(context, *self.BLANK_TAP)
         time.sleep(self.ACTION_DELAY)
         return True
 
@@ -1646,7 +1728,7 @@ class ProduceHIFRetryConfirmAuto(_ProduceHIFActionBase):
             if not self._find_text_option(context, image, self.ANCHOR_TEXT, self.ANCHOR_ROI):
                 logger.info("HIF 再挑戦確認: 弹窗已消失(終了已生效),放行")
                 return True
-            context.tasker.controller.post_click(*self.END_TAP).wait()
+            self._tap(context, *self.END_TAP)
             time.sleep(self.ACTION_DELAY)
         self._archive_decision(self._get_screenshot(context), "hif_retry_confirm", {
             "action": "produce_end",
@@ -1690,12 +1772,91 @@ class ProduceHIFMemoryDetailNextAuto(_ProduceHIFActionBase):
             # 非正式页（浏览詳細页/其他）：BACK 一次回正式確認页
             browser = self._find_text_option(context, image, (self.BROWSER_MARK,), [0, 0, 720, 400])
             if browser:
-                context.tasker.controller.post_click_key(self.KEY_BACK).wait()
+                self._key(context, self.KEY_BACK)
                 time.sleep(self.ACTION_DELAY)
                 continue
             # 既非正式页也无浏览页标记：放行交回路由
             return True
         return self._stop_unsupported(context, "hif_memory_detail", "memory_detail_loop_limit")
+
+
+@AgentServer.custom_action("ProduceHIFFinalModeAuto")
+class ProduceHIFFinalModeAuto(_ProduceHIFActionBase):
+    """HIF 活动主页→本戦 tab 切换（带验证重试）。
+
+    実機 2026-08-22 轮1/2：管线 Click 点击本戦 tab 偶发静默丢失（adb 入场动画
+    窗口），画面停在選抜視図致段退出。改为：OCR 锚定 tab box 点击→验证
+    「1.アイドル選択」步骤条出现（本戦視図特征）→未生效原坐标重试 ≤3。
+    """
+
+    TAB_ROI = [140, 850, 500, 80]
+    VERIFY_ROI = [0, 0, 720, 130]
+    MAX_ROUNDS = 3
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        preset = self._get_preset(argv)
+        if preset.entry_mode != "finals":
+            return self._stop_unsupported(context, "hif_mode_select", "entry_mode_not_supported")
+        for _ in range(self.MAX_ROUNDS):
+            image = self._get_screenshot(context)
+            tab = self._find_text_option(context, image, ("本戦",), self.TAB_ROI)
+            if not tab:
+                # tab 已不可寻+步骤条在=已切成功（前次点击生效）
+                if self._find_text_option(context, image, ("アイドル選択",), self.VERIFY_ROI):
+                    logger.success("HIF 入口：本戦視図已切换")
+                    return True
+                return self._stop_unsupported(context, "hif_mode_select", "final_mode_tab_not_found")
+            self._click_box_center(context, tab.best_result.box, double=False)
+            time.sleep(self.ACTION_DELAY)
+            verify = self._get_screenshot(context)
+            if self._find_text_option(context, verify, ("アイドル選択",), self.VERIFY_ROI):
+                logger.success("HIF 入口：按预设选择本戦模式")
+                return True
+            logger.info("HIF 入口：本戦 tab 点击未生效，重试")
+        return self._stop_unsupported(context, "hif_mode_select", "final_mode_click_failed")
+
+
+@AgentServer.custom_action("ProduceHIFGuardedTapAuto")
+class ProduceHIFGuardedTapAuto(_ProduceHIFActionBase):
+    """泛锚+空白点击的守卫推进（2026-08-22 轮2 grill 裁决）。
+
+    死循环模式（実機三例：ItemGain「獲得」/GiftTalk「差し入れ」/本戦 tab）：泛词锚
+    在同类页面残留命中+空白点击无效+[JumpBack] 回环永不清 timeout=无限空转不报错。
+    本 action:锚验证→指纹记录→点击→验证(锚消失或画面变化)=成功;连续 N 次无变化
+    return False 让节点失败交回轮询/on_error(段退重估,好过静默空转)。
+    param: {anchor_expected:[...], anchor_roi:[x,y,w,h], tap:[x,y]}
+    """
+
+    MAX_TRIES = 3
+    VERIFY_DELAY = 1.2
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        try:
+            params = json.loads(argv.custom_action_param) if argv.custom_action_param else {}
+        except ValueError:
+            params = {}
+        expected = tuple(params.get("anchor_expected") or [".*"])
+        roi = params.get("anchor_roi") or [0, 0, 720, 1280]
+        tap = params.get("tap") or [360, 640]
+        for attempt in range(self.MAX_TRIES):
+            image = self._get_screenshot(context)
+            if not self._find_text_option(context, image, expected, roi):
+                if attempt > 0:
+                    logger.success("守卫点击: 锚已消失(前次点击已推进)")
+                    return True
+                return False  # 进门即无锚=页面已过(其他锚会接管),失败交回轮询
+            before = self._fingerprint(image)
+            self._tap(context, *tap)
+            time.sleep(self.VERIFY_DELAY)
+            after_image = self._get_screenshot(context)
+            after_fp = self._fingerprint(after_image)
+            anchor_gone = not self._find_text_option(context, after_image, expected, roi)
+            if anchor_gone or (after_fp and after_fp != before):
+                logger.info(f"守卫点击: 第 {attempt + 1} 次点击推进成功(anchor_gone={anchor_gone})")
+                return True
+            logger.info(f"守卫点击: 第 {attempt + 1} 次点击画面无变化,重试")
+        logger.warning("守卫点击: 连续无变化,return False 交回路由(防死循环)")
+        return False
 
 
 @AgentServer.custom_action("ProduceHIFRound1Observe")
@@ -2177,7 +2338,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     def _click_skip(self, context: Context) -> bool:
         for attempt in range(3):
-            context.tasker.controller.post_click(*self.CLICK_SKIP).wait()
+            self._tap(context, *self.CLICK_SKIP)
             time.sleep(2.0)
             image = self._get_screenshot(context)
             # SKIP 后转场（残りターン变化）或手牌空提示消失即视为生效
@@ -2365,16 +2526,15 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             self._merge_panel_items(items, cur)
             prev_set = set(cur)
             # 半屏滚动（重叠锚:新屏应与上屏有重叠词,零重叠=跳屏→回滚半屏重读）
-            context.tasker.controller.post_swipe(*self.PANEL_SCROLL_STEP, duration=400).wait()
+            self._swipe(context, *self.PANEL_SCROLL_STEP, 400)
             time.sleep(1.3)
             image = self._get_screenshot(context)
             nxt = self._ocr_panel_items(context, image)
             new_items = [t for t in nxt if t not in items]
             if prev_set and nxt and not (set(nxt) & prev_set) and not new_items:
                 # 跳屏且无新增——回滚重读一次
-                context.tasker.controller.post_swipe(self.PANEL_SCROLL_STEP[2], self.PANEL_SCROLL_STEP[3],
-                                                     self.PANEL_SCROLL_STEP[0], self.PANEL_SCROLL_STEP[1],
-                                                     duration=400).wait()
+                self._swipe(context, self.PANEL_SCROLL_STEP[2], self.PANEL_SCROLL_STEP[3],
+                            self.PANEL_SCROLL_STEP[0], self.PANEL_SCROLL_STEP[1], 400)
                 time.sleep(1.3)
                 image = self._get_screenshot(context)
                 nxt = self._ocr_panel_items(context, image)
@@ -2386,7 +2546,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 no_new_streak += 1
                 if no_new_streak >= self.PANEL_BOTTOM_CONFIRM:
                     # 底部物理信号:再滚一帧对比,全同确认到底
-                    context.tasker.controller.post_swipe(*self.PANEL_SCROLL_STEP, duration=400).wait()
+                    self._swipe(context, *self.PANEL_SCROLL_STEP, 400)
                     time.sleep(1.0)
                     probe = self._ocr_panel_items(context, self._get_screenshot(context))
                     if set(probe) <= set(items):
@@ -2563,7 +2723,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             if has_pdrink:
                 self._close_pdrink_popup(context)
             else:
-                context.tasker.controller.post_click(*self.OVERLAY_CLOSE_TAP).wait()
+                self._tap(context, *self.OVERLAY_CLOSE_TAP)
                 time.sleep(1.2)
         return acted
 
@@ -2612,7 +2772,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                     break
             else:
                 no_new = 0
-            context.tasker.controller.post_swipe(*self.PANEL_SCROLL_STEP, duration=400).wait()
+            self._swipe(context, *self.PANEL_SCROLL_STEP, 400)
             time.sleep(1.3)
             image = self._get_screenshot(context)
 
@@ -2706,7 +2866,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                     break
             else:
                 no_new = 0
-            context.tasker.controller.post_swipe(*self.PANEL_SCROLL_STEP, duration=400).wait()
+            self._swipe(context, *self.PANEL_SCROLL_STEP, 400)
             time.sleep(1.3)
             image = self._get_screenshot(context)
 
@@ -2743,7 +2903,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     def _close_pile_viewer(self, context: Context) -> bool:
         for _ in range(3):
-            context.tasker.controller.post_click(*self.PILE_CLOSE_TAP).wait()
+            self._tap(context, *self.PILE_CLOSE_TAP)
             time.sleep(1.2)
             if not self._pile_viewer_anchor_hit(context, self._get_screenshot(context)):
                 return True

@@ -190,3 +190,73 @@ class TestExamStateResourceFields:
             available_p_drinks=[],
         )
         assert st.p_items == [] and st.p_drinks == [] and st.deck == {}
+
+
+# ---------------------------------------------------------------- 変卡牌库整屏判底
+
+
+class TestDeckScanFullScreenBottom:
+    """判底纯逻辑（模拟逐屏 entries 序列,断言不再跳过新屏二三排——実機 2026-08-22 bug）。"""
+
+    @staticmethod
+    def _sim_screens(screens: list[list[str]]) -> list[str]:
+        """模拟 _scan_full_deck 收集:每屏 12 格(name 空串=漏读),整屏重复即停,
+        返回去重清单(还原扫描循环核心,不跑 maafw)。"""
+        entries: list[tuple[int, str]] = []
+        for screen, names in enumerate(screens):
+            for n in names:
+                entries.append((screen, n))
+            if screen > 0:
+                cur = [n for s, n in entries if s == screen and n]
+                prior = {n for s, n in entries if s < screen and n}
+                if cur and all(n in prior for n in cur):
+                    break
+        seen, out = set(), []
+        for _, n in entries:
+            if n and n not in seen:
+                seen.add(n)
+                out.append(n)
+        return out
+
+    def test_overlap_row_not_misjudged_bottom(self) -> None:
+        # 26 张:屏1 [A-L 12张], 屏2 [K L M-V 重叠2+新10], 屏3 [U V 整屏重复=到底]
+        s1 = [f"卡{i:02d}" for i in range(12)]                     # A..L
+        s2 = s1[10:] + [f"新{i:02d}" for i in range(10)]            # K L + 新00..新09
+        s3 = [f"新{i:02d}" for i in range(9, -1, -1)]               # 全部已见
+        got = self._sim_screens([s1, s2, s3])
+        assert len(got) == 22  # 12 + 10 新,重叠不重计;旧探针版会在屏 2 就断底只收 12
+
+    def test_all_new_screens_continue(self) -> None:
+        s1 = [f"a{i}" for i in range(12)]
+        s2 = [f"b{i}" for i in range(12)]
+        got = self._sim_screens([s1, s2])
+        assert len(got) == 24
+
+    def test_dedupe_keeps_first(self) -> None:
+        from agent.custom.action.produce_hif import ProduceChooseHIFSelectChangeSourceAuto
+        entries = [
+            {"name": "お姉さんの感覚", "cell": "x"},
+            {"name": "お姉さんの感覚", "cell": "y"},
+            {"name": "", "cell": "z"},
+            {"name": "自然体の魅力", "cell": "w"},
+        ]
+        got = ProduceChooseHIFSelectChangeSourceAuto._dedupe_deck(entries)
+        assert [e["name"] for e in got] == ["お姉さんの感覚", "自然体の魅力"]
+
+
+# ---------------------------------------------------------------- GuardedTap 指纹
+
+
+class TestGuardedTapFingerprint:
+    def test_fingerprint_stable_and_sensitive(self) -> None:
+        import numpy as np
+
+        from agent.custom.action.produce_hif import _ProduceHIFActionBase
+        base = np.zeros((1280, 720, 3), dtype=np.uint8)
+        base[100:200, 100:200] = 255
+        same = base.copy()
+        changed = base.copy()
+        changed[500:600, 400:500] = 200
+        fp1 = _ProduceHIFActionBase._fingerprint(base)
+        assert fp1 and fp1 == _ProduceHIFActionBase._fingerprint(same)
+        assert fp1 != _ProduceHIFActionBase._fingerprint(changed)
