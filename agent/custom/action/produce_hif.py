@@ -2298,7 +2298,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             # turn/总分/手牌数任一变化才判生效；连续 ≥2 次未生效强制 SKIP 推进回合，
             # 防同回合同卡假成功死循环（no_progress 守卫管不到 ok=True 的假成功）。
             verified = self._verify_play_effect(
-                context, turn_left, evidence.get("total_score"), len(hand.card_names),
+                context, turn_left, evidence.get("total_score"), list(hand.card_names),
             )
             if not verified:
                 unverified_plays += 1
@@ -2744,15 +2744,23 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     def _verify_play_effect(
         self, context: Context, prev_turn_left: int,
-        prev_score: Optional[int], prev_hand_count: int,
+        prev_score: Optional[int], prev_names: list[str],
     ) -> bool:
-        """出牌执行确认（bug#44）：turn/总分/手牌数任一变化才判生效。
+        """出牌执行确认（bug#44+#54）：turn/总分/手牌**内容**任一变化才判生效。
 
         SELECT 按钮点击成功≠牌打出（実機轮5 turn7：17 次假成功卡 25 分钟，
         no_progress 守卫因 ok=True 永不触发）。同回合连续出牌 turn 不变是正常的，
-        三分量任一变化即生效；全部不变=假成功。动画期读空（turn None/手牌空/
+        分量任一变化即生效；全部不变=假成功。动画期读空（turn None/手牌空/
         score None）不可信，跳过该分量继续轮询，不误判。窗口 6s 覆盖结算
-        动画（実機转场 <2s）。"""
+        动画（実機转场 <2s）。
+
+        #54（実機轮8：9/40 手误报 false）：好调/buff/抽卡手出牌后 turn 不变
+        （同回合）、总分不变（不加分）、手牌数不变（出 1 抽 1）——三分量全恒定
+        但牌实际生效（山札递减実証），22.5% 误报率且连续 2 false 会误触发 SKIP
+        兜底浪费回合。修：手牌分量从「数量比对」升级为「内容比对」——打出的卡
+        必离开手牌，抽回补位后手牌成员必变（同名同位回流极罕见且仍有 turn/score
+        分量兜底）；用列表顺序敏感比对（再演重排也算"有事情发生"，宽松方向
+        正确——false 有 SKIP 实害，误 true 无害）。"""
         deadline = time.time() + 6
         while time.time() < deadline:
             time.sleep(1.5)
@@ -2761,7 +2769,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             if turn_left is not None and turn_left != prev_turn_left:
                 return True
             names = ExamStateReader.from_context(context).read_hand().card_names
-            if names and len(names) != prev_hand_count:
+            if names and list(names) != prev_names:
                 return True
             score = self._read_total_score(context, image)
             if score is not None and prev_score is not None and score != prev_score:
