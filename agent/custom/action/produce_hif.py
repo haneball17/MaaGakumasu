@@ -141,6 +141,21 @@ class _ProduceHIFActionBase(CustomAction):
         except Exception:
             return ""
 
+    OP_TIMEOUT_S = 15  # 单次 controller 操作(点击/滑动/按键)完成上限
+
+    @classmethod
+    def _wait_job(cls, job, timeout_s: float = None) -> bool:
+        """带超时的 Job 等待:maafw Job.wait() 无限阻塞(controller/IPC 卡死时 agent
+        线程永久挂起,実機 2026-08-22 hang 场景之一)。done 轮询替代,超时告警返回
+        False(操作可能未执行,调用方按点击丢失重试路径处理)。"""
+        deadline = time.time() + (timeout_s if timeout_s is not None else cls.OP_TIMEOUT_S)
+        while not getattr(job, "done", True):  # 无 done 属性(mock/异常 Job)视为已完成
+            if time.time() > deadline:
+                logger.warning(f"HIF 操作超时 {cls.OP_TIMEOUT_S}s(controller 无响应,视为未执行)")
+                return False
+            time.sleep(0.2)
+        return True
+
     @classmethod
     def _safe_fingerprint(cls, context: Context) -> str:
         """操作前指纹（截图失败返回空串=放弃变化判定,操作照常执行）。"""
@@ -178,21 +193,21 @@ class _ProduceHIFActionBase(CustomAction):
     def _tap(cls, context: Context, x: int, y: int) -> None:
         """守卫点击：全 agent 侧点击唯一入口（记录坐标+结果截图+画面变化）。"""
         before = cls._safe_fingerprint(context)
-        context.tasker.controller.post_click(x, y).wait()
+        cls._wait_job(context.tasker.controller.post_click(x, y))
         cls._op_log(context, "click", {"x": x, "y": y}, before_fp=before)
 
     @classmethod
     def _swipe(cls, context: Context, x1: int, y1: int, x2: int, y2: int, duration: int) -> None:
         """守卫滑动：全 agent 侧滑动唯一入口。"""
         before = cls._safe_fingerprint(context)
-        context.tasker.controller.post_swipe(x1, y1, x2, y2, duration=duration).wait()
+        cls._wait_job(context.tasker.controller.post_swipe(x1, y1, x2, y2, duration=duration))
         cls._op_log(context, "swipe", {"from": [x1, y1], "to": [x2, y2], "duration": duration}, before_fp=before)
 
     @classmethod
     def _key(cls, context: Context, keycode: int) -> None:
         """守卫按键（BACK 等）。"""
         before = cls._safe_fingerprint(context)
-        context.tasker.controller.post_click_key(keycode).wait()
+        cls._wait_job(context.tasker.controller.post_click_key(keycode))
         cls._op_log(context, "key", {"keycode": keycode}, before_fp=before)
 
     @staticmethod
@@ -1922,6 +1937,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     PANEL_CLICK_DELAY = 1.6   # 面板/详情点开后渲染等待（実機校准）
     TRANSITION_TIMEOUT_S = 60 # 转场窗口 60s（Q13 起步值，実機 2s 后续收紧）
     NO_PROGRESS_LIMIT = 3     # F4 守卫：同回合连续无进展步数上限
+    ROUND_DEADLINE_S = 2700    # 出牌全局上限 45 分钟(9/12 回合正常 <20 分钟,IPC 卡死/循环兜底)
     EVIDENCE_RETRY = 2        # 手牌读空重试次数（Q12 禁盲点）
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
@@ -1931,6 +1947,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
         total_turns, exam_round, round_tag = self._round_config(argv)
         screen_state = f"{round_tag}_play"
+        deadline = time.time() + self.ROUND_DEADLINE_S
         _ProduceHIFActionBase._reset_round1_state()
         played_history: List[str] = []
         no_progress = 0
