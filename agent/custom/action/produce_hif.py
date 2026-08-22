@@ -479,12 +479,23 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         if not best_event:
             # 半渲染窗口重读(実機 2026-08-23 轮11 #62:変卡完成推进后的日程页
             # 横幅演出中,公開レッスン OCR 全 miss→可用日程只剩单卡→preset 无
-            # 匹配误 stop;静止后重读 1 次,仍无匹配才 stop)
-            time.sleep(1.5)
-            image = self._get_screenshot(context)
-            events = self._get_available_events(context, image)
-            logger.info(f"HIF 日程重读(半渲染重试): {', '.join(e['name'] for e in events) or '无'}")
-            best_event = self._choose_best_event(health_data, events, preset, day_remaining)
+            # 匹配误 stop;轮12 Day1 首页入场演出>1.5s,单次重读仍 miss——
+            # 改递增间隔循环重读≤3 次,有匹配即出,仍无匹配才 stop)
+            for reread_delay in (1.5, 2.5, 2.5):
+                time.sleep(reread_delay)
+                image = self._get_screenshot(context)
+                events = self._get_available_events(context, image)
+                # day_remaining 同步重读(実機 2026-08-23 轮12:半渲染首读 None→
+                # choose_schedule_priority 查表 miss→priority=None→误 stop,
+                # 重读只补 events 不补日数同样 stop)
+                reread_day = self._get_day_remaining(context, image)
+                if reread_day is not None:
+                    day_remaining = reread_day
+                    _ProduceHIFActionBase._set_session_day(day_remaining)
+                logger.info(f"HIF 日程重读(半渲染重试): {', '.join(e['name'] for e in events) or '无'} day={day_remaining}")
+                best_event = self._choose_best_event(health_data, events, preset, day_remaining)
+                if best_event:
+                    break
         if not best_event:
             return self._stop_unsupported(context, "finals_action_select", "preset_no_matching_event")
 
