@@ -1248,16 +1248,44 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             return ""
         return name
 
+    # #53 帧差判底:64x64 灰度缩略图平均绝对差低于此值 = 滚动无位移（列表已尽）。
+    # 阈值保守取 2.0/255——真无位移时差≈0，滚动哪怕 20px（1 行卡）差也远超此值，
+    # 宁可多点一屏 12 格（整屏确认保底在）也不错判底漏卡。
+    SCROLL_STALL_MEAN_DIFF = 2.0
+    SCROLL_STALL_CONFIRM = 2  # 连续 N 次滚动无位移才判底（单次可能偶发被 UI 消费）
+
+    @classmethod
+    def _frames_similar(cls, img_a, img_b) -> bool:
+        """两帧「基本无位移」判定（#53 借鉴 gakumas-assistant check_frame_change
+        的帧 diff 判底思路；SSIM 换成灰度均值差近似,不引入新依赖）。"""
+        if img_a is None or img_b is None:
+            return False
+        try:
+            ha = np.asarray(Image.fromarray(img_a[..., ::-1]).resize((64, 64)).convert("L"), dtype=np.float32)
+            hb = np.asarray(Image.fromarray(img_b[..., ::-1]).resize((64, 64)).convert("L"), dtype=np.float32)
+        except Exception:
+            return False
+        return float(np.mean(np.abs(ha - hb))) < cls.SCROLL_STALL_MEAN_DIFF
+
     def _scan_full_deck(self, context: Context) -> list[dict]:
         """逐屏逐格点选读卡名，全库收集（含滚动，Q2 裁决）→ 去重清单。
 
-        判底（実機 2026-08-22 轮2 用户实证修正）：整屏确认模式——滚动后读完整屏
-        3 行×12 格，**本屏全部非空卡名 ∈ 已见集合**才判到底。旧版「滚动后首行探针
-        预判」是错的：滚动 300px 后新屏首行必然是重叠行（旧屏第三排），探针全
-        命中已见即 break，新屏第二三排的新卡全部跳过（実機表现=只读一排就结束）。
+        判底双保险（#53 前置帧差 + 旧整屏确认保底）：
+        - 帧差前置：滚动前后帧基本无位移（连续 2 次）= 列表已尽，**免点 12 格**
+          直接判底——旧版判底屏 12 次点击全是浪费（実測扫描 3-4 屏中最后 1 屏
+          是纯判底屏，省 ~19s/変卡）。
+        - 整屏确认（実機 2026-08-22 轮2 用户实证修正）保底：滚动有位移时仍按
+          「本屏全部非空卡名 ∈ 已见集合」判底——旧版「滚动后首行探针预判」是错
+          的：滚动 300px 后新屏首行必然是重叠行，探针全命中已见即 break，新屏
+          第二三排的新卡全部跳过（実機表现=只读一排就结束）。
         """
         entries: list[dict] = []
+        scroll_stalls = 0
         for screen in range(self.MAX_SCREENS):
+            if screen > 0 and scroll_stalls >= self.SCROLL_STALL_CONFIRM:
+                prior = {e["name"] for e in entries if e["screen"] < screen and e["name"]}
+                logger.info(f"HIF 変卡扫描: 滚动无位移×{scroll_stalls},帧差判到底(累计 {len(prior)} 张)")
+                break
             for ri, y in enumerate(self.GRID_ROWS, 1):
                 for ci, x in enumerate(self.GRID_COLS, 1):
                     name = self._read_cell_name_after_click(context, x, y)
@@ -1273,8 +1301,11 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
                     logger.info(f"HIF 変卡扫描: 整屏重复,判到底(累计 {len(prior)} 张)")
                     break
             if screen < self.MAX_SCREENS - 1:
+                before = self._get_screenshot(context)
                 self._swipe(context, *self.SCROLL_FROM, *self.SCROLL_TO, 300)
                 time.sleep(self.ACTION_DELAY)
+                after = self._get_screenshot(context)
+                scroll_stalls = scroll_stalls + 1 if self._frames_similar(before, after) else 0
         return self._dedupe_deck(entries)
 
     def _read_cell_name_after_click(self, context: Context, x: int, y: int) -> str:

@@ -256,3 +256,36 @@ def test_extract_focus_from_items():
     Play = _load_play()
     assert Play._extract_focus_from_items({"集中 13": 1, "好調 29ターン": 1}) == 13
     assert Play._extract_focus_from_items({"好調 29ターン": 1}) is None
+
+
+# ------------------------------------------------------------------
+# #53 帧差判底（借鉴 gakumas-assistant check_frame_change：滚不动=到底）
+# ------------------------------------------------------------------
+
+
+def _gray_frame(value: int):
+    import numpy as np
+    return np.full((200, 200, 3), value, dtype=np.uint8)
+
+
+def test_frames_similar_identical_frames():
+    frame = _gray_frame(120)
+    assert Src._frames_similar(frame, frame) is True
+
+
+def test_frames_similar_near_identical_frames():
+    assert Src._frames_similar(_gray_frame(120), _gray_frame(121)) is True
+
+
+def test_frames_similar_scrolled_frames():
+    """滚动位移哪怕一行，均值差应远超阈值判 False。"""
+    import numpy as np
+    frame_a = np.zeros((200, 200, 3), dtype=np.uint8)
+    frame_a[100:, :] = 200  # 上半黑下半白
+    frame_b = np.roll(frame_a, 40, axis=0)  # 位移 40px
+    assert Src._frames_similar(frame_a, frame_b) is False
+
+
+def test_frames_similar_none_inputs():
+    assert Src._frames_similar(None, _gray_frame(0)) is False
+    assert Src._frames_similar(_gray_frame(0), None) is False
