@@ -2008,6 +2008,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     UNVERIFIED_LIMIT = 2      # exec_verified 守卫：连续出牌未生效上限，触发 SKIP 兜底
     ROUND_DEADLINE_S = 1500    # 出牌全局上限 25 分钟(9/12 回合正常 <20 分钟,2026-08-22 收紧)
     EVIDENCE_RETRY = 2        # 手牌读空重试次数（Q12 禁盲点）
+    ROUND_EXIT_ANCHORS = ("ラウンド1結果", "ラウンド2結果", "敗退", "インターバル", "優勝条件")
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         preset = self._get_preset(argv)
@@ -2067,6 +2068,10 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             logger.warning(f"{round_tag} 开局非対局页(重入/已结束?),跳过开局探测直接出口判定")
 
         while True:
+            if time.time() > deadline:
+                # ROUND_DEADLINE_S 此前定义未检查（実機轮6 发现 #46）——
+                # continue 类自愈分支增多后必须有全局上限防慢循环
+                return self._stop_unsupported(context, screen_state, "round_deadline_exceeded")
             image = self._get_screenshot(context)
             turn_left = self._read_turn_left(context, image)
             if turn_left is None:
@@ -2080,12 +2085,16 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 turn_left = self._read_turn_left(context, image)
             if turn_left is None:
                 # 残りターン消失≠异常：Round 结束转結果页时本来就没有（実機 2026-08-22
-                # 轮0：turn9 出完牌转場被误判 turn_counter_unreadable）。轮询出口锚
-                # 60s：結果页(ラウンドN結果/敗退)/Interval 出现=完成 return True 交
-                # 出口路由；60s 仍无锚才是真异常 stop。
+                # 轮0：turn9 出完牌转場被误判 turn_counter_unreadable）。出口锚 20s
+                # （実測转場 <5s，60s 白等收紧）；无锚再区分「段边界演出动画」与
+                # 「真异常」（実機轮6 #45：段重入落在演出半渲染窗口 stop ×4，
+                # 段重启 20-30s 自愈——就地等动画静止重读，省段重启开销）
                 if self._wait_round_exit(context):
                     logger.success(f"HIF {round_tag} 出牌完成（出口页已到，共出 {len(played_history)} 张）")
                     return True
+                if self._wait_turn_reframe(context):
+                    logger.info(f"{round_tag} turn 读空但画面在动(演出/转场)，静止后重读")
+                    continue
                 return self._stop_unsupported(context, screen_state, "turn_counter_unreadable")
             if turn_left == 0:
                 logger.success(f"HIF {round_tag} 出牌完成：共出 {len(played_history)} 张")
@@ -2212,14 +2221,36 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         while time.time() < deadline:
             image = self._get_screenshot(context)
             hit = self._find_text_option(
-                context, image,
-                ("ラウンド1結果", "ラウンド2結果", "敗退", "インターバル", "優勝条件"),
+                context, image, self.ROUND_EXIT_ANCHORS,
                 [0, 0, 720, 300],
             )
             if hit:
                 return True
             time.sleep(2.0)
         return False
+
+    def _wait_turn_reframe(self, context: Context, timeout_s: float = 90.0) -> bool:
+        """turn 读不到且出口锚无果时，区分「演出/转场动画中」与「真异常」
+        （実機 2026-08-22 轮6 #45：turn_counter_unreadable stop ×4 均为段
+        重入落在演出半渲染窗口，段重启 20-30s 后动画播完自愈）。指纹在变
+        =动画中：等到静止再让调用方重读 turn；出口锚出现=Round 已结束直接
+        True；超时且从未变化=画面冻结/未知页，False 交 stop。"""
+        deadline = time.time() + timeout_s
+        seen_change = False
+        prev = self._safe_fingerprint(context)
+        while time.time() < deadline:
+            time.sleep(3.0)
+            image = self._get_screenshot(context)
+            if self._find_text_option(context, image, self.ROUND_EXIT_ANCHORS, [0, 0, 720, 300]):
+                return True
+            cur = self._fingerprint(image)
+            if cur and prev:
+                if cur != prev:
+                    seen_change = True
+                elif seen_change:
+                    return True  # 动画播完已静止，重读 turn
+            prev = cur
+        return seen_change
 
     def _read_turn_left(self, context: Context, image) -> Optional[int]:
         """残りターン读取。実機 2026-08-22 轮2 R2 后期:buff 带行(「37ターン」等)
