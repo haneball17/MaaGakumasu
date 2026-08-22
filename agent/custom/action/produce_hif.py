@@ -1479,7 +1479,18 @@ class ProduceChooseHIFSPCardAuto(_ProduceHIFActionBase):
                 if item.box[3] > 20 and re.search(r"[ぁ-んァ-ヶ一-龯]", item.text)
             ]
             if lines:
-                scored = [(item, *table.score_detail(item.text)) for item in lines]
+                scored = []
+                for item in lines:
+                    score, breakdown = table.score_detail(item.text)
+                    if score <= 0:
+                        # 数值兜底(実機 2026-08-23 轮9/10 #55:SP 卡文案「(ダ)ンス上昇+13」
+                        # OCR 拆词丢ダ,关键词表不覆盖纯数值文案→全 0 盲选;
+                        # 解析行内「上昇+N」累计作分数,选数值最大行)
+                        numeric = float(sum(int(n) for n in re.findall(r"上昇\s*[+＋]?\s*(\d+)", item.text)))
+                        if numeric > 0:
+                            breakdown = [("上昇数値", numeric)]
+                            score = numeric
+                    scored.append((item, score, breakdown))
                 best_item, best_score, best_breakdown = max(scored, key=lambda pair: pair[1])
                 detail_str = ",".join(f"{kw}{value:+g}" for kw, value in best_breakdown) or "无命中"
                 logger.info(f"HIF SP效果卡: 最高分 {best_score:.0f} [{detail_str}]「{best_item.text[:40]}」")
