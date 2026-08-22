@@ -1736,7 +1736,7 @@ class ProduceHIFRetryConfirmAuto(_ProduceHIFActionBase):
 
     END_TAP = (200, 1140)  # vision 実測 2026-08-22 轮3:hitbox 内缩,旧(216,1154)连点 8 次不中
     ANCHOR_TEXT = ("再挑戦が可能", "本当に終了")
-    ANCHOR_ROI = [40, 700, 640, 180]
+    ANCHOR_ROI = [40, 700, 640, 350]  # 弹窗 y 随内容浮动(実機 y946 超 180 高,轮4 miss)
     MAX_ROUNDS = 8
     SETTLE_DELAY = 2.0  # 弹窗入场动画内点击会丢失(実機 2026-08-22 轮0/轮2:段内连点
     # 未生效两次,手动同坐标单点即中——IPC 点击丢失高发位,重试上限提到 8)
@@ -2069,6 +2069,13 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             if not hand.card_names:
                 # 空手=回合转场/抽卡动画中，长窗口等 turn 变化（与出牌后短等待区分）
                 if not self._wait_transition(context, turn_left, timeout_s=30):
+                    # 兜位(vision 診断 2026-08-22 轮4):単卡居中布局 YOLO 恒 miss 画面却
+                    # 是正常待出牌态——SKIP 锚在则强制 SKIP 推进回合(弃当回合保主线)
+                    skip_img = self._get_screenshot(context)
+                    if self._find_text_option(context, skip_img, ("SKIP",), [600, 740, 110, 80]):
+                        logger.warning(f"{round_tag} 空手但待出牌态(SKIP 在),强制 SKIP 推进(単卡 YOLO miss)")
+                        if self._click_skip(context):
+                            continue
                     no_progress += 1
                     if no_progress >= self.NO_PROGRESS_LIMIT:
                         return self._stop_unsupported(context, screen_state, "evidence_empty_hand")
@@ -2822,7 +2829,8 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 context.tasker.controller.post_click(*self.CARD_DETAIL_CLOSE).wait()
                 time.sleep(2.0)
                 continue
-            if not (has_panel or has_pitem or has_pdrink):
+            has_memab = self._find_text_option(context, image, ("発動予約", "メモリーアビリティ"), [20, 150, 400, 700])
+            if not (has_panel or has_pitem or has_pdrink or has_memab):
                 break
             acted = True
             logger.warning(

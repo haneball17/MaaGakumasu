@@ -12,8 +12,7 @@
             "ProduceExit",
             "ProduceHIFFinishedFlag",
             "ProduceHIFFailedFlag",
-            "ProduceHIFCompleteFlag",
-            "[JumpBack]ProduceHIFRound1Flag",
+                    "[JumpBack]ProduceHIFRound1Flag",
             "[JumpBack]ProduceHIFRound2Flag",
             "[JumpBack]ProduceHIFPrepRoot"
         ],
@@ -149,12 +148,16 @@
             "param": {}
         },
   "next": [
+    "[JumpBack]ProduceHIFMemAbilityCloseFlag",
     "[JumpBack]ProduceHIFCardDetailCloseFlag",
     "[JumpBack]ProduceHIFSupportEventPopup",
     "[JumpBack]ProduceHIFRound1Flag",
     "[JumpBack]ProduceHIFTapNextFlag",
     "[JumpBack]ProduceHIFDayChangeBlank",
     "[JumpBack]ProduceHIFDialogBlank",
+    "[JumpBack]ProduceHIFRewardPageFlag",
+    "[JumpBack]ProduceHIFGashaAdCloseFlag",
+    "ProduceHIFCompleteFlag",
     "[JumpBack]ProduceHIFRound2ResultFlag",
     "[JumpBack]ProduceHIFRound2DefeatFlag",
     "[JumpBack]ProduceHIFRetryConfirmFlag",
@@ -162,9 +165,6 @@
     "[JumpBack]ProduceHIFMemoryFlag",
     "[JumpBack]ProduceHIFMemoryDetailNextFlag",
     "[JumpBack]ProduceHIFItemGainFlag",
-    "[JumpBack]ProduceHIFRewardPageFlag",
-    "[JumpBack]ProduceHIFGashaAdCloseFlag",
-    "ProduceHIFCompleteFlag",
     "[JumpBack]ProduceHIFIntervalFlag",
     "[JumpBack]ProduceHIFR2ConditionFlag",
     "[JumpBack]ProduceHIFPDrinkObtainedBlank",
@@ -938,6 +938,38 @@
             "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 変卡完成,点空白推进(実機 2026-08-20:提示层「…にチェン/ジしました」拆两行,补ジしました变体)[/color]"
         }
     },
+    "ProduceHIFMemAbilityCloseFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*発動予約.*",
+                    ".*メモリーアビリティ.*"
+                ],
+                "roi": [
+                    20,
+                    150,
+                    400,
+                    700
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    870,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: メモリーアビリティ効果一覧面板(実機 2026-08-22 轮4 vision 診断:出牌点卡上 buff 图标误开,×在面板底(360,870),挡残りターン致 PlayFlag 不可达——管线层 pos0 旁同#34 模式)[/color]"
+        }
+    },
     "ProduceHIFCardDetailCloseFlag": {
         "recognition": {
             "type": "OCR",
@@ -1402,7 +1434,7 @@
                     40,
                     700,
                     640,
-                    180
+                    350
                 ]
             }
         },
@@ -1546,13 +1578,14 @@
                     ".*報酬.*成長.*",
                     ".*プロデュース履歴.*",
                     ".*プロデ.*履歴.*",
-                    ".*アチーブメント.*"
+                    ".*アチーブメント.*",
+                    ".*獲得アイテム.*"
                 ],
                 "roi": [
                     20,
-                    100,
+                    30,
                     680,
-                    600
+                    680
                 ]
             }
         },
