@@ -156,6 +156,8 @@ HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动�
 - 泛词锚与空白点击的死循环铁律（実機 2026-08-22 轮 1/2 三例：ItemGainFlag「獲得」吸住変卡页、GiftTalkBlank「差し入れ」标题在事件全部子页面残留、両者均为裸 Click+[JumpBack] 回环）：`[JumpBack]` 回环命中即重置轮询，**永远走不到 timeout**——误命中的裸点击=无限空转且无任何报错。规则：①泛词锚（页面残留标题词：獲得/差し入れ/再開类）必须挂 ScheduleRoot 尾部兜底位或换专有词锚，禁止挂前部抢路由；②空白/中央点击类推进节点必须用 `ProduceHIFGuardedTapAuto`（Custom：锚验证→指纹对比→点击→验证推进，连续 3 次无变化 return False 段退），禁用裸 Click action；③新挂载节点先问「这个词在哪些**其他**页面也出现」再定位次。
 - agent 侧操作日志链（2026-08-22 轮 2 grill 裁决）：全部点击/滑动/按键必须走 `_tap/_swipe/_key` 守卫包装（`_ProduceHIFActionBase`）——记录坐标+操作后截图 `debug/decisions/ops/` + ops JSONL（含前后 64x64 指纹对比 scene_changed）；禁止直调 `controller.post_click/post_swipe`（IPC 点击丢失类 bug 复盘全靠此链）。管线侧 Click 节点的坐标在 `debug/maafw.log` 有事件记录可交叉查。
 - 滚动枚举类读取（牌库网格/详情面板）判底必须「**整屏确认**」：滚动后读完整屏，全部条目 ∈ 已见才判到底；禁止用「滚动后首行/单点探针」预判——滚动重叠行必然全命中已见集合，会跳过真正的新内容（実機 2026-08-22 変卡牌库只读一排即断底教训）。
+- 遮挡全画面的浮层（毛玻璃类：卡详情/メモリーアビリティ/buff効果一覧等）挡掉**全部锚**致路由根全 miss→段循环空退（実機 2026-08-22 四例 #34/#38/#41/#25）：此类浮层必须在 ScheduleRoot **前部有管线层关闭节点**（现 pos0-2 关闭组 StatePanel/MemAbility/CardDetail，锚用面板专有词如「(再演)括号格式」防背景状态带误命中）。Custom action 内的 dissolve 自愈只在其宿主节点可达时有效——「Custom 够不着」是浮层处理的边界，新浮层类型先加管线层节点再考虑 Custom 内兜底。
+- 视觉按钮（pill 胶囊形）点击一律用**按钮几何中心**，OCR/小模板文字 box 中心系统性偏上 ~21px 且 hitbox 内缩（実機 2026-08-22 終了/次へ/受け取る三例）；文字 box 只做存在判定。Custom action 首次点击前加入场稳定等待 SETTLE≥2s（入场动画窗口 agent 点击静默丢失，手动同坐标即中）。收紧路由根 next timeout 前必须先量「轮询一圈实际耗时」（节点数×单点识别耗时；模板 ~0.3s vs OCR ~2s），timeout ≥ 一圈+15s——40s 曾饿死第 11 位之后的全部锚。
 
 ## 任务配置规则
 
