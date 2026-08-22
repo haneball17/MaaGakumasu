@@ -245,3 +245,4 @@
 10. StatePanelCloseFlag 泛词锚面（「消費体力減少」「スキルカード追加発動」）：#50 后饮料弹窗已让位专有锚，但两词仍可能在其他含 buff 描述的弹窗/页面共显——新弹窗类型出现时优先换专有词锚而非依赖排序让位
 11. #51 変卡源 fallback 改评分版待実機复验（名单耗尽时点）：应见日志 `mode=fallback_lowest_score` 且源卡为非 SSR 低分卡；若全库 SSR 仍会退第一格（変卡必须选源）
 12. #52 変卡重定位滚动直达待実機复验：决策 JSONL `relocate` 字段应见 `direct`/`top`（正常路径 1 次点击）；回弹偏移场景验证 `direct_neighbor`/`fallback_scan` 保底不劣于旧版
+13. 轮 8 复盘增量三件（2026-08-22）：#54 exec_verified 手牌分量升级内容比对已修（commit 46fdc39，実機复验看 buff 手 false 率归零）；#55 SP 效果卡评分全 0 分盲选（两次决策所有行 score=0，关键词表不覆盖「上昇+N」类文案——补词条或数值解析）；#56 turn/总分读数偶发误读（turn 9↔6 形近、score 84 回跳——读数加单调性/连续性校验）；#57 interval/consult/retry 决策缺 chosen 字段+R1 turn1 首手无记录（JSONL 字段规范化）
