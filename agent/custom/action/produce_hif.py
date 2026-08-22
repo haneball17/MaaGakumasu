@@ -1154,15 +1154,17 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         mode = "named" if any(self._norm(n) == chosen["name"] for n in names) else "fallback_lowest_score"
         logger.info(f"HIF 変卡: 源卡选定「{chosen['name']}」mode={mode}")
 
-        # 选中定位（実機 13:34 复盘：滚动后坐标重放不可靠——回弹/偏移致复核错卡）：
-        # 滚回顶部（首格卡名==deck[0] 探测验证）→ chosen≠deck[0] 时顺序点选扫描到目标
+        # 选中定位（#52：扫描已记每张卡 (screen,xy)，滚动直达+单格验证——正常路径
+        # 1 次点击；回弹偏移验证不符才退化全格重扫，最坏不劣于旧版两遍扫描）：
+        # 滚回顶部（首格卡名==deck[0] 探测验证）→ 按屏号直达目标格 → 失败全扫保底
         if not self._scroll_top_verified(context, deck[0]["name"]):
             return self._stop_unsupported(context, "select_change_source_deck", "scroll_back_failed")
-        if chosen["name"] != deck[0]["name"] and not self._scan_until_card(context, chosen["name"]):
+        relocate = self._relocate_source(context, chosen, deck[0]["name"])
+        if relocate is None:
             return self._stop_unsupported(context, "select_change_source_deck", "source_relocate_failed")
 
         self._archive_decision(self._get_screenshot(context), "select_change_source_deck", {
-            "action": "pick_source", "mode": mode,
+            "action": "pick_source", "mode": mode, "relocate": relocate,
             "names": list(names), "chosen": chosen["name"],
             "deck_size": len(deck),
         })
@@ -1302,6 +1304,43 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             self._swipe(context, *self.SCROLL_FROM, *self.SCROLL_TO, 300)
             time.sleep(self.ACTION_DELAY)
         return False
+
+    def _relocate_source(self, context: Context, chosen: dict, top_name: str) -> Optional[str]:
+        """#52 目标卡重定位：滚动直达+单格验证，失败退化全格重扫。
+
+        旧版 chosen≠deck[0] 时 `_scan_until_card` 从头重扫全库（12-36 格×1.6s）——
+        但 `_scan_full_deck` 已记下每张卡的 (screen,xy)。正常路径：滚回顶后按屏号
+        滚 N 屏、点目标格、读名验证==chosen 即选中完成（1 次点击）。回弹/偏移致
+        验证不符时先退一格重试（屏号±1 滚动错位的最常见形态），仍不符才滚回顶
+        全格重扫保底（不劣于旧版）。
+
+        Returns: 'top'（chosen 即首格,滚回顶验证时已选中）/ 'direct'（直达命中）/
+                 'direct_neighbor'（±1 屏修正后命中）/ 'fallback_scan'（退化全扫）/
+                 None（全部失败,调用方 stop）。
+        """
+        if chosen["name"] == top_name:
+            return "top"  # _scroll_top_verified 点首格验证时已选中 deck[0]
+        target_screen = int(chosen.get("screen", 0))
+        tx, ty = chosen["xy"]
+        for attempt, screen in enumerate((target_screen, target_screen - 1, target_screen + 1)):
+            if screen < 0:
+                continue
+            # 滚回顶（每次尝试都从确定位置起算,避免滚动累计误差）
+            if not self._scroll_top_verified(context, top_name):
+                return None
+            for _ in range(screen):
+                self._swipe(context, *self.SCROLL_FROM, *self.SCROLL_TO, 300)
+                time.sleep(self.ACTION_DELAY)
+            got = self._read_cell_name_after_click(context, tx, ty)
+            if got == chosen["name"]:
+                result = "direct" if attempt == 0 else "direct_neighbor"
+                logger.info(f"HIF 変卡: 滚动直达定位成功(屏{screen},{result},1次点击)")
+                return result
+            logger.info(f"HIF 変卡: 直达验证不符(屏{screen},got={got!r})")
+        logger.info("HIF 変卡: 直达定位失败,退化全格重扫")
+        if not self._scroll_top_verified(context, top_name):
+            return None
+        return "fallback_scan" if self._scan_until_card(context, chosen["name"]) else None
 
     def _click_change_verified(self, context: Context) -> bool:
         """点チェンジ（按钮不亮=トラブル格不可変时顺延下一格重试，Q3 配套）。"""
