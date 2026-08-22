@@ -353,9 +353,11 @@ def test_hif_pipeline_uses_segmented_roots_with_error_chaining():
     assert schedule_root["timeout"] >= 30000
 
     schedule_next = schedule_root["next"]
-    # 2026-08-22 轮3/4:前部为管线层弹窗关闭组(毛玻璃类遮挡致 PlayFlag 不可达 #34/#38)
-    assert schedule_next[0] == "[JumpBack]ProduceHIFMemAbilityCloseFlag"
-    assert "[JumpBack]ProduceHIFCardDetailCloseFlag" in schedule_next[:3]
+    # 2026-08-22 轮3/4/5:前部为管线层面板关闭组(毛玻璃类遮挡致 PlayFlag 不可达
+    # #34/#38/#41:StatePanel/MemAbility/CardDetail 三件)
+    assert schedule_next[0] == "[JumpBack]ProduceHIFStatePanelCloseFlag"
+    assert "[JumpBack]ProduceHIFMemAbilityCloseFlag" in schedule_next[:3]
+    assert "[JumpBack]ProduceHIFCardDetailCloseFlag" in schedule_next[:4]
     assert "[JumpBack]ProduceHIFSupportEventPopup" in schedule_next
     assert "[JumpBack]ProduceHIFRound1Flag" in schedule_next
     assert "[JumpBack]ProduceHIFSelectChangeDoneFlag" in schedule_next
