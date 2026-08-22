@@ -109,6 +109,7 @@ class _ProduceHIFActionBase(CustomAction):
 
         整体替换而非 patch 合并——round1 子树里不应有本局之外的键。
         """
+        prev = cls._read_round1_state()
         cls._write_session_state({
             cls.ROUND1_STATE_KEY: {
                 "turn": 0,
@@ -116,6 +117,10 @@ class _ProduceHIFActionBase(CustomAction):
                 "oneesan_used": False,
                 "natural_finisher_used": False,
                 "reprise_count": 0,
+                # 同局跨段保留:段重入不再点瓶位探测(実機 2026-08-22 轮2 用户观察
+                #「尝试喝饮料」=每段重入点开 Pドリンク詳細弹窗读名的观感;
+                # 槽位内容局内稳定,陈旧度可接受——拦截模式只读不消费)
+                "p_drink_slots": prev.get("p_drink_slots") or [],
             }
         })
 
@@ -1732,8 +1737,9 @@ class ProduceHIFRetryConfirmAuto(_ProduceHIFActionBase):
     END_TAP = (216, 1154)
     ANCHOR_TEXT = ("再挑戦が可能", "本当に終了")
     ANCHOR_ROI = [40, 700, 640, 180]
-    MAX_ROUNDS = 4
-    SETTLE_DELAY = 1.5  # 弹窗入场动画内点击会丢失(実機 2026-08-22 轮0:段内 4 连点未生效,手动同坐标单点即中)
+    MAX_ROUNDS = 8
+    SETTLE_DELAY = 2.0  # 弹窗入场动画内点击会丢失(実機 2026-08-22 轮0/轮2:段内连点
+    # 未生效两次,手动同坐标单点即中——IPC 点击丢失高发位,重试上限提到 8)
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         # 首轮锚命中后先等入场动画稳定再点
@@ -1874,6 +1880,39 @@ class ProduceHIFGuardedTapAuto(_ProduceHIFActionBase):
         return False
 
 
+@AgentServer.custom_action("ProduceHIFRewardPageNextAuto")
+class ProduceHIFRewardPageNextAuto(_ProduceHIFActionBase):
+    """HIF 報酬序列推进（実機 2026-08-22 对照实验定案：非坐标错、非连点——
+    報酬是**同构子页序列**(獲得アイテム→アチーブメント進捗→…),单点即翻一页;
+    中间子页无「HIF報酬/履歴」词致锚 miss 段退=「卡死」表象)。
+
+    策略:循环「OCR 找次へ→点→2s」,直到次へ消失(序列尽,交回路由接広告/主页),
+    ≤6 页防失控。
+    """
+
+    NEXT_ROI = [200, 1080, 360, 160]
+    NEXT_TEMPLATE = "autodev/hif_next_button.png"  # 次へ橙色胶囊模板(2026-08-22 裁,OCR 拆词不稳改模板)
+    MAX_PAGES = 6
+    TAP_INTERVAL = 2.0
+
+    def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        for page in range(self.MAX_PAGES):
+            image = self._get_screenshot(context)
+            # 模板优先(按钮固定图像,不受 OCR 拆词/混读影响);模板 miss 再 OCR 退路
+            detail = self._run_template(context, image, "HIFRewardNextBtn", self.NEXT_TEMPLATE, self.NEXT_ROI, threshold=0.85)
+            box = detail.best_result.box if (detail and detail.hit) else None
+            if box is None:
+                nxt = self._find_text_option(context, image, ("次へ",), self.NEXT_ROI)
+                box = nxt.best_result.box if nxt else None
+            if box is None:
+                logger.success(f"HIF 報酬序列: 次へ消失(序列尽,共推 {page} 页),交回路由")
+                return True
+            self._click_box_center(context, box, double=False)
+            time.sleep(self.TAP_INTERVAL)
+        logger.info("HIF 報酬序列: 达页数上限,放行交回路由")
+        return True
+
+
 @AgentServer.custom_action("ProduceHIFRound1Observe")
 class ProduceHIFRound1Observe(_ProduceHIFActionBase):
     """记录 Round1 初始手牌，首版不执行出牌。"""
@@ -1937,7 +1976,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     PANEL_CLICK_DELAY = 1.6   # 面板/详情点开后渲染等待（実機校准）
     TRANSITION_TIMEOUT_S = 60 # 转场窗口 60s（Q13 起步值，実機 2s 后续收紧）
     NO_PROGRESS_LIMIT = 3     # F4 守卫：同回合连续无进展步数上限
-    ROUND_DEADLINE_S = 2700    # 出牌全局上限 45 分钟(9/12 回合正常 <20 分钟,IPC 卡死/循环兜底)
+    ROUND_DEADLINE_S = 1500    # 出牌全局上限 25 分钟(9/12 回合正常 <20 分钟,2026-08-22 收紧)
     EVIDENCE_RETRY = 2        # 手牌读空重试次数（Q12 禁盲点）
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
@@ -1973,9 +2012,15 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                     logger.warning(f"{round_tag} 溢出面板读取失败,降级状态带可见行")
             else:
                 logger.info(f"{round_tag} 开局非溢出,状态带枚举 {sum(1 for r in rows0 if r.get('words'))} 行全量可见")
-            # P 饮料槽探测（R1-Q1/R2：槽位前缀固定，点开弹窗实锤，缓存 session）
-            p_drink_slots = self._probe_p_drink_slots(context)
-            logger.info(f"{round_tag} P饮料槽探测={self._available_drinks_from_slots(p_drink_slots)}")
+            # P 饮料槽探测（R1-Q1/R2：槽位前缀固定，点开弹窗实锤，缓存 session；
+            # 段重入带缓存时跳过——不再反复点瓶位弹「尝试喝饮料」观感）
+            cached = _ProduceHIFActionBase._read_round1_state().get("p_drink_slots") or []
+            if cached:
+                p_drink_slots = cached
+                logger.info(f"{round_tag} P饮料槽用缓存({self._available_drinks_from_slots(cached)})")
+            else:
+                p_drink_slots = self._probe_p_drink_slots(context)
+                logger.info(f"{round_tag} P饮料槽探测={self._available_drinks_from_slots(p_drink_slots)}")
             # 対局资源全景开局读取（五轮验证 A/B）：P item 详情 + 牌堆全状态，缓存 session 供 _build_state
             p_items = self._read_p_item_details(context)
             logger.info(f"{round_tag} P道具详情读取={len(p_items) if p_items is not None else 'FAIL'}件")
@@ -2094,9 +2139,10 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     # ------------------------------------------------------------------
 
     def _wait_round_exit(self, context: Context) -> bool:
-        """等待 Round 出口页（結果/敗退/Interval/優勝条件），60s 轮询。
+        """等待 Round 出口页（結果/敗退/Interval/優勝条件），20s 轮询
+        （実測转場 <5s,60s 白等——2026-08-22 收紧）。
         出口锚宽扫顶部区——区分「转場窗口」与「真异常」（画面冻结/未知页）。"""
-        deadline = time.time() + self.TRANSITION_TIMEOUT_S
+        deadline = time.time() + 20
         while time.time() < deadline:
             image = self._get_screenshot(context)
             hit = self._find_text_option(
@@ -2110,13 +2156,39 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         return False
 
     def _read_turn_left(self, context: Context, image) -> Optional[int]:
+        """残りターン读取。実機 2026-08-22 轮2 R2 后期:buff 带行(「37ターン」等)
+        挤入 ROI 混读出 M21/37 类伪值——加回合数上限校验,越界视为未读到
+        (走 dissolve/出口判定路径而非错误出牌)。"""
         detail = self._run_ocr(
             context, image, "HIFRound1TurnLeft", [".*"], self.ROI_TURN,
         )
-        if not (detail and detail.hit):
+        text = detail.best_result.text if (detail and detail.hit) else ""
+        if not self._valid_turn_text(text):
+            # 圆环指示器内数字(実機 2026-08-22 轮2 R2 残り4:白字深蓝圆底直读不出)
+            # →crop 圆圈区放大 3 倍重读(同 buff 数字带 crop-zoom 模式)
+            text = self._read_turn_zoomed(context, image)
+        if not self._valid_turn_text(text):
             return None
-        digits = re.sub(r"\D", "", detail.best_result.text)
-        return int(digits) if digits else None
+        digits = re.sub(r"\D", "", text)
+        value = int(digits)
+        return value if 0 <= value <= max(self.TOTAL_TURNS, 13) else None
+
+    def _valid_turn_text(self, text: str) -> bool:
+        digits = re.sub(r"\D", "", text or "")
+        return bool(digits) and 0 <= int(digits) <= max(self.TOTAL_TURNS, 13)
+
+    def _read_turn_zoomed(self, context: Context, image) -> str:
+        fx, fy, fw, fh = 15, 40, 100, 80  # 残りターン圆环指示器区
+        crop = image[fy:fy + fh, fx:fx + fw]
+        if crop.size == 0:
+            return ""
+        pil = Image.fromarray(crop[..., ::-1]).resize((fw * 3, fh * 3), Image.LANCZOS)
+        zoomed = np.array(pil)[..., ::-1]
+        detail = self._run_ocr(
+            context, zoomed, "HIFRound1TurnLeftZoom", [".*"],
+            [0, 0, zoomed.shape[1], zoomed.shape[0]],
+        )
+        return detail.best_result.text if (detail and detail.hit) else ""  # 覆盖 R2 12T
 
     def _read_int_ocr(self, context: Context, image, name: str, roi: list[int]) -> Optional[int]:
         detail = self._run_ocr(context, image, name, [".*"], roi)
@@ -2724,9 +2796,12 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     OVERLAY_CLOSE_TAP = (359, 755)
 
     def _dissolve_blocking_overlays(self, context: Context) -> bool:
-        """探测并关闭遮挡画面的浮层；有任何关闭动作返回 True（调用方重读手牌）。"""
+        """探测并关闭遮挡画面的浮层；有任何关闭动作返回 True（调用方重读手牌）。
+
+        2026-08-22 轮2:残留态 X 点击 IPC 丢失高发(実機 dissolve 3 连丢,手动同坐标
+        单点即中)——循环 4 次+间隔 2s 吸收。"""
         acted = False
-        for _ in range(2):
+        for _ in range(4):
             image = self._get_screenshot(context)
             has_panel = self._panel_anchor_hit(context, image)
             has_pitem = self._pitem_popup_anchor_hit(context, image)

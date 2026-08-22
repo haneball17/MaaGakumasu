@@ -1,396 +1,412 @@
 {
-  "crop-1787224860": {
-    "file": "crop-1787224860.png",
-    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787224859.png",
-    "box": [
-      0,
-      1140,
-      720,
-      140
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T19:21:00",
-    "note": ""
-  },
-  "crop-1787225450": {
-    "file": "crop-1787225450.png",
-    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787225448.png",
-    "box": [
-      0,
-      240,
-      170,
-      330
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T19:30:50",
-    "note": ""
-  },
-  "crop-1787225534": {
-    "file": "crop-1787225534.png",
-    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787225448.png",
-    "box": [
-      150,
-      920,
-      310,
-      140
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T19:32:14",
-    "note": ""
-  },
-  "crop-1787225666": {
-    "file": "crop-1787225666.png",
-    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787225665.png",
-    "box": [
-      150,
-      920,
-      310,
-      140
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T19:34:26",
-    "note": ""
-  },
-  "hif_status_kacho": {
-    "file": "hif_status_kacho.png",
-    "source_image": "用户実機截图标注(MuMu-20260820-193341)",
-    "image_size": [
-      32,
-      34
-    ],
-    "created": "2026-08-20T19:35:00",
-    "note": "好調状态图标模板:天蓝菱形+内部人形剪影;层数×N白字在图标内(OCR读)"
-  },
-  "crop-1787226327": {
-    "file": "crop-1787226327.png",
-    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787226326.png",
-    "box": [
-      14,
-      234,
-      140,
-      60
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T19:45:27",
-    "note": ""
-  },
-  "crop-1787226379": {
-    "file": "crop-1787226379.png",
-    "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787226326.png",
-    "box": [
-      24,
-      244,
-      38,
-      35
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T19:46:19",
-    "note": ""
-  },
-  "crop-1787229229": {
-    "file": "crop-1787229229.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
-    "box": [
-      0,
-      230,
-      150,
-      310
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:33:49",
-    "note": ""
-  },
-  "crop-1787229301": {
-    "file": "crop-1787229301.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
-    "box": [
-      0,
-      530,
-      150,
-      130
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:35:01",
-    "note": ""
-  },
-  "hif_icon_memory_purple": {
-    "file": "hif_icon_memory_purple.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
-    "box": [
-      24,
-      306,
-      38,
-      35
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:36:29",
-    "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
-  },
-  "hif_icon_memory_pink1": {
-    "file": "hif_icon_memory_pink1.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
-    "box": [
-      24,
-      368,
-      38,
-      35
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:36:30",
-    "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
-  },
-  "hif_icon_memory_pink2": {
-    "file": "hif_icon_memory_pink2.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
-    "box": [
-      24,
-      430,
-      38,
-      35
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:36:32",
-    "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
-  },
-  "hif_icon_memory_pink3": {
-    "file": "hif_icon_memory_pink3.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
-    "box": [
-      24,
-      492,
-      38,
-      35
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:36:33",
-    "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
-  },
-  "hif_icon_concentration": {
-    "file": "hif_icon_concentration.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
-    "box": [
-      24,
-      554,
-      38,
-      35
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:36:35",
-    "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
-  },
-  "hif_icon_stamina_half": {
-    "file": "hif_icon_stamina_half.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
-    "box": [
-      24,
-      616,
-      38,
-      35
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:36:36",
-    "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
-  },
-  "crop-1787230026": {
-    "file": "crop-1787230026.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787229713.png",
-    "box": [
-      540,
-      230,
-      180,
-      150
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:47:06",
-    "note": ""
-  },
-  "crop-1787230197": {
-    "file": "crop-1787230197.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787230149.png",
-    "box": [
-      180,
-      950,
-      360,
-      130
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:49:57",
-    "note": ""
-  },
-  "crop-1787230230": {
-    "file": "crop-1787230230.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787230149.png",
-    "box": [
-      150,
-      1050,
-      420,
-      180
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:50:30",
-    "note": ""
-  },
-  "crop-1787230425": {
-    "file": "crop-1787230425.png",
-    "source_image": "debug\\autodev\\snaps\\snap-1787230401.png",
-    "box": [
-      220,
-      740,
-      280,
-      240
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-20T20:53:45",
-    "note": ""
-  },
-  "crop-1787271476": {
-    "file": "crop-1787271476.png",
-    "source_image": "C:\\Users\\haneball\\AppData\\Local\\Temp\\hif_sp_after.png",
-    "box": [
-      560,
-      815,
-      80,
-      60
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-21T08:17:56",
-    "note": ""
-  },
-  "crop-1787271480": {
-    "file": "crop-1787271480.png",
-    "source_image": "C:\\Users\\haneball\\AppData\\Local\\Temp\\hif_sp_after.png",
-    "box": [
-      560,
-      815,
-      80,
-      60
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-21T08:18:00",
-    "note": ""
-  },
-  "hif_buff_good_condition": {
-    "file": "hif_buff_good_condition.png",
-    "source_image": "debug/autodev/round1/turn03_pre.png",
-    "box": [
-      14,
-      253,
-      34,
-      47
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-21T11:41:19",
-    "note": "Round1 play integration Phase0 evidence 2026-08-21"
-  },
-  "hif_buff_excellent_condition": {
-    "file": "hif_buff_excellent_condition.png",
-    "source_image": "debug/autodev/round1/turn03_pre.png",
-    "box": [
-      14,
-      499,
-      34,
-      47
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-21T11:41:19",
-    "note": "Round1 play integration Phase0 evidence 2026-08-21"
-  },
-  "hif_buff_concentration": {
-    "file": "hif_buff_concentration.png",
-    "source_image": "debug/autodev/round1/turn03_pre.png",
-    "box": [
-      14,
-      536,
-      34,
-      47
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-21T16:18:43",
-    "note": "Round1 状态识别计划 2026-08-21 重裁:y323 集中行实测(懒定案面板 title=集中 3 轮定案;旧模板本局 MISS 失效)"
-  },
-  "hif_skip_button": {
-    "file": "hif_skip_button.png",
-    "source_image": "debug/autodev/round1/turn01_stable.png",
-    "box": [
-      598,
-      745,
-      122,
-      115
-    ],
-    "image_size": [
-      720,
-      1280
-    ],
-    "created": "2026-08-21T11:41:19",
-    "note": "Round1 play integration Phase0 evidence 2026-08-21"
-  }
+    "crop-1787224860": {
+        "file": "crop-1787224860.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787224859.png",
+        "box": [
+            0,
+            1140,
+            720,
+            140
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T19:21:00",
+        "note": ""
+    },
+    "crop-1787225450": {
+        "file": "crop-1787225450.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787225448.png",
+        "box": [
+            0,
+            240,
+            170,
+            330
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T19:30:50",
+        "note": ""
+    },
+    "crop-1787225534": {
+        "file": "crop-1787225534.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787225448.png",
+        "box": [
+            150,
+            920,
+            310,
+            140
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T19:32:14",
+        "note": ""
+    },
+    "crop-1787225666": {
+        "file": "crop-1787225666.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787225665.png",
+        "box": [
+            150,
+            920,
+            310,
+            140
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T19:34:26",
+        "note": ""
+    },
+    "hif_status_kacho": {
+        "file": "hif_status_kacho.png",
+        "source_image": "用户実機截图标注(MuMu-20260820-193341)",
+        "image_size": [
+            32,
+            34
+        ],
+        "created": "2026-08-20T19:35:00",
+        "note": "好調状态图标模板:天蓝菱形+内部人形剪影;层数×N白字在图标内(OCR读)"
+    },
+    "crop-1787226327": {
+        "file": "crop-1787226327.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787226326.png",
+        "box": [
+            14,
+            234,
+            140,
+            60
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T19:45:27",
+        "note": ""
+    },
+    "crop-1787226379": {
+        "file": "crop-1787226379.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\autodev\\snaps\\snap-1787226326.png",
+        "box": [
+            24,
+            244,
+            38,
+            35
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T19:46:19",
+        "note": ""
+    },
+    "crop-1787229229": {
+        "file": "crop-1787229229.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
+        "box": [
+            0,
+            230,
+            150,
+            310
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:33:49",
+        "note": ""
+    },
+    "crop-1787229301": {
+        "file": "crop-1787229301.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
+        "box": [
+            0,
+            530,
+            150,
+            130
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:35:01",
+        "note": ""
+    },
+    "hif_icon_memory_purple": {
+        "file": "hif_icon_memory_purple.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
+        "box": [
+            24,
+            306,
+            38,
+            35
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:36:29",
+        "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
+    },
+    "hif_icon_memory_pink1": {
+        "file": "hif_icon_memory_pink1.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
+        "box": [
+            24,
+            368,
+            38,
+            35
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:36:30",
+        "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
+    },
+    "hif_icon_memory_pink2": {
+        "file": "hif_icon_memory_pink2.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
+        "box": [
+            24,
+            430,
+            38,
+            35
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:36:32",
+        "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
+    },
+    "hif_icon_memory_pink3": {
+        "file": "hif_icon_memory_pink3.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
+        "box": [
+            24,
+            492,
+            38,
+            35
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:36:33",
+        "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
+    },
+    "hif_icon_concentration": {
+        "file": "hif_icon_concentration.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
+        "box": [
+            24,
+            554,
+            38,
+            35
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:36:35",
+        "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
+    },
+    "hif_icon_stamina_half": {
+        "file": "hif_icon_stamina_half.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787228186.png",
+        "box": [
+            24,
+            616,
+            38,
+            35
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:36:36",
+        "note": "Round1 効果区状態图标 2026-08-20 snap-1787228186"
+    },
+    "crop-1787230026": {
+        "file": "crop-1787230026.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787229713.png",
+        "box": [
+            540,
+            230,
+            180,
+            150
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:47:06",
+        "note": ""
+    },
+    "crop-1787230197": {
+        "file": "crop-1787230197.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787230149.png",
+        "box": [
+            180,
+            950,
+            360,
+            130
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:49:57",
+        "note": ""
+    },
+    "crop-1787230230": {
+        "file": "crop-1787230230.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787230149.png",
+        "box": [
+            150,
+            1050,
+            420,
+            180
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:50:30",
+        "note": ""
+    },
+    "crop-1787230425": {
+        "file": "crop-1787230425.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787230401.png",
+        "box": [
+            220,
+            740,
+            280,
+            240
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-20T20:53:45",
+        "note": ""
+    },
+    "crop-1787271476": {
+        "file": "crop-1787271476.png",
+        "source_image": "C:\\Users\\haneball\\AppData\\Local\\Temp\\hif_sp_after.png",
+        "box": [
+            560,
+            815,
+            80,
+            60
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-21T08:17:56",
+        "note": ""
+    },
+    "crop-1787271480": {
+        "file": "crop-1787271480.png",
+        "source_image": "C:\\Users\\haneball\\AppData\\Local\\Temp\\hif_sp_after.png",
+        "box": [
+            560,
+            815,
+            80,
+            60
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-21T08:18:00",
+        "note": ""
+    },
+    "hif_buff_good_condition": {
+        "file": "hif_buff_good_condition.png",
+        "source_image": "debug/autodev/round1/turn03_pre.png",
+        "box": [
+            14,
+            253,
+            34,
+            47
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-21T11:41:19",
+        "note": "Round1 play integration Phase0 evidence 2026-08-21"
+    },
+    "hif_buff_excellent_condition": {
+        "file": "hif_buff_excellent_condition.png",
+        "source_image": "debug/autodev/round1/turn03_pre.png",
+        "box": [
+            14,
+            499,
+            34,
+            47
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-21T11:41:19",
+        "note": "Round1 play integration Phase0 evidence 2026-08-21"
+    },
+    "hif_buff_concentration": {
+        "file": "hif_buff_concentration.png",
+        "source_image": "debug/autodev/round1/turn03_pre.png",
+        "box": [
+            14,
+            536,
+            34,
+            47
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-21T16:18:43",
+        "note": "Round1 状态识别计划 2026-08-21 重裁:y323 集中行实测(懒定案面板 title=集中 3 轮定案;旧模板本局 MISS 失效)"
+    },
+    "hif_skip_button": {
+        "file": "hif_skip_button.png",
+        "source_image": "debug/autodev/round1/turn01_stable.png",
+        "box": [
+            598,
+            745,
+            122,
+            115
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-21T11:41:19",
+        "note": "Round1 play integration Phase0 evidence 2026-08-21"
+    },
+    "crop-1787365509": {
+        "file": "crop-1787365509.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787365176.png",
+        "box": [
+            340,
+            1130,
+            80,
+            58
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-22T10:25:09",
+        "note": ""
+    }
 }

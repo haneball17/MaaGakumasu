@@ -182,7 +182,7 @@
             "[JumpBack]ProduceHIFPublicLessonResultFlag",
             "[JumpBack]ProduceHIFGiftTalkBlank"
         ],
-        "timeout": 90000,
+        "timeout": 75000,
         "on_error": [
             "ProduceHIFUnknownStop"
         ],
@@ -1510,7 +1510,9 @@
                 "expected": [
                     ".*HIF報酬.*",
                     ".*報酬.*成長.*",
-                    ".*プロデュース履歴.*"
+                    ".*プロデュース履歴.*",
+                    ".*プロデ.*履歴.*",
+                    ".*アチーブメント.*"
                 ],
                 "roi": [
                     20,
@@ -1521,19 +1523,13 @@
             }
         },
         "action": {
-            "type": "Click",
+            "type": "Custom",
             "param": {
-                "target": [
-                    377,
-                    1159,
-                    1,
-                    1
-                ]
+                "custom_action": "ProduceHIFRewardPageNextAuto"
             }
         },
-        "post_delay": 1200,
         "focus": {
-            "Node.Recognition.Succeeded": "[color=Orange]HIF: HIF報酬/成長页(実機 2026-08-22 校准:次へbox[352,1144,51,30]→点(377,1159);旧位(560,1150)误点プロデュース履歴[505,1137,183,40],次へ×2 循环点击)[/color]"
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: HIF報酬/成長页(実機 2026-08-22 尾链:次へ单击常丢失,轮1 実測需3连点——GuardedTap 重试验证;锚变体 HIF報酬/履歴)[/color]"
         }
     },
     "ProduceHIFGashaAdCloseFlag": {
