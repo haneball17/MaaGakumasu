@@ -353,7 +353,10 @@ def test_hif_pipeline_uses_segmented_roots_with_error_chaining():
     assert schedule_root["timeout"] >= 30000
 
     schedule_next = schedule_root["next"]
-    assert schedule_next[0] == "[JumpBack]ProduceHIFSupportEventPopup"
+    # 2026-08-22 轮3/4:前部为管线层弹窗关闭组(毛玻璃类遮挡致 PlayFlag 不可达 #34/#38)
+    assert schedule_next[0] == "[JumpBack]ProduceHIFMemAbilityCloseFlag"
+    assert "[JumpBack]ProduceHIFCardDetailCloseFlag" in schedule_next[:3]
+    assert "[JumpBack]ProduceHIFSupportEventPopup" in schedule_next
     assert "[JumpBack]ProduceHIFRound1Flag" in schedule_next
     assert "[JumpBack]ProduceHIFSelectChangeDoneFlag" in schedule_next
     assert "ProduceHIFUnknownStop" not in schedule_next
@@ -371,9 +374,11 @@ def test_hif_event_flag_anchors_on_finals_countdown_panel():
     payload = json.loads(Path("assets/resource/base/pipeline/ProduceHIF.json").read_text(encoding="utf-8"))
 
     flag = payload["ProduceChooseHIFEventFlag"]
-    assert flag["recognition"]["type"] == "OCR"
-    assert flag["recognition"]["param"]["expected"] == [".*H.I.F本戦まで.*", ".*本戦まで.*"]
-    assert flag["recognition"]["param"]["roi"] == [32, 25, 160, 145]
+    # 2026-08-22 轮3 开发轮:OCR→模板(hif_event_countdown 纯标签,天数数字漂移#32)
+    assert flag["recognition"]["type"] == "TemplateMatch"
+    assert "hif_event_countdown" in str(flag["recognition"]["param"]["template"])
+    assert flag["recognition"]["param"]["roi"] == [10, 10, 220, 90]
+    assert flag["recognition"]["param"]["threshold"] == 0.85
     # 渐变模板已证实为全局 UI 风格(事件页选项按钮同款渐变 0.93 误中),禁止回流
     assert "hif_event_card.png" not in json.dumps(payload)
 
