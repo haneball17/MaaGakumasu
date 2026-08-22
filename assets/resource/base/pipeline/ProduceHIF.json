@@ -153,6 +153,7 @@
     "[JumpBack]ProduceHIFRound1Flag",
     "[JumpBack]ProduceHIFTapNextFlag",
     "[JumpBack]ProduceHIFDayChangeBlank",
+    "[JumpBack]ProduceHIFDialogBlank",
     "[JumpBack]ProduceHIFRound2ResultFlag",
     "[JumpBack]ProduceHIFRound2DefeatFlag",
     "[JumpBack]ProduceHIFRetryConfirmFlag",
@@ -374,18 +375,18 @@
     },
     "ProduceChooseHIFEventFlag": {
         "recognition": {
-            "type": "OCR",
+            "type": "TemplateMatch",
             "param": {
-                "expected": [
-                    ".*H.I.F本戦まで.*",
-                    ".*本戦まで.*"
+                "template": [
+                    "autodev/hif_event_countdown.png"
                 ],
                 "roi": [
-                    32,
-                    25,
-                    160,
-                    145
-                ]
+                    10,
+                    10,
+                    220,
+                    90
+                ],
+                "threshold": 0.85
             }
         },
         "action": {
@@ -801,17 +802,18 @@
     },
     "ProduceHIFDrinkRewardFlag": {
         "recognition": {
-            "type": "OCR",
+            "type": "TemplateMatch",
             "param": {
-                "expected": [
-                    ".*受け取るPドリンクを選んでください.*"
+                "template": [
+                    "autodev/hif_drink_reward_title.png"
                 ],
                 "roi": [
-                    80,
+                    100,
                     560,
-                    560,
+                    520,
                     180
-                ]
+                ],
+                "threshold": 0.85
             }
         },
         "action": {
@@ -1593,6 +1595,38 @@
         },
         "focus": {
             "Node.Recognition.Succeeded": "[color=Orange]HIF: 差し入れ事件对话页(実機 2026-08-22 轮2:泛锚「差し入れ」在三选一子页残留致裸点击死循环×2,GuardedTap 守卫+尾部兜底位双保险)[/color]"
+        }
+    },
+    "ProduceHIFDialogBlank": {
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "template": [
+                    "autodev/hif_dialog_nameplate.png"
+                ],
+                "roi": [
+                    150,
+                    760,
+                    440,
+                    180
+                ],
+                "threshold": 0.85
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    640,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 700,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=LimeGreen]HIF: 事件对话页(2026-08-22 轮3:名字框模板姫崎莉波专属,正1.0/负4miss;台词OCR读不到致停滞误判+GiftTalk尾挂太慢,专用前挂节点连点推进;多格对话[JumpBack]循环) [/color]"
         }
     },
     "ProduceHIFDayChangeBlank": {

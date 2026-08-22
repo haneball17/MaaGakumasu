@@ -408,5 +408,85 @@
         ],
         "created": "2026-08-22T10:25:09",
         "note": ""
+    },
+    "crop-1787366154": {
+        "file": "crop-1787366154.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787366129.png",
+        "box": [
+            30,
+            22,
+            175,
+            62
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-22T10:35:54",
+        "note": ""
+    },
+    "crop-1787366611": {
+        "file": "crop-1787366611.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787366581.png",
+        "box": [
+            55,
+            25,
+            110,
+            45
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-22T10:43:31",
+        "note": ""
+    },
+    "crop-1787366644": {
+        "file": "crop-1787366644.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787366632.png",
+        "box": [
+            135,
+            600,
+            460,
+            55
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-22T10:44:04",
+        "note": ""
+    },
+    "crop-1787366880": {
+        "file": "crop-1787366880.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787366868.png",
+        "box": [
+            188,
+            815,
+            320,
+            85
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-22T10:48:00",
+        "note": ""
+    },
+    "crop-1787367479": {
+        "file": "crop-1787367479.png",
+        "source_image": "debug\\autodev\\snaps\\snap-1787367468.png",
+        "box": [
+            40,
+            32,
+            142,
+            34
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-22T10:57:59",
+        "note": ""
     }
 }
