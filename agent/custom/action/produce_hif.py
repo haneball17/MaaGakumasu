@@ -2411,7 +2411,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         mx = arr.max(axis=2) + 1e-6
         mn = arr.min(axis=2)
         sat = float(((mx - mn) / mx).mean() * 255)
-        return sat < _ProduceHIFRound1Play.GRAY_CARD_SAT_THRESHOLD
+        return sat < ProduceHIFRound1Play.GRAY_CARD_SAT_THRESHOLD
 
     def _execute_action(self, context: Context, action: CardAction, hand) -> tuple[bool, Optional[str]]:
         if action.kind is ActionKind.SKIP:
