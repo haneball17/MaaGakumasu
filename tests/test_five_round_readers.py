@@ -274,8 +274,8 @@ class TestGrayCardDetection:
     def test_gray_card_detected(self) -> None:
         import numpy as np
         from agent.custom.action.produce_hif import ProduceHIFRound1Play
-        img = self._make(120)  # 纯灰:饱和度 0
-        assert ProduceHIFRound1Play._is_gray_card(img, (10, 100, 80, 150)) is True
+        img = self._make(120)  # 纯灰:饱和度 0(box 落图内)
+        assert ProduceHIFRound1Play._is_gray_card(img, (0, 0, 80, 120)) is True
 
     def test_colored_card_passes(self) -> None:
         import numpy as np
@@ -284,4 +284,4 @@ class TestGrayCardDetection:
         rgb = np.zeros((h, w, 3), dtype=np.uint8)
         rgb[..., 0] = 200  # R 高
         rgb[..., 2] = 40   # B 低 → 高饱和
-        assert ProduceHIFRound1Play._is_gray_card(rgb[..., ::-1], (10, 100, 80, 150)) is False
+        assert ProduceHIFRound1Play._is_gray_card(rgb[..., ::-1], (0, 0, 80, 120)) is False
