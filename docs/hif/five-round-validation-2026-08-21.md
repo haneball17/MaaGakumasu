@@ -208,6 +208,16 @@
 - **#48 新发现已修**：変卡页与授業页**共享左上「授業」HUD**（両页顶部 OCR 实证完全一致）——変卡 Flag 长句锚 miss 时 ClassOptionFlag 误命中変卡页，选项过滤全空→no_safe_option stop（17:52 一次，段接力自愈）。2026-08-15 已知问题完整修复：`_handoff_to_change_flow` 自检放行（OCR「チェンジ」命中即 return True 交回路由，3 次上限防 [JumpBack] 回环死循环），`class_options_not_found`/`no_safe_option` 两分支都挂；215 tests 全绿，実機复验待下轮変卡时点。
 - 详细步骤与证据：`debug/autodev/round7-steps.md`（不入库）。
 
+### 轮 8（单步驱动验证轮，2026-08-22 19:06-20:11，完整走通）
+
+**单步模式**（区别于轮 4-7 的 segment_loop 自动接力）：入口 4 步每步 tap→snap→OCR 验证；主线逐段 hif_run（段退出→人工验证画面+决策→修复→再发下一段），共 5 段。主线：入口→Day1（授業/三选一/変卡正当流/差し入れ事件/相談）→R1 出牌（21 手）→Interval→R2 出牌（19 手）→敗退→produce_end→報酬→**主页面** ✓，**零 stop（连续第二轮）**。边跑边修 2 bug（单步模式价值实证：自动接力会掩盖/重试掉这两处故障）：
+
+- **#49 GuardedTapAuto anchor_expected 双重转义**：节点 param 从 recognition.expected 复制 `.*差し入れ.*`（regex），`_find_text_option` 按**字面量**约定 re.escape+再包装 → IPC 实发 `.*\.\*差し入れ\.\*.*`（匹配字面串）→ 进门恒 miss → 无日志 return False → Action.Failed 段退（段 1 GiftTalkBlank 234ms 单次失败实证）。修复三件：管线 `GiftTalkBlank`/`DayChangeBlank` 两处 anchor_expected 去通配符改字面量；action 侧剥首尾 `.*` 归一化（防复制复发）。実機验证 ✓：段 2「守卫点击: 第 1 次点击推进成功(anchor_gone=False)」。
+- **#50 StatePanelCloseFlag 泛锚误吸饮料上限弹窗**：pos0 关闭组锚「消費体力減少」在 Pドリンク所持上限弹窗的饮料 buff 描述（「消費体力減少3ターン」）也命中 → 裸 Click (360,755) 无效+JumpBack 回环 → `DrinkOverflowFlag`（原 28 位）永远轮不到 → agent 静默（管线层循环零 agent 日志，铁律③管线版实证）。修复：DrinkOverflowFlag（弹窗专有锚「Pドルンク所持上限」）提到关闭组前 pos0。実機验证 ✓：段 3/4 弹窗取舍成功 ×2（remain=0 残す）。
+- 変卡**正当流程**完整走通（整屏确认判底 14 张+源卡选定「大胆不敵」）；但 #48 誤入自愈场景未触发（正当流程不走 `_handoff_to_change_flow`），继续待复验。
+- 量化：75 决策（授業 4/変卡 12/日程 5/R1 21/R2 19/饮料上限 2/相談 1）；ops 365 次 scene_changed 全 True 率 99.7%（唯一 false=20:06:23 R2 出牌动画瞬态，后续手正常）；215 tests 全绿（含 #50 排序断言更新）。
+- 段日志：`debug/autodev/round8_seg1-5.log`（seg1 Failed=#49、seg2 手动停=#50 排查、seg3/4 TIMEOUT=出牌 900s 截断正常接力、seg5 DONE）。
+
 ## 验收对照（goal 七条件）
 
 | 条件         | 结果                                                | 证据                                                                                                                                                         |
@@ -230,4 +240,5 @@
 6. USE_P_DRINK 瓶位语义（A5 未定案，现拦截只记录）
 7. 開場コミュ SKIP 节点（低频：仅局首；轮 6 実測本局无開場コミュ，出现频率待观测）
 8. 通信エラー设备级弹窗管线节点（轮 6 #47：培育中触发时 ScheduleRoot 全 miss 不收敛；待実機取证弹窗模板后挂 ScheduleRoot 前部）
-9. 轮 6 修复（#45/#46）実機复验：#45 已验无回归+零 turn stop（轮 7），正面自愈案例仍待触发；#48 変卡誤入自愈（`_handoff_to_change_flow`）待下轮変卡时点复验
+9. 轮 6 修复（#45/#46）実機复验：#45 已验无回归+零 turn stop（轮 7），正面自愈案例仍待触发；#48 変卡誤入自愈（`_handoff_to_change_flow`）待誤入时点复验（轮 8 変卡正当流程走通≠誤入场景，自愈路径仍未触发）
+10. StatePanelCloseFlag 泛词锚面（「消費体力減少」「スキルカード追加発動」）：#50 后饮料弹窗已让位专有锚，但两词仍可能在其他含 buff 描述的弹窗/页面共显——新弹窗类型出现时优先换专有词锚而非依赖排序让位

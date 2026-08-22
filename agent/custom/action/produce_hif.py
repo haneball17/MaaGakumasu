@@ -1909,7 +1909,14 @@ class ProduceHIFGuardedTapAuto(_ProduceHIFActionBase):
             params = json.loads(argv.custom_action_param) if argv.custom_action_param else {}
         except ValueError:
             params = {}
-        expected = tuple(params.get("anchor_expected") or [".*"])
+        # anchor_expected 约定传字面短语(_find_text_option 内 re.escape+包装);若从
+        # recognition.expected 复制来带 .* 前后缀则剥离,防双重转义死 pattern
+        # (実機 2026-08-22 轮8 #49:GiftTalkBlank 传 ".*差し入れ.*" → 匹配字面
+        #  ".*差し入れ.*" → 进门恒 miss → return False 段退)
+        expected = tuple(
+            p[2:-2] if len(p) > 4 and p.startswith(".*") and p.endswith(".*") else p
+            for p in (params.get("anchor_expected") or [".*"])
+        )
         roi = params.get("anchor_roi") or [0, 0, 720, 1280]
         tap = params.get("tap") or [360, 640]
         for attempt in range(self.MAX_TRIES):

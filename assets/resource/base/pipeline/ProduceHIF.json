@@ -148,6 +148,7 @@
             "param": {}
         },
   "next": [
+    "[JumpBack]ProduceHIFDrinkOverflowFlag",
     "[JumpBack]ProduceHIFStatePanelCloseFlag",
     "[JumpBack]ProduceHIFMemAbilityCloseFlag",
     "[JumpBack]ProduceHIFCardDetailCloseFlag",
@@ -175,7 +176,6 @@
             "[JumpBack]ProduceHIFDrinkRewardFlag",
             "[JumpBack]ProduceHIFSkillRewardFlag",
             "[JumpBack]ProduceHIFRewardConfirmFlag",
-            "[JumpBack]ProduceHIFDrinkOverflowFlag",
             "[JumpBack]ProduceHIFConsultFlag",
             "[JumpBack]ProduceHIFSPCardFlag",
             "[JumpBack]ProduceHIFPGainBlank",
@@ -1696,7 +1696,7 @@
             "param": {
                 "custom_action": "ProduceHIFGuardedTapAuto",
                 "custom_action_param": {
-                    "anchor_expected": [".*差し入れ.*"],
+                    "anchor_expected": ["差し入れ"],
                     "anchor_roi": [30, 20, 220, 60],
                     "tap": [360, 640]
                 }
@@ -1758,7 +1758,7 @@
             "param": {
                 "custom_action": "ProduceHIFGuardedTapAuto",
                 "custom_action_param": {
-                    "anchor_expected": [".*日付が変わりました.*"],
+                    "anchor_expected": ["日付が変わりました"],
                     "anchor_roi": [30, 930, 500, 160],
                     "tap": [360, 640]
                 }
