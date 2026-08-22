@@ -190,6 +190,10 @@ class _ProduceHIFActionBase(CustomAction):
                 record["after_png"] = str(png)
             if before_fp:
                 record["scene_changed"] = bool(after_fp) and after_fp != before_fp
+            else:
+                # 三态化(P0-2):before 指纹采集失败时显式写 null(未判定),
+                # 勿静默缺字段——下游无法区分「未采集」与「没变化」
+                record["scene_changed"] = None
             with (cls._DECISIONS_DIR / f"ops-{time.strftime('%Y%m%d')}.jsonl").open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record, ensure_ascii=False) + "\n")
         except Exception as err:
@@ -372,13 +376,15 @@ class _ProduceHIFActionBase(CustomAction):
         turn_score: Optional[int] = None,
         dry_run: bool = False,
         evidence: Optional[dict] = None,
+        exec_verified: Optional[bool] = None,
     ) -> Dict[str, Any]:
         """组装 Round1 出牌落盘记录（F3，纯函数可离线单测）。
 
         前六字段对齐 roundsim ManualTurnRecord（turn/flow/played_cards/good_condition_turns/
         stamina/turn_score，実機手记口径，供 tools/hif_replay_report.py 回放对比）；
-        后五字段为実機执行层扩展（action/target_card/reason/dry_run/evidence，
-        evidence 含点击 box 坐标与 OCR 原文）。缺省字段显式带 None/[]/{}，
+        后六字段为実機执行层扩展（action/target_card/reason/dry_run/exec_verified/
+        evidence，evidence 含点击 box 坐标与 OCR 原文；exec_verified=出牌执行确认，
+        dry_run 拦截类记录保持 None=未执行不判定）。缺省字段显式带 None/[]/{}，
         保证逐回合 JSONL schema 稳定（缺回合数据可辨「未记录」而非「字段缺失」）。
         """
         record: Dict[str, Any] = dict.fromkeys(ROUND1_PLAY_RECORD_FIELDS)
@@ -393,6 +399,7 @@ class _ProduceHIFActionBase(CustomAction):
             "target_card": action.target_card,
             "reason": action.reason,
             "dry_run": dry_run,
+            "exec_verified": exec_verified,
             "evidence": evidence or {},
         })
         return record
@@ -1706,6 +1713,11 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
             image = self._get_screenshot(context)
             if not self._find_text_option(context, image, self.ANCHOR_TEXT, self.ANCHOR_ROI):
                 logger.info("HIF Interval: 锚已消失(終了已生效/页面已推进),放行")
+                # 提前 return 前必须 archive(P0-1:早期版本只在循环耗尽才记录,
+                # 锚消失放行路径零记录,决策日志缺此决策点)
+                self._archive_decision(image, "hif_interval", {
+                    "action": "finish_interval", "clicked": clicked, "early_exit": "anchor_gone",
+                })
                 return True
             finish = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
             if not finish:
@@ -1715,6 +1727,9 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
                 finish = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
                 if not finish:
                     if clicked:
+                        self._archive_decision(image, "hif_interval", {
+                            "action": "finish_interval", "clicked": clicked, "early_exit": "button_gone",
+                        })
                         return True  # 点过終了且按钮已消失,视为推进中放行
                     return self._stop_unsupported(context, "hif_interval", "finish_button_not_found")
             self._click_box_center(context, finish.best_result.box, double=False)
@@ -1747,15 +1762,21 @@ class ProduceHIFRetryConfirmAuto(_ProduceHIFActionBase):
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         # 首轮锚命中后先等入场动画稳定再点
         time.sleep(self.SETTLE_DELAY)
+        clicked = 0
         for _ in range(self.MAX_ROUNDS):
             image = self._get_screenshot(context)
             if not self._find_text_option(context, image, self.ANCHOR_TEXT, self.ANCHOR_ROI):
                 logger.info("HIF 再挑戦確認: 弹窗已消失(終了已生效),放行")
+                # 提前 return 前必须 archive(P0-1:锚消失放行路径原零记录)
+                self._archive_decision(image, "hif_retry_confirm", {
+                    "action": "produce_end", "clicked": clicked, "early_exit": "anchor_gone",
+                })
                 return True
             self._tap(context, *self.END_TAP)
+            clicked += 1
             time.sleep(self.ACTION_DELAY)
         self._archive_decision(self._get_screenshot(context), "hif_retry_confirm", {
-            "action": "produce_end",
+            "action": "produce_end", "clicked": clicked,
         })
         return True
 
@@ -1984,6 +2005,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     PANEL_CLICK_DELAY = 1.6   # 面板/详情点开后渲染等待（実機校准）
     TRANSITION_TIMEOUT_S = 60 # 转场窗口 60s（Q13 起步值，実機 2s 后续收紧）
     NO_PROGRESS_LIMIT = 3     # F4 守卫：同回合连续无进展步数上限
+    UNVERIFIED_LIMIT = 2      # exec_verified 守卫：连续出牌未生效上限，触发 SKIP 兜底
     ROUND_DEADLINE_S = 1500    # 出牌全局上限 25 分钟(9/12 回合正常 <20 分钟,2026-08-22 收紧)
     EVIDENCE_RETRY = 2        # 手牌读空重试次数（Q12 禁盲点）
 
@@ -1998,6 +2020,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         _ProduceHIFActionBase._reset_round1_state()
         played_history: List[str] = []
         no_progress = 0
+        unverified_plays = 0
         logger.success(f"HIF {round_tag} 出牌开始（play 模式，{total_turns} 回合）")
         # 対局页确认（実機 2026-08-22 轮0：Round 已结束重入时画面在結果页，
         # 开局槽探测会误点結果页元素——残りターン锚 miss 即跳过全部开局探测）
@@ -2127,9 +2150,30 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 played_history.append(played_card)
                 self._record_session_progress(played_card)
 
+            # exec_verified 闭环（bug#44，実機 2026-08-22 轮5 turn7 假成功 17 条卡
+            # 25 分钟教训）：_execute_action 的 SELECT 验证通过≠牌生效——出牌后
+            # turn/总分/手牌数任一变化才判生效；连续 ≥2 次未生效强制 SKIP 推进回合，
+            # 防同回合同卡假成功死循环（no_progress 守卫管不到 ok=True 的假成功）。
+            verified = self._verify_play_effect(
+                context, turn_left, evidence.get("total_score"), len(hand.card_names),
+            )
+            if not verified:
+                unverified_plays += 1
+                logger.warning(
+                    f"{round_tag} 出牌未生效确认（连续 {unverified_plays}/{self.UNVERIFIED_LIMIT}）"
+                    f" action={action.kind.value} target={action.target_card}"
+                )
+                if unverified_plays >= self.UNVERIFIED_LIMIT:
+                    logger.warning(f"{round_tag} 连续出牌未生效，SKIP 兜底推进回合（弃当回合保主线）")
+                    self._click_skip(context)
+                    unverified_plays = 0
+            else:
+                unverified_plays = 0
+
             self._archive_round1_play(image, self.build_round1_play_record(
                 state, action, [played_card] if played_card else [],
                 turn_score=evidence.get("total_score"), evidence=evidence,
+                exec_verified=verified,
             ), screen_state)
 
             # 等回合转场（残りターン变化）；未变化则继续同回合下一步
@@ -2505,6 +2549,32 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 return True, chosen.card_name
             logger.info(f"Round1 SELECT 未出现/未生效，重试 {attempt + 1}/3")
         return False, None
+
+    def _verify_play_effect(
+        self, context: Context, prev_turn_left: int,
+        prev_score: Optional[int], prev_hand_count: int,
+    ) -> bool:
+        """出牌执行确认（bug#44）：turn/总分/手牌数任一变化才判生效。
+
+        SELECT 按钮点击成功≠牌打出（実機轮5 turn7：17 次假成功卡 25 分钟，
+        no_progress 守卫因 ok=True 永不触发）。同回合连续出牌 turn 不变是正常的，
+        三分量任一变化即生效；全部不变=假成功。动画期读空（turn None/手牌空/
+        score None）不可信，跳过该分量继续轮询，不误判。窗口 6s 覆盖结算
+        动画（実機转场 <2s）。"""
+        deadline = time.time() + 6
+        while time.time() < deadline:
+            time.sleep(1.5)
+            image = self._get_screenshot(context)
+            turn_left = self._read_turn_left(context, image)
+            if turn_left is not None and turn_left != prev_turn_left:
+                return True
+            names = ExamStateReader.from_context(context).read_hand().card_names
+            if names and len(names) != prev_hand_count:
+                return True
+            score = self._read_total_score(context, image)
+            if score is not None and prev_score is not None and score != prev_score:
+                return True
+        return False
 
     def _click_select(self, context: Context) -> bool:
         for attempt in range(2):

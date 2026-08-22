@@ -553,10 +553,12 @@ def test_exam_state_reprise_numerics_wins_over_session() -> None:
 
 
 def test_round1_play_record_fields_align_manual_turn_record() -> None:
-    """出牌记录 schema：前六项与 ManualTurnRecord 逐一对齐，后五项为実機执行层扩展。"""
+    """出牌记录 schema：前六项与 ManualTurnRecord 逐一对齐，后六项为実機执行层扩展（含 exec_verified，bug#44）。"""
     manual_fields = tuple(ManualTurnRecord.model_fields.keys())
     assert ROUND1_PLAY_RECORD_FIELDS[: len(manual_fields)] == manual_fields
-    assert ROUND1_PLAY_RECORD_FIELDS[len(manual_fields):] == ("action", "target_card", "reason", "dry_run", "evidence")
+    assert ROUND1_PLAY_RECORD_FIELDS[len(manual_fields):] == (
+        "action", "target_card", "reason", "dry_run", "exec_verified", "evidence",
+    )
 
 
 def _load_produce_hif_module():

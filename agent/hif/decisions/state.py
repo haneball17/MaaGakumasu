@@ -130,8 +130,9 @@ class CardAction:
 
 
 # Round1 出牌记录字段（Phase 2 落盘 schema，F3）：前六项对齐 roundsim ManualTurnRecord
-# （agent/hif/roundsim/adapter.py 実機手记口径），后五项为実機执行层扩展
-# （动作/目标卡/理由/dry-run 取证标记/证据 box+OCR 原文）。
+# （agent/hif/roundsim/adapter.py 実機手记口径），后六项为実機执行层扩展
+# （动作/目标卡/理由/dry-run 取证标记/执行确认/证据 box+OCR 原文；exec_verified
+# 为出牌后 turn/总分/手牌数任一变化的执行确认，bug#44 假成功教训 2026-08-22）。
 ROUND1_PLAY_RECORD_FIELDS: tuple[str, ...] = (
     "turn",
     "flow",
@@ -143,5 +144,6 @@ ROUND1_PLAY_RECORD_FIELDS: tuple[str, ...] = (
     "target_card",
     "reason",
     "dry_run",
+    "exec_verified",
     "evidence",
 )
