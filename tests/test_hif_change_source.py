@@ -73,6 +73,37 @@ def test_pick_source_strips_plus_suffix_in_names():
 
 
 # ------------------------------------------------------------------
+# #51 fallback 最低价值卡（実機轮 8:盲选第一格吃掉 SSR 夏夜に咲く思い出）
+# ------------------------------------------------------------------
+
+
+def test_fallback_lowest_score_skips_ssr():
+    """名单 miss + 注入评分：SSR 保护不选，非 SSR 中效果最弱（无使用数追加）被选。"""
+    hand_meta = import_module("agent.hif.decisions.hand_meta")
+    assert hand_meta.get_card_meta("夏夜に咲く思い出").rarity == "Ssr"  # master 数据驱动前提
+
+    deck = [_entry("夏夜に咲く思い出"), _entry("シュプレヒコール"), _entry("始まりの合図")]
+    score = lambda text: 10 if "使用数追加" in text else 1  # noqa: E731
+    chosen = Src._pick_source_by_list((), deck, fallback_score=score)
+    assert chosen is not None and chosen["name"] == "始まりの合図"  # SSR 跳过+最弱效果
+
+
+def test_fallback_lowest_score_all_ssr_returns_first():
+    """全 SSR 极端局面：退回第一格（変卡必须选一张源，不能停）。"""
+    deck = [_entry("夏夜に咲く思い出")]
+    chosen = Src._pick_source_by_list((), deck, fallback_score=lambda _t: 1)
+    assert chosen is not None and chosen["name"] == "夏夜に咲く思い出"
+
+
+def test_fallback_lowest_score_unknown_card_not_crash():
+    """master 查不到的卡（OCR 变体）：meta=None 按空文本评分，不崩。"""
+    deck = [_entry("OCR誤読変体卡名"), _entry("始まりの合図")]
+    chosen = Src._pick_source_by_list((), deck, fallback_score=lambda text: 0 if text == "" else 9)
+    # 未知卡空文本得 0 分最低 → 被选（查不到效果=不可控,选它比选已知卡保守度见 preset 名单）
+    assert chosen is not None and chosen["name"] == "OCR誤読変体卡名"
+
+
+# ------------------------------------------------------------------
 # _dedupe_deck（滚动重叠屏去重，Q2 全库收集配套）
 # ------------------------------------------------------------------
 

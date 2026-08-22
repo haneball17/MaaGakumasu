@@ -44,6 +44,7 @@ class CardMeta:
     stamina_cost: int | None
     focus_cost: int | None
     effect_summary: str
+    rarity: str | None = None  # 'Ssr'/'Sr'/...（master 表专有,小表无此字段;変卡源保护用 #51）
 
 
 @lru_cache(maxsize=1)
@@ -115,6 +116,7 @@ def _meta_from_master(card_name: str) -> CardMeta | None:
         stamina_cost=tier.get("stamina_cost"),
         focus_cost=tier.get("focus_cost"),
         effect_summary=tier.get("effect_raw", ""),
+        rarity=(card.get("rarity") or "").replace("ProduceCardRarity_", "") or None,
     )
 
 

@@ -215,6 +215,7 @@
 - **#49 GuardedTapAuto anchor_expected 双重转义**：节点 param 从 recognition.expected 复制 `.*差し入れ.*`（regex），`_find_text_option` 按**字面量**约定 re.escape+再包装 → IPC 实发 `.*\.\*差し入れ\.\*.*`（匹配字面串）→ 进门恒 miss → 无日志 return False → Action.Failed 段退（段 1 GiftTalkBlank 234ms 单次失败实证）。修复三件：管线 `GiftTalkBlank`/`DayChangeBlank` 两处 anchor_expected 去通配符改字面量；action 侧剥首尾 `.*` 归一化（防复制复发）。実機验证 ✓：段 2「守卫点击: 第 1 次点击推进成功(anchor_gone=False)」。
 - **#50 StatePanelCloseFlag 泛锚误吸饮料上限弹窗**：pos0 关闭组锚「消費体力減少」在 Pドリンク所持上限弹窗的饮料 buff 描述（「消費体力減少3ターン」）也命中 → 裸 Click (360,755) 无效+JumpBack 回环 → `DrinkOverflowFlag`（原 28 位）永远轮不到 → agent 静默（管线层循环零 agent 日志，铁律③管线版实证）。修复：DrinkOverflowFlag（弹窗专有锚「Pドルンク所持上限」）提到关闭组前 pos0。実機验证 ✓：段 3/4 弹窗取舍成功 ×2（remain=0 残す）。
 - 変卡**正当流程**完整走通（整屏确认判底 14 张+源卡选定「大胆不敵」）；但 #48 誤入自愈场景未触发（正当流程不走 `_handoff_to_change_flow`），继续待复验。
+- **#51 変卡源 fallback 盲选吃掉 SSR**（轮 8 后用户复盘发现）：名单（大胆不敵/始まりの合図，両 SR 弱卡）耗尽后 `fallback_first_cell` 盲选**牌库第一格**——而 deck 首格恰是 SSR 核心卡「夏夜に咲く思い出」（除外眠気+使用数追加引擎卡）。実機轮 8 変卡③将其変掉；历史 JSONL 同模式 6 次（每次名单耗尽都吃 deck[0]/[1]）。両次変卡本体执行正确（横幅「大胆不敵を魅惑の視線にチェンジしました」等実証）。修复：`_pick_source_by_list` fallback 改「SSR 保护（master rarity join）+ 关键词表评分选**最低分**效果卡」，mode 标记 `fallback_lowest_score`；CardMeta 加 rarity 字段。実機复验待下轮変卡名单耗尽时点。
 - 量化：75 决策（授業 4/変卡 12/日程 5/R1 21/R2 19/饮料上限 2/相談 1）；ops 365 次 scene_changed 全 True 率 99.7%（唯一 false=20:06:23 R2 出牌动画瞬态，后续手正常）；215 tests 全绿（含 #50 排序断言更新）。
 - 段日志：`debug/autodev/round8_seg1-5.log`（seg1 Failed=#49、seg2 手动停=#50 排查、seg3/4 TIMEOUT=出牌 900s 截断正常接力、seg5 DONE）。
 
@@ -242,3 +243,4 @@
 8. 通信エラー设备级弹窗管线节点（轮 6 #47：培育中触发时 ScheduleRoot 全 miss 不收敛；待実機取证弹窗模板后挂 ScheduleRoot 前部）
 9. 轮 6 修复（#45/#46）実機复验：#45 已验无回归+零 turn stop（轮 7），正面自愈案例仍待触发；#48 変卡誤入自愈（`_handoff_to_change_flow`）待誤入时点复验（轮 8 変卡正当流程走通≠誤入场景，自愈路径仍未触发）
 10. StatePanelCloseFlag 泛词锚面（「消費体力減少」「スキルカード追加発動」）：#50 后饮料弹窗已让位专有锚，但两词仍可能在其他含 buff 描述的弹窗/页面共显——新弹窗类型出现时优先换专有词锚而非依赖排序让位
+11. #51 変卡源 fallback 改评分版待実機复验（名单耗尽时点）：应见日志 `mode=fallback_lowest_score` 且源卡为非 SSR 低分卡；若全库 SSR 仍会退第一格（変卡必须选源）

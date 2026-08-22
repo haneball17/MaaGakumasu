@@ -43,6 +43,7 @@ from agent.hif.decisions.scoring import (
 )
 from agent.hif.adapters.card_dict import normalize_card_name, build_card_name_dict
 from agent.hif.decisions.schedule import classify_class_option
+from agent.hif.decisions.hand_meta import get_card_meta
 from agent.hif.adapters.exam_reader import ExamStateReader
 
 
@@ -1144,12 +1145,13 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
             "deck": [e["name"] for e in deck],
         })
 
-        chosen = self._pick_source_by_list(names, deck)
+        table = load_keyword_tables(overrides=build_gui_keyword_overrides(preset))[preset.preference]
+        chosen = self._pick_source_by_list(names, deck, fallback_score=table.score)
         if chosen is None:
             logger.warning("HIF 変卡: 牌库扫描为空,安全停止")
             return self._stop_unsupported(context, "select_change_source_deck", "deck_scan_empty")
 
-        mode = "named" if any(self._norm(n) == chosen["name"] for n in names) else "fallback_first_cell"
+        mode = "named" if any(self._norm(n) == chosen["name"] for n in names) else "fallback_lowest_score"
         logger.info(f"HIF 変卡: 源卡选定「{chosen['name']}」mode={mode}")
 
         # 选中定位（実機 13:34 复盘：滚动后坐标重放不可靠——回弹/偏移致复核错卡）：
@@ -1175,14 +1177,34 @@ class ProduceChooseHIFSelectChangeSourceAuto(_ProduceHIFActionBase):
         return normalize_card_name(name or "").rstrip("+")
 
     @classmethod
-    def _pick_source_by_list(cls, names: tuple[str, ...], deck: list[dict]) -> Optional[dict]:
-        """名单优先（名单序 = 优先序）→ miss 回退牌库首格（Q3 裁决）。"""
+    def _pick_source_by_list(cls, names: tuple[str, ...], deck: list[dict], fallback_score=None) -> Optional[dict]:
+        """名单优先（名单序 = 优先序）→ miss 回退**最低价值卡**（Q3 裁决；#51 修订）。
+
+        fallback_score(text)->float 由 run() 注入（关键词表评分,纯逻辑可单测）：
+        SSR 一律保护不选；其余按效果文本评分取**最低分**——変卡源=牺牲最没价值的卡。
+        旧版「回退第一格」実機轮 8 吃掉 SSR 核心「夏夜に咲く思い出」（牌库首格恰是
+        最强卡,deck 排序与价值无关）；全 SSR 等极端局面退回第一格（変卡必须选一张）。
+        """
         wanted = [cls._norm(n) for n in names if n and cls._norm(n)]
         for target in wanted:
             for entry in deck:
                 if entry["name"] == target:
                     return entry
-        return deck[0] if deck else None
+        if not deck:
+            return None
+        if fallback_score is None:
+            return deck[0]  # 未注入评分(测试兜底):保持旧行为
+        candidates = []
+        for entry in deck:
+            meta = get_card_meta(entry["name"])
+            if meta and meta.rarity == "Ssr":
+                continue
+            text = meta.effect_summary if meta else ""
+            candidates.append((fallback_score(text), entry["name"], entry))
+        if not candidates:
+            return deck[0]
+        candidates.sort(key=lambda item: (item[0], item[1]))
+        return candidates[0][2]
 
     @staticmethod
     def _dedupe_deck(entries: list[dict]) -> list[dict]:
