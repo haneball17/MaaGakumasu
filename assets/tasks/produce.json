@@ -73,11 +73,6 @@
 							},
 							"next": "ProduceEntryHIF"
 						},
-						"ProduceStart": {
-							"next": [
-								"ProduceEntryHIF"
-							]
-						},
 						"ProduceLoop": {
 							"on_error": [
 								"ProduceEntryHIF"

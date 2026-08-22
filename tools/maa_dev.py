@@ -472,13 +472,20 @@ def cmd_test_node(args: argparse.Namespace) -> int:
     evidence_dir = AUTODEV_DIR / f"test-node-{args.node}-{int(time.time())}"
     evidence_dir.mkdir(parents=True, exist_ok=True)
 
+    # post_task 跑的是完整任务链(recognition+action+next)，路由节点连测会推进游戏
+    # 页面(実機 2026-08-23 误入初流程準備页教训)。默认 override 清空 next 链，
+    # 只测识别+单步 action；显式 --follow-chain 才放开全链。
+    override = json.loads(args.override) if args.override else {}
+    if not getattr(args, "follow_chain", False):
+        override = {args.node: {"next": []}, **override}
+
     runs: list[dict[str, Any]] = []
     hits = 0
     for i in range(n):
         before = evidence_dir / f"run{i}-before.png"
         img = ctrl.post_screencap().wait().get()
         Image.fromarray(img[..., ::-1]).save(before)
-        job = tasker.post_task(args.node, json.loads(args.override) if args.override else None)
+        job = tasker.post_task(args.node, override)
         started = time.time()
         while not job.done and time.time() - started < TEST_NODE_TIMEOUT_S:
             time.sleep(0.5)
@@ -642,10 +649,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--param", default=None, help="识别参数 JSON（字段同 pipeline recognition.param）")
     p.set_defaults(func=cmd_reco)
 
-    p = sub.add_parser("test-node", help="实机单节点连测 N 次")
+    p = sub.add_parser("test-node", help="实机单节点连测 N 次（默认切断 next 链防推进页面）")
     p.add_argument("node")
     p.add_argument("--n", type=int, default=3)
     p.add_argument("--override", default=None, help="运行时 pipeline_override JSON")
+    p.add_argument("--follow-chain", action="store_true", help="放开 next 链跑完整任务链（会推进游戏页面）")
     p.set_defaults(func=cmd_test_node)
 
     p = sub.add_parser("replay", help="基准截图逐节点离线识别，输出命中矩阵")

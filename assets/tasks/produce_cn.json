@@ -72,6 +72,11 @@
 								"param": {}
 							},
 							"next": "ProduceEntryHIF"
+						},
+						"ProduceLoop": {
+							"on_error": [
+								"ProduceEntryHIF"
+							]
 						}
 					}
 				}

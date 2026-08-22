@@ -219,6 +219,21 @@
 - 量化：75 决策（授業 4/変卡 12/日程 5/R1 21/R2 19/饮料上限 2/相談 1）；ops 365 次 scene_changed 全 True 率 99.7%（唯一 false=20:06:23 R2 出牌动画瞬态，后续手正常）；215 tests 全绿（含 #50 排序断言更新）。
 - 段日志：`debug/autodev/round8_seg1-5.log`（seg1 Failed=#49、seg2 手动停=#50 排查、seg3/4 TIMEOUT=出牌 900s 截断正常接力、seg5 DONE）。
 
+### 轮 9（入口自动化+主线验证轮，2026-08-23 00:47-02:05，完整走通）
+
+**Produce 任务全自动**（含入口链，首次）：ProduceStart(プロデュース)→ProduceMainPage→ChooseScenario(学園祭卡 hif.png)→ChooseDifficulty(DirectHit)→ProduceEntryHIF→PrepRoot→FinalModeAuto(本戦 tab)→準備段→Day1-6（授業/三选一/変卡×2/相談/低体力おでかけ）→R1 出牌（16 手）→Interval(終了)→R2 出牌（17 张）→敗退→再挑戦確認→结算→メモリー→報酬→**主页面** ✓ **主线零介入（入口 4 步首次零手动）**。四段接力（1500/80/900/900s，実機净时约 56 分钟含排障，纯主线约 41 分钟）。
+
+- **#58 build_produce_override 合并顺序 bug（入口断链真根因）**：hif_run 按选项顺序交替合并 default+chosen case，后续选项「跳过选择偶像=No」的 default 把「培育难度=HIF」chosen 的 `ProduceChooseDifficulty.next=ProduceEntryHIF` 覆盖回初流程链（maafw post_task 实发 override JSON 实证）→Difficulty DirectHit 后进初流程偶像选择链→PrepRoot 锚全 miss→25s Failed。修复：两轮合并（先全部 default 再全部 chosen）。
+- **#59 tasks HIF case cn/base 分叉**：cn 版缺 `ProduceLoop.on_error→ProduceEntryHIF`（局中兜底）；base 版 `ProduceStart.next→ProduceEntryHIF` 为**有害键**（実機证明プロデュース按钮先进活动选择页，必须经 ChooseScenario 点学園祭卡，直跳 ProduceEntryHIF 会跳步致锚 miss）——删除。遗留 item 1「入口链自动化」就此关闭（轮 2 时三故障中本 chain 从未実機走过，真根因是 override 顺序 bug 而非 Produce.json 链路）。
+- **#60 ScheduleRoot 缺 R1 结束序列锚**：R1 出牌 1500s 段尾截断落在ラウンド1結果页，ScheduleRoot 无锚→UnknownStop（轮 6-8 段时长恰好未在 R1 尾截断故未暴露）。修复：ScheduleRoot 补 `[JumpBack]` Round1ResultFlag/Round1StarGainFlag/CheerStickBlank 三锚（専有词已查共显）。
+- **#61 Round1SummaryFlag「審査基準」锚跨页共显乒乓**（#60 修复引入、当场实证撤除）：Interval 页右上角有「審査基準」R2 预览标签（同词同位）→SummaryFlag 反复点开弹窗、R2ConditionFlag 反复关闭，900s 段全烧在乒乓（hit 流实证両锚交替）。铁律③再实证：**挂锚前必查他页共显**，本例「審査基準」在 R1 概要页与 Interval 页右上位共显。
+- 工具改进：`maa_dev.py test-node` 默认 override 清空 next 链（post_task 跑完整任务链，路由节点连测会推进游戏页面——轮 9 实证误入初流程準備页；`--follow-chain` 显式放开）。
+- 复验：**#52 ✓**（変卡×2 `relocate=direct` 直达 1 次点击）；**#54 ✓**（exec_verified 37 条 false=0，buff 手误报清零）；#50 路径 ✓（饮料上限取舍 ×2）；#51 部分（`mode=named` ×2，名单未耗尽 fallback 未触发）；#48 誤入场景未自然触发。
+- #55 実機证据补录：`HIF SP效果卡: 最高分 0 [无命中]「ンス上昇+13」`（OCR 拆词「ダンス上昇+13」→词表不覆盖）。
+- 已知模式再现实证（未修，观察）：R2ConditionFlag 裸 Click (360,1150) 静默丢失 1 次（重路由再点自愈，约 1 圈延迟）；「好調行模板定行失败 session 兜底=None」warn 多次（好調行识别 fallback）；「reprise 旧源(右上,疑 P item 误标)」warn 多次（diff 后切换自愈）。
+- 量化：决策 75 条（R1 16+R2 21+授業 7+日程 6+変卡 11+饮料 4+相談等）；ops 358 次（click 282+swipe 76）**scene_changed 100% 全 True（零无效操作，超轮 8 的 99.7%）**；pytest 290 passed；replay 基准绿。
+- 段日志：`debug/autodev/round9_entry_test.log`（断链复现）/`round9_entry_test2.log`（修复后段1）/`round9_seg2-4.log`（不入库）。
+
 ## 验收对照（goal 七条件）
 
 | 条件         | 结果                                                | 证据                                                                                                                                                         |
@@ -233,16 +248,17 @@
 
 ## 遗留清单（后续会话）
 
-1. **入口链自动化**：ProduceStart→ProduceEntryHIF 接线在実機未走通（段内 FinalModeAuto 未被执行到——Produce.json 链路深查）；当前 4 步手动（本戦 tab→次へ→開始→SKIP）
+1. ~~**入口链自动化**~~ **已关闭（2026-08-23 轮 9）**：真根因为 build_produce_override 合并顺序 bug（#58）+cn/base case 分叉（#59）而非 Produce.json 链路；Produce 任务全自动走通（FinalModeAuto→準備→Day1），入口 4 步零手动
 2. P item 详情入口坐标校准（実機縦列图标位+SoM 定位）
 3. 牌堆查看器実機取证（山札/捨て札指示器位置）
-4. 探索分支：Interval 商店流（4 tab/リフレッシュ/特別指導三步流/回復/チェンジ）、再挑戦重打、メモリー再生成/変換、R2 勝利流、ログ页手札情報（roundsim 校准源）
+4. 探索分支：Interval 商店流（4 tab/リフレッシュ/特別指導三步流/回復/チェンジ——轮 9 実機 Interval 页到位但終了策略直接跳过，现场已有截图可勘察）、再挑戦重打、メモリー再生成/変換、R2 勝利流、ログ页手札情報（roundsim 校准源）
 5. 灰卡阈值実機校准（首次触发日志带 sat 值）
 6. USE_P_DRINK 瓶位语义（A5 未定案，现拦截只记录）
 7. 開場コミュ SKIP 节点（低频：仅局首；轮 6 実測本局无開場コミュ，出现频率待观测）
 8. 通信エラー设备级弹窗管线节点（轮 6 #47：培育中触发时 ScheduleRoot 全 miss 不收敛；待実機取证弹窗模板后挂 ScheduleRoot 前部）
-9. 轮 6 修复（#45/#46）実機复验：#45 已验无回归+零 turn stop（轮 7），正面自愈案例仍待触发；#48 変卡誤入自愈（`_handoff_to_change_flow`）待誤入时点复验（轮 8 変卡正当流程走通≠誤入场景，自愈路径仍未触发）
+9. 轮 6 修复（#45/#46）実機复验：#45 已验无回归+零 turn stop（轮 7），正面自愈案例仍待触发；#48 変卡誤入自愈（`_handoff_to_change_flow`）待誤入时点复验（轮 8/9 変卡正当流程走通≠誤入场景，自愈路径仍未触发）
 10. StatePanelCloseFlag 泛词锚面（「消費体力減少」「スキルカード追加発動」）：#50 后饮料弹窗已让位专有锚，但两词仍可能在其他含 buff 描述的弹窗/页面共显——新弹窗类型出现时优先换专有词锚而非依赖排序让位
-11. #51 変卡源 fallback 改评分版待実機复验（名单耗尽时点）：应见日志 `mode=fallback_lowest_score` 且源卡为非 SSR 低分卡；若全库 SSR 仍会退第一格（変卡必须选源）
-12. #52 変卡重定位滚动直达待実機复验：决策 JSONL `relocate` 字段应见 `direct`/`top`（正常路径 1 次点击）；回弹偏移场景验证 `direct_neighbor`/`fallback_scan` 保底不劣于旧版
-13. 轮 8 复盘增量三件（2026-08-22）：#54 exec_verified 手牌分量升级内容比对已修（commit 46fdc39，実機复验看 buff 手 false 率归零）；#55 SP 效果卡评分全 0 分盲选（两次决策所有行 score=0，关键词表不覆盖「上昇+N」类文案——补词条或数值解析）；#56 turn/总分读数偶发误读（turn 9↔6 形近、score 84 回跳——读数加单调性/连续性校验）；#57 interval/consult/retry 决策缺 chosen 字段+R1 turn1 首手无记录（JSONL 字段规范化）
+11. #51 変卡源 fallback 改评分版待実機复验（名单耗尽时点）：轮 9 両次変卡均 `mode=named` 未触发；应见日志 `mode=fallback_lowest_score` 且源卡为非 SSR 低分卡；若全库 SSR 仍会退第一格（変卡必须选源）
+12. ~~#52 変卡重定位滚动直达待実機复验~~ **已验 ✓（2026-08-23 轮 9）**：`relocate=direct` ×2（正常路径 1 次点击）
+13. 轮 8 复盘增量三件（2026-08-22）：~~#54~~ **已验 ✓（2026-08-23 轮 9：exec_verified 37 条 false=0）**；#55 SP 效果卡评分全 0 分盲选（轮 9 実機证据：「ンス上昇+13」拆词不命中词表——补词条或数值解析）；#56 turn/总分读数偶发误读（读数加单调性/连续性校验）；#57 interval/consult/retry 决策缺 chosen 字段+R1 turn1 首手无记录（JSONL 字段规范化）
+14. 轮 9 观察项（2026-08-23，未修）：R2ConditionFlag 裸 Click 静默丢失 1 次（重路由自愈约 1 圈延迟，可挂 GuardedTapAuto 化）；「好調行模板定行失败 session 兜底=None」warn 反复（好調行识别 fallback 链路）；「reprise 旧源(右上,疑 P item 误标)」warn 反复（diff 后切换自愈）；Interval 商店流勘察素材已备（轮 9 snap）
