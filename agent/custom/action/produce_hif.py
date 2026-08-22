@@ -1734,7 +1734,7 @@ class ProduceHIFRetryConfirmAuto(_ProduceHIFActionBase):
     再挑戦 [471,1133] 禁点。弹窗文案「再挑戦が可能ですが本当に終了しますか?」。
     """
 
-    END_TAP = (216, 1154)
+    END_TAP = (200, 1140)  # vision 実測 2026-08-22 轮3:hitbox 内缩,旧(216,1154)连点 8 次不中
     ANCHOR_TEXT = ("再挑戦が可能", "本当に終了")
     ANCHOR_ROI = [40, 700, 640, 180]
     MAX_ROUNDS = 8
@@ -1896,6 +1896,9 @@ class ProduceHIFRewardPageNextAuto(_ProduceHIFActionBase):
     TAP_INTERVAL = 2.0
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
+        # 入场稳定(実機 2026-08-22 轮3:段启动后页面入场动画窗口内 agent 点击静默丢失,
+        # 手动同坐标即中——同 RetryConfirm SETTLE 模式)
+        time.sleep(2.0)
         for page in range(self.MAX_PAGES):
             image = self._get_screenshot(context)
             # 模板优先(按钮固定图像,不受 OCR 拆词/混读影响);模板 miss 再 OCR 退路
@@ -1907,7 +1910,9 @@ class ProduceHIFRewardPageNextAuto(_ProduceHIFActionBase):
             if box is None:
                 logger.success(f"HIF 報酬序列: 次へ消失(序列尽,共推 {page} 页),交回路由")
                 return True
-            self._click_box_center(context, box, double=False)
+            # vision 実測 2026-08-22 轮3:OCR/小模板 box 只是文字区,按钮 pill 几何中心
+            # 在文字区下方 ~21px——固定按钮几何中心点击,box 仅作存在判定
+            self._tap(context, 360, 1180)
             time.sleep(self.TAP_INTERVAL)
         logger.info("HIF 報酬序列: 达页数上限,放行交回路由")
         return True
@@ -2795,17 +2800,28 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     # P 饮料弹窗（キャンセル左下）。命中锚才点关，验证消失。
     OVERLAY_CLOSE_TAP = (359, 755)
 
+    CARD_DETAIL_ANCHOR = ("スキルカード詳細",)
+    CARD_DETAIL_CLOSE = (360, 1180)  # 閉じる按钮(vision 実測 2026-08-22 轮3:点手牌卡
+    # 会误开详情弹窗,毛玻璃遮全画面致 turn/hand 全读空 stop)
+
     def _dissolve_blocking_overlays(self, context: Context) -> bool:
         """探测并关闭遮挡画面的浮层；有任何关闭动作返回 True（调用方重读手牌）。
 
-        2026-08-22 轮2:残留态 X 点击 IPC 丢失高发(実機 dissolve 3 连丢,手动同坐标
-        单点即中)——循环 4 次+间隔 2s 吸收。"""
+        四类:buff 面板/P item 弹窗(×同位)/P 饮料弹窗(キャンセル)/スキルカード詳細
+        (閉じる)。残留态点击 IPC 丢失高发——循环 4 次+间隔 2s 吸收。"""
         acted = False
         for _ in range(4):
             image = self._get_screenshot(context)
             has_panel = self._panel_anchor_hit(context, image)
             has_pitem = self._pitem_popup_anchor_hit(context, image)
             has_pdrink = self._popup_is_pdrink(context, image)
+            has_card_detail = self._find_text_option(context, image, self.CARD_DETAIL_ANCHOR, [20, 80, 400, 120])
+            if has_card_detail:
+                acted = True
+                logger.warning("Round 浮层残留自愈: スキルカード詳細弹窗→閉じる")
+                context.tasker.controller.post_click(*self.CARD_DETAIL_CLOSE).wait()
+                time.sleep(2.0)
+                continue
             if not (has_panel or has_pitem or has_pdrink):
                 break
             acted = True

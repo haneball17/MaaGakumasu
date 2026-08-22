@@ -149,6 +149,7 @@
             "param": {}
         },
   "next": [
+    "[JumpBack]ProduceHIFCardDetailCloseFlag",
     "[JumpBack]ProduceHIFSupportEventPopup",
     "[JumpBack]ProduceHIFRound1Flag",
     "[JumpBack]ProduceHIFTapNextFlag",
@@ -935,6 +936,37 @@
         },
         "focus": {
             "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 変卡完成,点空白推进(実機 2026-08-20:提示层「…にチェン/ジしました」拆两行,补ジしました变体)[/color]"
+        }
+    },
+    "ProduceHIFCardDetailCloseFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*スキルカード詳細.*"
+                ],
+                "roi": [
+                    20,
+                    80,
+                    400,
+                    120
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    1180,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: スキルカード詳細弹窗(実機 2026-08-22 轮3:出牌点卡误开详情,毛玻璃遮全画面致全部锚 miss 段退;vision 実測閉じる(360,1180);前挂优先关——管线层可达,Custom dissolve 够不着)[/color]"
         }
     },
     "ProduceHIFSupportEventPopup": {
