@@ -68,6 +68,33 @@ description: 无人工介入的 MaaFW 管线开发调试循环。当用户要求
 - MCP 不可用（本会话）：`maa_dev.py` 短连接即可，但**不要**同时跑两个会话各持一条连接操作同一设备。
 - `ocr/reco/replay` 是离线命令（stub 控制器），随时可与在线操作并存。
 
+## 分段接力与死循环排障（长流程実機验证，2026-08-22 五轮验证沉淀）
+
+长流程（整局培育 30-60 分钟）不追求单段跑通，用**分段接力**：每段 `hif_run.py --entry <路由根> --timeout <s>`，
+段退出（DONE/UnknownStop/超时皆可）后由 `debug/autodev/segment_loop.py` 判画面（snap+OCR 找终点锚）→
+未到终点自动发下一段。段退出≠失败——LOADING/长动画窗口内 next 全 miss 走 timeout 是正常模式，
+接力重启即恢复。
+
+**分段单例纪律**（違反即双段互踩：画面来回跳变/状态数震荡）：
+- 同一模拟器同时只跑一个段；后台段一律输出落文件（`>/dev/null &` 吞输出=段存活不可见）。
+- 重启段前清进程：`Get-CimInstance Win32_Process -Filter "name='python.exe'"` 按 CommandLine 匹配
+  `*hif_run*` 与 `*agent*main*` 全杀——`taskkill /T` 杀 parent 常漏 agent 孙进程，孤儿 agent 是下一段隐形干扰。
+
+**死循环排障链**（症状：agent 日志静默、无 timeout 无报错、画面不动）：
+1. 查 `debug/maafw.log` 节点事件流（`grep -a 'Succeeded' | tail`）——最后**连续命中同一节点**=元凶；
+   agent 日志静默≠没在跑。
+2. 根因模式几乎总是：泛词锚（页面残留标题词：獲得/差し入れ/本戦类）在同类子页面命中 +
+   裸点击无效 + `[JumpBack]` 回环**命中即重置轮询、永远走不到 timeout**=无限空转不报错。
+3. 修复（系统性，不打地鼠）：泛词锚挂路由尾部队兜底位或换专有词；空白点击类推进节点换
+   `ProduceHIFGuardedTapAuto`（锚验证→指纹对比→点击→验证推进，连续 3 次无变化 return False 段退）。
+   节点设计三问：这个词在哪些**其他**页面也出现？点击无效时谁兜底？回环会不会吞 timeout？
+
+**操作可追溯与超时层**（agent 侧已固化，新 Custom 直接复用）：
+- 全点击/滑动/按键走 `_tap/_swipe/_key`（坐标+操作后截图 `debug/decisions/ops/` + ops JSONL 前后指纹
+  对比），禁直调 `controller.post_*`——IPC 点击静默丢失的归因全靠此链。
+- `Job.wait()` 无限阻塞是 maafw 接口事实：`_wait_job`（done 轮询 15s）已包装；长循环（出牌/全库扫描）
+  必须带全局 deadline。
+
 ## 验收（一个节点/流程"通过"）
 
 1. `test-node --n 3` 全中（3/3）。

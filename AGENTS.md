@@ -104,6 +104,8 @@ npx maa-tools check
 
 実機 Custom action 单点连测（不跑完整管线）走 `debug/autodev/round1/ipc_task.py <节点名>`（AgentClient 直连自管 agent 子进程：bind(res)→connect→register_sink→post_task）。不要用 MaaMCP `run_pipeline` 做此事——2026-08-21 实测其 agent 拉起有时序竞态，连续两次调用各带 Custom action 时第二次返回 succeeded 但 action 零执行。配套：interface.json 的 `agent.child_exec: "python"` 在本机被 Microsoft Store 别名劫持，跑前临时 patch 为 `.venv` 绝对路径、跑完恢复（正式 interface 勿留绝对路径）；MCP `run_pipeline` 的 `pipeline_path` 数组参数会被序列化成单字符串（改单文件多次调用 + `on_conflict: overwrite`，节点驻留可累积），`Produce*.json` 为 JSONC 会被其严格 json 预校验拒载（去注释+去尾逗号的 strict 副本绕过）。
 
+実機分段驱动单例纪律（2026-08-22 轮1 双段互踩实证）：同一模拟器**同时只跑一个** hif_run 段——两段并行会交错点击同一画面（现象：画面来回跳变/turn 数震荡），且 `>/dev/null &` 吞输出导致段存活不可见。段一律 run_in_background 或输出落文件管理；重启段前用 `Get-CimInstance Win32_Process -Filter "name='python.exe'"` 按 CommandLine 匹配 `*hif_run*` 与 `*agent*main*` 清光全部进程（taskkill /T 杀 parent 常漏 agent 孙进程成孤儿，孤儿 agent 是下一段的隐形干扰源）。段内「卡死」排障：先查 `debug/maafw.log` 节点事件流（最后连续命中的节点名），agent 日志静默≠没在跑（[JumpBack] 回环死循环在 agent 侧零输出）。
+
 識別新件（读数/枚举/面板交互类 Custom action 方法）的実機验证纪律：先 probe 直连（Tasker.post_recognition 同源调用，参照 debug/autodev/round1/probe_state*.py 模式）做单元验证——每件 ≥3 轮跨画面时点+关键件自一致性双跑，修复后该件轮次清零重计；全绿才接管线集成（2026-08-21 用户叫停「未验证就 PlayFlag 连测」确立，probe2/3/4 三次实践成型）。设计対局页识别方案前先向用户要已知 UI 约束清单（元素数量上下限/位置稳定性/溢出行为/形态随内容浮动）——P item 随养成增长、饮料格数 3-4 由亲密度决定、buff 溢出省略号、弹窗标题随内容浮动四个关键约束全部来自用户告知。
 
 対局页（Round 対战）UI 动态锚定规则（2026-08-21 四连坑实证）：弹窗标题/瓶名随内容浮动（同弹窗不同瓶 y722/838）——先 OCR 锚定位再取锚相对带，禁固定 ROI；面板/buff 行入口 y 随状态增减漂移——从当次枚举动态取；关闭验证锚必须选背景不出现的词（「ターン内」状態带同词曾误报）；面板滚动 swipe 用容器右缘起点 (545,640)（中央起点落可交互条目会被消费致滚动时灵时不灵）；清单条目键去长音符 ー 归一化（ターン内/タン内 OCR 变体）。
