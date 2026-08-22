@@ -477,6 +477,15 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         _ProduceHIFActionBase._write_session_state({_ProduceHIFActionBase.SELECT_CHANGE_FLAG: False})
         best_event = self._choose_best_event(health_data, events, preset, day_remaining)
         if not best_event:
+            # 半渲染窗口重读(実機 2026-08-23 轮11 #62:変卡完成推进后的日程页
+            # 横幅演出中,公開レッスン OCR 全 miss→可用日程只剩单卡→preset 无
+            # 匹配误 stop;静止后重读 1 次,仍无匹配才 stop)
+            time.sleep(1.5)
+            image = self._get_screenshot(context)
+            events = self._get_available_events(context, image)
+            logger.info(f"HIF 日程重读(半渲染重试): {', '.join(e['name'] for e in events) or '无'}")
+            best_event = self._choose_best_event(health_data, events, preset, day_remaining)
+        if not best_event:
             return self._stop_unsupported(context, "finals_action_select", "preset_no_matching_event")
 
         logger.info(f"HIF 选择事件: {best_event['name']}")

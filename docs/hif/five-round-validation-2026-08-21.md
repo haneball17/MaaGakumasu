@@ -244,6 +244,18 @@
 - 量化：决策 71（R1 14+R2 22+変卡源 6+授業 5+日程 6+饮料 4+…）；ops 382 次 scene_changed **100%**（连续第二轮全绿）；pytest 290 passed。
 - 段日志：`debug/autodev/round10_seg1-2.log`（不入库）。
 
+### 轮 11（边界修复轮，2026-08-23 02:54-03:51，完整走通，実機 57 分钟）
+
+Produce 全自动起→Day2 段 1 stop（#62）→修复后续段 Day2-6→R1（10 张）→Interval 終了→R2（段 3 浮层残留僵死/段 4 R2 一位数窗口误接管，両起处置）→段 5 Round2PlayFlag 直入 R2 完成（7 张）→再挑戦確認→结算→メモリー→報酬→**主页面** ✓（人工介入：杀僵死段+手动关浮层取证两次，均为排障动作非主线放行）。
+
+- **#62 日程页半渲染误 stop（已修+実機验证 ✓）**：変卡完成推进后的日程页横幅演出中，公開レッスン OCR 全 miss→可用日程只剩单卡（属性色 d=79 丢一张）→`preset_no_matching_event` stop（段 1，750s）。修复：stop 前 sleep 1.5s 重读一次（`_wait_turn_reframe` 同族半渲染防御）；段 2 重进同页重读通过。
+- **#63 CardDetailCloseFlag 点击坐标错（已修，実機手动点验证 ✓ 管线层待轮 12）**：対局内スキルカード詳細浮层 × 実機在 (360,730)（vision+adb 双证点中关闭），管线旧值 (360,1180)（轮 3 vision 給值未実機验证）点在被遮挡背景=无效点击——段 3 R2 対局浮层残留 600s 僵死主诱因。注意 × 疑随浮层内容浮动，再失效升级 Custom 动态找 ×。
+- **R2 一位数窗口消歧边界（已知边界+驱动纪律）**：R2 12 回合制推进到残り≤9 后段重启，Round2Flag 两位数锚（10-12）miss→Round1Flag 接管→Round1Play 以 round1 模式跑 R2（残り4 误读 turn9 残り1→skip 死循环，段 4 僵死）。対局 HUD 无「ラウンド2」文字标识（OCR 実証）无法做第二锚；驱动纪律：R2 中途段重启一律 `--entry ProduceHIFRound2PlayFlag`（DirectHit 强制 R2 模式，段 5 実機验证 ✓）。
+- 复验：**#51 完整复验 ✓✓**：変卡源 ×3=`named`×2+`fallback_lowest_score`×1（名单耗尽触发评分版，选スリリング 非 SSR 低分卡+`relocate=direct`）——遗留 item 11 关闭。**#55 実機验证 ✓**（段 1 `SP効果卡: 最高分 17 [上昇数値+17]`）。
+- exec_verified 49 条 false 9：7 条为段 4 误接管窗口假记录（03:36-03:38 round1_play turn9 skip ×7）+2 条真实退卡/skip 场景——非 #54 回归。
+- 量化：决策 85（含段 4 假记录）/ops 508 次 scene_changed **100%（连续第三轮全绿）**；pytest 65+290 基线維持；replay 绿。
+- 段日志：`debug/autodev/round11_seg1-5.log`（不入库）。
+
 ## 验收对照（goal 七条件）
 
 | 条件         | 结果                                                | 证据                                                                                                                                                         |
@@ -268,7 +280,8 @@
 8. 通信エラー设备级弹窗管线节点（轮 6 #47：培育中触发时 ScheduleRoot 全 miss 不收敛；待実機取证弹窗模板后挂 ScheduleRoot 前部）
 9. 轮 6 修复（#45/#46）実機复验：#45 已验无回归+零 turn stop（轮 7），正面自愈案例仍待触发；#48 変卡誤入自愈（`_handoff_to_change_flow`）待誤入时点复验（轮 8/9 変卡正当流程走通≠誤入场景，自愈路径仍未触发）
 10. StatePanelCloseFlag 泛词锚面（「消費体力減少」「スキルカード追加発動」）：#50 后饮料弹窗已让位专有锚，但两词仍可能在其他含 buff 描述的弹窗/页面共显——新弹窗类型出现时优先换专有词锚而非依赖排序让位
-11. #51 変卡源 fallback 改评分版待実機复验（名单耗尽时点）：轮 9 両次変卡均 `mode=named` 未触发；应见日志 `mode=fallback_lowest_score` 且源卡为非 SSR 低分卡；若全库 SSR 仍会退第一格（変卡必须选源）
+11. ~~#51 変卡源 fallback 改评分版待実機复验~~ **已验 ✓✓（2026-08-23 轮 11）**：名单耗尽时点触发 `mode=fallback_lowest_score`，选スリリング（非 SSR 低分卡）+`relocate=direct`
 12. ~~#52 変卡重定位滚动直达待実機复验~~ **已验 ✓（2026-08-23 轮 9）**：`relocate=direct` ×2（正常路径 1 次点击）
 13. 轮 8 复盘增量三件（2026-08-22）：~~#54~~ **已验 ✓（2026-08-23 轮 9：exec_verified 37 条 false=0；轮 10 false 2 条均为退卡场景如实报告）**；~~#55~~ **已修（2026-08-23 轮 10：数值兜底，実機验证待下轮）**；#56 turn/总分读数偶发误读（读数加单调性/连续性校验——性价比一般暂缓）；#57 interval/consult/retry 决策缺 chosen 字段+R1 turn1 首手无记录（JSONL 字段规范化——性价比一般暂缓）
 14. 轮 9 观察项（2026-08-23，未修）：R2ConditionFlag 裸 Click 静默丢失 1 次（重路由自愈约 1 圈延迟，可挂 GuardedTapAuto 化）；「好調行模板定行失败 session 兜底=None」warn 反复（好調行识别 fallback 链路）；「reprise 旧源(右上,疑 P item 误标)」warn 反复（diff 后切换自愈）；Interval 商店流勘察素材已备（轮 9 snap）
+15. R2 一位数窗口消歧边界（2026-08-23 轮 11 段 4 実証）：R2 残り≤9 时段重启 Round2Flag 两位数锚 miss→Round1Flag 误接管（対局 HUD 无「ラウンド2」标识，OCR 実証无法做第二锚）。驱动纪律：R2 中途段重启一律 `--entry ProduceHIFRound2PlayFlag`；彻底解需 Round1Play action 内回合数自校验（性价比暂缓）。附：#63 ×浮动风险——スキルカード詳細浮层 × 疑随内容浮动，(360,730) 再失效升级 Custom 动态找 ×

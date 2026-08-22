@@ -1037,7 +1037,7 @@
             "param": {
                 "target": [
                     360,
-                    1180,
+                    730,
                     1,
                     1
                 ]
@@ -1045,7 +1045,8 @@
         },
         "post_delay": 800,
         "focus": {
-            "Node.Recognition.Succeeded": "[color=Orange]HIF: スキルカード詳細弹窗(実機 2026-08-22 轮3:出牌点卡误开详情,毛玻璃遮全画面致全部锚 miss 段退;vision 実測閉じる(360,1180);前挂优先关——管线层可达,Custom dissolve 够不着)[/color]"
+            "Node.Action.Succeeded": "[color=Orange]HIF: スキルカード詳細弹窗(×実機 2026-08-23 轮11 双证 (360,730) 点中关闭;旧 (360,1180) 轮3 vision 给值実機点空——浮层×随内容浮动,若再失效升级 Custom 动态找×)",
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: スキルカード詳細弹窗(出牌点卡误开详情,毛玻璃遮全画面致全部锚 miss 段退;前挂优先关——管线层可达,Custom dissolve 够不着)[/color]"
         }
     },
     "ProduceHIFSupportEventPopup": {
