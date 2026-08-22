@@ -92,5 +92,8 @@ def test_reset_round1_state_clears_previous_run(monkeypatch, tmp_path) -> None:
         "oneesan_used": False,
         "natural_finisher_used": False,
         "reprise_count": 0,
-    }  # 脏键一并清除（整体替换而非 patch 合并）
+        "p_drink_slots": [],
+    }  # 脏键一并清除（整体替换而非 patch 合并）;p_drink_slots 跨段保留位
+    # (2026-08-22 轮2:段重入不再点瓶位探测,同局缓存——上局残留经 round1 子树整体
+    # 重建时的 prev 读取,新局 EntryHIF 无 round1 子树自然为空)
     assert base._read_session_state()["day_remaining"] == 2  # 顶层字段不受影响
