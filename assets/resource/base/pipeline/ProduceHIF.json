@@ -148,6 +148,7 @@
             "param": {}
         },
   "next": [
+    "[JumpBack]ProduceHIFStatePanelCloseFlag",
     "[JumpBack]ProduceHIFMemAbilityCloseFlag",
     "[JumpBack]ProduceHIFCardDetailCloseFlag",
     "[JumpBack]ProduceHIFSupportEventPopup",
@@ -946,6 +947,39 @@
         },
         "focus": {
             "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: 変卡完成,点空白推进(実機 2026-08-20:提示层「…にチェン/ジしました」拆两行,补ジしました变体)[/color]"
+        }
+    },
+    "ProduceHIFStatePanelCloseFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*(再演).*",
+                    ".*消費体力減少.*",
+                    ".*スキルカード追加発動.*"
+                ],
+                "roi": [
+                    40,
+                    50,
+                    560,
+                    680
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    755,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 800,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: buff効果一覧面板残留(実機 2026-08-22 轮5:内容含(再演)/絶好調Nターン,×位(360,755)同buff面板;挡残りターン致 PlayFlag 不可达——管线层第四例#41,Custom dissolve 只在 PlayFlag 可达时有效)[/color]"
         }
     },
     "ProduceHIFMemAbilityCloseFlag": {
