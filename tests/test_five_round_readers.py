@@ -266,22 +266,25 @@ class TestGuardedTapFingerprint:
 
 
 class TestGrayCardDetection:
-    def _make(self, rgb_val: int, size: tuple = (12, 100)) -> "np.ndarray":
-        import numpy as np
-        h, w = size
-        return np.full((h, w, 3), rgb_val, dtype=np.uint8)[..., ::-1]  # 存成 BGR 模拟 maafw
-
     def test_gray_card_detected(self) -> None:
         import numpy as np
         from agent.custom.action.produce_hif import ProduceHIFRound1Play
-        img = self._make(120)  # 纯灰:饱和度 0(box 落图内)
-        assert ProduceHIFRound1Play._is_gray_card(img, (0, 0, 80, 120)) is True
+        img = np.full((60, 400, 3), 120, dtype=np.uint8)  # 纯灰:饱和度 0(BGR 同值)
+        assert ProduceHIFRound1Play._is_gray_card(img, (10, 5, 80, 120)) is True
 
     def test_colored_card_passes(self) -> None:
         import numpy as np
         from agent.custom.action.produce_hif import ProduceHIFRound1Play
-        h, w = 12, 100
-        rgb = np.zeros((h, w, 3), dtype=np.uint8)
-        rgb[..., 0] = 200  # R 高
-        rgb[..., 2] = 40   # B 低 → 高饱和
-        assert ProduceHIFRound1Play._is_gray_card(rgb[..., ::-1], (0, 0, 80, 120)) is False
+        img = np.zeros((60, 400, 3), dtype=np.uint8)
+        img[..., 0] = 200  # B 高
+        img[..., 2] = 40   # R 低 → 高饱和(BGR)
+        assert ProduceHIFRound1Play._is_gray_card(img, (10, 5, 80, 120)) is False
+
+    def test_band_saturation_pure(self) -> None:
+        import numpy as np
+        from agent.custom.action.produce_hif import ProduceHIFRound1Play
+        gray = np.full((4, 8, 3), 100, dtype=np.uint8)
+        color = np.zeros((4, 8, 3), dtype=np.uint8)
+        color[..., 0] = 220
+        assert ProduceHIFRound1Play._band_saturation(gray) < 5
+        assert ProduceHIFRound1Play._band_saturation(color) > 180

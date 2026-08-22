@@ -1,6 +1,7 @@
 import re
 import json
 import time
+import dataclasses
 from typing import Any, Dict, List, Optional
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -2062,6 +2063,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 return True
 
             hand = ExamStateReader.from_context(context).read_hand()
+            hand = self._filter_gray_hand(context, hand)
             if not hand.card_names:
                 # 面板/弹窗残留自愈（実機 2026-08-22 轮0 两次 stop 根因：出牌循环
                 # 打开的 buff 面板/P item 弹窗关闭失败后遮挡手牌，YOLO 恒 miss）
@@ -2397,21 +2399,65 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     # 执行层（Q12：原坐标重试 ≤2；SELECT 跟随选中卡漂移）
     # ------------------------------------------------------------------
 
+    def _filter_gray_hand(self, context: Context, hand):
+        """hand 层灰卡过滤(2026-08-22 规划:策略输入端只见可用卡,目标天然可出;
+        执行层无需再偏离策略退首张)。全灰/判定异常时保守不过滤。"""
+        if not hand.card_names:
+            return hand
+        try:
+            image = self._get_screenshot(context)
+            detections = ExamStateReader.from_context(context).ocr.run_yolo_cards()
+            usable = {normalize_card_name(d.card_name).rstrip("+") for d in detections
+                      if d.card_name and not self._is_gray_card(image, tuple(d.box))}
+            if not usable:
+                return hand
+            filtered = tuple(n for n in hand.card_names
+                             if normalize_card_name(n).rstrip("+") in usable)
+            if len(filtered) < len(hand.card_names):
+                logger.info(f"hand 灰卡过滤: {list(hand.card_names)} -> {list(filtered)}")
+                return dataclasses.replace(hand, card_names=filtered)
+        except Exception as err:
+            logger.debug(f"hand 灰卡过滤异常(不过滤): {err}")
+        return hand
+
     GRAY_CARD_SAT_THRESHOLD = 40  # 卡框带 HSV 饱和度均值阈值(灰卡<40,用户 UI 约束
     # 2026-08-22:消耗超出当前状态(体力/集中不足)时卡牌变灰——灰卡点击不生效,须跳过)
 
     @staticmethod
-    def _is_gray_card(image, box: tuple[int, int, int, int]) -> bool:
-        """灰卡判定:卡牌上边框带饱和度(消耗不足时卡整体去饱和,UI 约束)。"""
-        x, y, w, h = box[:4]
-        band = image[max(0, y):max(0, y) + max(4, h // 12), x:x + max(4, w)]
-        if band.size == 0:
+    def _band_saturation(arr: "np.ndarray") -> float:
+        """RGB 数组平均饱和度(0-255,HSL 的 S 近似=(max-min)/max)。"""
+        if arr.size == 0:
+            return 255.0
+        a = np.asarray(arr, dtype=np.float32)
+        mx = a.max(axis=2) + 1e-6
+        mn = a.min(axis=2)
+        return float(((mx - mn) / mx).mean() * 255)
+
+    @classmethod
+    def _is_gray_card(cls, image, box: tuple[int, int, int, int]) -> bool:
+        """灰卡判定:卡框**四边环带**(各 1/12)饱和度均值(消耗不足时卡整体去饱和,
+        用户 UI 约束;四边环避开卡面插图区,比单上边带抗内容干扰——2026-08-22 规划)。
+        首次実機触发时日志带饱和度值供阈值校准。"""
+        x, y, w, h = (int(v) for v in box[:4])
+        t = max(3, h // 12)
+        s = max(3, w // 12)
+        H, W = image.shape[:2]
+        x0, y0, x1, y1 = max(0, x), max(0, y), min(W, x + w), min(H, y + h)
+        if x1 - x0 < s * 2 or y1 - y0 < t * 2:
             return False
-        arr = np.asarray(band[..., ::-1], dtype=np.float32)  # BGR→RGB
-        mx = arr.max(axis=2) + 1e-6
-        mn = arr.min(axis=2)
-        sat = float(((mx - mn) / mx).mean() * 255)
-        return sat < ProduceHIFRound1Play.GRAY_CARD_SAT_THRESHOLD
+        arr = np.asarray(image[y0:y1, x0:x1, ::-1])  # BGR→RGB
+        ih, iw = arr.shape[:2]
+        bands = [
+            arr[:t, :, :],           # 上
+            arr[ih - t:, :, :],       # 下
+            arr[:, :s, :],           # 左
+            arr[:, iw - s:, :],       # 右
+        ]
+        sat = float(np.mean([cls._band_saturation(b) for b in bands]))
+        is_gray = sat < cls.GRAY_CARD_SAT_THRESHOLD
+        if is_gray:
+            logger.debug(f"灰卡 sat={sat:.0f} box={box[:4]}")
+        return is_gray
 
     def _execute_action(self, context: Context, action: CardAction, hand) -> tuple[bool, Optional[str]]:
         if action.kind is ActionKind.SKIP:
