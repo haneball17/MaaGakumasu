@@ -6,8 +6,7 @@
 `python tools/data_pipeline.py derive --write-legacy-compact`
 """
 
-from data_pipeline import run_derive
-from data_pipeline import run_normalize
+from data_pipeline import run_derive, run_normalize
 
 
 def main() -> None:

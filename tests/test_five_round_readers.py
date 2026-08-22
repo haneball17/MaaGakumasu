@@ -268,12 +268,14 @@ class TestGuardedTapFingerprint:
 class TestGrayCardDetection:
     def test_gray_card_detected(self) -> None:
         import numpy as np
+
         from agent.custom.action.produce_hif import ProduceHIFRound1Play
         img = np.full((60, 400, 3), 120, dtype=np.uint8)  # 纯灰:饱和度 0(BGR 同值)
         assert ProduceHIFRound1Play._is_gray_card(img, (10, 5, 80, 120)) is True
 
     def test_colored_card_passes(self) -> None:
         import numpy as np
+
         from agent.custom.action.produce_hif import ProduceHIFRound1Play
         img = np.zeros((60, 400, 3), dtype=np.uint8)
         img[..., 0] = 200  # B 高
@@ -282,6 +284,7 @@ class TestGrayCardDetection:
 
     def test_band_saturation_pure(self) -> None:
         import numpy as np
+
         from agent.custom.action.produce_hif import ProduceHIFRound1Play
         gray = np.full((4, 8, 3), 100, dtype=np.uint8)
         color = np.zeros((4, 8, 3), dtype=np.uint8)

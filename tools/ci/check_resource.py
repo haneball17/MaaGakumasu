@@ -1,10 +1,9 @@
 import sys
-
 from typing import List
 from pathlib import Path
 
-from maa.resource import Resource
 from maa.tasker import Tasker, LoggingLevelEnum
+from maa.resource import Resource
 
 
 def check(dirs: List[Path]) -> bool:
