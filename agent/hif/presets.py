@@ -51,6 +51,9 @@ class HIFPreset:
     # ---- 评分模型旋钮(B4;0/None = 不覆盖,用 scoring.ScoringParams 默认) ----
     scoring_scale: float = 0.0  # 缩放系数(量级对齐,默认 0.53 → 好調7T ≈8 分)
     endgame_weight: float | None = None  # 终盘权重(None=默认 1.0;0=关闭终盘衰减)
+    # 対局开局资源探测(P item 详情+牌堆查看器):默认关——入口坐标未校准
+    # (五轮 106 次 miss 降级纯耗时,审计缺口 1/2),実機取证校准后经 GUI/override 打开
+    probe_opening_resources: bool = False
 
 
 SAFE_DEFAULT_PRESET = HIFPreset(
@@ -196,6 +199,11 @@ def parse_hif_preset(raw: str | None) -> HIFPreset:
     round1_mode = payload.get("round1_mode")
     if isinstance(round1_mode, str) and round1_mode in ("play", "observe_and_stop"):
         updates["round1_mode"] = round1_mode
+    # 対局开局资源探测（五轮复盘 Q3 裁决默认关）：GUI 模板注入恒字符串,容错 bool
+    probe = payload.get("probe_opening_resources")
+    probe_on = probe is True or (isinstance(probe, str) and probe.strip().lower() in ("yes", "true", "1"))
+    if probe_on:
+        updates["probe_opening_resources"] = True
 
     return replace(preset, **updates) if updates else preset
 
@@ -280,6 +288,10 @@ def apply_file_overrides(preset: HIFPreset, path: Path = _OVERRIDE_PATH) -> HIFP
         value = payload.get(key)
         if isinstance(value, str) and value.strip() and not preset.__getattribute__(field_name):
             updates[field_name] = value.strip()
+    probe = payload.get("probe_opening_resources")
+    probe_on = probe is True or (isinstance(probe, str) and probe.strip().lower() in ("yes", "true", "1"))
+    if probe_on and not preset.probe_opening_resources:
+        updates["probe_opening_resources"] = True
     return replace(preset, **updates) if updates else preset
 
 

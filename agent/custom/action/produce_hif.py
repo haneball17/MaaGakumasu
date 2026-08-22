@@ -2052,11 +2052,17 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             else:
                 p_drink_slots = self._probe_p_drink_slots(context)
                 logger.info(f"{round_tag} P饮料槽探测={self._available_drinks_from_slots(p_drink_slots)}")
-            # 対局资源全景开局读取（五轮验证 A/B）：P item 详情 + 牌堆全状态，缓存 session 供 _build_state
-            p_items = self._read_p_item_details(context)
-            logger.info(f"{round_tag} P道具详情读取={len(p_items) if p_items is not None else 'FAIL'}件")
-            deck_state = self._read_deck_state(context)
-            logger.info(f"{round_tag} 牌堆状态读取={ {k: len(v) for k, v in (deck_state or {}).items()} if deck_state else 'FAIL' }")
+            # 対局资源全景开局读取（五轮验证 A/B）：P item 详情 + 牌堆全状态，缓存 session 供 _build_state。
+            # 五轮复盘 Q3（2026-08-22）：入口坐标未校准致 106 次 miss 降级纯耗时，且
+            # 策略不消费此二字段（审计缺口 4）——默认关，実機取证校准后经 GUI/override
+            # 注入 probe_opening_resources 打开
+            if preset.probe_opening_resources:
+                p_items = self._read_p_item_details(context)
+                logger.info(f"{round_tag} P道具详情读取={len(p_items) if p_items is not None else 'FAIL'}件")
+                deck_state = self._read_deck_state(context)
+                logger.info(f"{round_tag} 牌堆状态读取={ {k: len(v) for k, v in (deck_state or {}).items()} if deck_state else 'FAIL' }")
+            else:
+                logger.info(f"{round_tag} 开局资源探测关闭(默认,p_items/牌堆坐标未校准)")
         else:
             logger.warning(f"{round_tag} 开局非対局页(重入/已结束?),跳过开局探测直接出口判定")
 
@@ -2348,10 +2354,9 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         """右上 P item 触发剩余（云朵旁数字，原 reprise ROI 改标；仅落盘不进决策）。"""
         return self._read_int_ocr(context, image, "HIFRound1PItemProgress", self.ROI_REPRISE)
 
-    def _read_total_score(self, context: Context, image) -> Optional[int]:
-        """右上総分 → turn_score 落盘来源。実測 ROI 内含邻位小数字（70/0），
-        best_result 会选错框——取 all_results 最大数值（総分单调增且远大于邻数）。"""
-        detail = self._run_ocr(context, image, "HIFRound1TotalScore", [".*"], self.ROI_TOTAL_SCORE)
+    @staticmethod
+    def _max_int_from_ocr(detail) -> Optional[int]:
+        """OCR 结果取最大整数值（総分 ROI 含邻位小数字，総分单调增且远大于邻数）。"""
         if not (detail and detail.hit):
             return None
         values = []
@@ -2360,6 +2365,27 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             if digits:
                 values.append(int(digits))
         return max(values) if values else None
+
+    def _read_total_score(self, context: Context, image) -> Optional[int]:
+        """右上総分 → turn_score 落盘来源。実測 ROI 内含邻位小数字（70/0），
+        best_result 会选错框——取 all_results 最大数值（総分单调增且远大于邻数）。
+        直读 miss（五轮复盘 10-12% 读空，2026-08-22 Q4）→ ROI crop 放大 3 倍重读
+        （_read_turn_zoomed 同模式）。"""
+        detail = self._run_ocr(context, image, "HIFRound1TotalScore", [".*"], self.ROI_TOTAL_SCORE)
+        value = self._max_int_from_ocr(detail)
+        if value is not None:
+            return value
+        fx, fy, fw, fh = self.ROI_TOTAL_SCORE
+        crop = image[fy:fy + fh, fx:fx + fw]
+        if crop.size == 0:
+            return None
+        pil = Image.fromarray(crop[..., ::-1]).resize((fw * 3, fh * 3), Image.LANCZOS)
+        zoomed = np.array(pil)[..., ::-1]
+        zoom_detail = self._run_ocr(
+            context, zoomed, "HIFRound1TotalScoreZoom", [".*"],
+            [0, 0, zoomed.shape[1], zoomed.shape[0]],
+        )
+        return self._max_int_from_ocr(zoom_detail)
 
 
     def _build_state(self, context: Context, image, turn_left: int, hand,
@@ -2500,7 +2526,14 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         sat = float(np.mean([cls._band_saturation(b) for b in bands]))
         is_gray = sat < cls.GRAY_CARD_SAT_THRESHOLD
         if is_gray:
-            logger.debug(f"灰卡 sat={sat:.0f} box={box[:4]}")
+            # 判灰每次 info 带 sat 值(五轮 0 触发=低频不刷屏)——遗留#5 阈值
+            # 実機校准数据源(2026-08-22 五轮复盘 Q5)
+            logger.info(
+                f"灰卡判定触发 sat={sat:.0f}(<{cls.GRAY_CARD_SAT_THRESHOLD}) "
+                f"box={tuple(int(v) for v in box[:4])}"
+            )
+        else:
+            logger.debug(f"非灰卡 sat={sat:.0f} box={box[:4]}")
         return is_gray
 
     def _execute_action(self, context: Context, action: CardAction, hand) -> tuple[bool, Optional[str]]:
