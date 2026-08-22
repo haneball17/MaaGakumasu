@@ -1,6 +1,6 @@
 ---
 name: pipeline-autodev
-description: 无人工介入的 MaaFW 管线开发调试循环。当用户要求"用 autodev 给某页面做节点/补识别/调管线"，或需要自主探索游戏页面、裁模板、生成节点、实机连测并出证据报告时使用。以五角色循环（感知/执行/反思/记录/管理）驱动，坐标由 OCR/模板/YOLO 出框、视觉模型只选编号，危险操作同步等用户确认。
+description: 无人工介入的 MaaFW 管线开发调试循环。当用户要求"用 autodev 给某页面做节点/补识别/调管线"，或需要自主探索游戏页面、裁模板、生成节点、实机连测并出证据报告，以及"再跑一轮/复验一轮/验证修复"类整局実機验证时使用。以五角色循环（感知/执行/反思/记录/管理）驱动，坐标由 OCR/模板/YOLO 出框、视觉模型只选编号，危险操作同步等用户确认。
 ---
 
 # pipeline-autodev：无人化管线开发调试循环
@@ -94,6 +94,42 @@ description: 无人工介入的 MaaFW 管线开发调试循环。当用户要求
   对比），禁直调 `controller.post_*`——IPC 点击静默丢失的归因全靠此链。
 - `Job.wait()` 无限阻塞是 maafw 接口事实：`_wait_job`（done 轮询 15s）已包装；长循环（出牌/全库扫描）
   必须带全局 deadline。
+
+## 轮驱动验证（整局実機稳定性验证，2026-08-22 轮 6-7 沉淀）
+
+「再跑一轮/复验一轮/验证修复」类请求：一轮 = 环境三件套 + 入口段 + 主线 segment_loop 段接力 +
+量化统计 + 复盘六件。累计 7+ 轮实证（轮 4-7 主线零介入）。
+
+1. **环境三件套**（开工必查，顺序固定）：
+   - `adb devices`——MuMu adb 在 `E:\game\MuMu\nx_device\12.0\shell\adb.exe`，端口跨会话漂移先查再连；
+   - python 残留：`Get-CimInstance Win32_Process -Filter "name='python.exe'"` 按 CommandLine 匹配
+     `*hif_run*`/`*agent*main*` 清光（maa-mcp 常驻不算）；
+   - `maa_dev.py snap` + OCR 判画面：干净主页面=理想起点，有在途局先问用户处置。
+2. **入口段**（手动 backlog，坐标链两轮实测稳定）：プロデュース(360,997)→本戦(550,890)→
+   次へ(367,1078)→プロデュース開始(370,1113)；開場コミュ SKIP(217,1212)（出现频率不定）；
+   通信エラー リトライ(522,1165)（设备级偶发，重试后服务端已受理直达 Day1）。
+   每步 `adb shell input tap` → sleep 3-6 → snap → OCR 验证推进（posted≠生效铁律；
+   点击丢失原坐标重试 1-2 次）。
+3. **主线段驱动**（run_in_background，一轮约 6 段 31-48 分钟；单段超时被接力无损接管是正常模式）：
+   ```bash
+   MAA_DEV_ADDR=127.0.0.1:<port> HIF_RUN_CHOICES='{"Round1 出牌":"Yes"}' \
+     .venv/Scripts/python.exe -u debug/autodev/segment_loop.py \
+     --segments 12 --tag round<N> --timeout 900 > debug/autodev/round<N>_loop.log 2>&1
+   ```
+4. **周期监控**（≤290s 间隔；Bash 调用记得设 timeout 参数防 120s 默认截断）：
+   - `tail debug/autodev/round<N>_loop.log`——段进度+每段起止画面签名；
+   - 决策 JSONL tail：`debug/decisions/session-<date>.jsonl` 末 3-5 条（screen/action/chosen/reason）；
+   - 当前段 agent 日志 `debug/hif-live/agent-subprocess.log` grep 自愈标志（如「turn 读空但画面在动」
+     「检出変卡弹窗」）——**该文件按段 "w" 重写，只反映当前段**，跨段统计去决策 JSONL/maafw.log。
+5. **量化统计**（轮结束）：**时间窗过滤必须用 `ts[:5]`**（ts 是纯 'HH:MM:SS'，与日期串比较恒 False/
+   恒 True——実機轮 7 假结果 0 条教训）；统计前先打印首末条记录验证字段格式，结果与监控观察矛盾
+   先怀疑过滤器。指标：决策数/出牌手数/stop 分布（screen+reason 逐条归因：段边界瞬态 vs 真异常 vs
+   误入）/ops `scene_changed` 全 True 率/段数/总时长。
+6. **复盘六件**：bug 编号先 grep 占用（编号会被代码注释占用，如 bug#44）→ 修复（agent/管线层，
+   优先模式级系统性解法）→ 回归（pytest 七件套 215 基线：hif_decision/play_decision/exam_reader/
+   scoring_model/five_round_readers/change_source/session_state）→ 文档（验证报告加轮节+遗留清单
+   增量）→ commit（Conventional Commits，Conventional 风格参照仓库近史）→ 记忆更新。
+   步骤明细落 `debug/autodev/round<N>-steps.md`（时间线/量化/证据路径，不入库）。
 
 ## vision 先行诊断（2026-08-22 五轮验证 ≥6 次实证）
 
