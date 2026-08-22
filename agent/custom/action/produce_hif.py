@@ -958,7 +958,9 @@ class _ProduceHIFRewardChoiceAction(_ProduceHIFActionBase):
         return self._confirm_candidate(context, best_box, screen_state)
 
     def _confirm_candidate(self, context: Context, box: List[int], screen_state: str) -> bool:
-        self._click_box_center(context, box, double=False)
+        # y+20 pill 几何中心补偿(実機 2026-08-22 轮5 #35 模式:受け取る/次へ OCR 文字
+        # box 中心偏上 ~21px,入场点击静默丢失高发)
+        self._click_box_center(context, box, double=False, y_offset=20)
         time.sleep(self.CLICK_DELAY)
         confirm = self._find_text_option(context, self._get_screenshot(context), self.CONFIRM_TEXT, self.CONFIRM_ROI)
         if not confirm:
@@ -2395,6 +2397,22 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     # 执行层（Q12：原坐标重试 ≤2；SELECT 跟随选中卡漂移）
     # ------------------------------------------------------------------
 
+    GRAY_CARD_SAT_THRESHOLD = 40  # 卡框带 HSV 饱和度均值阈值(灰卡<40,用户 UI 约束
+    # 2026-08-22:消耗超出当前状态(体力/集中不足)时卡牌变灰——灰卡点击不生效,须跳过)
+
+    @staticmethod
+    def _is_gray_card(image, box: tuple[int, int, int, int]) -> bool:
+        """灰卡判定:卡牌上边框带饱和度(消耗不足时卡整体去饱和,UI 约束)。"""
+        x, y, w, h = box[:4]
+        band = image[max(0, y):max(0, y) + max(4, h // 12), x:x + max(4, w)]
+        if band.size == 0:
+            return False
+        arr = np.asarray(band[..., ::-1], dtype=np.float32)  # BGR→RGB
+        mx = arr.max(axis=2) + 1e-6
+        mn = arr.min(axis=2)
+        sat = float(((mx - mn) / mx).mean() * 255)
+        return sat < _ProduceHIFRound1Play.GRAY_CARD_SAT_THRESHOLD
+
     def _execute_action(self, context: Context, action: CardAction, hand) -> tuple[bool, Optional[str]]:
         if action.kind is ActionKind.SKIP:
             return self._click_skip(context), None
@@ -2403,14 +2421,30 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                   if action.target_card else None)
         reader = ExamStateReader.from_context(context)
         detections = reader.ocr.run_yolo_cards()
-        chosen = None
+        image = self._get_screenshot(context)
+        gray_names: list[str] = []
+        usable = []
         for d in detections:
             name = normalize_card_name(d.card_name).rstrip("+") if d.card_name else ""
+            if self._is_gray_card(image, tuple(d.box)):
+                if name:
+                    gray_names.append(name)
+                continue
+            usable.append((d, name))
+        if gray_names:
+            logger.info(f"Round 灰卡过滤(消耗不足变灰,不可出): {gray_names}")
+        chosen = None
+        for d, name in usable:
             if target and name == target:
                 chosen = d
                 break
-            if not target and name:
-                chosen = chosen or d  # target=None 时按 YOLO 顺序取首张可读卡
+        if chosen is None and not target:
+            chosen = next((d for d, name in usable if name), None)
+        if chosen is None and target:
+            # 目标卡灰/不在——退可用首张(策略目标不可达时不空转,保推进)
+            if usable:
+                chosen = usable[0][0]
+                logger.warning(f"Round 目标卡不可用(灰/未检出) target={target},退可用首张")
         if chosen is None:
             logger.warning(f"Round1 目标卡未命中 target={target}，hand={list(hand.card_names)}")
             return False, None

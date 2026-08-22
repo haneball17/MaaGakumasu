@@ -863,9 +863,19 @@
         },
         "action": {
             "type": "Click",
-            "param": {}
+            "param": {
+                "target": [
+                    360,
+                    1080,
+                    1,
+                    1
+                ]
+            }
         },
-        "post_delay": 500
+        "post_delay": 500,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 受け取る确认(2026-08-22 轮5:选中态残留页兜底——三选一 Custom confirm 中断后选中态无标题锚,此 Flag 接管;点击位=pill 几何中心(360,1080) 非文字 box)[/color]"
+        }
     },
     "ProduceHIFSelectChangeTargetFlag": {
         "recognition": {

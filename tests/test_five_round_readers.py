@@ -260,3 +260,28 @@ class TestGuardedTapFingerprint:
         fp1 = _ProduceHIFActionBase._fingerprint(base)
         assert fp1 and fp1 == _ProduceHIFActionBase._fingerprint(same)
         assert fp1 != _ProduceHIFActionBase._fingerprint(changed)
+
+
+# ---------------------------------------------------------------- 灰卡判定（用户 UI 约束 2026-08-22）
+
+
+class TestGrayCardDetection:
+    def _make(self, rgb_val: int, size: tuple = (12, 100)) -> "np.ndarray":
+        import numpy as np
+        h, w = size
+        return np.full((h, w, 3), rgb_val, dtype=np.uint8)[..., ::-1]  # 存成 BGR 模拟 maafw
+
+    def test_gray_card_detected(self) -> None:
+        import numpy as np
+        from agent.custom.action.produce_hif import ProduceHIFRound1Play
+        img = self._make(120)  # 纯灰:饱和度 0
+        assert ProduceHIFRound1Play._is_gray_card(img, (10, 100, 80, 150)) is True
+
+    def test_colored_card_passes(self) -> None:
+        import numpy as np
+        from agent.custom.action.produce_hif import ProduceHIFRound1Play
+        h, w = 12, 100
+        rgb = np.zeros((h, w, 3), dtype=np.uint8)
+        rgb[..., 0] = 200  # R 高
+        rgb[..., 2] = 40   # B 低 → 高饱和
+        assert ProduceHIFRound1Play._is_gray_card(rgb[..., ::-1], (10, 100, 80, 150)) is False
