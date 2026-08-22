@@ -754,10 +754,37 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
     # 转场竞态防循环(実機 2026-08-15 Day4):変卡标题未渲染时 Flag 误命中残留「授業」标题,
     # 同一无效文本被反复点击;记录最近点击文本,重复时跳过换下一个候选
     _recent_option_texts: list[str] = []
+    # 誤入変卡页放行计数(#48):[JumpBack] 回环命中即重置轮询永不到 timeout,
+    # 连续放行上限后必须回退到安全停止
+    _change_handoff_count = 0
+
+    def _handoff_to_change_flow(self, context: Context) -> bool:
+        """誤入変卡弹窗自检放行（#48）：変卡页与授業页共享左上「授業」HUD 且选项
+        区文本全被安全过滤排空——OCR 弹窗标题区「チェンジ」命中即 return True 交回
+        路由让 SelectChangeTarget/SourceFlag 接管（其长句锚稳定后可命中）；连续 3 次
+        仍被路由回本 action 说明変卡 Flag 持续 miss，False 回退安全停止防死循环。"""
+        image = self._get_screenshot(context)
+        hit = self._find_text_option(context, image, ("チェンジ",), [60, 250, 600, 130])
+        cls = type(self)
+        if not hit:
+            cls._change_handoff_count = 0
+            return False
+        cls._change_handoff_count += 1
+        if cls._change_handoff_count > 3:
+            logger.warning("HIF 授業选项: 変卡页放行 3 次仍被路由回,変卡 Flag 疑持续 miss,停止")
+            cls._change_handoff_count = 0
+            return False
+        logger.info(f"HIF 授業选项: 检出変卡弹窗(誤入),放行回路由({cls._change_handoff_count}/3)")
+        return True
 
     def _choose_first_safe_option(self, context: Context, image) -> bool:
         reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFClassOptions", [".*"], self.OPTION_ROI)
         if not (reco_detail and reco_detail.all_results):
+            # 誤入自愈（実機轮7 #48：変卡页与授業页共享左上「授業」HUD——変卡 Flag
+            # 长句锚 miss 时 ClassOptionFlag 在変卡页误命中，选项过滤后全空 stop，
+            # 损耗一次段重启）——先自检是否変卡弹窗，是则放行回路由
+            if self._handoff_to_change_flow(context):
+                return True
             return self._stop_unsupported(context, "hif_class_options", "class_options_not_found")
 
         results = reco_detail.all_results
@@ -773,6 +800,8 @@ class ProduceChooseHIFClassOptionAuto(_ProduceHIFActionBase):
             and not any(abs(item.box[1] + item.box[3] // 2 - ty) < 40 for ty in trouble_ys)
         ]
         if not candidates:
+            if self._handoff_to_change_flow(context):
+                return True
             return self._stop_unsupported(context, "hif_class_options", "no_safe_option")
 
         # 固定表标记可见时(選択して獲得)优先获得类选项(seesaawiki 授業固定表),否则取最上方安全项

@@ -198,6 +198,16 @@
 - 新增 bug #45-47（#44 已被轮 5 exec_verified 闭环占用）：#45 turn 段边界瞬态（**已修**：`_wait_turn_reframe` 指纹区分演出/真异常+`ROUND_EXIT_ANCHORS` 常量共用）；#46 ROUND_DEADLINE_S 定义未检查（**已修**：循环头超时 stop `round_deadline_exceeded`）；#47 通信エラー设备级弹窗（暂缓，待実機取证模板）。修复后 pytest 七件套 215 passed。
 - 详细步骤记录与证据路径：`debug/autodev/round6-steps.md`（不入库）。
 
+### 轮 7（修复验证轮，2026-08-22 17:45-18:30，完整走通）
+
+培育→R1 出牌（14 手）→Interval→R2 出牌（14 手，自然体の魅力 1000% 终结技）→R2 敗退→再挑戦確認 produce_end→结算→メモリー→報酬→**主页面** ✓ **主线零介入（连续第四轮）**
+
+- 6 段接力 31 分钟（轮 6 48 分钟）；入口 5 步含**本局開場コミュ SKIP**（轮 6 无、轮 7 有——频率不定，遗留 #7 缺口实证，SKIP box [177,1185,81,29]→tap (217,1212)）。入口坐标复用轮 6 校准值全部一次命中。
+- **#45 验证 ✓**：turn_counter_unreadable stop 轮 6 基线 4 次→**0 次**；自愈路径（「turn 读空但画面在动」）未触发（段边界未落在演出窗口），无回归，正面案例待未来轮次。
+- **#46 验证 ✓**：round_deadline_exceeded 不误触。
+- **#48 新发现已修**：変卡页与授業页**共享左上「授業」HUD**（両页顶部 OCR 实证完全一致）——変卡 Flag 长句锚 miss 时 ClassOptionFlag 误命中変卡页，选项过滤全空→no_safe_option stop（17:52 一次，段接力自愈）。2026-08-15 已知问题完整修复：`_handoff_to_change_flow` 自检放行（OCR「チェンジ」命中即 return True 交回路由，3 次上限防 [JumpBack] 回环死循环），`class_options_not_found`/`no_safe_option` 两分支都挂；215 tests 全绿，実機复验待下轮変卡时点。
+- 详细步骤与证据：`debug/autodev/round7-steps.md`（不入库）。
+
 ## 验收对照（goal 七条件）
 
 | 条件         | 结果                                                | 证据                                                                                                                                                         |
@@ -220,4 +230,4 @@
 6. USE_P_DRINK 瓶位语义（A5 未定案，现拦截只记录）
 7. 開場コミュ SKIP 节点（低频：仅局首；轮 6 実測本局无開場コミュ，出现频率待观测）
 8. 通信エラー设备级弹窗管线节点（轮 6 #47：培育中触发时 ScheduleRoot 全 miss 不收敛；待実機取证弹窗模板后挂 ScheduleRoot 前部）
-9. 轮 6 修复（#45/#46）実機复验：下一轮出牌段边界应看到 `turn 读空但画面在动` 日志自愈而非 stop
+9. 轮 6 修复（#45/#46）実機复验：#45 已验无回归+零 turn stop（轮 7），正面自愈案例仍待触发；#48 変卡誤入自愈（`_handoff_to_change_flow`）待下轮変卡时点复验
