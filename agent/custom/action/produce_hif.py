@@ -2269,6 +2269,9 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 _ProduceHIFActionBase._write_session_state({"hif_round1_done": False})
                 logger.info(f"HIF r1_done 跨局残留清除(総分={opening_score},新局 R1)")
         _ProduceHIFActionBase._reset_round1_state()
+        # 共用执行组件的日志标签动态化(#19):run 入口写 session,深链方法读
+        # (R2 段执行时标签显示实际回合号,排障可定位)
+        _ProduceHIFActionBase._write_session_state({"hif_current_round_tag": round_tag})
         on_battle_page = self._read_turn_left(context, opening_image) is not None
         opening_panel = None
         p_drink_slots = []
@@ -2888,6 +2891,16 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             logger.debug(f"非灰卡 sat={sat:.0f} box={box[:4]}")
         return is_gray
 
+    @staticmethod
+    def _round_label() -> str:
+        """共用执行组件的日志回合标签(#19)：读 run() 入口写入的 session 标记。
+
+        覆盖链下游（_execute_action/面板/懒定案）无 round_tag 形参，硬编码
+        「Round1」会让 R2 段排障误导；session 全局层跨方法可达且每段入口重写。
+        """
+        tag = _ProduceHIFActionBase._read_session_state().get("hif_current_round_tag")
+        return tag if isinstance(tag, str) and tag else "round?"
+
     def _execute_action(self, context: Context, action: CardAction, hand) -> tuple[bool, Optional[str]]:
         if action.kind is ActionKind.SKIP:
             return self._click_skip(context), None
@@ -2921,7 +2934,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 chosen = usable[0][0]
                 logger.warning(f"Round 目标卡不可用(灰/未检出) target={target},退可用首张")
         if chosen is None:
-            logger.warning(f"Round1 目标卡未命中 target={target}，hand={list(hand.card_names)}")
+            logger.warning(f"{self._round_label()} 目标卡未命中 target={target}，hand={list(hand.card_names)}")
             return False, None
 
         box = list(chosen.box)
@@ -2932,7 +2945,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             if self._click_select(context):
                 time.sleep(self.SETTLE_DELAY)
                 return True, chosen.card_name
-            logger.info(f"Round1 SELECT 未出现/未生效，重试 {attempt + 1}/3")
+            logger.info(f"{self._round_label()} SELECT 未出现/未生效，重试 {attempt + 1}/3")
         return False, None
 
     def _verify_play_effect(
@@ -3270,7 +3283,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 opened = True
                 break
         if not opened:
-            logger.warning(f"Round1 面板未打开(entry_y={entry_y}),降级状态带可见行")
+            logger.warning(f"{self._round_label()} 面板未打开(entry_y={entry_y}),降级状态带可见行")
             return None
 
         items: dict[str, int] = {}
@@ -3386,7 +3399,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             time.sleep(1.2)
             if not self._panel_anchor_hit(context, self._get_screenshot(context)):
                 return True
-        logger.warning("Round1 状态面板关闭失败")
+        logger.warning(f"{self._round_label()} 状态面板关闭失败")
         return False
 
     def _read_overflow_panel(self, context: Context) -> list[str]:
@@ -3429,11 +3442,11 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             labels[str(int(row["y"]))] = title
         # 组合面板形态检测：有效行 ≥2 且标题雷同 → 点开非该行详情,映射无效
         if len(titles) >= 2 and len(set(titles)) == 1:
-            logger.info(f"Round1 懒定案放弃(组合面板形态,标题同款「{titles[0]}」)")
+            logger.info(f"{self._round_label()} 懒定案放弃(组合面板形态,标题同款「{titles[0]}」)")
             return
         if labels:
             _ProduceHIFActionBase._write_round1_state({"buff_row_labels": labels})
-            logger.info(f"Round1 懒定案映射 {len(labels)} 行: {labels}")
+            logger.info(f"{self._round_label()} 懒定案映射 {len(labels)} 行: {labels}")
 
     def _lazy_identify_row(self, context: Context, row_y: int) -> Optional[dict]:
         """懒定案读取（grill R2-Q1：仅 debug 报告不碰 assets/）：点未知行→面板名称+效果→关。"""
@@ -3457,7 +3470,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                                    [".*"], [100, 40, 420, 140])
             if self._find_in_all(anchor, "好調", "アビリティ詳細") is None:
                 break
-        logger.info(f"Round1 懒定案行@y{row_y}: {record['title'][:30]}")
+        logger.info(f"{self._round_label()} 懒定案行@y{row_y}: {record['title'][:30]}")
         return record
 
     def _enumerate_p_items(self, context: Context, image) -> list[dict]:
