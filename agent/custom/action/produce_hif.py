@@ -2199,7 +2199,6 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         total_turns, exam_round, round_tag = self._round_config(argv)
         screen_state = f"{round_tag}_play"
         deadline = time.time() + self.ROUND_DEADLINE_S
-        _ProduceHIFActionBase._reset_round1_state()
         played_history: List[str] = []
         no_progress = 0
         unverified_plays = 0
@@ -2207,6 +2206,23 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         # 対局页确认（実機 2026-08-22 轮0：Round 已结束重入时画面在結果页，
         # 开局槽探测会误点結果页元素——残りターン锚 miss 即跳过全部开局探测）
         opening_image = self._get_screenshot(context)
+        # R2 一位数窗口误接管自愈（実機 轮11段4/轮14段2:R2 残り≤9 时段内回环
+        # Round2Flag 两位数锚 miss→Round1Flag 误接管→round1 的 9 回合参数跑 R2
+        # 対局;驱动纪律只防段重启,段内回环仍踩)。大包完成时写全局 hif_round1_done
+        # (session 全局层,不被 R2 大包的 _reset_round1_state 清——误接管恰发生在
+        # R2 大包中段回环,round1 子树标记活不到那时),argv=round1 而 r1 已 done ⇒
+        # 疑似 R2——用総分区分:R2 対局总分从 R1 累计(>万)而 R1 新局≈0(跨局残留
+        # 同理清除);return False 交回路由会被 Round1Flag 再接管回环,就地改参不退出)
+        if round_tag == "round1" and _ProduceHIFActionBase._read_session_state().get("hif_round1_done"):
+            opening_score = self._read_total_score(context, opening_image)
+            if opening_score is not None and opening_score > 5000:
+                total_turns, exam_round, round_tag = 12, ExamRound.HONSEN_R2, "round2"
+                screen_state = f"{round_tag}_play"
+                logger.info(f"HIF round 误接管自愈: r1_done+総分{opening_score}>5000 ⇒ R2 対局,按 round2 参数重入")
+            else:
+                _ProduceHIFActionBase._write_session_state({"hif_round1_done": False})
+                logger.info(f"HIF r1_done 跨局残留清除(総分={opening_score},新局 R1)")
+        _ProduceHIFActionBase._reset_round1_state()
         on_battle_page = self._read_turn_left(context, opening_image) is not None
         opening_panel = None
         p_drink_slots = []
@@ -2284,6 +2300,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 # 段重启 20-30s 自愈——就地等动画静止重读，省段重启开销）
                 if self._wait_round_exit(context):
                     logger.success(f"HIF {round_tag} 出牌完成（出口页已到，共出 {len(played_history)} 张）")
+                    _ProduceHIFActionBase._write_session_state({f"hif_{round_tag}_done": True})
                     return True
                 if self._wait_turn_reframe(context):
                     logger.info(f"{round_tag} turn 读空但画面在动(演出/转场)，静止后重读")
@@ -2291,6 +2308,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 return self._stop_unsupported(context, screen_state, "turn_counter_unreadable")
             if turn_left == 0:
                 logger.success(f"HIF {round_tag} 出牌完成：共出 {len(played_history)} 张")
+                _ProduceHIFActionBase._write_session_state({f"hif_{round_tag}_done": True})
                 return True
 
             hand = ExamStateReader.from_context(context).read_hand()
