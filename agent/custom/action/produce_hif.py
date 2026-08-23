@@ -1,6 +1,7 @@
 import re
 import json
 import time
+import os as _os
 import dataclasses
 from types import SimpleNamespace
 from typing import Any, Dict, List, Optional
@@ -1885,6 +1886,12 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
     MAX_ROUNDS = 4
     P_POINTS_ROI = [300, 95, 160, 55]   # 右上 P 点余额数字(実測 380 [365,108,71,34])
     SHOP_GRID_ROI = [30, 560, 680, 340]  # 商品网格 2x4 价格标签带(実測 y620-880)
+    # 取证模式(#24 轮 2,商品详情面板结构取证→#22 名称级读取件下一批接线):
+    # 只点商品选中态并 OCR 落盘,禁点 交換する/交換/決定 购买链;误触确认弹窗
+    # 用 ×キャンセル (211,1156) 実測坐标退出;取证失败不阻塞主线(no_purchase 終了)
+    FORENSIC = _os.environ.get("HIF_INTERVAL_FORENSIC", "").strip() in ("1", "yes", "true")
+    CANCEL_TAP = (211, 1156)   # 交換確認弹窗 ×キャンセル(実測 forensic §6)
+    DESELECT_TAP = (60, 300)   # 取消商品选中:左上空白区(远离一切按钮)
 
     def _read_shop_state(self, context: Context, image) -> "IntervalShopState":
         import re
@@ -1901,6 +1908,43 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
         grid_detail = self._run_ocr(context, image, "IntervalShopGrid", [".*"], self.SHOP_GRID_ROI)
         tokens = tuple(item.text for item in ((grid_detail.all_results if grid_detail else None) or []))
         return IntervalShopState(p_points=p_points, ocr_raw=tokens)
+
+    def _forensic_products(self, context: Context, image) -> list[dict]:
+        """商品详情面板取证（#24）：从价格标签框推商品位，逐件点选中态 OCR 落盘。
+
+        只允许：点商品本体（价格标签上方 ~90px）、×キャンセル 退弹窗、空白取消选中。
+        禁点交換する/交換/決定（购买链）；任何异常捕获后放弃取证，主线走 no_purchase 終了。
+        """
+        import re as _re
+
+        records: list[dict] = []
+        try:
+            grid = self._run_ocr(context, image, "ForensicGrid", [".*"], self.SHOP_GRID_ROI)
+            price_boxes = [
+                (int(i.box[0] + i.box[2] / 2), int(i.box[1]))
+                for i in (grid.all_results if grid else None) or []
+                if _re.search(r"\d{2,3}", i.text)
+            ]
+            logger.info(f"HIF Interval 取证模式: {len(price_boxes)} 个价格标签待探")
+            for idx, (gx, label_y) in enumerate(price_boxes[:8]):
+                tap_xy = [gx, max(300, label_y - 90)]  # 商品本体在价格标签上方
+                self._tap(context, *tap_xy)
+                time.sleep(2.0)
+                after = self._get_screenshot(context)
+                detail = self._run_ocr(context, after, "ForensicSelect", [".*"], [0, 0, 720, 1280])
+                texts = [i.text for i in (detail.all_results or [])][:30]
+                records.append({"idx": idx, "tap": tap_xy, "texts": texts})
+                self._archive_decision(after, "hif_interval_forensic",
+                                       {"idx": idx, "tap": tap_xy, "texts": texts})
+                if any("キャンセル" in t for t in texts):  # 误触確認弹窗→立即取消
+                    self._tap(context, *self.CANCEL_TAP)
+                    time.sleep(1.5)
+                else:  # 取消选中回商店网格态
+                    self._tap(context, *self.DESELECT_TAP)
+                    time.sleep(1.2)
+        except Exception as exc:  # noqa: BLE001 取证失败不阻塞主线
+            logger.warning(f"HIF Interval 取证模式异常(放弃取证,主线继续): {exc}")
+        return records
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         clicked = 0
@@ -1922,6 +1966,12 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
                 shop_state = self._read_shop_state(context, image)
                 logger.info(f"HIF Interval 商店快照: P点={shop_state.p_points} "
                             f"商品区tokens={len(shop_state.ocr_raw)}")
+                if self.FORENSIC:
+                    # 取证模式(#24):详情面板结构逐件落盘,决策仍 no_purchase(执行链下一批)
+                    forensic = self._forensic_products(context, image)
+                    self._archive_decision(image, "hif_interval_forensic_summary", {
+                        "records": forensic,
+                    })
             finish = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
             if not finish:
                 # 按钮未渲染时等待重试;多轮仍无按钮但锚在=页面异常,安全停止
