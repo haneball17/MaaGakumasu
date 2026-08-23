@@ -26,7 +26,7 @@ HIF（学祭，即学園祭本战）培育为当前活跃开发分支（`feat/hi
 
 - 已实机打通 Day1→Round1 全链（2026-08-15 复验）：日程选择（授業色扫分类/公開レッスン/事件模板/低体力おでかけ）、授業选项、P 道具、三选一（饮料/技能卡/変卡目标与源卡）、SP 效果卡、相談、饮料上限取舍均自动决策。
 - 三选一采用双评分：卡名命中效果池走结构化评分模型 v2（`agent/hif/decisions/scoring.py`，官方公式对齐的五族曲线），miss 退关键词评分（`decisions/rewards.py`）；未达阈值可重抽，支持名单优先。
-- 决策参数覆盖链：GUI 选项 > `debug/decisions/decision_override.json` > 培育倾向基准 > preset 默认（`agent/hif/presets.py`）。
+- 决策参数覆盖链：GUI 选项 > `assets/data/hif/decision_override.json` > 培育倾向基准 > preset 默认（`agent/hif/presets.py`）。
 - 全决策点落盘 `debug/decisions/`（截图 + `session-*.jsonl` + 会话状态），`agent/hif/decisions/viewer.py` 自动生成 HTML 查看器，`tools/hif_replay_report.py` 出复盘总表。
 - Round1 到达后仅观察初始手牌（`ProduceHIFRound1Observe` 读手牌后 `ProduceHIFRound1ReachedStop` 停止），**不出牌**；出牌策略 `GarakutaRinamiStrategy`（`agent/hif/decisions/play.py`）已实现并有 22 个测试，但未接线实机。
 - 评分模型离线链 A/B 已完成（数据 join、双评分回放、Spearman 校准框架，当前 rho≈0.458）；C2 人工调参已被模拟器参数枚举取代（ADR-0001）。
@@ -81,7 +81,7 @@ HIF（学祭，即学園祭本战）培育为当前活跃开发分支（`feat/hi
 - `docs/zh_cn/`：中文用户与开发文档。
 - `docs/hif/`：HIF 文档集。首要依据：`mechanics.md`（机制知识库）、`scenes.md`（场景卡设计真源）、`finals-daily-log.md`（実機证据日志）、`scoring-model-design.md` 与 `scoring-model-implementation-plan.md`（评分模型）、`decision-override.md`（参数覆盖链）、`round1-blockers.md`（已完结）、`autodev-workflow.md` 与 `autodev-research.md`（无人化管线开发工作流与调研存档）。
 - `tools/`：维护脚本。HIF 相关：`simulate_hif.py`（模拟器 CLI）、`hif_decision_viewer.py`（决策日志查看器）、`hif_replay_report.py`（复盘总表）、`replay_scoring.py`（双评分回放）、`calibrate_scoring.py`（tier 榜校准）、`scrape_hif_tiers.py`、`sync_hif_master.py`、`sync_hif_effects.py`、`hif_mine_ocr_variants.py`（OCR 变体挖掘）。无人化管线开发工具 `maa_dev.py`（snap/ocr/som/crop/reco/test-node/replay/journal，见 `docs/hif/autodev-workflow.md`）。
-- `debug/`：运行日志和调试输出，不应作为功能改动的一部分提交；`debug/decisions/` 是 HIF 决策日志（截图 + JSONL + 会话状态 + `decision_override.json`），同样不入库。
+- `debug/`：运行日志和调试输出，不应作为功能改动的一部分提交；`debug/decisions/` 是 HIF 决策日志（截图 + JSONL + 会话状态），同样不入库。决策参数覆盖文件实际在 `assets/data/hif/decision_override.json`（`agent/hif/presets.py` 读取）。
 - `deps/`、`install/`：依赖和打包相关内容，修改时需确认发布影响。
 
 ## 开发环境
