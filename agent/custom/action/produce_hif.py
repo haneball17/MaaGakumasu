@@ -308,20 +308,21 @@ class _ProduceHIFActionBase(CustomAction):
             return None
 
     def _get_day_remaining(self, context: Context, image) -> Optional[int]:
+        # 全量 OCR+Python 侧匹配（実機 2026-08-23 段1 stop 复盘:expected ".*[1-6]日.*"
+        # 的「日」字偶发 IPC GBK 乱码→「3日」在 all(score 0.914)却 filtered 空→day None
+        # →priority 查表 miss→preset_no_matching_event stop——与 maafw 5.11/5.12
+        # 日文 expected 乱码同源;绕开 expected 正则,".*"+Python 子串匹配）
         reco_detail = self._run_ocr(
-            context,
-            image,
-            "ProduceRecognitionHIFRemainingDay",
-            [".*[1-6]日.*"],
-            [30, 25, 160, 145],
+            context, image, "ProduceRecognitionHIFRemainingDay", [".*"], [30, 25, 160, 145],
         )
-        if not (reco_detail and reco_detail.hit):
-            return None
-
-        digits = "".join(char for char in reco_detail.best_result.text if char.isdigit())
-        day_remaining = int(digits) if digits else None
-        logger.info(f"HIF 剩余日数: {day_remaining}")
-        return day_remaining
+        for item in (reco_detail.all_results if reco_detail else []):
+            m = re.search(r"([1-6])\s*日", item.text)
+            if m:
+                day_remaining = int(m.group(1))
+                logger.info(f"HIF 剩余日数: {day_remaining}")
+                return day_remaining
+        logger.info("HIF 剩余日数: (未读到 N日)")
+        return None
 
     @staticmethod
     def _archive_decision(image, screen_state: str, record: dict) -> None:
@@ -2947,9 +2948,12 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         # 从锚框 y 动态取名带;旧固定 [40,780,400,80] 在标题 y838 时读到标题/空(probe3 slot4 误读实证)
         name_roi = [40, anchor.best_result.box[1] + 60, 400, 110]
         name_detail = self._run_ocr(context, image, "HIFPDrinkName", [".*"], name_roi)
-        name = name_detail.best_result.text.strip() if (name_detail and name_detail.hit) else ""
-        if "ドリンク詳細" in name:
-            name = ""  # 读到弹窗标题=名带错位,置空防误匹配
+        # 取名带内最长候选(best 可能选中单字符噪声,実機 2026-08-23 槽4 读到「B」)
+        candidates = [
+            i.text.strip() for i in (name_detail.all_results or [])
+            if len(i.text.strip()) >= 2 and "ドリンク詳細" not in i.text
+        ]
+        name = max(candidates, key=len) if candidates else ""
         self._close_pdrink_popup(context)
         return name or None
 
