@@ -2212,8 +2212,15 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     ROI_SELECT = [80, 1080, 640, 70]   # SELECT 确认按钮（跟随选中卡漂移）
     CLICK_SKIP = (660, 800)            # SKIP 文字锚 [636,786,54,30] 中心（绿心+2 回体）
     ROI_BUFF_BAND = [0, 230, 140, 420]  # 状态带（好調/絶好調/集中图标模板定行）
-    TPL_GOOD = "autodev/hif_buff_good_condition.png"
-    TPL_CONC = "autodev/hif_buff_concentration.png"
+    # buff 图标亮/暗双态多模板（Issue #21 実証 2026-08-24）：同一 buff 图标随対局
+    # 演出/时段在亮/暗两种渲染间切换（R2 素材暗态 RGB 均值 (105,158,207) vs R1 亮态
+    # (145,227,253)，逐画面交替非逐 Round），单模板另一态恒 0.36-0.70 miss→R2 段
+    # 「定行失败且无缓存」连环 warn。多模板数组任一命中即定行，实测互补后正例
+    # ≥0.886 / 互配（絶好調行）≤0.70。v2=亮态(20260823-012908 源)、v3=暗态
+    # (20260824-001756 源)；旧 *_condition 单态版已从引用中移除。
+    TPL_GOOD = ["autodev/hif_buff_good_v2.png", "autodev/hif_buff_good_v3.png"]
+    TPL_CONC = ["autodev/hif_buff_concentration_v2.png", "autodev/hif_buff_concentration_v3.png"]
+    TPL_EXCELLENT = ["autodev/hif_buff_excellent_condition.png", "autodev/hif_buff_excellent_v2.png"]
 
     SETTLE_DELAY = 3.5        # 出牌结算动画等待（実機转场 <2s + 卡牌动画余量）
     PANEL_CLICK_DELAY = 1.6   # 面板/详情点开后渲染等待（実機校准）
@@ -2601,17 +2608,20 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         互配 0.704/0.729），0.85 以上才能区分两行；集中模板同带亦适用。
         数字带（好調 9ターン/絶好調 3ターン/集中 8 均离线实测 1.0）位于图标右下，
         原始尺寸仅 ~14×16px 直接 OCR 读不出，须 crop 放大 3 倍再读。
+        template 为多模板数组（Issue #21 亮/暗双态）：任一模板过 0.85 即 hit，
+        best_result 取全体最高分（maafw 原生语义，実測 1.0@正确行）。
         """
         detail = self._run_template(
             context, image, "HIFRound1BuffIcon", template, self.ROI_BUFF_BAND, threshold=0.85,
         )
         # 模板分数暂存（実機 2026-08-23 P1：evidence 落盘 tpl_scores 供离线校准
         # 0.85 阈值是否放宽——好調/絶好調互配 0.704-0.729 有间隔,miss 时的
-        # 最高分是边缘证据）
+        # 最高分是边缘证据）。key 取 tuple：多模板数组是 list 不可哈希
         if not hasattr(self, "_tpl_scores"):
             self._tpl_scores: Dict[str, Any] = {}
         scores = [r.score for r in (detail.all_results or [])] if detail else []
-        self._tpl_scores[template] = round(max(scores), 3) if scores else None
+        tpl_key = tuple(template) if isinstance(template, list) else template
+        self._tpl_scores[tpl_key] = round(max(scores), 3) if scores else None
         if not (detail and detail.hit):
             return None
         box = detail.best_result.box
@@ -2719,9 +2729,9 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             else:
                 logger.warning("好調行模板定行失败且无缓存(面板未读/未含好調行),落 0")
             # 絶好調补探测（実機 2026-08-23 P1 纯日志版）：好調 miss 时区分
-            # 「升级为絶好調」（TPL_GOOD 按设计 miss,互配<0.85）vs「行不在」——
+            # 「升级为絶好調」（TPL_GOOD 双态全 miss,互配<0.85）vs「行不在」——
             # 絶好調ターン数进 evidence,策略口径不变（ExamState 无该字段）
-            self._excellent_turns = self._read_buff_turns(context, image, "autodev/hif_buff_excellent_condition.png")
+            self._excellent_turns = self._read_buff_turns(context, image, self.TPL_EXCELLENT)
         focus = self._read_buff_turns(context, image, self.TPL_CONC)
         if focus is None:
             # 集中双保险（grill R1-Q4）：状态带模板 MISS 时用开局面板缓存+告警
@@ -3208,7 +3218,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         words = [dict(text=i.text.strip(), box=list(i.box)) for i in (detail.all_results or []) if i.text.strip()]
         rows = self._cluster_buff_words_to_rows(words)
         known = {}
-        for label, tpl in (("好調", self.TPL_GOOD), ("絶好調", "autodev/hif_buff_excellent_condition.png"), ("集中", self.TPL_CONC)):
+        for label, tpl in (("好調", self.TPL_GOOD), ("絶好調", self.TPL_EXCELLENT), ("集中", self.TPL_CONC)):
             d = self._run_template(context, image, "HIFBuffKnown", tpl, self.ROI_BUFF_ENUM, threshold=0.85)
             if d and d.hit:
                 known[round(d.best_result.box[1])] = label
