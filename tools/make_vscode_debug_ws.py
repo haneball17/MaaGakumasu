@@ -70,8 +70,11 @@ README_MD = """# MaaGakumasu HIF 调试工作区（nekosu.maa-support）
 """
 
 
-def build_interface() -> dict:
-    """从 assets/tasks/produce_cn.json 提取 HIF 任务与预设，组装测试 interface。"""
+def build_interface(agent_exec: str) -> dict:
+    """从 assets/tasks/produce_cn.json 提取 HIF 任务与预设，组装测试 interface。
+
+    agent_exec 用生成时的解释器绝对路径（本机裸 `python` 被 Microsoft Store
+    别名劫持，AGENTS.md 已记）；工作区在 debug/ 下不入库，固化绝对路径无发布影响。"""
     produce = json.loads((REPO / "assets" / "tasks" / "produce_cn.json").read_text(encoding="utf-8"))
     opts = produce["option"]
 
@@ -96,7 +99,7 @@ def build_interface() -> dict:
         "controller": [{"name": "模拟器", "type": "Adb"}],
         "resource": [{"name": "官服-base", "path": ["./resource/base"], "controller": ["模拟器"]}],
         "agent": {
-            "child_exec": "python",
+            "child_exec": agent_exec,
             "child_args": ["-u", "./../../agent/main.py"],
         },
         "task": [
@@ -160,9 +163,12 @@ def main() -> int:
     args = parser.parse_args()
 
     make_junction(args.force)
-    write_file(WS / "interface.json", json.dumps(build_interface(), ensure_ascii=False, indent=4) + "\n", args.force)
+    interface = build_interface(sys.executable)
+    write_file(WS / "interface.json", json.dumps(interface, ensure_ascii=False, indent=4) + "\n", args.force)
+    # mse_config 的 agent.debug 键=child_exec 的值（插件按该键匹配），动态同步
+    mse = MSE_CONFIG_JSON.replace('"python": "HIF Agent"', json.dumps(sys.executable) + ': "HIF Agent"')
+    write_file(WS / ".vscode" / "mse_config.json", mse, args.force)
     write_file(WS / ".vscode" / "launch.json", LAUNCH_JSON, args.force)
-    write_file(WS / ".vscode" / "mse_config.json", MSE_CONFIG_JSON, args.force)
     write_file(WS / "README.md", README_MD, args.force)
     print("\n完成。VS Code 打开该目录（不是仓库根）后即可用 MAA 插件调试，见 docs/hif/vscode-maa-debug.md")
     return 0
