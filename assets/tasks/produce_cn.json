@@ -8,6 +8,12 @@
 				"HIF预设",
 				"培育倾向",
 				"HIF 决策微调",
+				"Day1 日程",
+				"Day2 日程",
+				"Day3 日程",
+				"Day4 日程",
+				"Day5 日程",
+				"Day6 日程",
 				"Round1 出牌",
 				"培育偶像-zh_CN",
 				"培育次数",
@@ -3193,6 +3199,486 @@
 				}
 			],
 			"label": "$秦谷美鈴卡片"
+		},
+		"Day1 日程": {
+			"type": "select",
+			"default_case": "跟随预设",
+			"cases": [
+				{
+					"name": "跟随预设"
+				},
+				{
+					"name": "Vi",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day1_order": "Vi"
+							}
+						}
+					}
+				},
+				{
+					"name": "Vo",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day1_order": "Vo"
+							}
+						}
+					}
+				},
+				{
+					"name": "Da",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day1_order": "Da"
+							}
+						}
+					}
+				},
+				{
+					"name": "相談",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day1_order": "consult"
+							}
+						}
+					}
+				},
+				{
+					"name": "おでかけ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day1_order": "go_out"
+							}
+						}
+					}
+				},
+				{
+					"name": "授業",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day1_order": "lesson"
+							}
+						}
+					}
+				},
+				{
+					"name": "差し入れ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day1_order": "gift"
+							}
+						}
+					}
+				}
+			],
+			"label": "$Day1日程"
+		},
+		"Day2 日程": {
+			"type": "select",
+			"default_case": "跟随预设",
+			"cases": [
+				{
+					"name": "跟随预设"
+				},
+				{
+					"name": "Vi",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day2_order": "Vi"
+							}
+						}
+					}
+				},
+				{
+					"name": "Vo",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day2_order": "Vo"
+							}
+						}
+					}
+				},
+				{
+					"name": "Da",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day2_order": "Da"
+							}
+						}
+					}
+				},
+				{
+					"name": "相談",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day2_order": "consult"
+							}
+						}
+					}
+				},
+				{
+					"name": "おでかけ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day2_order": "go_out"
+							}
+						}
+					}
+				},
+				{
+					"name": "授業",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day2_order": "lesson"
+							}
+						}
+					}
+				},
+				{
+					"name": "差し入れ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day2_order": "gift"
+							}
+						}
+					}
+				}
+			],
+			"label": "$Day2日程"
+		},
+		"Day3 日程": {
+			"type": "select",
+			"default_case": "跟随预设",
+			"cases": [
+				{
+					"name": "跟随预设"
+				},
+				{
+					"name": "Vi",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day3_order": "Vi"
+							}
+						}
+					}
+				},
+				{
+					"name": "Vo",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day3_order": "Vo"
+							}
+						}
+					}
+				},
+				{
+					"name": "Da",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day3_order": "Da"
+							}
+						}
+					}
+				},
+				{
+					"name": "相談",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day3_order": "consult"
+							}
+						}
+					}
+				},
+				{
+					"name": "おでかけ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day3_order": "go_out"
+							}
+						}
+					}
+				},
+				{
+					"name": "授業",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day3_order": "lesson"
+							}
+						}
+					}
+				},
+				{
+					"name": "差し入れ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day3_order": "gift"
+							}
+						}
+					}
+				}
+			],
+			"label": "$Day3日程"
+		},
+		"Day4 日程": {
+			"type": "select",
+			"default_case": "跟随预设",
+			"cases": [
+				{
+					"name": "跟随预设"
+				},
+				{
+					"name": "Vi",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day4_order": "Vi"
+							}
+						}
+					}
+				},
+				{
+					"name": "Vo",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day4_order": "Vo"
+							}
+						}
+					}
+				},
+				{
+					"name": "Da",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day4_order": "Da"
+							}
+						}
+					}
+				},
+				{
+					"name": "相談",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day4_order": "consult"
+							}
+						}
+					}
+				},
+				{
+					"name": "おでかけ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day4_order": "go_out"
+							}
+						}
+					}
+				},
+				{
+					"name": "授業",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day4_order": "lesson"
+							}
+						}
+					}
+				},
+				{
+					"name": "差し入れ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day4_order": "gift"
+							}
+						}
+					}
+				}
+			],
+			"label": "$Day4日程"
+		},
+		"Day5 日程": {
+			"type": "select",
+			"default_case": "跟随预设",
+			"cases": [
+				{
+					"name": "跟随预设"
+				},
+				{
+					"name": "Vi",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day5_order": "Vi"
+							}
+						}
+					}
+				},
+				{
+					"name": "Vo",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day5_order": "Vo"
+							}
+						}
+					}
+				},
+				{
+					"name": "Da",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day5_order": "Da"
+							}
+						}
+					}
+				},
+				{
+					"name": "相談",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day5_order": "consult"
+							}
+						}
+					}
+				},
+				{
+					"name": "おでかけ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day5_order": "go_out"
+							}
+						}
+					}
+				},
+				{
+					"name": "授業",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day5_order": "lesson"
+							}
+						}
+					}
+				},
+				{
+					"name": "差し入れ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day5_order": "gift"
+							}
+						}
+					}
+				}
+			],
+			"label": "$Day5日程"
+		},
+		"Day6 日程": {
+			"type": "select",
+			"default_case": "跟随预设",
+			"cases": [
+				{
+					"name": "跟随预设"
+				},
+				{
+					"name": "Vi",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day6_order": "Vi"
+							}
+						}
+					}
+				},
+				{
+					"name": "Vo",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day6_order": "Vo"
+							}
+						}
+					}
+				},
+				{
+					"name": "Da",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day6_order": "Da"
+							}
+						}
+					}
+				},
+				{
+					"name": "相談",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day6_order": "consult"
+							}
+						}
+					}
+				},
+				{
+					"name": "おでかけ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day6_order": "go_out"
+							}
+						}
+					}
+				},
+				{
+					"name": "授業",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day6_order": "lesson"
+							}
+						}
+					}
+				},
+				{
+					"name": "差し入れ",
+					"pipeline_override": {
+						"ProduceChooseHIFEventFlag": {
+							"custom_action_param": {
+								"day6_order": "gift"
+							}
+						}
+					}
+				}
+			],
+			"label": "$Day6日程"
 		}
 	}
 }

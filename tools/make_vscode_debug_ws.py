@@ -91,7 +91,10 @@ def build_interface(agent_exec: str) -> dict:
     ]
 
     def hif_options():
-        return ["HIF预设", "培育倾向", "HIF 决策微调"]
+        # Day 日程速选 select(2026-08-23 新增,单键注入 dayN_order,深合并与
+        # HIF预设 select 同模式)排在决策微调后——chosen 轮后合优先于手填
+        return ["HIF预设", "培育倾向", "HIF 决策微调",
+                "Day1 日程", "Day2 日程", "Day3 日程", "Day4 日程", "Day5 日程", "Day6 日程"]
 
     return {
         "interface_version": "1.0",
@@ -128,6 +131,8 @@ def build_interface(agent_exec: str) -> dict:
             },
             # input 型决策微调选项原样透传(调试界面支持与否由插件决定,不影响 agent 参数解析)
             "HIF 决策微调": opts.get("HIF 决策微调"),
+            # Day 日程速选 select 原样透传(跟随预设=无 override 回落 preset 三层链)
+            **{f"Day{d} 日程": opts[f"Day{d} 日程"] for d in range(1, 7)},
         },
     }
 
