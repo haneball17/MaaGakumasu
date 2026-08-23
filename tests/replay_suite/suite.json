@@ -72,6 +72,18 @@
 			"node": "ProduceHIFMemoryLimitFlag",
 			"pipeline": "ProduceHIF.json",
 			"expect": "miss"
+		},
+		{
+			"image": "hif-opening-commu.png",
+			"node": "ProduceHIFOpeningCommuSkipFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "hit"
+		},
+		{
+			"image": "hif-round1-initial.png",
+			"node": "ProduceHIFOpeningCommuSkipFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "miss"
 		}
 	]
 }
