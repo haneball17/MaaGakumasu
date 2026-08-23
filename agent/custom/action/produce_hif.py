@@ -2669,11 +2669,12 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         )
         # 模板分数暂存（実機 2026-08-23 P1：evidence 落盘 tpl_scores 供离线校准
         # 0.85 阈值是否放宽——好調/絶好調互配 0.704-0.729 有间隔,miss 时的
-        # 最高分是边缘证据）。key 取 tuple：多模板数组是 list 不可哈希
+        # 最高分是边缘证据）。key 用 "|".join：多模板数组转 str——tuple key
+        # 进 json.dumps 会 TypeError 致整条决策存档失败(実機轮 2 実証 15 次)
         if not hasattr(self, "_tpl_scores"):
             self._tpl_scores: Dict[str, Any] = {}
         scores = [r.score for r in (detail.all_results or [])] if detail else []
-        tpl_key = tuple(template) if isinstance(template, list) else template
+        tpl_key = "|".join(template) if isinstance(template, list) else template
         self._tpl_scores[tpl_key] = round(max(scores), 3) if scores else None
         if not (detail and detail.hit):
             return None

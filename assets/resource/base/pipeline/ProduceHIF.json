@@ -1520,12 +1520,12 @@
         "next": [
             "ProduceHIFR2ConditionFlag"
         ],
-        "timeout": 15000,
+        "timeout": 120000,
         "on_error": [
             "ProduceHIFScheduleRoot"
         ],
         "focus": {
-            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: Interval页(実機 2026-08-20 取证:終了(663,1082)容点1-2次;首版策略直接終了,P点消费探索轮补)[/color]"
+            "Node.Recognition.Succeeded": "[color:LimeGreen]HIF: Interval页(実機 2026-08-20 取证:終了(663,1082)容点1-2次;首版策略直接終了,P点消费探索轮补;timeout 120s 容取证模式 #24——Custom 长跑被 20s 杀実証)[/color]"
         }
     },
     "ProduceHIFR2ConditionFlag": {
