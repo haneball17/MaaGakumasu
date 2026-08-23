@@ -55,3 +55,41 @@ def test_buy_list_filters_by_budget() -> None:
 def test_buy_list_empty_products() -> None:
     state = IntervalShopState(p_points=50)
     assert decide_purchase(state, PurchasePolicy(mode="buy_list", budget=100)) == ()
+
+
+# ---------------------------------------------------------------------------
+# issue #7：USE_P_DRINK 槽位匹配纯逻辑（取证 A5 定案：同名瓶多槽）
+# ---------------------------------------------------------------------------
+
+
+def _round1play_cls():
+    import sys
+    from pathlib import Path
+    from importlib import import_module
+
+    sys.path.insert(0, str(Path("agent").resolve()))
+    return import_module("custom.action.produce_hif").ProduceHIFRound1Play
+
+
+def test_match_drink_slot_by_normalized_name() -> None:
+    """规范名匹配首个命中槽（同名瓶多槽时取槽序靠前）。"""
+    cls = _round1play_cls()
+    slots = [
+        {"slot": 1, "xy": [60, 1215], "name": "初星黒酢", "raw": "初星黒酢"},
+        {"slot": 2, "xy": [150, 1215], "name": None, "raw": None},  # 空槽
+        {"slot": 3, "xy": [240, 1215], "name": "ブーストエキス", "raw": "ブーストエキス"},
+    ]
+    hit = cls._match_drink_slot(slots, "ブーストエキス")
+    assert hit and hit["slot"] == 3
+
+
+def test_match_drink_slot_raw_fallback_and_miss() -> None:
+    """匹配失败的槽回退 OCR 原文语义；无匹配/空目标返回 None。"""
+    cls = _round1play_cls()
+    slots = [{"slot": 4, "xy": [330, 1215], "name": None, "raw": "テステーション"}]
+    assert cls._match_drink_slot(slots, "テステーション")["slot"] == 4
+    assert cls._match_drink_slot(slots, "初星黒酢") is None
+    assert cls._match_drink_slot(slots, "") is None
+    assert cls._match_drink_slot(None, "初星黒酢") is None
+    # 无坐标槽不可选（xy 缺失/零点）
+    assert cls._match_drink_slot([{"slot": 1, "xy": [0, 0], "raw": "初星黒酢"}], "初星黒酢") is None

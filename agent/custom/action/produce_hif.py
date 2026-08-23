@@ -2396,13 +2396,21 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             )
 
             if action.kind is ActionKind.USE_P_DRINK:
-                # Q9+A5:瓶位语义未定案,拦截只记录,降级 SKIP 回体(禁猜测性点击)
-                logger.warning(f"{round_tag} USE_P_DRINK 拦截(记录不点): {action.target_card}")
+                # issue #7 放行(取证 2026-08-23 A5 定案:同名瓶可多槽,无固定瓶位——
+                # 按名找槽→点槽→弹窗二次验名→使う;実測喝药是自由动作不消耗回合)。
+                # 执行失败(无匹配槽/验证不过)降级 SKIP 回体,保持主线(Q9 旧行为兜底)。
+                if self._execute_p_drink(context, action, p_drink_slots):
+                    self._archive_round1_play(image, self.build_round1_play_record(
+                        state, action, played_history[-1:], dry_run=False,
+                        evidence={**evidence, "p_drink_executed": True},
+                    ), screen_state)
+                    continue  # 不推进回合:下一循环重读画面继续同回合决策
+                logger.warning(f"{round_tag} USE_P_DRINK 执行失败,降级 SKIP: {action.target_card}")
                 self._archive_round1_play(image, self.build_round1_play_record(
                     state, action, played_history[-1:], dry_run=True,
-                    evidence={**evidence, "intercepted": "p_drink_semantics_undefined"},
+                    evidence={**evidence, "intercepted": "p_drink_no_matching_slot"},
                 ), screen_state)
-                action = CardAction(ActionKind.SKIP, None, f"[P饮料拦截降级] {action.reason}")
+                action = CardAction(ActionKind.SKIP, None, f"[P饮料执行失败降级] {action.reason}")
 
             ok, played_card = self._execute_action(context, action, hand)
             if not ok:
@@ -3022,6 +3030,76 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 time.sleep(1.2)
             if not self._popup_is_pdrink(context, self._get_screenshot(context)):
                 return True
+        return False
+
+    PDRINK_USE_TAP = (521, 1158)  # 使う pill 几何中心(取证 2026-08-23 実測;文字 box 中心 y1137 偏上21px 规律)
+
+    @staticmethod
+    def _match_drink_slot(p_drink_slots: Optional[list], target_raw: str) -> Optional[dict]:
+        """纯逻辑(可单测):按规范名从槽缓存找首个匹配槽(A5 定案——同名瓶多槽,
+        match_drink_name 双侧规范化比对;OCR 原文回退语义与 available 一致)。"""
+        target_raw = (target_raw or "").strip()
+        if not target_raw:
+            return None
+        target_norm, _ = match_drink_name(target_raw)
+        target_key = target_norm or target_raw
+        for s in p_drink_slots or []:
+            slot_name = s.get("name") or s.get("raw")
+            if not slot_name:
+                continue
+            sn_norm, _ = match_drink_name(slot_name)
+            if (sn_norm or slot_name) == target_key:
+                xy = s.get("xy")
+                if xy and tuple(xy) != (0, 0):
+                    return s
+        return None
+
+    def _execute_p_drink(self, context: Context, action, p_drink_slots: Optional[list]) -> bool:
+        """USE_P_DRINK 実行(issue #7,取证 2026-08-23 A5 定案)。
+
+        同名瓶可占多槽(実測 ブーストエキス×2)——按名匹配槽(开局探测缓存)→点槽→
+        弹窗二次验瓶名(点击裁决铁律:post≠生效)→使う→验证弹窗消失。
+        実測喝药不消耗回合(残りターン 不变,buff 即时激活)。全槽无匹配/验证失败
+        return False 由调用方降级 SKIP 保主线。生效后同步槽缓存(session 层,
+        _build_state 每回合从这里取 available)。
+        """
+        s = self._match_drink_slot(p_drink_slots, action.target_card or "")
+        if not s:
+            return False
+        target_raw = (action.target_card or "").strip()
+        target_norm, _ = match_drink_name(target_raw)
+        target_key = target_norm or target_raw
+        xy = s.get("xy") or [0, 0]
+        self._click_box_center(context, [xy[0] - 20, xy[1] - 20, 40, 40], double=False)
+        time.sleep(self.PANEL_CLICK_DELAY)
+        image = self._get_screenshot(context)
+        anchor = self._popup_is_pdrink(context, image)
+        if not anchor:
+            logger.warning(f"Round P饮料槽{s.get('slot')} 点击后弹窗未开,本次失败")
+            return False
+        name_roi = [40, anchor.box[1] + 60, 400, 110]
+        name_detail = self._run_ocr(context, image, "HIFPDrinkUseName", [".*"], name_roi)
+        candidates = [
+            i.text.strip() for i in (name_detail.all_results or [])
+            if len(i.text.strip()) >= 2 and "ドリンク詳細" not in i.text
+        ]
+        popup_name = max(candidates, key=len) if candidates else ""
+        pn_norm, _ = match_drink_name(popup_name)
+        if (pn_norm or popup_name) != target_key:
+            logger.warning(f"Round P饮料弹窗瓶名不符 target={target_key} popup={popup_name!r},关弹窗")
+            self._close_pdrink_popup(context)
+            return False
+        for attempt in range(2):  # 点击静默丢失纪律:原坐标重试 1 次
+            self._tap(context, *self.PDRINK_USE_TAP)
+            time.sleep(self.PANEL_CLICK_DELAY)
+            after = self._get_screenshot(context)
+            if not self._popup_is_pdrink(context, after):
+                logger.success(f"Round P饮料使用成功: {target_key} @slot{s.get('slot')}")
+                remaining = [x for x in (p_drink_slots or []) if x.get("slot") != s.get("slot")]
+                _ProduceHIFActionBase._write_round1_state({"p_drink_slots": remaining})
+                return True
+            logger.warning(f"Round P饮料使う后弹窗仍在(第 {attempt + 1} 次),重试")
+        self._close_pdrink_popup(context)
         return False
 
     def _verify_p_drink(self, context: Context, slot_xy: tuple[int, int]) -> Optional[str]:
