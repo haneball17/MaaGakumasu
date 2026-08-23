@@ -1867,12 +1867,15 @@ class ProduceHIFPDrinkObtainedAuto(_ProduceHIFActionBase):
 
 @AgentServer.custom_action("ProduceHIFIntervalAuto")
 class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
-    """Interval 页推进：首版策略=直接終了（P 点消费探索轮补，goal 裁决放开但不强制）。
+    """Interval 页推进：保守策略=浏览快照落盘+直接終了（issue #6 第一版，goal 共识 5）。
 
     実機 2026-08-20 取证（round2-settlement-ui-inventory §4）：終了按钮
     [629,1064]→(663,1082)，**需点 1-2 次**（首次偶发无响应）；点击后进 R2 優勝条件页。
     流转验证：Interval 锚（提示文）消失=終了已生效；锚在=再点（容点 2 次）后放行
     交回路由（防止转场窗口内 Flag 重复命中在未渲染页面上 stop）。
+    2026-08-23 取证轮增强：到达时读 P 点余额+商品区快照落盘（decision-audit
+    缺口 5 数据源）；购买决策经 agent.hif.decisions.interval（默认 no_purchase，
+    策略 grill 定案后扩展无需改管线）。
     """
 
     FINISH_ROI = [560, 1020, 140, 90]
@@ -1880,9 +1883,28 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
     ANCHOR_TEXT = ("Pポイントで利用する",)
     ANCHOR_ROI = [60, 260, 600, 120]
     MAX_ROUNDS = 4
+    P_POINTS_ROI = [300, 95, 160, 55]   # 右上 P 点余额数字(実測 380 [365,108,71,34])
+    SHOP_GRID_ROI = [30, 560, 680, 340]  # 商品网格 2x4 价格标签带(実測 y620-880)
+
+    def _read_shop_state(self, context: Context, image) -> "IntervalShopState":
+        import re
+
+        from agent.hif.decisions.interval import IntervalShopState
+
+        p_detail = self._run_ocr(context, image, "IntervalPPoints", [".*"], self.P_POINTS_ROI)
+        p_points = None
+        for item in ((p_detail.all_results if p_detail else None) or []):
+            m = re.search(r"\d{1,4}", item.text.replace(",", ""))
+            if m:
+                p_points = int(m.group())
+                break
+        grid_detail = self._run_ocr(context, image, "IntervalShopGrid", [".*"], self.SHOP_GRID_ROI)
+        tokens = tuple(item.text for item in ((grid_detail.all_results if grid_detail else None) or []))
+        return IntervalShopState(p_points=p_points, ocr_raw=tokens)
 
     def run(self, context: Context, argv: CustomAction.RunArg) -> bool:
         clicked = 0
+        shop_state = None
         for _ in range(self.MAX_ROUNDS):
             image = self._get_screenshot(context)
             if not self._find_text_option(context, image, self.ANCHOR_TEXT, self.ANCHOR_ROI):
@@ -1891,8 +1913,15 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
                 # 锚消失放行路径零记录,决策日志缺此决策点)
                 self._archive_decision(image, "hif_interval", {
                     "action": "finish_interval", "clicked": clicked, "early_exit": "anchor_gone",
+                    "shop_state": shop_state and {"p_points": shop_state.p_points,
+                                                  "ocr_tokens": list(shop_state.ocr_raw[:24])},
                 })
                 return True
+            if shop_state is None:
+                # 首帧锚在=商店已渲染,读快照一次(购买决策输入;默认 no_purchase 只落盘)
+                shop_state = self._read_shop_state(context, image)
+                logger.info(f"HIF Interval 商店快照: P点={shop_state.p_points} "
+                            f"商品区tokens={len(shop_state.ocr_raw)}")
             finish = self._find_text_option(context, image, ("終了",), self.FINISH_ROI)
             if not finish:
                 # 按钮未渲染时等待重试;多轮仍无按钮但锚在=页面异常,安全停止
@@ -1903,6 +1932,8 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
                     if clicked:
                         self._archive_decision(image, "hif_interval", {
                             "action": "finish_interval", "clicked": clicked, "early_exit": "button_gone",
+                            "shop_state": shop_state and {"p_points": shop_state.p_points,
+                                                          "ocr_tokens": list(shop_state.ocr_raw[:24])},
                         })
                         return True  # 点过終了且按钮已消失,视为推进中放行
                     return self._stop_unsupported(context, "hif_interval", "finish_button_not_found")
@@ -1911,6 +1942,8 @@ class ProduceHIFIntervalAuto(_ProduceHIFActionBase):
             time.sleep(self.ACTION_DELAY)
         self._archive_decision(self._get_screenshot(context), "hif_interval", {
             "action": "finish_interval", "clicked": clicked,
+            "shop_state": shop_state and {"p_points": shop_state.p_points,
+                                          "ocr_tokens": list(shop_state.ocr_raw[:24])},
         })
         return True
 
