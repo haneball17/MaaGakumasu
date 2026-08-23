@@ -155,7 +155,7 @@
     "[JumpBack]ProduceHIFSupportEventPopup",
     "[JumpBack]ProduceHIFRound1Flag",
     "[JumpBack]ProduceHIFTapNextFlag",
-    "[JumpBack]ProduceHIFDayChangeBlank",
+    "ProduceHIFDayChangeFlag",
     "[JumpBack]ProduceHIFDialogBlank",
             "[JumpBack]ProduceHIFRewardPageFlag",
             "[JumpBack]ProduceHIFGashaAdCloseFlag",
@@ -327,7 +327,7 @@
             "[JumpBack]ProduceHIFRound1ResultFlag",
             "[JumpBack]ProduceHIFRound1StarGainFlag",
             "[JumpBack]ProduceHIFTapNextFlag",
-    "[JumpBack]ProduceHIFDayChangeBlank",
+    "ProduceHIFDayChangeFlag",
             "ProduceHIFRetryConfirmFlag"
         ],
         "timeout": 20000,
@@ -545,7 +545,7 @@
             "[JumpBack]ProduceHIFRound1StarGainFlag",
             "[JumpBack]ProduceHIFRound1SummaryFlag",
             "[JumpBack]ProduceHIFTapNextFlag",
-    "[JumpBack]ProduceHIFDayChangeBlank",
+    "ProduceHIFDayChangeFlag",
             "[JumpBack]ProduceHIFCheerStickBlank",
             "ProduceHIFIntervalFlag"
         ],
@@ -1742,7 +1742,7 @@
             "Node.Recognition.Succeeded": "[color=LimeGreen]HIF: 事件对话页(2026-08-22 轮3:名字框模板姫崎莉波专属,正1.0/负4miss;台词OCR读不到致停滞误判+GiftTalk尾挂太慢,专用前挂节点连点推进;多格对话[JumpBack]循环) [/color]"
         }
     },
-    "ProduceHIFDayChangeBlank": {
+    "ProduceHIFDayChangeFlag": {
         "recognition": {
             "type": "OCR",
             "param": {
@@ -1751,25 +1751,53 @@
                 ],
                 "roi": [
                     30,
-                    930,
-                    500,
-                    160
+                    1010,
+                    540,
+                    90
                 ]
             }
         },
         "action": {
-            "type": "Custom",
+            "type": "DoNothing",
+            "param": {}
+        },
+        "next": [
+            "ProduceHIFDayChangeExitButton"
+        ],
+        "timeout": 15000,
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 跨天强制弹窗在场(00:00后首局触发;probe 2026-08-23 轮12截图4帧全中0.9998/背景5页零误触)——双锚第二级验证按钮后点×タイトルヘ,链终止段退出走恢复链[/color]"
+        }
+    },
+    "ProduceHIFDayChangeExitButton": {
+        "recognition": {
+            "type": "OCR",
             "param": {
-                "custom_action": "ProduceHIFGuardedTapAuto",
-                "custom_action_param": {
-                    "anchor_expected": ["日付が変わりました"],
-                    "anchor_roi": [30, 930, 500, 160],
-                    "tap": [360, 640]
-                }
+                "expected": [
+                    ".*タイトル[へヘ].*"
+                ],
+                "roi": [
+                    150,
+                    1100,
+                    440,
+                    100
+                ]
             }
         },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    360,
+                    1155,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 800,
         "focus": {
-            "Node.Recognition.Succeeded": "[color=Orange]HIF: 日付変更演出页(実機 2026-08-22 轮2 GuardedTap 化:裸点击被回环吞 timeout;×タイトルヘ危险禁点)[/color]"
+            "Node.Action.Succeeded": "[color=Orange]HIF: 点击×タイトルヘ(pill几何中心実測360,1155,OCR box中心351,1159互证;へ/ヘ假名变体字符类双覆盖)——回标题页,无JumpBack链终止段Succeeded,hif_run段驱动自动StartUp重拉续局[/color]"
         }
     },
     "ProduceHIFCompleteFlag": {

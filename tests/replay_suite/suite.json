@@ -24,6 +24,24 @@
 			"node": "ProduceHIFRewardConfirmFlag",
 			"pipeline": "ProduceHIF.json",
 			"expect": "miss"
+		},
+		{
+			"image": "hif-daychange-popup.png",
+			"node": "ProduceHIFDayChangeFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "hit"
+		},
+		{
+			"image": "hif-daychange-popup.png",
+			"node": "ProduceHIFDayChangeExitButton",
+			"pipeline": "ProduceHIF.json",
+			"expect": "hit"
+		},
+		{
+			"image": "hif-round1-initial.png",
+			"node": "ProduceHIFDayChangeFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "miss"
 		}
 	]
 }
