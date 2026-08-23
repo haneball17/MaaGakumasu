@@ -35,7 +35,8 @@ HIF（学祭，即学園祭本战）培育为当前活跃开发分支（`feat/hi
 - **五轮全程验证完成（2026-08-22，`docs/hif/five-round-validation-2026-08-21.md`）**：主线 培育→R1 出牌→Interval→R2(12T)→敗退/结算→メモリー→報酬→主页面 全链実機走通×5 轮（轮 4/5 主线零介入×2）；Round1Play 参数化（total_turns/round/r2）双 Round 共包；灰卡过滤（四边环饱和度+hand 层）；対局资源读取件（P 饮料槽 ✓/P 道具详情/牌堆=探索待校准）；决策接口 p_items/p_drinks/deck 就绪（审计 `docs/hif/decision-interface-audit-2026-08-22.md`）；bug#1-43 修复沉淀；管线层浮层关闭组 pos0-2（StatePanel/MemAbility/CardDetail——毛玻璃面板挡锚是系统性失败模式）。
 - **轮 6 稳定性复验完成（2026-08-22，六段接力 48 分钟主线零介入，连续第三轮）**：ops 守卫链 392/392 全绿；bug#45-47 增量——#45 turn 段边界瞬态已修（`_wait_turn_reframe` 指纹区分演出/真异常）、#46 ROUND_DEADLINE_S 未检查已修（循环头 stop `round_deadline_exceeded`）、#47 通信エラー弹窗暂缓待取证。
 - **轮 7 修复验证完成（2026-08-22，六段接力 31 分钟主线零介入，连续第四轮）**：#45 验证 ✓（turn stop 基线 4→0 无回归，自愈路径待正面触发）、#46 ✓ 不误触；新发现 #48 変卡页与授業页共享左上「授業」HUD 致 ClassOptionFlag 誤入（2026-08-15 已知问题完整修复：`_handoff_to_change_flow` 自检「チェンジ」放行回路由+3 次上限防回环死循环），実機复验待下轮変卡时点。
-- 仍由 `ProduceHIFUnknownStop` 兜底：探索分支（Interval 商店流/特別指導/再挑戦重打/メモリー再生成/R2 勝利流）与未取证页面；入口段（主页面→活動页→本戦 tab→開始）自动化为遗留 backlog（当前手动 4 步）。遗留清单见复盘文档尾节。
+- **缺陷修复批次完成（2026-08-23/24，GitHub Issues #1-#10 全落地，两轮実機+総合验收）**：①跨天弹窗全自动恢复链（ADR-0003：双锚节点+×タイトルヘ (360,1155)+无 JumpBack 链终止+hif_run 段驱动 StartUp 重拉续局≤2 次，dry-run 四场景验证）②開場コミュ SKIP 守卫节点（左下 ROI 收窄避対局右上 SKIP，実機实证）③出牌参数走 preset 覆盖链（drink_priority→p_drink_priority 联动）④集中取证轮（対局右下三按钮定案：左=手札情報 (480,1180)/中=牌堆查看器 (570,1180)/右=対局菜单危险区；报告 `debug/autodev/forensic-report-20260823.md`）⑤メモリー所持上限→変換四节点链（轮 14 坐标 probe 9/9）⑥Interval 商店读取件+购买决策骨架（実機 UI 无分类 tab、购买链 選択→交換する→確認弹窗→交換 全実測；默认 no_purchase 待 grill）⑦USE_P_DRINK 执行层放行（A5 定案：同名瓶多槽，点槽→弹窗验名→使う (521,1158)，実測不耗回合）⑧牌堆读取件実測版（「手札(n)/山札(n)」计数行轻量读+deck_size 実測基数接线；**無捨て札 section**）⑨P item 入口重建（查看器 Pアイテム tab (522,1045)，旧右上数字带入口误设是 106 次 miss 根因）+灰卡阈值 40 実証定标（灰卡 sat=2-31 vs 非灰 56.7-89.0）。**総合验收轮完整走通零主线 stop**（报告 `debug/autodev/acceptance-report-20260823.md`，pytest 311/replay 14 全绿）。**额外修复**：`decision_override.json` 路径 parents[3]→parents[2]（REPO 外恒不存在，覆盖链文件层从未生效）。遗留观察：probe 自动接线実機、USE_P_DRINK 自然触发、recover home 锚 ROI、跨天自然触发。
+- 仍由 `ProduceHIFUnknownStop` 兜底：探索分支（特別指導/再挑戦重打/R2 勝利流）与未取证页面；入口段（主页面→活動页→本戦 tab→開始）自动化为遗留 backlog（当前手动 4 步）。遗留清单见复盘文档尾节（open 项已迁 GitHub Issues）。
 - 特別指導（カスタマイズ）接入点已勘察规划（`docs/hif/customize-integration-notes.md`），暂缓至 Round2 立项。
 - 设计依据：`docs/superpowers/specs/2026-07-10-hif-basic-pipeline-design.md`（首版边界）与 `docs/superpowers/specs/2026-08-14-hif-fastpath-routing-design.md`（快慢路径路由，已确认待实机校准实施）；流程依据见 `docs/hif/finals-daily-log.md`。
 
@@ -132,7 +133,7 @@ npx maa-tools check
 - `Custom` recognition/action 名称必须与 `agent/` 中实现一致，参数结构要向后兼容。
 - next 链尾的 `DirectHit` 兜底节点（如 UnknownStop）会**立即命中**，抢在前序识别节点的渲染等待窗口之前——「等内容渲染」用节点 `timeout`（next 全 miss 时按 timeout 轮询重试）+ `on_error` 兜底表达，不要把 DirectHit 混进会因内容未渲染而 miss 的 next 链（実機 2026-08-20 公開レッスン序列教训）。
 - 非 `[JumpBack]` 前缀的子节点执行完成即**终止任务链**；需要执行完继续路由循环的推进节点（点击/翻页类），在引用它的 next 列表里加 `[JumpBack]` 前缀。
-- agent 侧把字面文本（卡名/按钮文案）传入 OCR expected 前必须 `re.escape()`（`+`/`.`/`!` 等元字符会被 MaaFW regex_valid 拒掉整个 override）；超过 ~32 项的词典不要经 expected 传输（maafw IPC 对日文大列表有 UTF-8→GBK 乱码风险，5.11/5.12 均有），改为 expected `[".*"]` 全量 OCR + Python 侧子串匹配。
+- agent 侧 OCR expected **禁止携带任何非 ASCII 字符**（2026-08-23 #65 実証：日文 expected 经 AgentClient IPC 偶发 GBK 乱码且进程级——「3日」在 all_results(score 0.914) 却 filtered 空误 stop；U+2026/U+FF65 等不可编码字符概率最高；四批 15 处清零后 grep 実証残留为零）。统一模式：expected `[".*"]` 全量 OCR + Python 侧遍历 `all_results` 子串/正则匹配（`_find_in_all`/`_find_text_option` 既有范本，兼省 N-1 次 OCR）；纯 ASCII 的 `re.escape()` 元字符防护仍适用。跨 Custom 大包共享的状态放**全局 session 层**（`_write_session_state`）——round1 子树标记会被下一大包的 `_reset_round1_state` 清掉；Custom action 内发现上下文错配（如 round 参数错）**就地改参重入**，return False 交回路由会被同一 Flag 再接管回环。
 - 自动培育相关改动风险较高。修改 `Produce.json` 时重点验证：
   - 入口与中断继续流程：`Produce`、`ProduceLoop`、`ProduceSkipPreparation`、`ProduceEntry`。
   - 难度入口：`初` 走 `ProduceEntry`，`NIA` 走 `ProduceEntryNIA`；不要把 NIA 覆盖项误合到初流程。
@@ -201,3 +202,17 @@ HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动�
 - 不要改变项目许可证、免责声明或商业用途限制。
 - 需要联网查询 MaaFramework、MFAAvalonia、Mirror 酱或 OpenAI 等外部信息时，优先使用官方文档，并在回复中说明来源。
 - 对用户报告的运行问题，优先索要或检查 `debug/maa.log`、模拟器类型、分辨率、系统平台、游戏版本、是否 DMM/插件版汉化。
+
+## Agent skills
+
+### Issue tracker
+
+Issues 存放在 GitHub Issues（origin fork `haneball17/MaaGakumasu`），操作用 `gh` CLI。见 `docs/agents/issue-tracker.md`。
+
+### Triage labels
+
+使用默认五标签词汇：`needs-triage` / `needs-info` / `ready-for-agent` / `ready-for-human` / `wontfix`。见 `docs/agents/triage-labels.md`。
+
+### Domain docs
+
+单上下文布局：根 `CONTEXT.md`（中文术语表）+ `docs/adr/`。见 `docs/agents/domain.md`。
