@@ -2301,17 +2301,17 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             else:
                 p_drink_slots = self._probe_p_drink_slots(context)
                 logger.info(f"{round_tag} P饮料槽探测={self._available_drinks_from_slots(p_drink_slots)}")
-            # 対局资源全景开局读取（五轮验证 A/B）：P item 详情 + 牌堆全状态，缓存 session 供 _build_state。
-            # 五轮复盘 Q3（2026-08-22）：入口坐标未校准致 106 次 miss 降级纯耗时，且
-            # 策略不消费此二字段（审计缺口 4）——默认关，実機取证校准后经 GUI/override
-            # 注入 probe_opening_resources 打开
+            # 対局资源全景开局读取（五轮验证 A/B）：P item 详情 + 牌堆计数，缓存 session 供 _build_state。
+            # 2026-08-23 取证轮坐标已実測（牌堆入口 (570,1180)/閉じる (335,1155)；P item 入口
+            # #9 校准中）——保持默认关（探测 ~10s 开销），実機轮经 GUI/override 注入
+            # probe_opening_resources 打开
             if preset.probe_opening_resources:
                 p_items = self._read_p_item_details(context)
                 logger.info(f"{round_tag} P道具详情读取={len(p_items) if p_items is not None else 'FAIL'}件")
                 deck_state = self._read_deck_state(context)
-                logger.info(f"{round_tag} 牌堆状态读取={ {k: len(v) for k, v in (deck_state or {}).items()} if deck_state else 'FAIL' }")
+                logger.info(f"{round_tag} 牌堆计数读取={deck_state or 'FAIL'}")
             else:
-                logger.info(f"{round_tag} 开局资源探测关闭(默认,p_items/牌堆坐标未校准)")
+                logger.info(f"{round_tag} 开局资源探测关闭(默认,验收轮经 override 打开)")
         else:
             logger.warning(f"{round_tag} 开局非対局页(重入/已结束?),跳过开局探测直接出口判定")
 
@@ -2761,7 +2761,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             hand=hand,
             reprise_count=reprise_used if reprise_used is not None else int(session.get("reprise_count") or 0),
             cards_played=int(session.get("cards_played") or 0),
-            deck_size=max(0, 22 - int(session.get("cards_played") or 0)),  # A4:画面不可读,session 自维护近似
+            deck_size=self._current_deck_size(session),
             oneesan_used=bool(session.get("oneesan_used", False)),
             natural_finisher_used=bool(session.get("natural_finisher_used", False)),
             available_p_drinks=self._available_drinks_from_slots(p_drink_slots),
@@ -3101,6 +3101,16 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             logger.warning(f"Round P饮料使う后弹窗仍在(第 {attempt + 1} 次),重试")
         self._close_pdrink_popup(context)
         return False
+
+    @staticmethod
+    def _current_deck_size(session: dict) -> int:
+        """deck_size 接线(issue #8)：开局実測基数(session.deck_state.draw_count)
+        − 本大包已出牌数 > 0；无実測基数回退 22−cards_played 旧近似(A4)。"""
+        base = (session.get("deck_state") or {}).get("draw_count")
+        played = int(session.get("cards_played") or 0)
+        if isinstance(base, int) and base > 0:
+            return max(0, base - played)
+        return max(0, 22 - played)
 
     def _verify_p_drink(self, context: Context, slot_xy: tuple[int, int]) -> Optional[str]:
         """用药复核读取（grill R2-Q2 前半，纯读取不使う）：点槽→弹窗验证→读名→关→验证关。
@@ -3610,58 +3620,68 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         logger.warning("P item 详情弹窗关闭失败")
         return False
 
-    # 牌堆查看器 UI 未実機取证（goal 1.3 裁决：按假设设计、探索轮校准）。
-    # 假设：対局页手牌区两侧有山札/捨て札指示器；查看器与変卡网格同构（滚动+词行）。
-    PILE_DRAW_TAP = (60, 1150)        # 山札指示器假设位 [待実機校准]
-    PILE_DISCARD_TAP = (660, 1150)    # 捨て札指示器假设位 [待実機校准]
-    PILE_VIEWER_ROI = [20, 100, 680, 900]  # 查看器内容区假设 [待実機校准]
-    PILE_ANCHOR_WORDS = (".*山札.*", ".*捨て札.*", ".*デッキ.*")
+    # 牌堆查看器実測结构（取证 2026-08-23 issue #8，実機授权轮）：
+    # 入口=対局页右下中按钮 (570,1180)（左=手札情報/右=対局菜单危险）；
+    # 面板「所持スキルカード」标题，section 縦堆叠「✦手札 (N)」「✦山札 (N)」
+    # ——**计数在标题行括号直接可读**，无需滚动枚举；**無捨て札 section**
+    # （実測 総数20=手札3+山札17，HIF 出牌消费后无弃牌堆）。
+    PILE_ENTRY_TAP = (570, 1180)      # 查看器入口=右下中按钮(実測;旧假设位 (60,1150) 是饮料槽区)
+    PILE_VIEWER_ROI = [20, 20, 680, 700]   # 标题+手札/山札计数行带(実測标题[55,33]/手札[35,410]/山札[26,624])
+    PILE_COUNTS_ROI = [20, 380, 500, 300]  # 计数行带(「✦手札 (3)」「✦山札 (17)」)
+    PILE_ANCHOR_WORDS = ("所持スキルカード",)
+    PILE_CLOSE_TAP = (335, 1155)      # 閉じる pill 中心(実測 [318,1129,110,55])
     PILE_SCROLL_MAX = 6
-    PILE_CLOSE_TAP = (360, 1170)      # 查看器关闭假设位 [待実機校准]
+
+    @staticmethod
+    def _parse_pile_counts(lines: list[str]) -> tuple[Optional[int], Optional[int]]:
+        """纯逻辑(可单测)：查看器计数行 → (draw_count, hand_count)。
+
+        実測格式「✦手札 (3)」「+山札 (17)」（前缀 ✦/+/OCR 变体不拘），
+        括号数字正则提取；同名两行取首个。
+        """
+        import re as _re
+
+        def grab(word: str) -> Optional[int]:
+            for t in lines:
+                compact = t.replace(" ", "")
+                if word in compact:
+                    m = _re.search(rf"{word}[（(](\d{{1,3}})[）)]", compact)
+                    if m:
+                        return int(m.group(1))
+            return None
+
+        return grab("山札"), grab("手札")
 
     def _pile_viewer_anchor_hit(self, context: Context, image) -> bool:
         detail = self._find_text_option(context, image, self.PILE_ANCHOR_WORDS, self.PILE_VIEWER_ROI)
         return detail is not None
 
     def _read_deck_state(self, context: Context) -> Optional[dict]:
-        """牌堆全状态读取（纯读取，UI 假设设计待探索轮校准）：点山札指示器 →
-        查看器 → 滚动枚举全卡名（词典归一+计数）→ 按锚词分段归属
-        （draw/discard/exclude）→ 关闭 → 缓存 session.deck_state。
+        """牌堆计数读取（issue #8 実測版）：点入口(570,1180) → 查看器锚验证 →
+        读「手札 (n)/山札 (n)」计数行（轻量,不滚动）→ 閉じる 关闭验证 →
+        缓存 session.deck_state 供 _build_state 的 deck_size 接线。
 
-        查看器打不开（指示器假设位失效）降级 return None 不 stop；
-        手牌沿用 ExamStateReader（run 主循环每回合读），此处只补三堆。
+        打不开（入口 miss/转场窗口）降级 return None 不 stop；逐卡清单
+        （_segment_pile_lines 分段归属）留未来需求时启用。
         """
-        self._click_box_center(context, [self.PILE_DRAW_TAP[0] - 20, self.PILE_DRAW_TAP[1] - 20, 40, 40], double=False)
+        self._tap(context, *self.PILE_ENTRY_TAP)
         time.sleep(self.PANEL_CLICK_DELAY)
         image = self._get_screenshot(context)
         if not self._pile_viewer_anchor_hit(context, image):
-            logger.warning("牌堆查看器未打开(指示器假设位 miss),降级跳过")
+            logger.warning("牌堆查看器未打开(入口点击未生效?),降级跳过")
             return None
-
-        # 滚动收集全部词行（卡名行+堆锚词行）
-        lines: list[str] = []
-        no_new = 0
-        for _ in range(self.PILE_SCROLL_MAX):
-            detail = self._run_ocr(context, image, "HIFDeckViewerWords", [".*"], self.PILE_VIEWER_ROI)
-            words = [i.text.strip() for i in (detail.all_results or []) if i.text.strip()]
-            new_words = [t for t in words if t not in lines]
-            lines.extend(new_words)
-            if not new_words:
-                no_new += 1
-                if no_new >= self.PANEL_BOTTOM_CONFIRM:
-                    break
-            else:
-                no_new = 0
-            self._swipe(context, *self.PANEL_SCROLL_STEP, 400)
-            time.sleep(1.3)
-            image = self._get_screenshot(context)
-
-        deck = self._segment_pile_lines(lines)
+        detail = self._run_ocr(context, image, "HIFDeckCounts", [".*"], self.PILE_COUNTS_ROI)
+        lines = [i.text.strip() for i in (detail.all_results or []) if i.text.strip()]
+        draw_count, hand_count = self._parse_pile_counts(lines)
         self._close_pile_viewer(context)
-        if deck:
-            _ProduceHIFActionBase._write_round1_state({"deck_state": deck})
-            self._archive_static(context, "round_deck_state", {"action": "read_deck", "deck": deck})
-        return deck or None
+        if draw_count is None and hand_count is None:
+            logger.warning(f"牌堆计数行解析失败 lines={lines[:6]}")
+            return None
+        state = {"draw_count": draw_count, "hand_count": hand_count}
+        _ProduceHIFActionBase._write_round1_state({"deck_state": state})
+        self._archive_static(context, "round_deck_state", {"action": "read_deck_counts", **state})
+        logger.info(f"牌堆计数読取: 山札={draw_count} 手札={hand_count}(総数={(draw_count or 0) + (hand_count or 0)})")
+        return state
 
     @staticmethod
     def _segment_pile_lines(lines: list[str]) -> dict:
@@ -3693,5 +3713,5 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             time.sleep(1.2)
             if not self._pile_viewer_anchor_hit(context, self._get_screenshot(context)):
                 return True
-        logger.warning("牌堆查看器关闭失败(假设位,探索轮校准)")
+        logger.warning("牌堆查看器关闭失败(閉じる 実測位 (335,1155) 点击未生效)")
         return False

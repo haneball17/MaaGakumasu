@@ -291,3 +291,31 @@ class TestGrayCardDetection:
         color[..., 0] = 220
         assert ProduceHIFRound1Play._band_saturation(gray) < 5
         assert ProduceHIFRound1Play._band_saturation(color) > 180
+
+
+# ------------------------------------------- 牌堆计数（issue #8 実測版 2026-08-23）
+
+
+class TestParsePileCounts:
+    def test_real_format_with_prefix_variants(self) -> None:
+        """実測格式：「✦手札 (3)」「+山札 (17)」前缀变体不拘，括号数字提取。"""
+        draw, hand = ProduceHIFRound1Play._parse_pile_counts(["↓手札 (3)", "0", "山札 (17)", "0-"])
+        assert (draw, hand) == (17, 3)
+
+    def test_fullwidth_paren_and_miss(self) -> None:
+        draw, hand = ProduceHIFRound1Play._parse_pile_counts(["手札（4）", "山札（18）"])
+        assert (draw, hand) == (18, 4)
+        assert ProduceHIFRound1Play._parse_pile_counts(["所持スキルカード", "閉じる"]) == (None, None)
+
+
+class TestCurrentDeckSize:
+    def test_measured_base_minus_played(self) -> None:
+        """开局実測基数（17）−已出牌 > 0；出穿归零。"""
+        session = {"deck_state": {"draw_count": 17}, "cards_played": 5}
+        assert ProduceHIFRound1Play._current_deck_size(session) == 12
+        assert ProduceHIFRound1Play._current_deck_size({"deck_state": {"draw_count": 3}, "cards_played": 9}) == 0
+
+    def test_fallback_without_measure(self) -> None:
+        """无実測基数回退 22−played 旧近似（A4）。"""
+        assert ProduceHIFRound1Play._current_deck_size({"cards_played": 4}) == 18
+        assert ProduceHIFRound1Play._current_deck_size({}) == 22
