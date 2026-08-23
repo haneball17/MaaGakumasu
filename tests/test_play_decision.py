@@ -420,3 +420,84 @@ def test_low_stamina_without_drink_skips() -> None:
     action = strategy.decide(state)
     assert action.kind is ActionKind.SKIP
     assert "回体" in action.reason
+
+
+# ---------------------------------------------------------------------------
+# issue #3：出牌画像经 preset 覆盖链解析（GUI > override 文件 > preset 默认）
+# ---------------------------------------------------------------------------
+
+
+def _make_preset(**overrides: object):
+    """从安全默认 preset 点名覆盖构造（dataclasses.replace 语义）。"""
+    import dataclasses
+
+    from agent.hif.presets import SAFE_DEFAULT_PRESET
+
+    return dataclasses.replace(SAFE_DEFAULT_PRESET, **overrides)  # type: ignore[arg-type]
+
+
+def test_profile_from_preset_drink_priority_override() -> None:
+    """GUI 微调优先名单(drink_priority)最高优先 → 喝药选瓶序变化影响决策。"""
+    import sys
+    from pathlib import Path
+    from importlib import import_module
+
+    sys.path.insert(0, str(Path("agent").resolve()))
+    action_cls = import_module("custom.action.produce_hif").ProduceHIFRound1Play
+
+    preset = _make_preset(drink_priority=("テステーション",))
+    profile = action_cls._profile_from_preset(preset)
+    assert profile.p_drink_priority == ["テステーション"]
+
+    # 决策联动：低体力 R1 手持用户点名瓶 → USE_P_DRINK 指向该瓶
+    # (默认画像的优先序不含此瓶,若未走覆盖链则选不中)
+    strategy = GarakutaRinamiStrategy(profile)
+    state = make_state(
+        stamina=10,
+        available_p_drinks=["テステーション"],
+        hand=make_hand(good_condition_card_count=0, draw_available=False, swap_hand_available=False),
+    )
+    action = strategy.decide(state)
+    assert action.kind is ActionKind.USE_P_DRINK
+    assert action.target_card == "テステーション"
+
+
+def test_profile_from_preset_falls_back_to_preset_default() -> None:
+    """GUI 未点名(drink_priority 空)→ 回落 preset 默认 drink_name_priority。"""
+    import sys
+    from pathlib import Path
+    from importlib import import_module
+
+    sys.path.insert(0, str(Path("agent").resolve()))
+    action_cls = import_module("custom.action.produce_hif").ProduceHIFRound1Play
+
+    preset = _make_preset(drink_name_priority=("センブリソーダ", "テステーション"))
+    profile = action_cls._profile_from_preset(preset)
+    assert profile.p_drink_priority == ["センブリソーダ", "テステーション"]
+
+
+def test_profile_from_preset_keeps_default_when_both_empty() -> None:
+    """两级都空 → 保持角色默认优先序(初星黒酢优先)。"""
+    import sys
+    from pathlib import Path
+    from importlib import import_module
+
+    from agent.hif.decisions.config import ProfilePayload as _PP
+
+    sys.path.insert(0, str(Path("agent").resolve()))
+    action_cls = import_module("custom.action.produce_hif").ProduceHIFRound1Play
+
+    preset = _make_preset(drink_priority=(), drink_name_priority=())
+    profile = action_cls._profile_from_preset(preset)
+    assert profile.p_drink_priority == _PP.default().p_drink_priority
+
+    # 默认序决策回归:手持默认次优先瓶仍按默认序选中
+    strategy = GarakutaRinamiStrategy(profile)
+    state = make_state(
+        stamina=10,
+        available_p_drinks=["パワフル漢方ドリンク"],
+        hand=make_hand(good_condition_card_count=0, draw_available=False, swap_hand_available=False),
+    )
+    action = strategy.decide(state)
+    assert action.kind is ActionKind.USE_P_DRINK
+    assert action.target_card == "パワフル漢方ドリンク"

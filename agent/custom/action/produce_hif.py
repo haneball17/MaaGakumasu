@@ -2196,6 +2196,12 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         if preset.round1_mode != "play":
             return self._stop_unsupported(context, "round1_play", "round1_mode_not_play")
 
+        # 出牌画像经覆盖链解析(issue #3):drink_priority(GUI 微调优先名单) >
+        # drink_name_priority(preset 默认) → p_drink_priority(喝药选瓶序);
+        # reprise/honisen 等莉波机制阈值不受通用偏好覆盖,保持角色默认
+        profile = self._profile_from_preset(preset)
+        strategy = GarakutaRinamiStrategy(profile)
+
         total_turns, exam_round, round_tag = self._round_config(argv)
         screen_state = f"{round_tag}_play"
         deadline = time.time() + self.ROUND_DEADLINE_S
@@ -2348,7 +2354,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                     if refreshed:
                         evidence["panel_refreshed"] = True
                 _ProduceHIFActionBase._write_round1_state({"last_buff_fingerprint": fp})
-            action = GarakutaRinamiStrategy(ProfilePayload.default()).decide(state)
+            action = strategy.decide(state)
             logger.info(
                 f"{round_tag} turn={state.turn} 残り{turn_left} gc={state.good_condition_turns} "
                 f"focus={state.focus} stamina={state.stamina} flow={state.current_flow} "
@@ -2404,6 +2410,20 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
             # 等回合转场（残りターン变化）；未变化则继续同回合下一步
             self._wait_transition(context, turn_left)
+
+    @staticmethod
+    def _profile_from_preset(preset: HIFPreset) -> ProfilePayload:
+        """覆盖链解析结果(HIFPreset) → 出牌画像 ProfilePayload(issue #3)。
+
+        点名映射：drink_priority(GUI「HIF 决策微调」优先名单) >
+        drink_name_priority(preset 默认) → p_drink_priority(低体力喝药选瓶序)。
+        reprise/honisen/flows 是莉波角色机制参数,不受通用偏好覆盖。
+        """
+        profile = ProfilePayload.default()
+        priority = preset.drink_priority or preset.drink_name_priority
+        if priority:
+            profile = dataclasses.replace(profile, p_drink_priority=list(priority))
+        return profile
 
     @staticmethod
     def _round_config(argv: CustomAction.RunArg) -> tuple[int, ExamRound, str]:
