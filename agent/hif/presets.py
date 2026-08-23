@@ -239,7 +239,11 @@ def build_scoring_params(preset: HIFPreset) -> ScoringParams:
     return params
 
 
-_OVERRIDE_PATH = Path(__file__).resolve().parents[3] / "assets" / "data" / "hif" / "decision_override.json"
+_OVERRIDE_PATH = Path(__file__).resolve().parents[2] / "assets" / "data" / "hif" / "decision_override.json"
+# parents[2]=REPO 根(agent/hif/presets.py → agent/hif → agent → REPO)。旧值 parents[3]
+# 解析到 REPO 外(F:\code\assets\...)恒不存在——覆盖链文件层从未生效(GUI 层正常掩盖,
+# 2026-08-23 验收轮注入 probe_opening_resources 排查实证),路径语义以
+# docs/hif/decision-override.md「编辑 assets/data/hif/decision_override.json」为准。
 
 
 def apply_file_overrides(preset: HIFPreset, path: Path = _OVERRIDE_PATH) -> HIFPreset:
