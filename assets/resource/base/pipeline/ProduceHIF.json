@@ -30,6 +30,7 @@
             "param": {}
         },
         "next": [
+            "[JumpBack]ProduceHIFMemoryLimitFlag",
             "[JumpBack]ProduceHIFLackAPFlag",
             "[JumpBack]ProduceHIFStartConfirmFlag",
             "[JumpBack]ProduceHIFIdolSelectFlag",
@@ -152,6 +153,7 @@
     "[JumpBack]ProduceHIFStatePanelCloseFlag",
     "[JumpBack]ProduceHIFMemAbilityCloseFlag",
     "[JumpBack]ProduceHIFCardDetailCloseFlag",
+    "[JumpBack]ProduceHIFMemoryLimitFlag",
     "[JumpBack]ProduceHIFOpeningCommuSkipFlag",
     "[JumpBack]ProduceHIFSupportEventPopup",
     "[JumpBack]ProduceHIFRound1Flag",
@@ -1078,6 +1080,150 @@
         },
         "focus": {
             "Node.Recognition.Succeeded": "[color=Orange]HIF: 開場コミュ页(局首开场对话,频率不定轮6无轮7有;実測轮7 SKIP box[177,1185,81,29]→tap(217,1212);ROI 收窄左下 y1150-1260 避対局页右上 SKIP[635,786];GuardedTap 防死循环,SKIP 纯 ASCII 无 IPC 乱码雷)[/color]"
+        }
+    },
+    "ProduceHIFMemoryLimitFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*メモリー所持上限.*"
+                ],
+                "roi": [
+                    30,
+                    735,
+                    320,
+                    70
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    522,
+                    1141,
+                    1,
+                    1
+                ]
+            }
+        },
+        "next": [
+            "ProduceHIFMemoryConvertPageFlag"
+        ],
+        "timeout": 20000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: メモリー所持上限弹窗(轮9-13产出堆积1000满阻止开新局;轮14取证 probe 正例:标题box[56,752,260,36]1.0)——点メモリー変換按钮(522,1141)=box中心実測同点,进変換页自动整理[/color]"
+        }
+    },
+    "ProduceHIFMemoryConvertPageFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*メモリー変換.*"
+                ],
+                "roi": [
+                    0,
+                    25,
+                    260,
+                    60
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    82,
+                    1001,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 800,
+        "next": [
+            "ProduceHIFMemoryConvertExecFlag"
+        ],
+        "timeout": 20000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "[color=Orange]HIF: メモリー変換页(左上标题锚box[14,40,213,32])——全選択(82,1001)=OCR box中心(vision偏60px実証用OCR);編成中卡自动隐藏[/color]"
+        }
+    },
+    "ProduceHIFMemoryConvertExecFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*変換する.*"
+                ],
+                "roi": [
+                    280,
+                    1045,
+                    180,
+                    80
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    380,
+                    1086,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 800,
+        "next": [
+            "ProduceHIFMemoryConvertConfirmFlag"
+        ],
+        "timeout": 20000,
+        "on_error": [
+            "ProduceHIFScheduleRoot"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "[color=Orange]HIF: 点変換する(380,1086)実測pill中心(box[322,1070,116,32]文字行偏上)——弹確認窗[/color]"
+        }
+    },
+    "ProduceHIFMemoryConvertConfirmFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*変換確認.*"
+                ],
+                "roi": [
+                    30,
+                    75,
+                    200,
+                    60
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    522,
+                    1180,
+                    1,
+                    1
+                ]
+            }
+        },
+        "post_delay": 1500,
+        "focus": {
+            "Node.Action.Succeeded": "[color=Orange]HIF: 変換確認弹窗点決定(522,1180)実測pill中心(文字box中心y1157偏上23px)——変換完成游戏自动续入口流程(轮14 snap-1787480760実証:変換后直入HIF開場演出页),链尾回宿主路由[/color]"
         }
     },
     "ProduceHIFSupportEventPopup": {

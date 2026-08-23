@@ -42,6 +42,36 @@
 			"node": "ProduceHIFDayChangeFlag",
 			"pipeline": "ProduceHIF.json",
 			"expect": "miss"
+		},
+		{
+			"image": "hif-memory-limit-popup.png",
+			"node": "ProduceHIFMemoryLimitFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "hit"
+		},
+		{
+			"image": "hif-memory-convert-page.png",
+			"node": "ProduceHIFMemoryConvertPageFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "hit"
+		},
+		{
+			"image": "hif-memory-convert-page.png",
+			"node": "ProduceHIFMemoryConvertExecFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "hit"
+		},
+		{
+			"image": "hif-memory-convert-confirm.png",
+			"node": "ProduceHIFMemoryConvertConfirmFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "hit"
+		},
+		{
+			"image": "hif-round1-initial.png",
+			"node": "ProduceHIFMemoryLimitFlag",
+			"pipeline": "ProduceHIF.json",
+			"expect": "miss"
 		}
 	]
 }
