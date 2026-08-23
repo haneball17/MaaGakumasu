@@ -152,6 +152,7 @@
     "[JumpBack]ProduceHIFStatePanelCloseFlag",
     "[JumpBack]ProduceHIFMemAbilityCloseFlag",
     "[JumpBack]ProduceHIFCardDetailCloseFlag",
+    "[JumpBack]ProduceHIFOpeningCommuSkipFlag",
     "[JumpBack]ProduceHIFSupportEventPopup",
     "[JumpBack]ProduceHIFRound1Flag",
     "[JumpBack]ProduceHIFTapNextFlag",
@@ -1047,6 +1048,36 @@
         "focus": {
             "Node.Action.Succeeded": "[color=Orange]HIF: スキルカード詳細弹窗(×実機 2026-08-23 轮11 双证 (360,730) 点中关闭;旧 (360,1180) 轮3 vision 给值実機点空——浮层×随内容浮动,若再失效升级 Custom 动态找×)",
             "Node.Recognition.Succeeded": "[color=Orange]HIF: スキルカード詳細弹窗(出牌点卡误开详情,毛玻璃遮全画面致全部锚 miss 段退;前挂优先关——管线层可达,Custom dissolve 够不着)[/color]"
+        }
+    },
+    "ProduceHIFOpeningCommuSkipFlag": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    ".*SKIP.*"
+                ],
+                "roi": [
+                    100,
+                    1150,
+                    300,
+                    110
+                ]
+            }
+        },
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ProduceHIFGuardedTapAuto",
+                "custom_action_param": {
+                    "anchor_expected": ["SKIP"],
+                    "anchor_roi": [100, 1150, 300, 110],
+                    "tap": [217, 1212]
+                }
+            }
+        },
+        "focus": {
+            "Node.Recognition.Succeeded": "[color=Orange]HIF: 開場コミュ页(局首开场对话,频率不定轮6无轮7有;実測轮7 SKIP box[177,1185,81,29]→tap(217,1212);ROI 收窄左下 y1150-1260 避対局页右上 SKIP[635,786];GuardedTap 防死循环,SKIP 纯 ASCII 无 IPC 乱码雷)[/color]"
         }
     },
     "ProduceHIFSupportEventPopup": {
