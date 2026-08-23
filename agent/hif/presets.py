@@ -11,6 +11,7 @@ from typing import Any, Iterable
 from pathlib import Path
 from dataclasses import replace, dataclass
 
+from agent.hif.decisions.interval import WANTED_P3_CONSENSUS
 from agent.hif.decisions.scoring import ScoringParams
 
 
@@ -54,6 +55,12 @@ class HIFPreset:
     # 対局开局资源探测(P item 详情+牌堆查看器):默认关——入口坐标未校准
     # (五轮 106 次 miss 降级纯耗时,审计缺口 1/2),実機取证校准后经 GUI/override 打开
     probe_opening_resources: bool = False
+    # ---- Interval 商店购买(#22 grill 定案 2026-08-24:名称级+P3 共识+留额语义) ----
+    interval_purchase_mode: str = "no_purchase"  # no_purchase | buy_list
+    interval_budget: int = 0  # 可花上限帽(P 点);0=不设帽(仅受 余额-留额 约束)
+    interval_reserve: int = 100  # 特別指導留额(Round2 竞争用途,mechanics.md P3/H12)
+    interval_restock_target: int = 22  # 山札补到 N 枚(deck_size<target 时技能卡最优先)
+    interval_wanted: tuple[str, ...] = WANTED_P3_CONSENSUS  # 名称优先表
 
 
 SAFE_DEFAULT_PRESET = HIFPreset(
@@ -204,6 +211,17 @@ def parse_hif_preset(raw: str | None) -> HIFPreset:
     probe_on = probe is True or (isinstance(probe, str) and probe.strip().lower() in ("yes", "true", "1"))
     if probe_on:
         updates["probe_opening_resources"] = True
+    # Interval 商店购买（#22）：GUI 注入名称级策略参数,非法值回落 preset 默认
+    interval_mode = payload.get("interval_purchase_mode")
+    if isinstance(interval_mode, str) and interval_mode in ("no_purchase", "buy_list"):
+        updates["interval_purchase_mode"] = interval_mode
+    for field_name in ("interval_budget", "interval_reserve", "interval_restock_target"):
+        value = _to_int(payload.get(field_name))
+        if value:
+            updates[field_name] = value
+    interval_names = _split_names(payload.get("interval_wanted_str", ""))
+    if interval_names:
+        updates["interval_wanted"] = interval_names
 
     return replace(preset, **updates) if updates else preset
 
@@ -237,6 +255,19 @@ def build_scoring_params(preset: HIFPreset) -> ScoringParams:
     if preset.endgame_weight is not None:
         params = replace(params, endgame_weight=preset.endgame_weight)
     return params
+
+
+def build_purchase_policy(preset: HIFPreset) -> "PurchasePolicy":
+    """preset 的 Interval 购买字段 → PurchasePolicy（#22；実機接线归 #24 IntervalAuto）。"""
+    from agent.hif.decisions.interval import PurchasePolicy
+
+    return PurchasePolicy(
+        mode=preset.interval_purchase_mode,
+        budget=preset.interval_budget,
+        reserve=preset.interval_reserve,
+        restock_target=preset.interval_restock_target,
+        wanted=preset.interval_wanted,
+    )
 
 
 _OVERRIDE_PATH = Path(__file__).resolve().parents[2] / "assets" / "data" / "hif" / "decision_override.json"
@@ -296,6 +327,21 @@ def apply_file_overrides(preset: HIFPreset, path: Path = _OVERRIDE_PATH) -> HIFP
     probe_on = probe is True or (isinstance(probe, str) and probe.strip().lower() in ("yes", "true", "1"))
     if probe_on and not preset.probe_opening_resources:
         updates["probe_opening_resources"] = True
+    # Interval 商店购买（#22）：mode 点名覆盖;数值 0=未配置哨兵(留额 0 不支持);
+    # 名单仅在 preset 层仍为默认共识表时替换(防 GUI 层已点名被文件覆盖)
+    interval_mode = payload.get("interval_purchase_mode")
+    if isinstance(interval_mode, str) and interval_mode in ("no_purchase", "buy_list"):
+        if interval_mode != preset.interval_purchase_mode:
+            updates["interval_purchase_mode"] = interval_mode
+    for field_name in ("interval_budget", "interval_reserve", "interval_restock_target"):
+        value = _to_int(payload.get(field_name))
+        if value and value != getattr(preset, field_name):
+            updates[field_name] = value
+    interval_names = payload.get("interval_wanted")
+    if isinstance(interval_names, list) and interval_names:
+        names = tuple(str(n).strip() for n in interval_names if str(n).strip())
+        if names and preset.interval_wanted == WANTED_P3_CONSENSUS:
+            updates["interval_wanted"] = names
     return replace(preset, **updates) if updates else preset
 
 

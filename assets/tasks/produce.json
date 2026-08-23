@@ -400,6 +400,28 @@
 					"pipeline_type": "string",
 					"verify": "^$|^[0-9]*\\.?[0-9]+$",
 					"pattern_msg": "$终盘权重说明"
+				},
+				{
+					"name": "interval_purchase_mode",
+					"label": "$Interval购买模式",
+					"default": "no_purchase",
+					"pipeline_type": "string",
+					"verify": "^(no_purchase|buy_list)$",
+					"pattern_msg": "$Interval购买模式说明"
+				},
+				{
+					"name": "interval_wanted_str",
+					"label": "$Interval购买名单",
+					"default": "",
+					"pipeline_type": "string"
+				},
+				{
+					"name": "interval_budget",
+					"label": "$Interval预算上限",
+					"default": "0",
+					"pipeline_type": "int",
+					"verify": "^[0-9]+$",
+					"pattern_msg": "$Interval预算上限说明"
 				}
 			],
 			"pipeline_override": {
@@ -608,6 +630,14 @@
 						"day6_order": "{day6_order}",
 						"scoring_scale": "{scoring_scale}",
 						"endgame_weight": "{endgame_weight}"
+					}
+				},
+				"ProduceHIFIntervalFlag": {
+					"custom_action_param": {
+						"preset_id": "{preset_id}",
+						"interval_purchase_mode": "{interval_purchase_mode}",
+						"interval_wanted_str": "{interval_wanted_str}",
+						"interval_budget": "{interval_budget}"
 					}
 				}
 			}
