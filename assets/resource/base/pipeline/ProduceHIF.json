@@ -791,9 +791,9 @@
                 ],
                 "roi": [
                     140,
-                    1100,
+                    850,
                     460,
-                    150
+                    430
                 ]
             }
         },
@@ -805,7 +805,7 @@
         },
         "post_delay": 800,
         "focus": {
-            "Node.Recognition.Succeeded": "[color:Orange]HIF: 演出页「タップして次へ/TAPで次へ」(実機 2026-08-15/08-20:中盘順位展示/最終評価完了页;TAP变体 2026-08-22 补)[/color]"
+            "Node.Recognition.Succeeded": "[color:Orange]HIF: 演出页「タップして次へ/TAPで次へ」(実機 2026-08-15/08-20:中盘順位展示/最終評価完了页;TAP变体 2026-08-22 补;ROI 扩 y850-1280 兼容 R1 後現在順位页 #26)[/color]"
         }
     },
     "ProduceHIFDrinkRewardFlag": {
