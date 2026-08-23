@@ -33,8 +33,10 @@ description: 无人工介入的 MaaFW 管线开发调试循环。当用户要求
    - OCR 节点：`.agents/skills/pipeline-generate/generate_sweep.py` 选 ROI 扩边 + `generate_node.py` 写入。
    - 节点设计与接线规范：遵循 pipeline-guide skill（v2 格式、next 状态机、[JumpBack]）。
    - 模板即时验证：`reco --type TemplateMatch --param '{"template":["autodev/xxx.png"]}'`。
-3. **反思 Reflect**：`test-node <节点> --n 3` 实机连测（需设备）。三态判定看 runs[].status 与
-   before/after 截图。失败进修复阶梯（见下）。
+3. **反思 Reflect**：`test-node <节点> --n 3` 实机连测（需设备）。**默认断 next 链**——
+   post_task 跑的是完整任务链（recognition+action+next），路由节点连测会推进游戏页面
+   （実機 2026-08-23 误入初流程準備页教训）；`--follow-chain` 显式放开全链。三态判定看
+   runs[].status 与 before/after 截图。失败进修复阶梯（见下）。
 4. **记录 Note**：每个关键动作 `journal '{"event":"...","node":"...","hit":true}' --run-id <id>`
    落 `debug/autodev/<run-id>/journal.jsonl`；证据截图由 test-node 自动落盘。
 5. **管理 Manage**：主 agent 自身——连续 2 次同类失败即升级（换方案重规划），不再原样重试。
@@ -57,9 +59,28 @@ description: 无人工介入的 MaaFW 管线开发调试循环。当用户要求
 |---|---|---|
 | Timing | 偶发 miss、动画中 | 加 pre/post_delay、post_wait_freezes、重试 |
 | 模板漂移 | score 在阈值边缘 | 放宽 threshold（0.7→0.6）→ 重截模板（crop）→ 换 FeatureMatch/OCR |
-| OCR 词表 | 文字识别但节点 miss | expected 补变体（`tools/hif_mine_ocr_variants.py`） |
+| 模板老化 | 実機 tpl_scores 大面积低于阈值（如 0.25-0.36 vs 0.85） | 走下方「模板重裁互配矩阵」流程 |
+| OCR 词表 | 文字识别但节点 miss | expected 补变体（`tools/hif_mine_ocr_variants.py`）；**agent 侧 expected 禁非 ASCII**（IPC 日文乱码）改 `[".*"]`+Python 子串 |
 | 缺前置 | 节点本身好但到不了 | 补导航节点/修 next 接线 |
 | ROI 侵占 | 误命中相邻元素 | 缩 ROI（sweep 重选） |
+
+## 模板重裁互配矩阵（模板老化维护闭环，実機 2026-08-23 B1 实证）
+
+**多模板同源素材 = 同批失效**——一个模板量化失效时先查同源（manifest 的 source_image
+相同即嫌疑；B1 三 buff 模板裁自同一张旧截图全部老化）。维护闭环：
+
+1. **选帧**：决策 JSONL 的 `buff_rows`/known 行 y 定位目标行所在的実機截图
+   （一帧含多个目标行最佳），vision 确认图标完整渲染。
+2. **v2 试裁**：`crop <截图> --box x,y,w,h --name xxx_v2`（v2 名不立即覆盖生产模板，
+   manifest 自动登记；box 对齐旧模板的行偏移惯例，如图标 y ≈ 词行 y - 8）。
+3. **互配矩阵**：`reco` 离线跑 `[v2 + 旧模板] × [多张実機截图]` 全交叉
+   （threshold 调低如 0.1 看全分数，**取 max 而非首个结果**）。验收线：
+   行在 ≥0.94 且 best box y 与裁剪 y 对齐；行不在误配与 threshold 有间隔
+   （B1 实测误配 ≤0.81 vs 阈值 0.85）；旧模板复现失效留证据。
+4. **同名覆盖**：`crop --name <生产名>` 覆盖（代码引用路径零改动）。
+5. **実機验证**：下局看 evidence 的 `tpl_scores`（模板分数落盘）；边缘 miss（如
+   0.83-0.84）由缓存双保险兜底属设计行为，持续监控误命中即可。
+6. 矩阵报告归档 `debug/autodev/`（不入库）。
 
 ## 单驱动原则（避免抢控制器）
 
