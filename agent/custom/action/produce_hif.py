@@ -2829,8 +2829,11 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             logger.debug(f"hand 灰卡过滤异常(不过滤): {err}")
         return hand
 
-    GRAY_CARD_SAT_THRESHOLD = 40  # 卡框带 HSV 饱和度均值阈值(灰卡<40,用户 UI 约束
+    GRAY_CARD_SAT_THRESHOLD = 40  # 卡框带饱和度均值阈值(灰卡<40,用户 UI 约束
     # 2026-08-22:消耗超出当前状态(体力/集中不足)时卡牌变灰——灰卡点击不生效,须跳过)
+    # 阈值实证依据(issue #9,取证 2026-08-23 実機):灰卡 sat=2(R2 対局実測,思考の基本)
+    # vs 非灰 56.7-89.0(手牌3卡実測,白底卡最低 56.7)——40 居中间隔充分,校准定标。
+    # 观察口径:若未来白底卡贴边误判(<45)优先降阈值至 30 段,勿上调。
 
     @staticmethod
     def _band_saturation(arr: "np.ndarray") -> float:
@@ -3460,26 +3463,26 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         return items
 
     # ------------------------------------------------------------------
-    # 対局资源全景读取（五轮验证 2026-08-22）：P item 详情弹窗 + 牌堆查看器
-    # 実機依据 pitem2_detail.png（debug/autodev/round1，2026-08-21 取证）：
-    # P item 弹窗=全部道具效果流式列表，× 关闭 [316,710,86,90] 中心(359,755)
-    # 与 buff 面板 X 同位；效果文案均带「(試験・ステージ内N回)」可作锚。
+    # 対局资源全景读取（五轮验证 2026-08-22；入口 2026-08-23 取证轮実測重建）：
+    # P item 详情=牌堆查看器 Pアイテム tab（対局左縦列非交互,旧「右上数字带左移」
+    # 入口误设是五轮 106 次 miss 降级根因）；效果文案带「N回発動済み」可作触发标记。
     # ------------------------------------------------------------------
 
-    PITEM_POPUP_CLOSE = (359, 755)                 # × 中心（実機 pitem2_detail OCR）
-    PITEM_POPUP_CONTENT_ROI = [40, 40, 640, 660]   # 弹窗内容区（效果文本流式区）
-    PITEM_ICON_LEFT_OFFSET = 55                    # 数字框中心 → 图标中心 x 左移（実測纵列）
+    # P item 详情入口=牌堆查看器 Pアイテム tab（取证 2026-08-23 定案：対局左縦列
+    # 图标点击无反应非交互，旧「右上数字框左移55」是排名/触发剩余带非縦列，入口
+    # 误设致 106 次 miss 降级——五轮验证 Q3 根因）。弹窗=「所持Pアイテム」效果
+    # 流式列表（item 名+效果+「N回発動済み」标记），実測 × 无独立钮由閉じる 关。
+    PITEM_TAB_TAP = (522, 1045)                     # Pアイテム tab（查看器底部，実測 [465,1029,116,33]）
+    PITEM_TAB_ANCHOR = ("所持Pアイテム",)            # tab 内容页标题（実測 [60,41]）
+    PITEM_TAB_CONTENT_ROI = [40, 40, 660, 660]      # Pアイテム tab 内容区
     PITEM_SCROLL_MAX = 6
-    PITEM_CLOSE_CONFIRM = 2                        # 连续 N 次锚仍在 = 关闭失败
+    PITEM_CLOSE_CONFIRM = 2                         # 连续 N 次锚仍在 = 关闭失败
 
     def _pitem_popup_anchor_hit(self, context: Context, image) -> bool:
-        """P item 弹窗打开判定：内容区「試験・ステージ」锚（実機両道具均带）。
-        全量+Python 双条件子串（#65 同类雷；旧正則「試験.*ステー」跨词序匹配）。"""
-        anchor = self._run_ocr(context, image, "HIFPItemPopupAnchor", [".*"], self.PITEM_POPUP_CONTENT_ROI)
-        for item in ((anchor.all_results if anchor else None) or []):
-            if "ステージ内" in item.text or ("試験" in item.text and "ステー" in item.text):
-                return True
-        return False
+        """P item tab 页打开判定：「所持Pアイテム」标题锚（実測）。
+        全量+Python 子串（#65 同类雷纪律）。"""
+        anchor = self._run_ocr(context, image, "HIFPItemTabAnchor", [".*"], [20, 20, 400, 80])
+        return self._find_in_all(anchor, *self.PITEM_TAB_ANCHOR) is not None
 
     # 残留自愈（実機 2026-08-22 轮0）：出牌循环打开的浮层关闭失败会遮挡手牌致
     # read_hand 恒空 → evidence_empty_hand stop。三类浮层：buff 完整面板/P item
@@ -3518,43 +3521,43 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             )
             if has_pdrink:
                 self._close_pdrink_popup(context)
+            elif has_pitem:
+                # P item 残留=查看器/Pアイテム tab 未关(issue #9 新入口),閉じる 実測位
+                self._tap(context, *self.PILE_CLOSE_TAP)
+                time.sleep(1.2)
             else:
                 self._tap(context, *self.OVERLAY_CLOSE_TAP)
                 time.sleep(1.2)
         return acted
 
     def _read_p_item_details(self, context: Context) -> Optional[list[dict]]:
-        """P item 全量详情读取（纯读取）：点纵列图标 → 弹窗（全部道具效果列表）→
-        右缘滚动到底（連2無新增+长音符归一，同 _read_state_panel 骨架）→ 词行级
-        match_pitem_name 定名 + 效果文本按名字行分段归属 → 关闭验证 → 缓存 session。
+        """P item 全量详情读取（纯读取，issue #9 実測入口版）：牌堆查看器
+        (570,1180) → Pアイテム tab (522,1045) →「所持Pアイテム」页 → 右缘滚动
+        到底（連2無新增，同 _read_state_panel 骨架）→ 词行级 match_pitem_name
+        定名+效果分段 → 閉じる 关闭验证 → 缓存 session。
 
-        名字行 OCR miss 的段落记 name=None 保 raw（不乱猜，探索轮校准）；
-        打不开/点错面板（入口位与 buff 带/排名区交叠会误开 buff 完整面板，
-        実機 2026-08-22 轮0 两次 stop 根因）→ 关闭后降级 return None（不 stop）；
-        关闭失败也 return None 由调用方残留自愈兜底。
-        """
-        # 入口：纵列首个数字框左移定图标；纵列空则点 ROI 顶中心兜底
+        查看器/tab 打不开（转场窗口）降级 return None 不 stop；关闭失败同 None
+        由调用方残留自愈兜底。"""
+        self._tap(context, *self.PILE_ENTRY_TAP)
+        time.sleep(self.PANEL_CLICK_DELAY)
         image = self._get_screenshot(context)
-        p_items_seen = self._enumerate_p_items(context, image)
-        if p_items_seen:
-            bx, by = p_items_seen[0]["box"][0], p_items_seen[0]["box"][1] + p_items_seen[0]["box"][3] // 2
-            entry = (max(600, bx - self.PITEM_ICON_LEFT_OFFSET), by)
-        else:
-            entry = (self.ROI_PITEM_COLUMN[0] + self.ROI_PITEM_COLUMN[2] // 2,
-                     self.ROI_PITEM_COLUMN[1] + 40)
-        self._click_box_center(context, [entry[0] - 15, entry[1] - 15, 30, 30], double=False)
+        if not self._pile_viewer_anchor_hit(context, image):
+            logger.warning("P item 读取: 牌堆查看器未打开,降级跳过")
+            return None
+        self._tap(context, *self.PITEM_TAB_TAP)
         time.sleep(self.PANEL_CLICK_DELAY)
         image = self._get_screenshot(context)
         if not self._pitem_popup_anchor_hit(context, image):
-            logger.warning("P item 详情弹窗未打开(锚 miss),关闭可能的误开面板后降级跳过")
-            self._dissolve_blocking_overlays(context)
+            logger.warning("P item 读取: Pアイテム tab 未打开(锚 miss),关查看器降级跳过")
+            self._close_pile_viewer(context)
             return None
+        image = self._get_screenshot(context)
 
         # 滚动收集全词行（y 排序；連2屏无新增词到底）
         collected: dict[str, dict] = {}
         no_new = 0
         for _ in range(self.PITEM_SCROLL_MAX):
-            detail = self._run_ocr(context, image, "HIFPItemDetailWords", [".*"], self.PITEM_POPUP_CONTENT_ROI)
+            detail = self._run_ocr(context, image, "HIFPItemDetailWords", [".*"], self.PITEM_TAB_CONTENT_ROI)
             words = [
                 {"text": i.text.strip(), "y": i.box[1], "h": i.box[3]}
                 for i in (detail.all_results or []) if i.text.strip()
@@ -3574,7 +3577,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
         items = self._segment_pitem_words(list(collected.values()))
         if not self._close_pitem_popup(context):
-            return None  # 关闭失败=弹窗残留污染画面,整体降级(调用方按 None 处理)
+            return None  # 关闭失败=查看器残留污染画面,整体降级(调用方按 None 处理)
         if items:
             _ProduceHIFActionBase._write_round1_state({"p_items": items})
             self._archive_static(context, "round_p_item_details", {
@@ -3611,13 +3614,13 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         return [s for s in segments if s["name"] or len(s["ocr_lines"]) >= 2]
 
     def _close_pitem_popup(self, context: Context) -> bool:
-        """关闭 P item 弹窗并验证（× 固定位 + 锚消失验证；実機 × 与 buff 面板同位）。"""
+        """关闭 Pアイテム tab 页（=关闭查看器）并验证：閉じる 実測位+锚消失验证。"""
         for _ in range(3):
-            self._click_box_center(context, [self.PITEM_POPUP_CLOSE[0] - 20, self.PITEM_POPUP_CLOSE[1] - 15, 40, 30], double=False)
+            self._tap(context, *self.PILE_CLOSE_TAP)
             time.sleep(1.2)
             if not self._pitem_popup_anchor_hit(context, self._get_screenshot(context)):
                 return True
-        logger.warning("P item 详情弹窗关闭失败")
+        logger.warning("Pアイテム tab 页关闭失败(閉じる (335,1155) 未生效)")
         return False
 
     # 牌堆查看器実測结构（取证 2026-08-23 issue #8，実機授权轮）：
