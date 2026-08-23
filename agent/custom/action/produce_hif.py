@@ -2203,12 +2203,24 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                     logger.warning(f"{round_tag} 溢出面板读取失败,降级状态带可见行")
             else:
                 logger.info(f"{round_tag} 开局非溢出,状态带枚举 {sum(1 for r in rows0 if r.get('words'))} 行全量可见")
+                # buff 懒定案接线（実機 2026-08-23 三轮复盘 94% 行 known=null：对未知行
+                # 逐个点开读面板标题建 y→名称映射缓存 session；若点开为组合面板
+                # （多行同标题）则放弃——映射无效防错误定案。行重排后缓存按 y 容差
+                # 自然失效，退回模板路，known 非决策必需不阻塞）
+                self._lazy_fill_row_labels(context, rows0)
             # P 饮料槽探测（R1-Q1/R2：槽位前缀固定，点开弹窗实锤，缓存 session；
-            # 段重入带缓存时跳过——不再反复点瓶位弹「尝试喝饮料」观感）
+            # 段重入带缓存时跳过——不再反复点瓶位弹「尝试喝饮料」观感）。
+            # 缓存命中收紧为「至少一槽有名/原文」(実機 2026-08-23 四轮复盘:全 null
+            # 毒缓存曾被当有效复用整局)；全空探测有 attempts 上限,超限整局放弃
             cached = _ProduceHIFActionBase._read_round1_state().get("p_drink_slots") or []
-            if cached:
+            cached_valid = cached and any(s.get("name") or s.get("raw") for s in cached)
+            attempts = int(_ProduceHIFActionBase._read_round1_state().get("p_drink_probe_attempts") or 0)
+            if cached_valid:
                 p_drink_slots = cached
                 logger.info(f"{round_tag} P饮料槽用缓存({self._available_drinks_from_slots(cached)})")
+            elif attempts >= self.PDRINK_PROBE_MAX_ATTEMPTS:
+                p_drink_slots = cached
+                logger.warning(f"{round_tag} P饮料槽探测{attempts}次全空,整局放弃(缓存={cached})")
             else:
                 p_drink_slots = self._probe_p_drink_slots(context)
                 logger.info(f"{round_tag} P饮料槽探测={self._available_drinks_from_slots(p_drink_slots)}")
@@ -2490,6 +2502,13 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         detail = self._run_template(
             context, image, "HIFRound1BuffIcon", template, self.ROI_BUFF_BAND, threshold=0.85,
         )
+        # 模板分数暂存（実機 2026-08-23 P1：evidence 落盘 tpl_scores 供离线校准
+        # 0.85 阈值是否放宽——好調/絶好調互配 0.704-0.729 有间隔,miss 时的
+        # 最高分是边缘证据）
+        if not hasattr(self, "_tpl_scores"):
+            self._tpl_scores: Dict[str, Any] = {}
+        scores = [r.score for r in (detail.all_results or [])] if detail else []
+        self._tpl_scores[template] = round(max(scores), 3) if scores else None
         if not (detail and detail.hit):
             return None
         box = detail.best_result.box
@@ -2582,6 +2601,22 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                      exam_round: ExamRound = ExamRound.HONSEN_R1, total_turns: int = 9) -> ExamState:
         session = _ProduceHIFActionBase._read_round1_state()
         good = self._read_buff_turns(context, image, self.TPL_GOOD)
+        if good is not None:
+            # 模板成功写回 session(実機 2026-08-23 四轮复盘:good_condition_turns 此前
+            # 从未被任何写入点写入→模板 miss 时 warn 恒 None 且 ExamState 落假 0,
+            # 策略在这些回合用好調=0 做门控——照 focus 双保险模式补齐)
+            _ProduceHIFActionBase._write_round1_state({"good_condition_turns": int(good)})
+        else:
+            cached_good = session.get("good_condition_turns")
+            if cached_good is not None:
+                good = int(cached_good)
+                logger.info(f"好調行模板 MISS，用缓存(模板/面板最近值)={good}")
+            else:
+                logger.warning("好調行模板定行失败且无缓存(面板未读/未含好調行),落 0")
+            # 絶好調补探测（実機 2026-08-23 P1 纯日志版）：好調 miss 时区分
+            # 「升级为絶好調」（TPL_GOOD 按设计 miss,互配<0.85）vs「行不在」——
+            # 絶好調ターン数进 evidence,策略口径不变（ExamState 无该字段）
+            self._excellent_turns = self._read_buff_turns(context, image, "autodev/hif_buff_excellent_condition.png")
         focus = self._read_buff_turns(context, image, self.TPL_CONC)
         if focus is None:
             # 集中双保险（grill R1-Q4）：状态带模板 MISS 时用开局面板缓存+告警
@@ -2591,16 +2626,21 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         # reprise 源（实证修正）：溢出面「(再演)」权威缓存优先；非溢出=状态带「ーン内」行
         # 新源；旧右上源（P item 误标）仅 debug 落盘
         pool_left = session.get("reprise_pool_left")
+        reprise_from_legacy = False
         if pool_left is not None:
             reprise_used = 4 - int(pool_left)
         else:
             new_src = self._read_reprise_new_source(context, image)
-            reprise_used = new_src if new_src is not None else self._read_reprise_used(context, image)
-        if good is None:
-            logger.warning(f"好調行模板定行失败，session 兜底={session.get('good_condition_turns')}")
-        if reprise_used is not None:
-            # 双源告警（R1-Q5）：旧源右上 N 回实为 P item 剩余，实测 diff 定案前保留+告警
-            logger.warning(f"reprise 旧源(右上,疑 P item 误标)={reprise_used}, 出牌 diff 后切换新源")
+            if new_src is not None:
+                reprise_used = new_src
+            else:
+                reprise_used = self._read_reprise_used(context, image)
+                reprise_from_legacy = reprise_used is not None
+        if reprise_from_legacy:
+            # 门控修正(実機 2026-08-23 四轮复盘:旧 warn 在 reprise_used 非 None 时无条件打
+            # 且文案 stale——解析序早已 缓存→新源→旧源 切换完毕;旧源右上 N回 实为 P item
+            # 剩余(ROI 重叠实证)。仅双源皆空真退旧源时告警,消每轮数十条噪音)
+            logger.warning(f"reprise 面板缓存与新源皆空,退旧源(右上 P item 数字,参考值)={reprise_used}")
         # 対局资源全景（五轮验证接口）：开局读取缓存 session，决策从这里消费
         p_drink_slots = session.get("p_drink_slots") or []
         p_items = session.get("p_items") or []
@@ -2642,6 +2682,10 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             "buff_rows": self._enumerate_buff_rows(context, image),
             "buff_fingerprint": self._buff_fingerprint(context, image),
             "p_drink_slots": _ProduceHIFActionBase._read_round1_state().get("p_drink_slots") or [],
+            # 模板分数+絶好調補探测（実機 2026-08-23 P1：阈值离线校准与
+            # 「好調 miss=升级絶好調 vs 行不在」区分的证据源；_build_state 同回合先跑）
+            "tpl_scores": dict(getattr(self, "_tpl_scores", {}) or {}),
+            "excellent_turns": getattr(self, "_excellent_turns", None),
         }
 
     def _record_session_progress(self, played_card: str) -> None:
@@ -2858,15 +2902,16 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     # ------------------------------------------------------------------
 
     PDRINK_SLOTS = ((60, 1215), (150, 1215), (240, 1215), (330, 1215))
-    PDRINK_POPUP_ANCHOR_ROI = [40, 700, 500, 80]   # 弹窗标题「Pドリンク詳細」(y722 実測)
-    PDRINK_NAME_ROI = [40, 780, 400, 80]           # 弹窗瓶名带（初星黒酢 [187,805] 実測）
+    PDRINK_POPUP_ANCHOR_ROI = [40, 700, 500, 260]  # 弹窗标题「Pドリンク詳細」带(标题随瓶浮动 y722/838 実測,probe3 定案;旧 80px 窄带标题浮到 y838 时恒 miss→全 null 毒缓存,実機 2026-08-23 四轮复盘)
     PDRINK_CANCEL_SCAN_ROI = [0, 1050, 400, 130]   # キャンセル按钮扫描带（[96,1124] 実測）
+    PDRINK_PROBE_MAX_ATTEMPTS = 2                  # 全空探测整局放弃上限(防段重入反复点瓶位,2026-08-22 轮2 裁决)
     ROI_BUFF_ENUM = [14, 237, 130, 420]            # buff 带全量（枚举+指纹）
     ROI_PITEM_COLUMN = [600, 230, 120, 150]        # P item 纵列（云朵/票券 実測 x620-720,y240-340）
 
-    def _popup_is_pdrink(self, context: Context, image) -> bool:
+    def _popup_is_pdrink(self, context: Context, image):
+        """弹窗锚（返回 detail 供动态名带定位；None=未开；bool 语义不变）。"""
         detail = self._run_ocr(context, image, "HIFPDrinkPopupAnchor", [".*ドリンク詳細.*"], self.PDRINK_POPUP_ANCHOR_ROI)
-        return bool(detail and detail.hit)
+        return detail if (detail and detail.hit) else None
 
     def _close_pdrink_popup(self, context: Context) -> bool:
         """OCR 锁定キャンセル点击并验证关闭（実機教训：固定坐标+不验证=弹窗残留污染后续读取）。"""
@@ -2889,15 +2934,22 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         self._click_box_center(context, [slot_xy[0] - 20, slot_xy[1] - 20, 40, 40], double=False)
         time.sleep(self.PANEL_CLICK_DELAY)
         image = self._get_screenshot(context)
-        if not self._popup_is_pdrink(context, image):
+        anchor = self._popup_is_pdrink(context, image)
+        if not anchor:
             time.sleep(self.ACTION_DELAY)
             image = self._get_screenshot(context)
-            if not self._popup_is_pdrink(context, image):
+            anchor = self._popup_is_pdrink(context, image)
+            if not anchor:
                 # 未开弹窗也兜底关一次（防半开态残留污染后续读取）
                 self._close_pdrink_popup(context)
                 return None  # 空槽/槽不存在（同语义，grill R2 用户确认）
-        name_detail = self._run_ocr(context, image, "HIFPDrinkName", [".*"], self.PDRINK_NAME_ROI)
+        # 瓶名带随标题 y 浮动(初星黒酢 y722/ビタミン y838 実測,名≈标题+90,probe3 L75-81)——
+        # 从锚框 y 动态取名带;旧固定 [40,780,400,80] 在标题 y838 时读到标题/空(probe3 slot4 误读实证)
+        name_roi = [40, anchor.best_result.box[1] + 60, 400, 110]
+        name_detail = self._run_ocr(context, image, "HIFPDrinkName", [".*"], name_roi)
         name = name_detail.best_result.text.strip() if (name_detail and name_detail.hit) else ""
+        if "ドリンク詳細" in name:
+            name = ""  # 读到弹窗标题=名带错位,置空防误匹配
         self._close_pdrink_popup(context)
         return name or None
 
@@ -2921,6 +2973,17 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 "effects": (record or {}).get("effects"),
             })
             logger.info(f"Round P饮料槽{i}: raw={raw or '(empty)'} matched={name or '(unmatched)'}")
+        # 防毒缓存(実機 2026-08-23 四轮复盘:旧窄锚时代全 null 结果被无条件缓存,
+        # run() 的 `if cached:` 把 4 条 null 槽当有效缓存复用整局→available 恒空
+        # →「无 P ドリンク」skip 误判前提):全槽 raw None 不写缓存,只累计
+        # probe_attempts(上限内允许下段重试,超限整局放弃——保住 2026-08-22 轮2
+        # 「段重入不反复点瓶位」裁决)
+        if all(s["raw"] is None for s in slots):
+            state = _ProduceHIFActionBase._read_round1_state()
+            attempts = int(state.get("p_drink_probe_attempts") or 0) + 1
+            _ProduceHIFActionBase._write_round1_state({"p_drink_probe_attempts": attempts})
+            logger.warning(f"Round P饮料槽探测全空(第 {attempts} 次,不写缓存)")
+            return slots
         _ProduceHIFActionBase._write_round1_state({"p_drink_slots": slots})
         return slots
 
@@ -2956,8 +3019,13 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             d = self._run_template(context, image, "HIFBuffKnown", tpl, self.ROI_BUFF_ENUM, threshold=0.85)
             if d and d.hit:
                 known[round(d.best_result.box[1])] = label
+        # 懒定案缓存优先（実機 2026-08-23 接线：开局点行建立的 y→label 映射，
+        # y 容差 30 命中即定案；行重排后自然失效退回模板路）
+        lazy = _ProduceHIFActionBase._read_round1_state().get("buff_row_labels") or {}
         for row in rows:
             row["known"] = next((label for y, label in known.items() if abs(y - row["y"]) < 30), None)
+            if row["known"] is None:
+                row["known"] = next((lbl for y_str, lbl in lazy.items() if abs(int(y_str) - row["y"]) < 30), None)
         rows = self._mark_buff_overflow(context, image, rows)
         return rows
 
@@ -3039,14 +3107,18 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             "items": [{"text": t, "count": c} for t, c in items.items()],
             "focus": self._extract_focus_from_items(items),
             "reprise_left": self._extract_reprise_from_items(items),
+            "good": self._extract_good_from_items(items),
         }
         self._close_state_panel(context)
-        # 缓存跨回合字段（reprise 权威源/集中兜底缓存）
+        # 缓存跨回合字段（reprise 权威源/集中兜底缓存/好調兜底缓存——実機 2026-08-23
+        # 四轮复盘 good 缺双保险致模板 miss 落假 0）
         patch: Dict[str, Any] = {}
         if record["reprise_left"] is not None:
             patch["reprise_pool_left"] = record["reprise_left"]
         if record["focus"] is not None:
             patch["focus_cached"] = record["focus"]
+        if record["good"] is not None:
+            patch["good_condition_turns"] = record["good"]
         if patch:
             _ProduceHIFActionBase._write_round1_state(patch)
         return record
@@ -3095,6 +3167,16 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         m = re.search(r"(\d+)", keys[0])
         return int(m.group(1)) if m else None
 
+    @staticmethod
+    def _extract_good_from_items(items: dict[str, int]) -> Optional[int]:
+        """纯逻辑（可单测）：面板「好調 Nターン」条目提取（実測面板 items 含
+        「好調 29ターン」行,tests fixture 为证;好調双保险的面板权威源）。"""
+        keys = [k for k in items if "好調" in k and "絶好調" not in k]
+        if not keys:
+            return None
+        m = re.search(r"(\d+)", keys[0])
+        return int(m.group(1)) if m else None
+
     def _close_state_panel(self, context: Context) -> bool:
         for _ in range(3):
             self._click_box_center(context, [337, 740, 47, 34], double=False)  # X 実測中心(360,757)
@@ -3123,6 +3205,32 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             else:
                 rows.append({"y": y, "words": [w["text"]]})
         return rows
+
+    def _lazy_fill_row_labels(self, context: Context, rows: list[dict], max_rows: int = 5) -> None:
+        """buff 懒定案填充（grill R2-Q1 零资产路径接线）：known=null 行逐个点开读
+        面板标题→y→label 映射缓存 session.buff_row_labels。多行同标题=组合面板
+        形态（行详情不存在），放弃整体映射防错误定案。"""
+        unknown = [r for r in rows if r.get("known") is None and r.get("y", -1) >= 0 and r.get("words")]
+        if not unknown:
+            return
+        labels: Dict[str, str] = {}
+        titles = []
+        for row in unknown[:max_rows]:
+            rec = self._lazy_identify_row(context, int(row["y"]))
+            if not rec:
+                continue
+            title = re.sub(r"[\s\d]+", "", rec.get("title") or "")[:8]
+            if not title:
+                continue
+            titles.append(title)
+            labels[str(int(row["y"]))] = title
+        # 组合面板形态检测：有效行 ≥2 且标题雷同 → 点开非该行详情,映射无效
+        if len(titles) >= 2 and len(set(titles)) == 1:
+            logger.info(f"Round1 懒定案放弃(组合面板形态,标题同款「{titles[0]}」)")
+            return
+        if labels:
+            _ProduceHIFActionBase._write_round1_state({"buff_row_labels": labels})
+            logger.info(f"Round1 懒定案映射 {len(labels)} 行: {labels}")
 
     def _lazy_identify_row(self, context: Context, row_y: int) -> Optional[dict]:
         """懒定案读取（grill R2-Q1：仅 debug 报告不碰 assets/）：点未知行→面板名称+效果→关。"""

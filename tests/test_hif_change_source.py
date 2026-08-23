@@ -259,6 +259,39 @@ def test_extract_focus_from_items():
 
 
 # ------------------------------------------------------------------
+# 好調面板双保险+P 饮料槽防毒缓存（実機 2026-08-23 四轮复盘：good_condition_turns
+# 此前从未被写入 session→模板 miss 时 ExamState 落假 0；P 饮料锚窄带全 null 毒缓存）
+# ------------------------------------------------------------------
+
+
+def test_extract_good_from_items():
+    Play = _load_play()
+    assert Play._extract_good_from_items({"好調 29ターン": 1, "集中 13": 1}) == 29
+    assert Play._extract_good_from_items({"好調 8ターン": 1}) == 8
+
+
+def test_extract_good_missing_returns_none():
+    Play = _load_play()
+    assert Play._extract_good_from_items({"集中 13": 1}) is None
+    assert Play._extract_good_from_items({}) is None
+
+
+def test_extract_good_excludes_excellent_condition():
+    # 絶好調行不应被好調提取误吞（键含「好調」但语义不同）
+    Play = _load_play()
+    assert Play._extract_good_from_items({"絶好調 6ターン": 1}) is None
+    assert Play._extract_good_from_items({"絶好調 6ターン": 1, "好調 12ターン": 1}) == 12
+
+
+def test_pdrink_anchor_roi_covers_floating_title():
+    # 锚带覆盖标题浮动范围（実測 y722/838；旧 80px 窄带在 y838 时恒 miss→全 null 毒缓存）
+    Play = _load_play()
+    x, y, w, h = Play.PDRINK_POPUP_ANCHOR_ROI
+    assert y <= 722 and y + h >= 838 + 30, "锚带须覆盖标题 y722-838 浮动范围"
+    assert Play.PDRINK_PROBE_MAX_ATTEMPTS >= 1, "全空探测须有整局放弃上限"
+
+
+# ------------------------------------------------------------------
 # #53 帧差判底（借鉴 gakumas-assistant check_frame_change：滚不动=到底）
 # ------------------------------------------------------------------
 
