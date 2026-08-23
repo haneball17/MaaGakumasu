@@ -363,10 +363,10 @@
     },
     "hif_buff_concentration": {
         "file": "hif_buff_concentration.png",
-        "source_image": "debug/autodev/round1/turn03_pre.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\decisions\\20260823-012908_round1_play.png",
         "box": [
             14,
-            536,
+            309,
             34,
             47
         ],
@@ -374,8 +374,8 @@
             720,
             1280
         ],
-        "created": "2026-08-21T16:18:43",
-        "note": "Round1 状态识别计划 2026-08-21 重裁:y323 集中行实测(懒定案面板 title=集中 3 轮定案;旧模板本局 MISS 失效)"
+        "created": "2026-08-23T17:58:01",
+        "note": "B1 3.3.0 同名重裁 2026-08-23(旧 08-21 素材全 miss 実証;v2 互配:好調行在 0.94-1.0/不在误配≤0.70,絶好調真命中 0.82-1.0 边缘记录)"
     },
     "hif_skip_button": {
         "file": "hif_skip_button.png",
@@ -488,5 +488,85 @@
         ],
         "created": "2026-08-22T10:57:59",
         "note": ""
+    },
+    "hif_buff_good_v2": {
+        "file": "hif_buff_good_v2.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\decisions\\20260823-012908_round1_play.png",
+        "box": [
+            14,
+            253,
+            34,
+            47
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-23T17:54:22",
+        "note": "B1 3.3.0 重裁 好調行y261"
+    },
+    "hif_buff_concentration_v2": {
+        "file": "hif_buff_concentration_v2.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\decisions\\20260823-012908_round1_play.png",
+        "box": [
+            14,
+            309,
+            34,
+            47
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-23T17:54:31",
+        "note": "B1 3.3.0 重裁 集中行y317"
+    },
+    "hif_buff_excellent_v2": {
+        "file": "hif_buff_excellent_v2.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\decisions\\20260823-012908_round1_play.png",
+        "box": [
+            14,
+            542,
+            34,
+            47
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-23T17:54:31",
+        "note": "B1 3.3.0 重裁 絶好調行y550"
+    },
+    "hif_buff_good": {
+        "file": "hif_buff_good.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\decisions\\20260823-012908_round1_play.png",
+        "box": [
+            14,
+            253,
+            34,
+            47
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-23T17:58:01",
+        "note": "B1 3.3.0 同名重裁 2026-08-23(旧 08-21 素材全 miss 実証;v2 互配:好調行在 0.94-1.0/不在误配≤0.70,絶好調真命中 0.82-1.0 边缘记录)"
+    },
+    "hif_buff_excellent": {
+        "file": "hif_buff_excellent.png",
+        "source_image": "F:\\code\\MaaGakumasu\\debug\\decisions\\20260823-012908_round1_play.png",
+        "box": [
+            14,
+            542,
+            34,
+            47
+        ],
+        "image_size": [
+            720,
+            1280
+        ],
+        "created": "2026-08-23T17:58:01",
+        "note": "B1 3.3.0 同名重裁 2026-08-23(旧 08-21 素材全 miss 実証;v2 互配:好調行在 0.94-1.0/不在误配≤0.70,絶好調真命中 0.82-1.0 边缘记录)"
     }
 }

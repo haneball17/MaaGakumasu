@@ -2,6 +2,7 @@ import re
 import json
 import time
 import dataclasses
+from types import SimpleNamespace
 from typing import Any, Dict, List, Optional
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -247,6 +248,17 @@ class _ProduceHIFActionBase(CustomAction):
         )
 
     @staticmethod
+    def _find_in_all(detail, *phrases):
+        """全量 OCR 结果的 Python 侧短语子串命中（実機 2026-08-23 #65 同类雷清理
+        统一助手：expected 含日文偶发 IPC GBK 乱码→filtered 空误判锚消失/stop；
+        锚验证类调用一律 `.*` 全量+本助手。返回命中 item 或 None。"""
+        for item in ((detail.all_results if detail else None) or []):
+            for phrase in phrases:
+                if phrase in item.text:
+                    return item
+        return None
+
+    @staticmethod
     def _run_template(context: Context, image, name: str, template: list[str] | str, roi: list[int], threshold: float = 0.8):
         return context.run_recognition(
             name,
@@ -275,14 +287,18 @@ class _ProduceHIFActionBase(CustomAction):
         return False
 
     def _find_text_option(self, context: Context, image, phrases: tuple[str, ...], roi: list[int]):
+        # 单次全量 OCR+Python 侧按短语序子串匹配(実機 2026-08-23 #65 同类雷清理:
+        # 旧版逐短语 f".*{re.escape(phrase)}.*" 走 expected——卡名/按钮文案含日文
+        # 偶发 IPC GBK 乱码→filtered 空误判锚消失/stop;本枢纽覆盖 ~35 调用点(含
+        # GuardAdvance 动态短语)。调用方全部传字面短语(2026-08-20 re.escape 约定),
+        # 子串匹配语义等价;N 次 OCR 降为 1 次。返回伪造 detail 保持调用方接口
+        # (hit/best_result/all_results 三字段,消费形态全覆盖)
+        detail = self._run_ocr(context, image, "ProduceRecognitionHIFTextOption", [".*"], roi)
+        items = detail.all_results if detail else []
         for phrase in phrases:
-            # 短语是字面量(含 preset 卡名如「アピールの基本+」),+ 等元字符不转义会被
-            # MaaFW regex_valid 拒掉整个 override(実機 2026-08-20)
-            reco_detail = self._run_ocr(
-                context, image, "ProduceRecognitionHIFTextOption", [f".*{re.escape(phrase)}.*"], roi
-            )
-            if reco_detail and reco_detail.hit:
-                return reco_detail
+            for item in items:
+                if phrase in item.text:
+                    return SimpleNamespace(hit=True, best_result=item, all_results=items)
         return None
 
     @staticmethod
@@ -600,9 +616,10 @@ class ProduceChooseHIFEventAuto(_ProduceHIFActionBase):
         return options
 
     def _scan_public_lessons(self, context: Context, image) -> List[Dict[str, Any]]:
-        """识别公開レッスン候选卡:OCR 底部横条固定文字,前缀映射 Vo/Da/Vi。"""
+        """识别公開レッスン候选卡:OCR 底部横条固定文字,前缀映射 Vo/Da/Vi。
+        expected 归一 .*(#65 同类雷顺手:词形靠 Python 侧前缀映射,expected 冗余)。"""
         reco_detail = self._run_ocr(
-            context, image, "ProduceRecognitionHIFPublicLesson", [".*公開レッスン.*"], self.PUBLIC_LESSON_ROI
+            context, image, "ProduceRecognitionHIFPublicLesson", [".*"], self.PUBLIC_LESSON_ROI
         )
         lessons: List[Dict[str, Any]] = []
         if not (reco_detail and reco_detail.all_results):
@@ -723,15 +740,15 @@ class ProduceChooseHIFPItemAuto(_ProduceHIFActionBase):
         return None
 
     def _find_keyword_option(self, context: Context, image) -> Optional[Dict[str, Any]]:
-        keyword_order = [
-            ("Pポイント", [".*Pポイント.*"]),
-            ("相談", [".*相談.*"]),
-            ("Pドリンク", [".*Pドリンク.*", ".*ドリンク.*"]),
-        ]
-        for name, expected in keyword_order:
-            reco_detail = self._run_ocr(context, image, f"ProduceRecognitionHIFPItem{name}", expected, self.OPTION_ROI)
-            if reco_detail and reco_detail.hit:
-                return {"name": name, "box": reco_detail.best_result.box}
+        keyword_order = [("Pポイント", "Pポイント"), ("相談", "相談"), ("Pドリンク", "ドリンク")]
+        # 单次全量 OCR+Python 侧按优先序子串匹配(実機 2026-08-23 #65 同类雷清理:
+        # expected 含日文偶发 IPC GBK 乱码→filtered 空误 stop;「Pドリンク」词含
+        # 「ドリンク」子串,序匹配 Pポイント→相談→ドリンク 与旧双 expected 等价)
+        detail = self._run_ocr(context, image, "ProduceRecognitionHIFPItemKW", [".*"], self.OPTION_ROI)
+        for name, phrase in keyword_order:
+            for item in (detail.all_results if detail else []):
+                if phrase in item.text:
+                    return {"name": name, "box": item.box}
         return None
 
 
@@ -1647,11 +1664,15 @@ class ProduceChooseHIFDrinkOverflowAuto(_ProduceHIFActionBase):
         return boxes
 
     def _read_digits_text(self, context: Context, image) -> Optional[int]:
-        reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFDrinkRemain", [".*あと[0-9０-９]+個.*"], self.REMAIN_ROI)
-        if not (reco_detail and reco_detail.hit):
-            return None
-        digits = "".join(char for char in reco_detail.best_result.text if char.isdigit())
-        return int(digits) if digits else None
+        # 全量 OCR+Python 侧「あとN個」提取(実機 2026-08-23 #65 同类雷清理:
+        # 旧 expected ".*あと[0-9０-９]+個.*" 含日文偶发 IPC GBK 乱码→filtered 空
+        # →remain None→stop;str.isdigit 覆盖全角数字化,语义等价)
+        reco_detail = self._run_ocr(context, image, "ProduceRecognitionHIFDrinkRemain", [".*"], self.REMAIN_ROI)
+        for item in (reco_detail.all_results if reco_detail else []):
+            m = re.search(r"あと\s*([0-9０-９]+)\s*個", item.text)
+            if m:
+                return int(m.group(1))
+        return None
 
 
 @AgentServer.custom_action("ProduceHIFSelectChangeDoneAuto")
@@ -2477,12 +2498,14 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         if crop.size:
             pil = Image.fromarray(crop[..., ::-1]).resize((fw * 3, fh * 3), Image.LANCZOS)
             zoomed = np.array(pil)[..., ::-1]
+            # 单次全量 OCR+Python 侧三词子串(実機 2026-08-23 #65 同类雷清理:旧循环
+            # 每词一次带日文 expected,乱码时名带全 miss 缺省 Vi 错 flow;且省 2 次 OCR)
+            name_detail = self._run_ocr(
+                context, zoomed, "HIFRound1FlowName", [".*"],
+                [0, 0, zoomed.shape[1], zoomed.shape[0]],
+            )
             for jp, flow in (("ビジュアル", "Vi"), ("ボーカル", "Vo"), ("ダンス", "Da")):
-                detail = self._run_ocr(
-                    context, zoomed, "HIFRound1FlowName", [f".*{jp}.*"],
-                    [0, 0, zoomed.shape[1], zoomed.shape[0]],
-                )
-                if detail and detail.hit:
+                if any(jp in item.text for item in ((name_detail.all_results if name_detail else None) or [])):
                     return flow
         num_detail = self._run_ocr(context, image, "HIFRound1FlowNum", [".*"], self.ROI_FLOW_NUM)
         if num_detail and num_detail.hit:
@@ -2545,11 +2568,13 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     def _read_reprise_new_source(self, context: Context, image) -> Optional[int]:
         """新源（待実機 diff 定案后切换）：状态带 OCR 锚「ターン内1回」→ 同行数字 → 已用 = 4-N。"""
         # 锚放宽：実測该行 OCR 常残读（「ターン内1回」→「一ン内」），全词锚必 miss；
-        # 行数字（N回）在锚左侧同行（実測 锚[81,635] 数字[58,602]），取行带内数字
-        detail = self._run_ocr(
-            context, image, "HIFRound1RepriseRowAnchor", [".*ン内.*"], [14, 580, 130, 90],
+        # 行数字（N回）在锚左侧同行（実測 锚[81,635] 数字[58,602]），取行带内数字。
+        # 全量 OCR+Python 子串「ン内」(実機 2026-08-23 #65 同类雷清理:片假名ン
+        # 偶发 IPC 乱码→锚 miss 退旧源参考值)
+        anchor = self._run_ocr(
+            context, image, "HIFRound1RepriseRowAnchor", [".*"], [14, 580, 130, 90],
         )
-        if not (detail and detail.hit):
+        if not any("ン内" in item.text for item in ((anchor.all_results if anchor else None) or [])):
             return None
         row = self._run_ocr(context, image, "HIFRound1RepriseRowNum", [".*"], [40, 585, 90, 60])
         if not (row and row.hit):
@@ -2910,17 +2935,19 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     ROI_PITEM_COLUMN = [600, 230, 120, 150]        # P item 纵列（云朵/票券 実測 x620-720,y240-340）
 
     def _popup_is_pdrink(self, context: Context, image):
-        """弹窗锚（返回 detail 供动态名带定位；None=未开；bool 语义不变）。"""
-        detail = self._run_ocr(context, image, "HIFPDrinkPopupAnchor", [".*ドリンク詳細.*"], self.PDRINK_POPUP_ANCHOR_ROI)
-        return detail if (detail and detail.hit) else None
+        """弹窗锚（返回命中 item 供动态名带定位；None=未开；truthy 语义不变）。
+        全量+子串（#65 同类雷：「ドリンク詳細」日文 expected 偶发乱码）。"""
+        detail = self._run_ocr(context, image, "HIFPDrinkPopupAnchor", [".*"], self.PDRINK_POPUP_ANCHOR_ROI)
+        return self._find_in_all(detail, "ドリンク詳細")
 
     def _close_pdrink_popup(self, context: Context) -> bool:
         """OCR 锁定キャンセル点击并验证关闭（実機教训：固定坐标+不验证=弹窗残留污染后续读取）。"""
         for _ in range(3):
             image = self._get_screenshot(context)
-            cancel = self._run_ocr(context, image, "HIFPDrinkCancel", [".*キャンセル.*"], self.PDRINK_CANCEL_SCAN_ROI)
-            if cancel and cancel.hit:
-                self._click_box_center(context, cancel.best_result.box, double=False)
+            cancel = self._run_ocr(context, image, "HIFPDrinkCancel", [".*"], self.PDRINK_CANCEL_SCAN_ROI)
+            cancel_item = self._find_in_all(cancel, "キャンセル")
+            if cancel_item is not None:
+                self._click_box_center(context, cancel_item.box, double=False)
                 time.sleep(1.2)
             if not self._popup_is_pdrink(context, self._get_screenshot(context)):
                 return True
@@ -2946,7 +2973,7 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
                 return None  # 空槽/槽不存在（同语义，grill R2 用户确认）
         # 瓶名带随标题 y 浮动(初星黒酢 y722/ビタミン y838 実測,名≈标题+90,probe3 L75-81)——
         # 从锚框 y 动态取名带;旧固定 [40,780,400,80] 在标题 y838 时读到标题/空(probe3 slot4 误读实证)
-        name_roi = [40, anchor.best_result.box[1] + 60, 400, 110]
+        name_roi = [40, anchor.box[1] + 60, 400, 110]
         name_detail = self._run_ocr(context, image, "HIFPDrinkName", [".*"], name_roi)
         # 取名带内最长候选(best 可能选中单字符噪声,実機 2026-08-23 槽4 读到「B」)
         candidates = [
@@ -3037,9 +3064,10 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     def _mark_buff_overflow(self, context: Context, image, rows: list[dict]) -> list[dict]:
         """溢出检测（双信号）:OCR 检出省略号词 或 行数≥容量上限。决策不受影响
-        （好調/集中实证恒在顶部不被截）,溢出标记驱动面板滚动兜底读取完整清单。"""
-        ellipsis = self._run_ocr(context, image, "HIFBuffEllipsis", [".*….*|.*･･.*"], self.ROI_BUFF_ENUM)
-        overflow = bool(ellipsis and ellipsis.hit) or len(rows) >= self.BUFF_CAPACITY
+        （好調/集中实证恒在顶部不被截）,溢出标记驱动面板滚动兜底读取完整清单。
+        全量+子串（#65 同类雷:U+2026/U+FF65 GBK 不可编码,乱码概率最高）。"""
+        ellipsis = self._run_ocr(context, image, "HIFBuffEllipsis", [".*"], self.ROI_BUFF_ENUM)
+        overflow = self._find_in_all(ellipsis, "…", "･", "··") is not None or len(rows) >= self.BUFF_CAPACITY
         if overflow:
             rows.append({"y": -1, "words": ["OVERFLOW_MARKER"], "known": None, "overflow": True})
         return rows
@@ -3129,10 +3157,9 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
 
     def _panel_anchor_hit(self, context: Context, image) -> bool:
         """面板打开判定：内容区出现清单词（再演/絶好調——状態带没有的词;
-        「ターン内」状態带同词不可用作锚,実機误报教训）。"""
-        anchor = self._run_ocr(context, image, "HIFStatePanelAnchor",
-                               [".*再演.*|.*絶好調.*"], self.PANEL_CONTENT_ROI)
-        return bool(anchor and anchor.hit)
+        「ターン内」状態带同词不可用作锚,実機误报教训）。全量+子串(#65 同类雷)。"""
+        anchor = self._run_ocr(context, image, "HIFStatePanelAnchor", [".*"], self.PANEL_CONTENT_ROI)
+        return self._find_in_all(anchor, "再演", "絶好調") is not None
 
     def _ocr_panel_items(self, context: Context, image) -> list[str]:
         detail = self._run_ocr(context, image, "HIFStatePanelItems", [".*"], self.PANEL_CONTENT_ROI)
@@ -3241,8 +3268,8 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
         self._click_box_center(context, [7, row_y - 24, 48, 48], double=False)
         time.sleep(self.PANEL_CLICK_DELAY)
         image = self._get_screenshot(context)
-        panel = self._run_ocr(context, image, "HIFBuffPanelAnchor", [".*好調.*|.*アビリティ詳細.*"], [100, 40, 420, 140])
-        if not (panel and panel.hit):
+        panel = self._run_ocr(context, image, "HIFBuffPanelAnchor", [".*"], [100, 40, 420, 140])
+        if self._find_in_all(panel, "好調", "アビリティ詳細") is None:
             return None
         title = self._run_ocr(context, image, "HIFBuffPanelTitle", [".*"], [100, 40, 420, 140])
         body = self._run_ocr(context, image, "HIFBuffPanelBody", [".*"], [40, 150, 460, 560])
@@ -3255,8 +3282,8 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
             self._click_box_center(context, [330, 730, 55, 45], double=False)
             time.sleep(1.2)
             anchor = self._run_ocr(context, self._get_screenshot(context), "HIFBuffPanelAnchor",
-                                   [".*好調.*|.*アビリティ詳細.*"], [100, 40, 420, 140])
-            if not (anchor and anchor.hit):
+                                   [".*"], [100, 40, 420, 140])
+            if self._find_in_all(anchor, "好調", "アビリティ詳細") is None:
                 break
         logger.info(f"Round1 懒定案行@y{row_y}: {record['title'][:30]}")
         return record
@@ -3287,12 +3314,13 @@ class ProduceHIFRound1Play(_ProduceHIFActionBase):
     PITEM_CLOSE_CONFIRM = 2                        # 连续 N 次锚仍在 = 关闭失败
 
     def _pitem_popup_anchor_hit(self, context: Context, image) -> bool:
-        """P item 弹窗打开判定：内容区「試験・ステージ」锚（実機両道具均带）。"""
-        anchor = self._run_ocr(
-            context, image, "HIFPItemPopupAnchor",
-            [".*試験.*ステー.*|.*ステージ内.*"], self.PITEM_POPUP_CONTENT_ROI,
-        )
-        return bool(anchor and anchor.hit)
+        """P item 弹窗打开判定：内容区「試験・ステージ」锚（実機両道具均带）。
+        全量+Python 双条件子串（#65 同类雷；旧正則「試験.*ステー」跨词序匹配）。"""
+        anchor = self._run_ocr(context, image, "HIFPItemPopupAnchor", [".*"], self.PITEM_POPUP_CONTENT_ROI)
+        for item in ((anchor.all_results if anchor else None) or []):
+            if "ステージ内" in item.text or ("試験" in item.text and "ステー" in item.text):
+                return True
+        return False
 
     # 残留自愈（実機 2026-08-22 轮0）：出牌循环打开的浮层关闭失败会遮挡手牌致
     # read_hand 恒空 → evidence_empty_hand stop。三类浮层：buff 完整面板/P item

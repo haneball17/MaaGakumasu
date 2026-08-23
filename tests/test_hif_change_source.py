@@ -292,6 +292,47 @@ def test_pdrink_anchor_roi_covers_floating_title():
 
 
 # ------------------------------------------------------------------
+# #65 同类雷清理（2026-08-23）：expected 日文乱码→全量 OCR+Python 侧匹配统一助手
+# ------------------------------------------------------------------
+
+
+class _FakeItem:
+    def __init__(self, text, box=None):
+        self.text = text
+        self.box = box or [0, 0, 1, 1]
+
+
+class _FakeDetail:
+    def __init__(self, items):
+        self.all_results = items
+
+
+def _base_cls():
+    Play = _load_play()
+    return Play.__bases__[0] if Play.__bases__ else Play
+
+
+def test_find_in_all_phrase_hit_returns_item():
+    Base = _base_cls()
+    detail = _FakeDetail([_FakeItem("Pドリンク詳細", [40, 722, 80, 20]), _FakeItem("噪声")])
+    hit = Base._find_in_all(detail, "ドリンク詳細")
+    assert hit is not None and hit.text == "Pドリンク詳細" and hit.box == [40, 722, 80, 20]
+
+
+def test_find_in_all_none_detail_and_no_hit():
+    Base = _base_cls()
+    assert Base._find_in_all(None, "再演") is None
+    assert Base._find_in_all(_FakeDetail([_FakeItem("好調 29ターン")]), "再演", "絶好調") is None
+
+
+def test_find_in_all_multibyte_and_ellipsis():
+    # 省略号 U+2026/半角中点——GBK 不可编码字符（旧 expected 乱码概率最高）
+    Base = _base_cls()
+    detail = _FakeDetail([_FakeItem("5ター"), _FakeItem("··")])
+    assert Base._find_in_all(detail, "…", "･", "··") is not None
+
+
+# ------------------------------------------------------------------
 # #53 帧差判底（借鉴 gakumas-assistant check_frame_change：滚不动=到底）
 # ------------------------------------------------------------------
 

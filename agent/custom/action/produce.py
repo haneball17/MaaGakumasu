@@ -93,18 +93,24 @@ class ProduceChooseEventAuto(CustomAction):
 
     def _handle_teacher_suggestion(self, context: Context, image) -> bool:
         """处理老师建议"""
+        # 全量 OCR+Python 侧词表子串匹配(実機 2026-08-23 #65 同类雷清理:
+        # 词表全日文,expected 走 IPC 偶发 GBK 乱码→filtered 空→老师建议静默失效)
         ocr_keywords = self._get_ocr_keywords()
 
         reco_detail = context.run_recognition(
             "ProduceChooseEventSuggestion",
             image,
-            pipeline_override={"ProduceChooseEventSuggestion": {"recognition": "OCR", "expected": ocr_keywords, "roi": [270, 160, 350, 56]}},
+            pipeline_override={"ProduceChooseEventSuggestion": {"recognition": "OCR", "expected": [".*"], "roi": [270, 160, 350, 56]}},
         )
 
-        if not (reco_detail and reco_detail.hit):
+        matched = [
+            item.text for item in (reco_detail.all_results if reco_detail else [])
+            if any(kw in item.text for kw in ocr_keywords)
+        ]
+        if not matched:
             return False
 
-        suggestion_text = "".join(item.text for item in reco_detail.filtered_results)
+        suggestion_text = "".join(matched)
         logger.info(f"老师建议: {suggestion_text}")
 
         suggestion_img = self._find_image_from_phrase(suggestion_text, self.SUGGESTION_CONFIG)
