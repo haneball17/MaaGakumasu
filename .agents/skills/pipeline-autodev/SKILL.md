@@ -174,7 +174,7 @@ description: 无人工介入的 MaaFW 管线开发调试循环。当用户要求
 ## 验收（一个节点/流程"通过"）
 
 1. `test-node --n 3` 全中（3/3）。
-2. 改动涉及存量节点时跑 `replay`（基准集见 debug/autodev/replay-suite/ 或 M5 建立的集）。
+2. 改动涉及存量节点时跑 `replay`（基准集 `tests/replay_suite`：`python tools/maa_dev.py replay --suite tests/replay_suite`）。
 3. 静态：`python -m pytest tests/test_maa_dev.py`（工具纯函数）+ `python tools/ci/check_resource.py ./assets/resource/base/`。
 4. JSON 格式：`npx prettier --check`（新改的 pipeline 文件）。
 5. 证据归档：journal + test-node evidence_dir + 总结报告（写入 `debug/autodev/<run-id>/report.md`）。
