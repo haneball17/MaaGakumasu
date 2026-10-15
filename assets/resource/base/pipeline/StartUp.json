@@ -88,7 +88,7 @@
       "param": {}
     },
     "focus": {
-      "Node.Action.Succeeded": "[color:green]游戏启动成功[/color]"
+      "Node.Action.Succeeded": "[color:LimeGreen]游戏启动成功[/color]"
     }
   },
   "StartUpDownload": {
@@ -102,12 +102,12 @@
       "type": "Click",
       "param": {}
     },
+    "focus": {
+      "Node.Action.Succeeded": "[color:DeepSkyBlue]开始下载更新[/color]"
+    },
     "next": [
       "StartUpInitCounter"
-    ],
-    "focus": {
-      "Node.Action.Succeeded": "[color:blue]开始下载更新[/color]"
-    }
+    ]
   },
   "StartUpLoginBonus": {
     "recognition": {
@@ -138,12 +138,12 @@
       "type": "DoNothing",
       "param": {}
     },
+    "focus": {
+      "Node.Action.Succeeded": "[color:DeepSkyBlue]好友点数获取成功[/color]"
+    },
     "next": [
       "StartUpCloseButton"
-    ],
-    "focus": {
-      "Node.Action.Succeeded": "[color:blue]好友点数获取成功[/color]"
-    }
+    ]
   },
   "StartUpCloseButton": {
     "recognition": {
@@ -206,13 +206,22 @@
       }
     },
     "post_wait_freezes": 500,
+    "post_delay": 3000,
     "focus": {
-      "Node.Recognition.Succeeded": "[color:red]游戏启动失败，尝试重新启动[/color]"
+      "Node.Recognition.Succeeded": "[color:OrangeRed]游戏启动失败，尝试重新启动[/color]"
     }
   },
   "StartUpError": {
+    "recognition": {
+      "type": "DirectHit",
+      "param": {}
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
     "focus": {
-      "Node.Action.Starting": "err:启动游戏失败，请检查是否正确选择游戏资源"
+      "Node.Action.Starting": "[color:OrangeRed]启动游戏失败，请检查是否正确选择游戏资源[/color]"
     }
   }
 }

@@ -37,6 +37,12 @@
     "recognition": {
       "type": "OCR",
       "param": {
+        "roi": [
+          0,
+          640,
+          140,
+          140
+        ],
         "expected": [
           "お仕事"
         ],
@@ -45,18 +51,21 @@
             "书",
             "お"
           ]
-        ],
-        "roi": [
-          0,
-          640,
-          140,
-          140
         ]
       }
     },
     "action": {
       "type": "Click",
       "param": {}
+    },
+    "post_wait_freezes": {
+      "time": 1000,
+      "target": [
+        60,
+        375,
+        610,
+        328
+      ]
     },
     "next": [
       "WorkFinished",
@@ -77,14 +86,14 @@
       "type": "Click",
       "param": {}
     },
+    "focus": {
+      "Node.Action.Succeeded": "工作报酬已获得"
+    },
     "next": [
       "WorkFinished",
       "WorkStartChooseShow",
       "WorkStartChooseLive"
-    ],
-    "focus": {
-      "Node.Action.Succeeded": "工作报酬已获得"
-    }
+    ]
   },
   "WorkStartChooseShow": {
     "recognition": {
@@ -97,6 +106,7 @@
       "type": "Click",
       "param": {}
     },
+    "pre_wait_freezes": 200,
     "next": [
       "WorkChooseShowGoodFlag"
     ]
@@ -112,6 +122,7 @@
       "type": "Click",
       "param": {}
     },
+    "pre_wait_freezes": 200,
     "next": [
       "WorkChooseLiveGoodFlag"
     ]
@@ -158,19 +169,19 @@
         "custom_recognition_param": {}
       }
     },
+    "pre_wait_freezes": 300,
     "action": {
       "type": "Click",
       "param": {}
     },
-    "pre_wait_freezes": 300,
     "post_wait_freezes": 200,
+    "focus": {
+      "Node.Recognition.Succeeded": "[color:DeepSkyBlue]演出角色识别成功[/color]",
+      "Node.Recognition.Failed": "[color:OrangeRed]演出角色识别失败[/color]"
+    },
     "next": [
       "WorkChooseShowConfirm"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:blue]演出角色识别成功[/color]",
-      "Node.Recognition.Failed": "[color:red]演出角色识别失败[/color]"
-    }
+    ]
   },
   "WorkChooseLive": {
     "recognition": {
@@ -180,19 +191,19 @@
         "custom_recognition_param": {}
       }
     },
+    "pre_wait_freezes": 300,
     "action": {
       "type": "Click",
       "param": {}
     },
-    "pre_wait_freezes": 300,
     "post_wait_freezes": 200,
+    "focus": {
+      "Node.Recognition.Succeeded": "[color:DeepSkyBlue]直播角色识别成功[/color]",
+      "Node.Recognition.Failed": "[color:OrangeRed]直播角色识别失败[/color]"
+    },
     "next": [
       "WorkChooseLiveConfirm"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:blue]直播角色识别成功[/color]",
-      "Node.Recognition.Failed": "[color:red]直播角色识别失败[/color]"
-    }
+    ]
   },
   "WorkChooseShowConfirm": {
     "recognition": {
@@ -230,6 +241,12 @@
     "recognition": {
       "type": "OCR",
       "param": {
+        "roi": [
+          36,
+          745,
+          650,
+          250
+        ],
         "expected": "4時間",
         "replace": [
           [
@@ -240,12 +257,6 @@
             "间",
             "間"
           ]
-        ],
-        "roi": [
-          36,
-          745,
-          650,
-          250
         ]
       }
     },
@@ -261,6 +272,12 @@
     "recognition": {
       "type": "OCR",
       "param": {
+        "roi": [
+          36,
+          745,
+          650,
+          250
+        ],
         "expected": "4時間",
         "replace": [
           [
@@ -271,12 +288,6 @@
             "间",
             "間"
           ]
-        ],
-        "roi": [
-          36,
-          745,
-          650,
-          250
         ]
       }
     },
@@ -316,27 +327,27 @@
       "param": {}
     },
     "post_wait_freezes": 500,
+    "focus": {
+      "Node.Action.Succeeded": "[color:DeepSkyBlue]开始工作[/color]"
+    },
     "next": [
       "WorkStartChooseShow",
       "WorkStartChooseLive",
       "BackHome"
-    ],
-    "focus": {
-      "Node.Action.Succeeded": "[color:blue]开始工作[/color]"
-    }
+    ]
   },
   "WorkChooseGood": {
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "work_good.png"
-        ],
         "roi": [
           8,
           709,
           621,
           317
+        ],
+        "template": [
+          "work_good.png"
         ]
       }
     },
@@ -364,5 +375,43 @@
       "type": "DoNothing",
       "param": {}
     }
+  },
+  "WorkTimeAutoShowFlag": {
+    "recognition": {
+      "type": "Custom",
+      "param": {
+        "custom_recognition": "WorkChooseTimeAuto",
+        "custom_recognition_param": {
+          "kind": "show"
+        }
+      }
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "next": [
+      "WorkChooseShowTime",
+      "[JumpBack]DecideButton"
+    ]
+  },
+  "WorkTimeAutoLiveFlag": {
+    "recognition": {
+      "type": "Custom",
+      "param": {
+        "custom_recognition": "WorkChooseTimeAuto",
+        "custom_recognition_param": {
+          "kind": "live"
+        }
+      }
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "next": [
+      "WorkChooseLiveTime",
+      "[JumpBack]DecideButton"
+    ]
   }
 }

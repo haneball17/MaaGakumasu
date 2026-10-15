@@ -12,21 +12,22 @@
       "ShoppingDailyExchangeStart",
       "ShoppingDailyExchangeMenuClick",
       "[JumpBack]CloseMenu",
-      "[JumpBack]BackHome"
+      "[JumpBack]BackHome",
+      "[JumpBack]CloseRoundButton"
     ]
   },
   "ShoppingDailyExchangeMenuClick": {
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "menu.png"
-        ],
         "roi": [
           600,
           1160,
           120,
           120
+        ],
+        "template": [
+          "menu.png"
         ]
       }
     },
@@ -34,6 +35,7 @@
       "type": "Click",
       "param": {}
     },
+    "post_wait_freezes": 200,
     "next": [
       "ShoppingDailyExchangeClick"
     ]
@@ -58,13 +60,13 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "shopping_daily_exchange.png",
         "roi": [
           0,
           660,
           720,
           460
-        ]
+        ],
+        "template": "shopping_daily_exchange.png"
       }
     },
     "action": {
@@ -90,25 +92,19 @@
     ]
   },
   "ShoppingDailyExchangeMoney": {
+    "enabled": true,
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "shopping_money.png",
         "roi": [
           50,
           1060,
           300,
           70
-        ]
+        ],
+        "template": "shopping_money.png"
       }
     },
-    "action": {
-      "type": "Custom",
-      "param": {
-        "custom_action": "ShoppingDailyExchangeMoneyAuto"
-      }
-    },
-    "enabled": true,
     "pre_wait_freezes": {
       "time": 500,
       "target": [
@@ -118,33 +114,54 @@
         667
       ]
     },
+    "action": {
+      "type": "Custom",
+      "param": {
+        "custom_action": "ShoppingDailyExchangeMoneyAuto"
+      }
+    },
     "post_wait_freezes": 500,
+    "focus": {
+      "Node.Action.Succeeded": "[color:DeepSkyBlue]金币兑换已完成[/color]"
+    },
     "next": [
       "ShoppingFreeRefresh",
       "ShoppingDailyExchangeAPController"
-    ],
-    "focus": {
-      "Node.Action.Succeeded": "[color:blue]金币兑换已完成[/color]"
-    }
+    ]
   },
   "ShoppingFreeRefresh": {
+    "enabled": true,
     "recognition": {
-      "type": "TemplateMatch",
+      "type": "OCR",
       "param": {
-        "template": "shopping_refresh.png"
+        "expected": [
+          "無料",
+          "免费"
+        ],
+        "replace": [
+          [
+          "費", 
+          "费"
+          ]
+        ],
+        "roi": [
+          430, 
+          140, 
+          250, 
+          50
+        ]
       }
     },
     "action": {
       "type": "Click",
       "param": {}
     },
-    "enabled": true,
-    "next": [
-      "ShoppingDailyExchangeMoney"
-    ],
     "focus": {
       "Node.Action.Succeeded": "免费刷新已使用"
-    }
+    },
+    "next": [
+      "ShoppingDailyExchangeMoney"
+    ]
   },
   "ShoppingDailyExchangeBuy": {
     "recognition": {
@@ -160,7 +177,6 @@
       "type": "Click",
       "param": {}
     },
-    "next": [],
     "post_wait_freezes": 500
   },
   "ShoppingDailyExchangeAPController": {
@@ -178,6 +194,7 @@
     ]
   },
   "ShoppingDailyExchangeAPStart": {
+    "enabled": true,
     "recognition": {
       "type": "TemplateMatch",
       "param": {
@@ -188,7 +205,6 @@
       "type": "Click",
       "param": {}
     },
-    "enabled": true,
     "next": [
       "ShoppingDailyExchangeAP"
     ]
@@ -207,14 +223,15 @@
         "custom_action": "ShoppingDailyExchangeAPAuto"
       }
     },
+    "focus": {
+      "Node.Action.Succeeded": "[color:DeepSkyBlue]AP兑换已完成[/color]"
+    },
     "next": [
       "BackHome"
-    ],
-    "focus": {
-      "Node.Action.Succeeded": "[color:blue]AP兑换已完成[/color]"
-    }
+    ]
   },
   "ShoppingDailyExchangeItemsRecommend": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -222,10 +239,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsSenseBlue": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -233,10 +250,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsSenseRed": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -244,10 +261,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsSenseYellow": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -255,10 +272,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsLogicBlue": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -266,10 +283,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsLogicRed": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -277,10 +294,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsLogicYellow": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -288,10 +305,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsAnomalyBlue": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -299,10 +316,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsAnomalyRed": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -310,10 +327,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsAnomalyYellow": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -321,10 +338,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsLessonNote": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -332,10 +349,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsVeteranNote": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -343,10 +360,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsSupportPoint": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -354,10 +371,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsChallengeTicket": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -365,10 +382,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsRecordKey": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -376,10 +393,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsHanamiUme": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -387,10 +404,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsKaturagiRiriya": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -398,10 +415,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsSasazawaHiro": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -409,10 +426,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsSionSumika": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -420,10 +437,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsTukimuraTemari": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -431,10 +448,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsHuzitaKotone": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -442,10 +459,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsHanamiSaki": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -453,10 +470,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsKuramotoTina": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -464,10 +481,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsArimuraMao": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -475,10 +492,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsHimezakiRinami": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -486,10 +503,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsMisuzuHataya": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -497,10 +514,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeItemsSenaJuo": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -508,10 +525,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeAPSupportPointIncreased": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -519,10 +536,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeAPNoteIncreased": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -530,10 +547,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeAPChallengeTicket": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -541,10 +558,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingDailyExchangeAPMemoryTicket": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -552,7 +569,6 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   }
 }

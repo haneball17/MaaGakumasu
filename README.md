@@ -30,16 +30,17 @@
 
 ## 功能概览
 
-详细说明请查看 [功能说明](docs/zh_cn/功能说明.md)。当前 README 记录 `feat/hif` 分支开发状态；主线发布状态请同时参考 `assets/resource/Changelog.md`。
+详细说明请查看 [功能说明](docs/zh_cn/功能说明.md)。主线功能以 v1.5.2 更新公告与任务配置为准；HIF 开发状态见下文「HIF 开发分支现状」。
 
 | 模块 | 当前支持 |
 | --- | --- |
 | 启动与日常 | 启动游戏、领取活动费、邮箱礼物、任务奖励、每周免费礼包 |
 | 竞赛挑战 | 指定挑战、自动选择分差最小的对手、无编队时自动编队 |
 | 社团互动 | 自动请求库存较少的物品，或按配置指定请求 |
-| 安排工作 | 领取奖励、自动或指定偶像、指定工作时长 |
-| 商店购买 | 扭蛋、金币、AP 购买，支持自动免费刷新 |
-| 自动培育 | 初 `REGULAR/PRO/MASTER`，NIA `PRO/MASTER`，支持中断继续、初流程失败重试、老师建议、道具与卡片优先级；HIF 处于开发分支实验阶段 |
+| 安排工作 | 领取奖励、自动或指定偶像、自动或指定工作时长 |
+| 商店购买 | 扭蛋、金币/AP 兑换、推荐物品与碎片兑换，支持自动免费刷新 |
+| 自动培育 | 初 `REGULAR/PRO/MASTER`，NIA `PRO/MASTER`，支持中断继续、失败重试、试镜难度降低、试镜手动接管、老师建议、自动支援卡选择、道具与卡片优先级；HIF 处于开发分支实验阶段 |
+| 偶像之路 | 自动挑战，支持自动编队、自动战斗与失败重试（暂未适配汉化版，仅支持官服/DMM） |
 | 适配能力 | Mirror 酱更新、插件版汉化、DMM 版、支援卡库存识别、繁体 i18n |
 
 ### 自动培育
@@ -52,48 +53,49 @@
 - `初` 难度：`REGULAR`、`PRO`、`MASTER`
 - `NIA` 难度：`PRO`、`MASTER`
 - 指定偶像卡、自动选择偶像、跳过选择偶像
+- 自定义歌曲名称与第一、第二属性，支持培育尚未收录的歌曲卡片
 - 培育次数设置、手动输入次数、无限循环
 - 使用体力药、使用道具、自动回忆、关注租借
 - 中断后通过“跳过准备阶段”继续培育
 - 卡片选择优先级：`建议卡 > 活动卡`、`活动卡 > 建议卡`、`无`
-- 初流程考试失败自动重试
+- 考试失败自动重试（初/NIA 均支持）
+- 试镜难度降低（NIA）：可选择降低一档或两档
 - 跟随老师的建议
-- NIA 事件、镜像挑战、指导事件等自动选择逻辑
-- `feat/hif` 分支已实机打通 HIF Day1→Round1 全链自动决策（Round1 到达后观察停止，暂不出牌）
+- NIA 事件、试镜挑战（自动降档）、指导事件等自动选择逻辑
+- 事件保底选择机制：无法匹配优先事件时自动回退到可用选项
+- HIF 分支已实机打通培育→Round 対局→Interval→Round2→结算→メモリー→報酬→主页面全链（默认 Round1 观察停止，出牌可经任务选项开启）
 
 ### HIF 开发分支现状
 
 > [!NOTE]
-> 以下内容记录 `feat/hif` 分支截至 `2026-08-16` 的开发状态。HIF 相关能力仍处于开发与验证阶段，不代表主线稳定功能。
+> 以下内容记录 HIF 开发线截至 `2026-08-24` 的状态（五轮実機验证报告）。HIF 相关能力仍处于开发与验证阶段，不代表主线稳定功能。
 
-当前 `feat/hif` 分支已完成 HIF 从入口到 Round1 的实机自动决策闭环：
+当前 HIF 开发线（`feat/pipeline-autodev`）已完成从入口到结算的实机自动决策闭环：
 
-- 任务配置中已加入 `HIF` 培育难度与 `HIF预设`、`培育倾向`、`HIF 决策微调` 选项，入口跳转到 `ProduceEntryHIF`。
-- `ProduceHIF.json` 作为 HIF Pipeline 状态机（约 37 节点），配合 `agent/custom/action/produce_hif.py` 的自定义动作覆盖日程、授業、P 道具、三选一（饮料/技能卡/変卡）、SP 卡、相談、饮料上限等页面。
+- 任务配置中已加入 `HIF` 培育难度与 `HIF预设`、`培育倾向`、`HIF 决策微调`、`Round1 出牌` 选项，入口跳转到 `ProduceEntryHIF`。
+- `ProduceHIF.json` 作为 HIF Pipeline 状态机（约 73 节点），配合 `agent/custom/action/produce_hif.py` 的自定义动作覆盖日程、授業、P 道具、三选一（饮料/技能卡/変卡）、SP 卡、相談、饮料上限等页面。
 - 三选一采用双评分：结构化评分模型 v2（官方公式对齐）优先，关键词评分兜底，支持重抽与名单优先；决策参数可经 GUI 选项、覆盖文件、培育倾向三层调整。
 - 全决策点自动存档（截图 + JSONL），并提供 HTML 决策日志查看器与复盘总表脚本。
-- HIF 出牌决策层 `agent/hif/decisions/` 已实现姫崎莉波 `ガラクタロード` 好调路线的再演压缩策略并通过离线测试，Round1 目前为“观察手牌后停止”模式，尚未接线实机出牌。
+- HIF 出牌决策层 `agent/hif/decisions/` 已实现姫崎莉波 `ガラクタロード` 好调路线策略；Round1/Round2 出牌 Custom action 已接入管线（非默认开启），Round1 默认仍为“观察手牌后停止”模式。
 - 数据链已切换 gakumasu-diff 主干：121 张技能卡全表、效果池关联、社区 tier 榜抓取与评分校准（离线链 A/B 完成）。
 - 当前测试覆盖约 128 个用例（决策全链、出牌策略、ExamState 适配、评分模型）。
 
 当前仍未完成的关键工作：
 
-- Round1 出牌执行接线、Round2、Interval、结算、メモリー（回忆卡）评分与整局自动培育；这些页面仍由 `ProduceHIFUnknownStop` 安全停止兜底。
+- Interval 商店全流程、特別指導、再挑战/胜利分支、Memory 再生成/转换等探索路径覆盖；未取证页面仍由 `ProduceHIFUnknownStop` 安全停止兜底。
 - 评分模型 C2 人工调参与实机验证；快慢路径路由方案已定待实施。
 - `ExamStateReader` 数值 ROI 部分字段仍待实机校准。
-- `feat/hif` 分支相对当前 `origin/main` 存在主线提交差异，后续合并前需要处理同步与冲突。
 
 后续建议优先级：
 
-1. Round1 出牌接线与实机验证（`GarakutaRinamiStrategy` → `ProduceHIFRound1Observe` 升级为执行模式）。
+1. 验证债归还与 Interval 自动购买（Issue #27）。
 2. 评分模型 C2 调参与快慢路径路由实施。
-3. Round2/Interval/结算/メモリー页面覆盖。
-4. 同步主线最新改动后再考虑合并或发布。
+3. 探索分支页面覆盖。
 
 ### 后续计划
 
 - [ ] 初 `LEGEND` 培育适配
-- [ ] HIF Round1 出牌接线与 Round2/Interval/结算覆盖
+- [ ] HIF 探索路径覆盖（Interval 商店、特別指導、再挑战分支）与验证债归还（Issue #27）
 - [ ] HIF 评分模型调参、メモリー评分与整局自动培育
 - [ ] 更多语言补充
 - [ ] 更多自动培育样本覆盖
@@ -196,11 +198,11 @@ CDK 购买入口：[Mirror 酱官网](https://mirrorchyan.com/zh/projects?rid=Ma
 
 ## Star History
 
-<a href="https://www.star-history.com/#SuperWaterGod/MaaGakumasu&Date">
+<a href="https://www.star-history.com/?repos=SuperWaterGod%2FMaaGakumasu&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=SuperWaterGod/MaaGakumasu&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=SuperWaterGod/MaaGakumasu&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=SuperWaterGod/MaaGakumasu&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=SuperWaterGod/MaaGakumasu&type=date&theme=dark&legend=top-left&sealed_token=jsOqvuuCRz8HSTe1rE4WEiB_lh4OkFRfvx0tVecSJiZ0HukPzmuA_rfbaruvDCzvY3Xr0MkWgQ0mrWa8Qk3qXQkr0Iv1jAo5nJzyq5JRSXSBkNYlI5iOzOyJDrIz2XE6n8kMs5EECJErxI-YosO1cGCktJdlL18XRt0gFlpDvXabHzX8SNB0N1cRKBcr" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=SuperWaterGod/MaaGakumasu&type=date&legend=top-left&sealed_token=jsOqvuuCRz8HSTe1rE4WEiB_lh4OkFRfvx0tVecSJiZ0HukPzmuA_rfbaruvDCzvY3Xr0MkWgQ0mrWa8Qk3qXQkr0Iv1jAo5nJzyq5JRSXSBkNYlI5iOzOyJDrIz2XE6n8kMs5EECJErxI-YosO1cGCktJdlL18XRt0gFlpDvXabHzX8SNB0N1cRKBcr" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=SuperWaterGod/MaaGakumasu&type=date&legend=top-left&sealed_token=jsOqvuuCRz8HSTe1rE4WEiB_lh4OkFRfvx0tVecSJiZ0HukPzmuA_rfbaruvDCzvY3Xr0MkWgQ0mrWa8Qk3qXQkr0Iv1jAo5nJzyq5JRSXSBkNYlI5iOzOyJDrIz2XE6n8kMs5EECJErxI-YosO1cGCktJdlL18XRt0gFlpDvXabHzX8SNB0N1cRKBcr" />
  </picture>
 </a>
 

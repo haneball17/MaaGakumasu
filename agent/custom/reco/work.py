@@ -1,12 +1,49 @@
 import json
 import time
 from typing import Union, Optional
+from datetime import datetime
 
 from utils import logger
 from maa.define import RectType
 from maa.context import Context
 from maa.agent.agent_server import AgentServer
 from maa.custom_recognition import CustomRecognition
+
+
+@AgentServer.custom_recognition("WorkChooseTimeAuto")
+class WorkChooseTimeAuto(CustomRecognition):
+    """
+    工作时长自动判断（迷你演唱会 / 直播活动通用）
+    """
+
+    def analyze(
+        self,
+        context: Context,
+        argv: CustomRecognition.AnalyzeArg,
+    ) -> Union[CustomRecognition.AnalyzeResult, Optional[RectType]]:
+        def choose_work_duration(now: datetime) -> int:
+            for hours in (12, 8):
+                if now.hour + hours < 23:
+                    return hours
+            return 12
+
+        kinds = {"show": "迷你演唱会", "live": "直播活动"}
+        kind = ""
+        if argv.custom_recognition_param:
+            kind = json.loads(argv.custom_recognition_param).get("kind", "")
+        target_node = {"show": "WorkChooseShowTime", "live": "WorkChooseLiveTime"}.get(kind)
+        if target_node is None:
+            logger.warning(f"未知的工件类型标识: {kind}")
+            return None
+
+        now = datetime.now()
+        hours = choose_work_duration(now)
+        overridden = context.override_pipeline({target_node: {"expected": str(hours)}})
+        kind = kinds.get(kind)
+        logger.info(f"自动工作时长: 当前 {now:%H:%M}, 设置{kind}时长 {hours} 小时")
+        if not overridden:
+            return None
+        return CustomRecognition.AnalyzeResult(box=[0, 0, 1, 1], detail={"detail": f"{hours} 小时", "kind": kind})
 
 
 @AgentServer.custom_recognition("WorkChooseAuto")
@@ -69,13 +106,13 @@ class WorkChooseAuto(CustomRecognition):
             return None
 
         # 处理第一页笑脸
-        first_result = handle_smile_page(argv.image, [8, 700, 621, 317], (400, 864, 200, 864))
+        first_result = handle_smile_page(argv.image, [8, 700, 621, 317], (400, 864, 100, 864))
         if first_result:
             return first_result
 
         # 处理第二页笑脸
         new_image = context.tasker.controller.post_screencap().wait().get()
-        second_result = handle_smile_page(new_image, [104, 700, 615, 309], (200, 864, 400, 864))
+        second_result = handle_smile_page(new_image, [104, 700, 615, 309], (100, 864, 400, 864))
         if second_result:
             return second_result
 

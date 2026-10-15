@@ -1,5 +1,5 @@
 {
-  "ShoppingCoinCacha": {
+  "ShoppingCoinGacha": {
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -12,21 +12,22 @@
       "ShoppingCoinGachaStart",
       "ShoppingCoinGachaMenuClick",
       "[JumpBack]CloseMenu",
-      "[JumpBack]BackHome"
+      "[JumpBack]BackHome",
+      "[JumpBack]CloseRoundButton"
     ]
   },
   "ShoppingCoinGachaMenuClick": {
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "menu.png"
-        ],
         "roi": [
           600,
           1160,
           120,
           120
+        ],
+        "template": [
+          "menu.png"
         ]
       }
     },
@@ -34,6 +35,7 @@
       "type": "Click",
       "param": {}
     },
+    "post_wait_freezes": 200,
     "next": [
       "ShoppingCoinGachaClick"
     ]
@@ -58,19 +60,20 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "shopping_coin_gacha.png",
         "roi": [
           0,
           660,
           720,
           460
-        ]
+        ],
+        "template": "shopping_coin_gacha.png"
       }
     },
     "action": {
       "type": "Click",
       "param": {}
     },
+    "pre_wait_freezes": 500,
     "next": [
       "ShoppingDailyCoinGachaController"
     ]
@@ -88,36 +91,48 @@
         "custom_action": "ShoppingCoinGachaAuto"
       }
     },
+    "focus": {
+      "Node.Action.Succeeded": "[color:DeepSkyBlue]扭蛋已兑换[/color]"
+    },
     "next": [
       "[JumpBack]CloseButton",
       "BackHome"
-    ],
-    "focus": {
-      "Node.Action.Succeeded": "[color:blue]扭蛋已兑换[/color]"
-    }
+    ]
   },
+  "ShoppingCoinGachaCount": {
+    "recognition": "OCR",
+    "expected": ".*\\d.*",
+    "roi": [
+      345,
+      25,
+      345,
+      170
+    ],
+    "threshold": 0.9
+    },
   "ShoppingCoinGachaBuy": {
     "recognition": {
-      "type": "TemplateMatch",
+      "type": "OCR",
       "param": {
-        "template": "shopping_gacha_friend.png"
-      }
-    },
-    "action": {
-      "type": "Click",
-      "param": {
-        "target_offset": [
-          170,
-          86,
-          0,
-          0
+        "expected": [
+          "期限",
+          "フレンドガシャ",
+          "センスガシャ",
+          "ロジックガシャ",
+          "アノマリーガシャ",
+          "好友扭蛋",
+          "感性扭蛋",
+          "理性扭蛋",
+          "非凡扭蛋"
+        ],
+        "roi": [
+          40, 
+          280, 
+          300, 
+          900
         ]
       }
-    },
-    "post_wait_freezes": 100,
-    "next": [
-      "ShoppingCoinGachaDecide"
-    ]
+    }
   },
   "ShoppingCoinGachaDecide": {
     "recognition": {
@@ -150,6 +165,7 @@
     }
   },
   "ShoppingCoinGachaFriendGacha": {
+    "enabled": true,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -157,10 +173,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": true
+    }
   },
   "ShoppingCoinGachaSenseGacha": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -168,10 +184,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingCoinGachaLogicGacha": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -179,10 +195,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingCoinGachaAnomalyGacha": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -190,10 +206,10 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   },
   "ShoppingCoinGachaActivityGacha": {
+    "enabled": false,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -201,7 +217,6 @@
     "action": {
       "type": "DoNothing",
       "param": {}
-    },
-    "enabled": false
+    }
   }
 }

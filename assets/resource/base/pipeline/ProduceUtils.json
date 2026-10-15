@@ -23,14 +23,14 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "produce/close.png",
-        "threshold": 0.9,
         "roi": [
           0,
           780,
           720,
           500
-        ]
+        ],
+        "template": "produce/close.png",
+        "threshold": 0.9
       }
     },
     "action": {
@@ -44,7 +44,23 @@
       "param": {
         "template": [
           "produce/ok.png",
+          "produce/ok_1.png",
           "next.png"
+        ]
+      }
+    },
+    "action": {
+      "type": "Click",
+      "param": {}
+    }
+  },
+  "ProduceOK": {
+    "recognition": {
+      "type": "TemplateMatch",
+      "param": {
+        "template": [
+          "produce/ok.png",
+          "produce/ok_1.png"
         ]
       }
     },
@@ -69,25 +85,46 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "produce/skip_chat.png",
-          "produce/skip_chat_1.png"
-        ],
-        "threshold": 0.8,
         "roi": [
           553,
           1154,
           166,
           91
-        ]
+        ],
+        "template": [
+          "produce/skip_chat.png",
+          "produce/skip_chat_1.png"
+        ],
+        "threshold": 0.8
       }
     },
+    "pre_delay": 0,
     "action": {
       "type": "Click",
       "param": {}
     },
-    "pre_delay": 100,
-    "post_delay": 100
+    "post_delay": 0
+  },
+  "ProduceSkipChatFlag": {
+    "enabled": true,
+    "recognition": {
+      "type": "TemplateMatch",
+      "param": {
+        "template": [
+          "produce/skip_chat_confirm_flag.png"
+        ],
+        "threshold": 0.9
+      }
+    },
+    "pre_delay": 0,
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    },
+    "post_delay": 0,
+    "next": [
+      "ProduceYes"
+    ]
   },
   "ProduceSkipShow": {
     "recognition": {
@@ -115,6 +152,7 @@
         ]
       }
     },
+    "pre_wait_freezes": 500,
     "action": {
       "type": "Click",
       "param": {
@@ -125,22 +163,21 @@
           -20
         ]
       }
-    },
-    "pre_wait_freezes": 500
+    }
   },
   "ProduceYes": {
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "produce/yes.png",
-          "produce/decide.png"
-        ],
         "roi": [
           0,
           1080,
           720,
           200
+        ],
+        "template": [
+          "produce/yes.png",
+          "produce/decide.png"
         ]
       }
     },
@@ -153,14 +190,14 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "produce/error.png"
-        ],
         "roi": [
           0,
           700,
           720,
           250
+        ],
+        "template": [
+          "produce/error.png"
         ],
         "threshold": 0.9
       }
@@ -177,14 +214,14 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "produce/cancel.png"
-        ],
         "roi": [
           0,
           1080,
           720,
           200
+        ],
+        "template": [
+          "produce/cancel.png"
         ]
       }
     },
@@ -204,22 +241,22 @@
       "type": "Click",
       "param": {}
     },
+    "post_wait_freezes": 200,
     "next": [
       "ProduceTakeRest"
-    ],
-    "post_wait_freezes": 200
+    ]
   },
   "ProduceTakeRest": {
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "produce/rest_take.png",
         "roi": [
           360,
           1100,
           360,
           180
         ],
+        "template": "produce/rest_take.png",
         "threshold": 0.9
       }
     },
@@ -232,13 +269,13 @@
     "recognition": {
       "type": "OCR",
       "param": {
-        "expected": "\\d{1,2}/\\d{2}",
         "roi": [
           276,
           56,
           170,
           50
-        ]
+        ],
+        "expected": "\\d{1,2}/\\d{2}"
       }
     },
     "action": {
@@ -250,13 +287,13 @@
     "recognition": {
       "type": "OCR",
       "param": {
-        "expected": "^\\d{1,3}(,\\d{3})*$",
         "roi": [
           320,
           100,
           130,
           54
-        ]
+        ],
+        "expected": "^\\d{1,3}(,\\d{3})*$"
       }
     },
     "action": {
@@ -281,13 +318,13 @@
     "recognition": {
       "type": "OCR",
       "param": {
-        "expected": "\\b\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?\\b",
         "roi": [
           540,
           120,
           120,
           56
-        ]
+        ],
+        "expected": "\\b\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?\\b"
       }
     },
     "action": {
@@ -299,13 +336,13 @@
     "recognition": {
       "type": "OCR",
       "param": {
-        "expected": "\\b\\d{1,3}(?:,\\d{3})*(?:\\.\\d+)?\\b",
         "roi": [
-          12,
-          630,
-          696,
-          530
-        ]
+          240,
+          730,
+          250,
+          300
+        ],
+        "expected": "\\d{1,3}(?:,\\d{3})*"
       }
     },
     "action": {
@@ -317,13 +354,13 @@
     "recognition": {
       "type": "OCR",
       "param": {
-        "expected": "手札のスキルカードが0枚です",
         "roi": [
           159,
           947,
           393,
           97
-        ]
+        ],
+        "expected": "手札のスキルカードが0枚です"
       }
     },
     "action": {
@@ -335,14 +372,14 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "produce/move_icon.png"
-        ],
         "roi": [
           0,
           0,
           300,
           90
+        ],
+        "template": [
+          "produce/move_icon.png"
         ]
       }
     },
@@ -355,14 +392,14 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "produce/choose_move_cards.png"
-        ],
         "roi": [
           0,
           90,
           720,
           400
+        ],
+        "template": [
+          "produce/choose_move_cards.png"
         ]
       }
     },
@@ -375,15 +412,15 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "produce/move_1.png",
-          "produce/move_2.png"
-        ],
         "roi": [
           0,
           1100,
           720,
           180
+        ],
+        "template": [
+          "produce/move_1.png",
+          "produce/move_2.png"
         ]
       }
     },
@@ -397,16 +434,16 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "produce/skip_round.png",
-          "produce/skip_round_1.png",
-          "produce/skip_round_2.png"
-        ],
         "roi": [
           590,
           720,
           130,
           120
+        ],
+        "template": [
+          "produce/skip_round.png",
+          "produce/skip_round_1.png",
+          "produce/skip_round_2.png"
         ]
       }
     },
@@ -420,16 +457,16 @@
     "recognition": {
       "type": "NeuralNetworkDetect",
       "param": {
-        "labels": [
-          "cards",
-          "suggestions",
-          "useless"
-        ],
-        "model": "cards.onnx",
         "expected": [
           0,
           1,
           2
+        ],
+        "model": "cards.onnx",
+        "labels": [
+          "cards",
+          "suggestions",
+          "useless"
         ]
       }
     },
@@ -442,13 +479,13 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "produce/health.png",
         "roi": [
           512,
           125,
           168,
           130
         ],
+        "template": "produce/health.png",
         "green_mask": true,
         "threshold": 0.7
       }
@@ -462,6 +499,12 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
+        "roi": [
+          0,
+          640,
+          720,
+          320
+        ],
         "template": [
           "produce/choose_null.png",
           "produce/choose_Vi.png",
@@ -469,13 +512,7 @@
           "produce/choose_Da.png"
         ],
         "green_mask": true,
-        "threshold": 0.9,
-        "roi": [
-          0,
-          640,
-          720,
-          320
-        ]
+        "threshold": 0.9
       }
     },
     "action": {
@@ -486,8 +523,7 @@
     },
     "focus": {
       "Node.Recognition.Succeeded": "[color:LimeGreen]事件: 选择冲刺/上课/外出[/color]"
-    },
-    "post_delay": 1000
+    }
   },
   "ProduceRecognitionUncheckedMark": {
     "recognition": {
@@ -508,13 +544,13 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "produce/drink_no.png",
         "roi": [
           0,
           780,
           720,
           500
-        ]
+        ],
+        "template": "produce/drink_no.png"
       }
     },
     "action": {
@@ -526,16 +562,16 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": [
-          "produce/drink_1.png",
-          "produce/drink_2.png",
-          "produce/drink_3.png"
-        ],
         "roi": [
           10,
           1150,
           350,
           100
+        ],
+        "template": [
+          "produce/drink_1.png",
+          "produce/drink_2.png",
+          "produce/drink_3.png"
         ],
         "green_mask": true,
         "threshold": 0.8
@@ -562,9 +598,6 @@
         ]
       }
     },
-    "next": [
-      "ProduceUseDrinkConfirm"
-    ],
     "post_wait_freezes": {
       "time": 100,
       "target": [
@@ -575,19 +608,22 @@
       ],
       "timeout": 3000
     },
-    "timeout": 3000
+    "timeout": 3000,
+    "next": [
+      "ProduceUseDrinkConfirm"
+    ]
   },
   "ProduceUseDrinkConfirm": {
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "produce/use_drink.png",
         "roi": [
           0,
           1000,
           720,
           280
-        ]
+        ],
+        "template": "produce/use_drink.png"
       }
     },
     "action": {
@@ -600,27 +636,21 @@
       "type": "DirectHit",
       "param": {}
     },
+    "pre_delay": 0,
     "action": {
       "type": "Click",
       "param": {
         "target": [
-          25,
-          25,
+          20,
+          20,
           5,
           5
         ]
       }
     },
-    "pre_delay": 0,
     "post_delay": 0
   },
   "ProduceLanguage": {
-    "attach": {
-      "language": "ja-JP"
-    }
-  },
-  "ProduceSuggestion": {
-    //是否遵循老师建议
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -629,6 +659,19 @@
       "type": "DoNothing",
       "param": {}
     },
-    "enabled": false
+    "attach": {
+      "language": "ja-JP"
+    }
+  },
+  "ProduceSuggestion": {
+    "enabled": false,
+    "recognition": {
+      "type": "DirectHit",
+      "param": {}
+    },
+    "action": {
+      "type": "DoNothing",
+      "param": {}
+    }
   }
 }

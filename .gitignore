@@ -365,6 +365,9 @@ paket-files/
 __pycache__/
 *.pyc
 
+# Temporary local tests live in .scratch/ (upstream's /tests/ ignore convention
+# not used here: this fork tracks a real test suite under tests/)
+
 # Cake - Uncomment if you are using it
 # tools/**
 # !tools/packages.config

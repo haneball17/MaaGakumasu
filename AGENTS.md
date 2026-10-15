@@ -10,9 +10,11 @@ MaaGakumasu 是基于 MaaFramework 的《学園アイドルマスター》自动
 
 ## 当前状态
 
-主线功能（初/NIA 自动培育、竞赛、社团、工作、商店、更新检查）已上线；用户可见公告以 `assets/resource/Changelog.md` 为准（当前 v1.4.2，HIF 新选项尚未写入公告），`README.md` 的进度描述可能滞后。
+最近核对日期：`2026-10-15`（同步 upstream v1.5.2 后）。`assets/interface.json` 与更新公告已更新为 `v1.5.2`；功能状态以最近提交和当前任务配置为准。HIF 新选项尚未写入用户公告。
 
-HIF（学祭，即学園祭本战）培育为当前活跃开发方向（分支 `feat/hif`）。截至 2026-08-24：
+主线功能（启动/日常、竞赛、社团、工作、商店、初与 NIA 自动培育、偶像之路、更新检查）已随 v1.5.x 上线，明细以 `assets/resource/announcement/01_更新公告.md` 与任务配置为准。
+
+HIF（学祭，即学園祭本战）培育为当前活跃开发方向（分支 `feat/pipeline-autodev`）。截至 2026-08-24：
 
 - 実機全链闭环：培育→Round 対局→Interval→Round2→敗退/结算→メモリー→報酬→主页面 五轮実機走通（四轮主线零介入）；缺陷修复批次（GitHub Issues #1-#10）落地并通过総合验收轮。
 - 已就绪：三选一双评分（模型 v2 + 关键词兜底）、决策参数覆盖链、全决策点落盘 `debug/decisions/`、Round 模拟器七里程碑（`agent/hif/roundsim/`，速览 `docs/hif/roundsim-implementation-plan.md`）。
@@ -24,7 +26,7 @@ HIF（学祭，即学園祭本战）培育为当前活跃开发方向（分支 `
 - 轮次/验收/bug 全录：`docs/hif/five-round-validation-2026-08-21.md`；取证/验收报告：`debug/autodev/forensic-*.md`、`acceptance-report-*.md`（不入库）。
 - 机制语义首要依据：`docs/hif/mechanics.md`；场景卡真源：`docs/hif/scenes.md`。
 - 架构决策：`docs/adr/`；首版边界：`docs/superpowers/specs/2026-07-10-hif-basic-pipeline-design.md`；快慢路径设计（待实施）：`docs/superpowers/specs/2026-08-14-hif-fastpath-routing-design.md`。
-- 流程依据：`docs/hif/finals-daily-log.md`（止于 2026-08-21，此后実機证据落 five-round-validation 与 debug/autodev/ 报告）。
+- 流程依据：`docs/hif/finals-daily-log.md`（止于 2026-08-21，此后実機证据落 five-round-validation 与 debug/autodev 报告）。
 
 ## 目录职责
 
@@ -33,27 +35,32 @@ HIF（学祭，即学園祭本战）培育为当前活跃开发方向（分支 `
 - `assets/data/hif/`：HIF 结构化数据（121 卡全表/效果池/饮料/关键词表等），由 `tools/sync_hif_master.py`、`sync_hif_effects.py` 从 gakumasu-diff 同步生成，**不要手改**；决策参数覆盖文件实际在 `assets/data/hif/decision_override.json`（`agent/hif/presets.py` 读取）。
 - `assets/resource/base/model/`：YOLO 检测与 PP-OCRv6 OCR 模型（运行时经 interface.json 的 `./resource/base` 加载，是唯一生效路径）；本地 `assets/resource/model/` 为历史试验遗留、运行时不加载、已入 ignore，旧版备份 `ocr_v3_bak/` **发布打包时不要带上**。
 - `assets/tasks/`：任务入口与选项定义（培育任务在 `produce.json` / `produce_cn.json`）；`assets/lang/` 翻译（新增选项同步 `zh-CN`、`zh-Hant` 等已有语言）。
-- `assets/resource/Changelog.md`：发布给用户看的资源更新公告。
+- `assets/resource/announcement/`：发布给用户看的资源公告，按名称数字前缀排序展示（`01_更新公告.md` 至 `05_功能介绍.md`）；`04_欢迎使用.md` 被 `assets/interface.json` 的 `welcome` 字段引用；`05_功能介绍.md` 为功能说明.md 的简化版，冲突时以功能说明.md 与任务配置为准。
 - `docs/hif/`：HIF 文档集，首要依据 `mechanics.md`（机制知识库）与 `scenes.md`（场景卡设计真源）；命名惯例：事件/报告类带日期后缀（`five-round-validation-2026-08-21.md`）、常青参考类无后缀。`docs/zh_cn/` 为用户与开发文档。
-- `tools/`：维护脚本（HIF 决策/模拟器/回放/校验/数据同步等，文件名自解释；无人化管线开发工具 `maa_dev.py` 子命令见 `docs/hif/autodev-workflow.md`）。
+- `tools/`：维护脚本（HIF 决策/模拟器/回放/校验/数据同步等，文件名自解释；无人化管线开发工具 `maa_dev.py` 子命令见 `docs/hif/autodev-workflow.md`；资源 CI 校验 `tools/ci/check_resource.py`）。
+- `deps/`、`install/`：依赖和打包相关内容，修改时需确认发布影响。
 - `debug/`：运行日志与调试输出（含 `debug/decisions/` HIF 决策日志），**不入库**。
 
 ## 开发环境
 
 - Python `>=3.12`；依赖 `maafw`、`loguru`、`Pillow`；可选开发依赖 `pytest>=7.0`、`ruff>=0.1.0`。包版本信息在 `pyproject.toml`（当前 `1.3.8`）。
 - Node 侧仅用于工具链，当前 `package.json` 包含 `prettier-plugin-multiline-arrays`。
+- Python 包版本信息在 `pyproject.toml`，当前仍为 `1.3.8`；用户可见资源版本与公告已更新为 `v1.5.2`，发版入口为 `assets/interface.json`。
 
 常用检查命令：
 
 ```powershell
-python -m py_compile agent
+python -m compileall -q agent
 python -m pytest
 python -m ruff check .
 npx prettier --check "**/*.{json,yml,yaml}"
 npx maa-tools check
+python tools/ci/check_resource.py ./assets/resource/base/
 ```
 
-如果本地缺少测试目录或依赖，说明无法完整执行对应检查即可，不要为了通过检查凭空创建无关测试。改动存量管线节点后必须跑回放基准集：`python tools/maa_dev.py replay --suite tests/replay_suite`。
+`py_compile` 接受文件路径，不能用来编译整个 `agent` 目录；目录检查使用 `compileall`。资源 CI（`.github/workflows/check.yml`）实际运行 `tools/ci/check_resource.py`，需要安装 `maafw`。
+
+如果本地缺少测试目录或依赖，说明无法完整执行对应检查即可，不要为了通过检查凭空创建无关测试。改动存量管线节点后必须跑回放基准集：`python tools/maa_dev.py replay --suite tests/replay_suite`。仅修改 Markdown 时检查内容、引用路径与 `git diff --check`，无需运行 Python 或流水线检查。
 
 実機开发调试细节由四个 skill 承载（触发加载，见各自 SKILL.md）：
 
@@ -68,7 +75,7 @@ MuMu 的 adb 端口跨会话会漂移，実機操作前先 `adb devices` 查实�
 - Python 代码遵循 `pyproject.toml` 中 Ruff 配置：目标版本 `py312`，行宽 `144`，仅启用 `I`（isort）规则且开启 `length-sort`/`length-sort-straight`（按 import 长度排序）。改 import 时注意这一点。
 - 大段重写类或函数后，必须 grep 旧标识符（旧常量名/方法名）确认已删除——Python 类体中后定义的方法会静默覆盖前者，旧 `run()` 残留会让新版从未执行且编译/单测全绿掩盖（2026-08-21 変卡重写実機教训，db1c772）。入口方法替换用 `inspect.getsource` 断言新逻辑确实在目标方法内。
 - JSON/YAML 使用 Prettier 配置：默认缩进 4 空格，YAML 缩进 2 空格，JSON 覆盖配置使用 tab。
-- Markdown 文档保持各文档现有风格；根目录 `AGENTS.md` 主要服务代理协作，优先清晰准确。
+- Markdown 文档没有强制 lint 配置（`docs/.markdownlint.yaml` 已删除），保持与现有文档一致的简洁风格；根目录 `AGENTS.md` 主要服务代理协作，优先清晰准确。
 - 修改 JSON、JSONC 或流水线文件时保持原有排序、注释风格和缩进风格；不要做无关格式化。
 - 新增用户可见文案时优先使用中文；涉及游戏内名称时保留日文原名，并在已有数据结构支持时补充中文字段。
 
@@ -79,6 +86,7 @@ MuMu 的 adb 端口跨会话会漂移，実機操作前先 `adb devices` 查实�
 - `[JumpBack]` 节点用于在循环中回退重试，修改 `next` 顺序时要考虑优先级和误触风险。
 - `TemplateMatch` 应明确模板路径、ROI、阈值和必要的匹配方法。新增模板时使用与现有资源一致的分辨率基准。
 - `OCR` 只在文本稳定、语言明确时使用；游戏 UI 文案变动风险较高时优先保留模板或自定义识别。
+- 商店识别已统一改为 OCR：扭蛋横幅、免费刷新、推荐物品同时配置日文与简中汉化候选，并可用 `replace` 纠正 OCR 易错字；改动文案时保持两套候选同步。
 - `Custom` recognition/action 名称必须与 `agent/` 中实现一致，参数结构要向后兼容。
 - next 链尾的 `DirectHit` 兜底节点（如 UnknownStop）会**立即命中**，抢在前序识别节点的渲染等待窗口之前——「等内容渲染」用节点 `timeout`（next 全 miss 时按 timeout 轮询重试）+ `on_error` 兜底表达，不要把 DirectHit 混进会因内容未渲染而 miss 的 next 链（実機 2026-08-20 公開レッスン序列教训）。
 - 非 `[JumpBack]` 前缀的子节点执行完成即**终止任务链**；需要执行完继续路由循环的推进节点（点击/翻页类），在引用它的 next 列表里加 `[JumpBack]` 前缀。
@@ -88,8 +96,10 @@ MuMu 的 adb 端口跨会话会漂移，実機操作前先 `adb devices` 查实�
   - 难度入口：`初` 走 `ProduceEntry`，`NIA` 走 `ProduceEntryNIA`；不要把 NIA 覆盖项误合到初流程。
   - 准备阶段：难度、偶像、支援、回忆、道具选择。
   - 培育阶段：事件选择、卡牌选择、饮料、道具、商店、强化、考试失败和结束流程。
-  - 失败处理：初流程的 `ProduceFailedFlag` 可根据 `启用培育失败重试` 跳转到重试或停止流程；NIA 流程使用 `ProduceNIAFailedFlag`，当前失败后停止任务。
+  - 失败处理：初流程的 `ProduceFailedFlag` 和 NIA 流程的 `ProduceNIAFailedFlag` 均可根据 `启用培育失败重试` 跳转到重试或停止流程。
+  - 试镜难度降低：NIA 模式通过 `ProduceMirrorFlag` 节点的 `custom_action_param` 控制降档逻辑，`启用试镜难度降低` 选项覆盖该参数。
   - NIA 事件参数：每张卡片通过 `ProduceChooseNIAEventFlag.custom_action_param` 设置 `effect`、`first`、`second`，字段顺序和语义都要保持一致。
+  - 出牌逻辑：初/NIA 与偶像之路共用 `ProduceCardsAuto`；修改计时窗口时同步检查 `_reset_window` 与 `_play_a_card`，保留 15 秒兜底、有效手牌范围过滤和推荐优先逻辑。
   - 弹窗和通用按钮处理：不要扩大 ROI 到容易误触的位置。
 
 HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动时严格分层：
@@ -115,7 +125,8 @@ HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动�
 ## 任务配置规则
 
 - 培育任务定义在 `assets/tasks/produce.json`，中文版本在 `assets/tasks/produce_cn.json`；新增或重命名选项时两边都要同步。
-- 选项清单以 `assets/tasks/produce.json` 为准（含 HIF 专属的 `HIF预设`、`培育倾向`、`HIF 决策微调` 等）；HIF 选项经 `pipeline_override` 注入 Flag 节点的 `custom_action_param`。
+- 选项清单以 `assets/tasks/produce.json` 为准（主线选项含 `启用自动支援卡`、`启用试镜难度降低`、`试镜手动接管` 等；HIF 专属 `HIF预设`、`培育倾向`、`HIF 决策微调`、`Round1 出牌`、`Day1-6 日程` 等）；HIF 选项经 `pipeline_override` 注入 Flag 节点的 `custom_action_param`。
+- `培育难度` 下 `初` 支持 `REGULAR/PRO/MASTER`，`NIA` 支持 `PRO/MASTER`，`HIF` 为本 fork 开发线入口（跳转 `ProduceEntryHIF`）。
 - 任务选项通过 `pipeline_override` 调整节点属性；改选项时必须检查被覆盖节点在 `Produce.json`、`ProduceNIA.json`、`ProduceHIF.json` 或 `ProduceUtils.json` 中是否存在且语义匹配。
 - `preset.json` 的一键培育默认仍以 `初` `PRO` 为主；新增默认项前先确认不会增加普通用户误触或长流程失败风险。
 
@@ -129,11 +140,20 @@ HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动�
 - OCR 模型为 PP-OCRv6 small（生效路径 `assets/resource/base/model/ocr/`，tiny 档无日文故不用 small 以下；2026-10 同步 upstream v1.5.2 时该新版模型已正式入库）；本地 `assets/resource/model/ocr_v3_bak/` 为旧版备份，发布打包时注意不要把备份目录带上。
 - 新增图像素材时应说明来源、截图环境和分辨率。不要提交游戏资源本体之外的非必要大文件。
 
+### 出牌模型标注与诊断
+
+- 同一实体卡牌仅标一个互斥类别：`cards`（普通可用）、`recommend`（推荐）、`useless`（不可用）。不同卡牌之间因遮挡产生的重叠框仍保留。
+- MaaFramework 的跨类别去重会影响同一卡牌的重复类别标注；不能仅凭训练指标判断实际框架的识别效果，需验证导出的 ONNX 和实机出牌。
+- 出牌原图为竖屏 `720x1280`，与流水线 ROI 一致；不要根据通用环境说明擅自旋转或缩放。
+- 超时截图收集和候选导出工具已移除。排查出牌问题使用 `debug/maa.log` 与模拟器原始截图；已有 debug 素材和历史离线报告应保留。
+
 ## 测试与验证
+
+根目录 `tests/` 在本 fork 中是**正式测试套件**（HIF 决策四件套 + `tests/replay_suite` 回放基准集），已入库跟踪、不应删除；上游曾把 `/tests/` 当临时目录加入 ignore，本 fork 已移除该 ignore 行（见 `.gitignore`）。上游约定的「临时本地测试」请放 `.scratch/`（已 ignore）。
 
 改动完成后，根据影响范围选择验证：
 
-- Python 自定义逻辑：至少运行 `python -m py_compile agent`，有测试时运行 `python -m pytest`。
+- Python 自定义逻辑：至少运行 `python -m compileall -q agent`；修改工具脚本时对对应文件执行 `python -m py_compile <脚本路径>`，有测试时运行 `python -m pytest`。
 - HIF 决策/模拟器：运行 `python -m pytest tests/test_hif_decision.py tests/test_play_decision.py tests/test_exam_reader.py tests/test_scoring_model.py`，四个文件覆盖 `agent/hif/` 的决策全链、出牌策略、ExamState 适配层和评分模型 v2，合计约 128 个用例。
 - 流水线或资源：运行 `npx maa-tools check`，并在可能时进行实际 MaaFramework 调试。
 - JSON/YAML：运行 Prettier 检查或格式化。
@@ -146,7 +166,7 @@ HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动�
 - 不要回退用户已有修改。当前工作区若有不相关改动，保持原样。
 - 不要在未确认的情况下调整发布、安装、依赖打包或 Mirror 酱相关配置。
 - 不要把 README 中标注为测试阶段的自动培育描述成稳定功能。
-- README、功能说明与 Changelog 若存在冲突，先检查最近提交和 `assets/tasks/produce.json`；当前 NIA 状态应以 v1.4.2 Changelog 和任务配置为准。
+- README、功能说明与更新公告若存在冲突，先检查最近提交、当前实现与任务配置；v1.5.2 公告记录本次发版内容，后续新增功能（含 HIF）可能尚未同步到公告或 README。
 - 不要改变项目许可证、免责声明或商业用途限制。
 - 需要联网查询 MaaFramework、MFAAvalonia、Mirror 酱或 OpenAI 等外部信息时，优先使用官方文档，并在回复中说明来源。
 - 对用户报告的运行问题，优先索要或检查 `debug/maa.log`、模拟器类型、分辨率、系统平台、游戏版本、是否 DMM/插件版汉化。

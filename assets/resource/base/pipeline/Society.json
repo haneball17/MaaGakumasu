@@ -11,7 +11,8 @@
     "next": [
       "SocietyMenuClick",
       "[JumpBack]CloseMenu",
-      "[JumpBack]BackHome"
+      "[JumpBack]BackHome",
+      "[JumpBack]CloseRoundButton"
     ]
   },
   "SocietyMenuClick": {
@@ -25,6 +26,7 @@
       "type": "Click",
       "param": {}
     },
+    "post_wait_freezes": 200,
     "next": [
       "SocietyClick"
     ]
@@ -49,6 +51,7 @@
     ]
   },
   "SocietyDonation": {
+    "enabled": true,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -57,7 +60,6 @@
       "type": "DoNothing",
       "param": {}
     },
-    "enabled": true,
     "next": [
       "SocietyDonationCommit",
       "SocietyCommitAlready",
@@ -68,13 +70,13 @@
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "society_commit.png",
         "roi": [
           26,
           750,
           666,
           250
         ],
+        "template": "society_commit.png",
         "method": 10001,
         "threshold": 0.95
       }
@@ -164,26 +166,26 @@
         }
       }
     },
-    "on_error": [
-      "SocietyRequest",
-      "BackHome"
-    ],
     "next": [
       "SocietyDonationCommit",
       "SocietyCommitAlready"
+    ],
+    "on_error": [
+      "SocietyRequest",
+      "BackHome"
     ]
   },
   "SocietyCommitAlready": {
     "recognition": {
       "type": "TemplateMatch",
       "param": {
-        "template": "society_commit_already.png",
         "roi": [
           26,
           750,
           666,
           250
         ],
+        "template": "society_commit_already.png",
         "method": 10001,
         "threshold": 0.95
       }
@@ -192,15 +194,16 @@
       "type": "DoNothing",
       "param": {}
     },
+    "focus": {
+      "Node.Recognition.Succeeded": "[color:DeepSkyBlue]社团捐赠物品已完成[/color]"
+    },
     "next": [
       "SocietyRequest",
       "BackHome"
-    ],
-    "focus": {
-      "Node.Recognition.Succeeded": "[color:blue]社团捐赠物品已完成[/color]"
-    }
+    ]
   },
   "SocietyRequest": {
+    "enabled": true,
     "recognition": {
       "type": "DirectHit",
       "param": {}
@@ -209,7 +212,6 @@
       "type": "DoNothing",
       "param": {}
     },
-    "enabled": true,
     "next": [
       "SocietyRequestItem",
       "SocietyRequestsAlready"
@@ -260,20 +262,20 @@
       "param": {}
     },
     "post_wait_freezes": 200,
+    "focus": {
+      "Node.Action.Succeeded": "[color:DeepSkyBlue]已请求物品[/color]"
+    },
     "next": [
       "SocietyRequestConfirm",
       "BackHome"
-    ],
-    "focus": {
-      "Node.Action.Succeeded": "[color:blue]已请求物品[/color]"
-    }
+    ]
   },
   "SocietyRequestsAlready": {
     "recognition": {
       "type": "TemplateMatch",
       "param": {
         "template": "society_requests_already.png",
-        "threshold": 0.95
+        "threshold": 0.93
       }
     },
     "action": {

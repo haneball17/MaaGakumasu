@@ -189,43 +189,52 @@ def check_and_install_dependencies():
     enable_pip_update = pip_config.get("enable_pip_update", True)
     enable_pip_install = pip_config.get("enable_pip_install", True)
 
-    if enable_pip_update:
-        if not update_pip(pip_config=pip_config):
-            logger.warning("pip 更新失败，继续尝试安装依赖...")
-
     current_version = read_interface_version()
     last_version = pip_config.get("last_version", "unknown")
 
     logger.info(f"启用 pip 安装依赖: {enable_pip_install}")
     logger.info(f"当前版本: {current_version}, 上次运行版本: {last_version}")
 
-    if enable_pip_install and (current_version != last_version or current_version == "unknown"):
-        if install_requirements(pip_config=pip_config):
-            update_pip_config(current_version)
-            logger.info("依赖检查完成")
-        else:
-            logger.warning("依赖安装失败，程序可能无法正常运行")
+    need_install = enable_pip_install and (current_version != last_version or current_version == "unknown")
+    if not need_install:
+        logger.info("依赖已就绪，跳过依赖检查与 pip 更新")
+        return
+
+    if enable_pip_update:
+        if not update_pip(pip_config=pip_config):
+            logger.warning("pip 更新失败，继续尝试安装依赖...")
+
+    if install_requirements(pip_config=pip_config):
+        update_pip_config(current_version)
+        logger.info("依赖检查完成")
     else:
-        logger.info("跳过依赖安装")
+        logger.warning("依赖安装失败，程序可能无法正常运行")
 
 
 def read_interface_version(interface_file="./interface.json") -> str:
     """
     读取 interface.json 文件中的版本信息
     """
-    interface_path = Path(interface_file)
+    candidates = [
+        Path(interface_file),
+        Path("./interface.json"),
+        Path("./assets/interface.json"),
+    ]
 
-    if not interface_path.exists():
-        logger.warning("interface.json不存在")
-        return "unknown"
+    for path in candidates:
+        if not path.exists():
+            continue
 
-    try:
-        with open(interface_path, "r", encoding="utf-8") as f:
-            interface_data = json.load(f)
-            return interface_data.get("version", "unknown")
-    except Exception as e:
-        logger.exception("读取interface.json版本失败")
-        return "unknown"
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+            return data.get("version", "unknown")
+        except Exception:
+            logger.exception("读取 interface.json 版本失败")
+            return "unknown"
+
+    logger.warning("interface.json 不存在")
+    return "unknown"
 
 
 def update_pip_config(version) -> bool:
@@ -248,10 +257,14 @@ def update_pip_config(version) -> bool:
 def agent():
     try:
         import custom
+        from utils import logger
+        from maa.library import Library
         from maa.toolkit import Toolkit
         from maa.agent.agent_server import AgentServer
 
         Toolkit.init_option("./")
+
+        logger.info(f"MaaFW Library version: {Library.version()}")
 
         socket_id = sys.argv[-1]
 
