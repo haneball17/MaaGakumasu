@@ -31,7 +31,7 @@ HIF（学祭，即学園祭本战）培育为当前活跃开发方向（分支 `
 - `agent/`：Python 自定义逻辑扩展（MaaFramework Custom recognition/action）。培育通用逻辑在 `agent/custom/action/produce.py`；HIF 在 `produce_hif.py`（读预设经覆盖链解析、内联识别与双评分决策、决策落盘，未覆盖页面调 `ProduceHIFUnknownStop` 停止）；`agent/hif/` 分 `decisions/`（実機决策核心：评分/出牌/日程/日志查看）、`algorithms/`（离线模拟器，与実機管线解耦，入口 `orchestrator.py`）、`adapters/`（YOLO+词典 OCR 适配层）及顶层 `presets.py`（预设与覆盖链）。
 - `assets/resource/base/pipeline/`：流水线。培育通用 `Produce.json`、NIA `ProduceNIA.json`、HIF `ProduceHIF.json`、共用 `ProduceUtils.json`；`assets/resource/base/image/` 为模板素材。
 - `assets/data/hif/`：HIF 结构化数据（121 卡全表/效果池/饮料/关键词表等），由 `tools/sync_hif_master.py`、`sync_hif_effects.py` 从 gakumasu-diff 同步生成，**不要手改**；决策参数覆盖文件实际在 `assets/data/hif/decision_override.json`（`agent/hif/presets.py` 读取）。
-- `assets/resource/model/`：YOLO 检测与 PP-OCRv6 OCR 模型，旧版备份 `ocr_v3_bak/` **发布打包时不要带上**。
+- `assets/resource/base/model/`：YOLO 检测与 PP-OCRv6 OCR 模型（运行时经 interface.json 的 `./resource/base` 加载，是唯一生效路径）；本地 `assets/resource/model/` 为历史试验遗留、运行时不加载、已入 ignore，旧版备份 `ocr_v3_bak/` **发布打包时不要带上**。
 - `assets/tasks/`：任务入口与选项定义（培育任务在 `produce.json` / `produce_cn.json`）；`assets/lang/` 翻译（新增选项同步 `zh-CN`、`zh-Hant` 等已有语言）。
 - `assets/resource/Changelog.md`：发布给用户看的资源更新公告。
 - `docs/hif/`：HIF 文档集，首要依据 `mechanics.md`（机制知识库）与 `scenes.md`（场景卡设计真源）；命名惯例：事件/报告类带日期后缀（`five-round-validation-2026-08-21.md`）、常青参考类无后缀。`docs/zh_cn/` 为用户与开发文档。
@@ -126,7 +126,7 @@ HIF 培育采用“Pipeline 页面路由 + Agent 预设动作”分层，改动�
 - YOLOv11 数据集当前基于 README 与开发文档记录：
   - `cards` 集用于出牌识别，样本约 902 份。
   - 早期用于上课和冲刺选项识别的 `button` 集已废弃，相关按钮识别已改为普通模板匹配。
-- OCR 模型已换 PP-OCRv6 small（`assets/resource/model/ocr/`，tiny 档无日文故不用 small 以下）；旧 v3 备份在 `assets/resource/model/ocr_v3_bak/`，发布打包时注意不要把备份目录带上。
+- OCR 模型为 PP-OCRv6 small（生效路径 `assets/resource/base/model/ocr/`，tiny 档无日文故不用 small 以下；2026-10 同步 upstream v1.5.2 时该新版模型已正式入库）；本地 `assets/resource/model/ocr_v3_bak/` 为旧版备份，发布打包时注意不要把备份目录带上。
 - 新增图像素材时应说明来源、截图环境和分辨率。不要提交游戏资源本体之外的非必要大文件。
 
 ## 测试与验证
