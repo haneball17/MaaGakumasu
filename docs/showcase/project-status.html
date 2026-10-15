@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<!-- show-me: slug=project-status | topic=MaaGakumasu 项目现状调研 | updated=2026-10-15 | facts=ca0611d;ProduceHIF.json(73);produce.json;five-round-validation-2026-08-21;pipeline-state-machine.md;origin/main(v1.4.5) | summary=仓库快照→模块能力→HIF实机与模拟器→分支发行差异→文档冲突→优先行动 -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaaGakumasu · 项目现状调研</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6f8;--paper:#fff;--ink:#15222d;--muted:#566674;--line:#d9e0e6;--blue:#245b84;--blue-soft:#eaf3fa;--green:#176b4b;--green-soft:#e8f5ee;--amber:#8a5a0a;--amber-soft:#fff4da;--red:#a13a37;--red-soft:#fff0ef;--nav:#142631;--shadow:0 10px 32px #19344612}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 "Segoe UI","Microsoft YaHei",sans-serif}a{color:#145d8b;text-decoration-thickness:1px;text-underline-offset:3px}a:hover{color:#a14c12}header{background:linear-gradient(120deg,#102735,#1f4d68 70%,#356f86);color:#fff;padding:42px max(24px,calc((100vw - 1180px)/2)) 36px}header .eyebrow{color:#b8d6e5;font-size:12px;letter-spacing:.12em;text-transform:uppercase}h1{font-size:clamp(30px,4vw,46px);line-height:1.15;margin:10px 0 12px;letter-spacing:-.03em}header p{max-width:850px;color:#d9e7ee;margin:0}.meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.pill{font-size:12px;border:1px solid #ffffff44;border-radius:99px;padding:4px 10px;color:#edf6fa}.layout{max-width:1180px;margin:auto;padding:26px 22px 80px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:28px}.toc{position:sticky;top:16px;align-self:start;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow);font-size:13px}.toc strong{display:block;margin-bottom:8px}.toc a{display:block;text-decoration:none;padding:5px 0;color:var(--muted)}main{min-width:0}.section{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:18px;box-shadow:var(--shadow);scroll-margin-top:18px}h2{font-size:22px;line-height:1.3;margin:0 0 14px}h3{font-size:16px;margin:20px 0 8px}p{margin:8px 0}.lede{font-size:17px;color:#2c4352}.small{font-size:13px;color:var(--muted)}.grid{display:grid;gap:12px}.grid.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{border:1px solid var(--line);border-radius:11px;padding:15px;background:#fff}.card h3{margin:0 0 6px}.metric{font-size:28px;line-height:1.15;font-weight:750;color:var(--blue)}.label{font-size:12px;color:var(--muted);margin-top:6px}.status{font-size:11px;font-weight:700;border-radius:99px;padding:3px 8px;display:inline-block;vertical-align:1px}.done{background:var(--green-soft);color:var(--green)}.partial{background:var(--amber-soft);color:var(--amber)}.open{background:var(--red-soft);color:var(--red)}.fact{border-left:4px solid var(--blue);background:var(--blue-soft);padding:12px 14px;border-radius:0 9px 9px 0;margin:12px 0}.warn{border-left-color:#c1841c;background:var(--amber-soft)}.good{border-left-color:#21815c;background:var(--green-soft)}.bad{border-left-color:#bb514c;background:var(--red-soft)}table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0}th,td{padding:10px 9px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{font-size:12px;text-transform:none;color:#485866;background:#f4f7f9}code{font:12px/1.5 Consolas,"Cascadia Code",monospace;background:#f0f3f5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}.diagram{border:1px solid var(--line);border-radius:12px;padding:14px;background:#f8fafb;overflow:auto}.architecture{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;min-width:620px;align-items:stretch}.layer{border:1px solid #b9cad5;border-radius:10px;background:#fff;padding:13px}.layer b{display:block;color:var(--blue);margin-bottom:5px}.layer p{font-size:13px;color:var(--muted);margin:4px 0}.arrow{display:grid;place-items:center;color:#6c8494;font-size:24px}.flow{display:flex;align-items:stretch;gap:7px;overflow:auto;padding:4px 0;min-width:680px}.step{flex:1;min-width:112px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:11px;font-size:12px}.step strong{display:block;font-size:13px;color:var(--blue);margin-bottom:4px}.step.stop{border-color:#e6b8b5;background:var(--red-soft)}.connector{align-self:center;color:#8999a4;font-size:20px}.barrow{display:grid;grid-template-columns:122px 1fr 80px;gap:10px;align-items:center;margin:10px 0;font-size:13px}.bar{height:11px;border-radius:20px;background:#e6edf1;overflow:hidden}.bar span{height:100%;display:block;border-radius:20px;background:#3781aa}.bar span.amber{background:#d09426}.bar span.red{background:#bd5d57}.timeline{border-left:2px solid #bfd0db;margin:15px 0 5px 8px;padding-left:20px}.event{position:relative;margin:0 0 17px}.event:before{content:"";position:absolute;left:-27px;top:7px;width:10px;height:10px;border-radius:50%;background:#3980a4;border:2px solid white;box-shadow:0 0 0 1px #3980a4}.event time{font-size:12px;color:var(--blue);font-weight:700}.foot{border-top:1px solid var(--line);margin-top:18px;padding-top:12px;color:var(--muted);font-size:12px}.check{list-style:none;padding:0}.check li{padding:8px 0;border-bottom:1px solid var(--line)}.check li:last-child{border:0}.check li:before{content:"→";color:var(--blue);font-weight:700;margin-right:9px}.tag{display:inline-block;margin:2px 4px 2px 0;padding:3px 7px;border-radius:5px;background:#edf2f5;color:#425666;font-size:11px}.callout-title{font-weight:700}.end{background:var(--nav);color:#e9f2f6;border-radius:12px;padding:18px 20px}.end h2{font-size:18px;margin:0 0 6px}.end p{margin:0;color:#c7d8e0}
+@media(max-width:880px){.layout{grid-template-columns:1fr}.toc{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.toc strong{grid-column:1/-1}.grid.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:1fr}.architecture{grid-template-columns:1fr;min-width:0}.arrow{transform:rotate(90deg)}}@media(max-width:560px){header{padding:30px 20px}.layout{padding:16px 12px 50px}.section{padding:17px}.grid.two{grid-template-columns:1fr}.barrow{grid-template-columns:92px 1fr 64px;font-size:12px}table{font-size:12px}th,td{padding:8px 5px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Repository research · snapshot audit</div>
+  <h1>MaaGakumasu 项目现状</h1>
+  <p>这份调研把“已经交付的玩家功能”“HIF 实机自动化”“离线模拟器”和“发布主线”分开看。项目主体成熟度较高；眼下最显著的问题是开发分支与发布主线错位、状态文档没有同步，以及工作区夹带大量未提交本地文件。</p>
+  <div class="meta"><span class="pill">调研日期：2026-10-15</span><span class="pill">代码快照：ca0611d · 2026-08-28</span><span class="pill">分支：feat/pipeline-autodev</span><span class="pill">证据范围：当前 checkout、Git refs、跟踪文档和源码</span></div>
+</header>
+<div class="layout">
+<nav class="toc"><strong>本页导航</strong><a href="#verdict">结论摘要</a><a href="#snapshot">仓库快照</a><a href="#architecture">系统分层</a><a href="#capabilities">功能现状</a><a href="#hif">HIF 深度盘点</a><a href="#sim">Round 模拟器</a><a href="#release">发布与分支</a><a href="#docs">文档一致性</a><a href="#workspace">工作区风险</a><a href="#next">建议顺序</a><a href="#sources">证据来源</a></nav>
+<main>
+<section class="section" id="verdict">
+<h2>结论摘要</h2>
+<p class="lede">这是一个已有稳定发布产品和成熟 HIF 开发线的自动化项目；当前首要治理问题是“代码现实、文档快照、发布版本”没有保持同一基线。</p>
+<div class="grid kpis">
+  <div class="card"><div class="metric">v1.4.5</div><div class="label">本地记录的 origin/main 发布标签</div></div>
+  <div class="card"><div class="metric">73</div><div class="label">当前 HIF pipeline 节点</div></div>
+  <div class="card"><div class="metric">315</div><div class="label">10 个测试文件中定义的测试函数数（未执行）</div></div>
+  <div class="card"><div class="metric">167 ↑ / 51 ↓</div><div class="label">当前分支相对本地 origin/main 的提交差异</div></div>
+</div>
+<div class="fact good"><span class="callout-title">能力结论：</span>主线日常、竞赛、社团、工作、商店与初/NIA 培育已有用户文档和 v1.4.5 发布记录。HIF 不再只是概念验证：源码含 73 节点页面路由、准备/奖励/结算处理、Round1/Round2 出牌 Custom action、Interval 决策和对局日志；五轮验收文档记录了多次从培育到主页的真实设备闭环。</div>
+<div class="fact warn"><span class="callout-title">状态边界：</span>HIF 主线可以通关，不等于所有分支稳定。默认 Round1 仍是“观察手牌后安全停止”；出牌要通过任务选项切换。Interval 商店、特別指導、再挑战、Memory 重生成等探索分支仍有待办。记录的收官规则也明确：严格连续两轮零 stop 未达成。</div>
+<div class="fact bad"><span class="callout-title">治理结论：</span>当前 checkout 比本地 `origin/main` 领先 167、落后 51 个提交；README/AGENTS、HIF 总览、Round 模拟器设计文档各自残留旧状态。当前工作区另有 38 个修改/未跟踪条目，涵盖技能文档、术语表、环境和素材，不能把它们算成已交付变更。</div>
+</section>
+
+<section class="section" id="snapshot">
+<h2>仓库快照</h2>
+<table><thead><tr><th>维度</th><th>核实结果</th><th>解释</th></tr></thead><tbody>
+<tr><td>当前分支</td><td><code>feat/pipeline-autodev</code>，HEAD <code>ca0611d</code>，提交时间 2026-08-28</td><td>所见代码不是 2026-10-15 当天更新的源码；调研日期是本次检查时间，代码基线以 checkout 为准。</td></tr>
+<tr><td>远端跟踪</td><td><code>origin/feat/pipeline-autodev</code> 与 HEAD 同提交；本地 <code>origin/main</code> 指向 v1.4.5</td><td>这里使用现有 refs，没有执行 fetch；远端 refs 是否仍是最新未验证。</td></tr>
+<tr><td>分支差异</td><td><code>origin/main...HEAD = 51 / 167</code>（左侧落后数 / 右侧领先数）</td><td>开发线含大量额外工作，同时未纳入 v1.4.5 之后的主线变更。该差异不是可直接合并的范围估算。</td></tr>
+<tr><td>仓库规模</td><td>657 个 Git 跟踪文件；55 个 Agent Python 文件；28 个工具 Python 文件；68 篇 docs Markdown；32 个 pipeline JSON</td><td>排除了“所有文件”这种不稳定口径；模型、忽略目录和本地临时产物不纳入跟踪规模。</td></tr>
+<tr><td>测试面</td><td>10 个 <code>tests/test_*.py</code> 文件，约 315 个 <code>test_*</code> 函数定义</td><td>按源码静态计数，未运行测试。实机报告中的历史用例数会因日期和测试集范围不同而不同。</td></tr>
+<tr><td>主要依赖</td><td>Python ≥3.12；MaaFramework Python 包锁定在 <code>maafw&gt;=5.11.1,&lt;5.12</code>；开发工具包括 maa-mcp、MaaDebugger</td><td>锁定理由记录为 5.12.x AgentClient 对日文 OCR expected 的 IPC 乱码回归。</td></tr>
+</tbody></table>
+<p class="small">版本口径提醒：此分支的 <code>pyproject.toml</code> 是 1.3.8，工作树 <code>assets/resource/Changelog.md</code> 是 v1.4.2，而本地 <code>origin/main</code> 的 changelog/tag 是 v1.4.5。三者可能采用不同打包节奏，但发布前需要确认是否有意。</p>
+</section>
+
+<section class="section" id="architecture">
+<h2>系统分层</h2>
+<p>项目采用 MaaFramework 的 JSON pipeline 加 Python Custom recognition/action。JSON 负责识别页面、路由和可见动作顺序；Python 处理状态读取、决策与受守卫保护的设备操作。</p>
+<div class="diagram"><div class="architecture">
+  <div class="layer"><b>用户入口 / 配置</b><p><code>assets/tasks/*.json</code> 定义任务和选项；pipeline override 将难度、HIF 预设和策略参数注入目标节点。</p><p><code>assets/lang/</code> 管理多语言 UI。</p></div><div class="arrow">→</div>
+  <div class="layer"><b>MaaFramework Pipeline</b><p><code>assets/resource/base/pipeline/*.json</code> 以识别条件驱动状态机。</p><p>通用初 / NIA 流程与 HIF 流程分开；弹窗、页面锚、跳转和安全停止在此组合。</p></div><div class="arrow">→</div>
+  <div class="layer"><b>Agent 动作与决策</b><p><code>agent/custom/</code> 面向现有培育/设备动作。</p><p><code>agent/hif/decisions</code> 实机读状态、评分与操作；<code>algorithms</code> 和 <code>roundsim</code> 是离线逻辑。</p></div>
+  <div class="layer"><b>结构化资料</b><p><code>assets/data/</code> 保存卡牌、效果、饮料、角色及 HIF 决策参数。</p><p>HIF 主数据由同步脚本生成，避免手工编辑衍生表。</p></div><div class="arrow">⇄</div>
+  <div class="layer"><b>设备 / 回放</b><p>MuMu + ADB 是主要实机环境；pipeline/replay suite 提供截图回放入口。</p><p>操作记录写入 debug 决策日志、截图和 ops JSONL；调试产物不入库。</p></div><div class="arrow">→</div>
+  <div class="layer"><b>工具与可视化</b><p><code>tools/maa_dev.py</code>、数据同步、回放、校准工具。</p><p>Round simulator 另有 FastAPI + Vue 单文件 UI，用于配置、A/B 对比和 trace 回放。</p></div>
+</div></div>
+<h3>分层的实际价值</h3><p>这种拆分使页面覆盖、安全边界和决策算法可单独迭代。主要风险是接口和配置跨多处：任务选项、pipeline 节点名、Custom action 参数、preset 覆盖和语言文案必须保持一致。HIF 的 OCR 文本还受 IPC 编码限制，代码侧要求用 ASCII 通配 expected 再在 Python 结果里筛选日文。</p>
+</section>
+
+<section class="section" id="capabilities">
+<h2>功能现状</h2>
+<table><thead><tr><th>能力</th><th>现状判断</th><th>证据与边界</th></tr></thead><tbody>
+<tr><td>启动、活动费、邮箱和任务奖励、免费礼包</td><td><span class="status done">已发布功能</span></td><td>README 功能总览与通用 Pipeline；用户端表现仍取决于游戏 UI 和资源版本。</td></tr>
+<tr><td>竞赛挑战、社团互动、安排工作、商店兑换</td><td><span class="status done">已发布功能</span></td><td>v1.4.5 更新公告仍修正挑战编队、打工冻结延迟、购物/社团操作等待，说明维护持续进行。</td></tr>
+<tr><td>初与 NIA 自动培育</td><td><span class="status partial">测试阶段</span></td><td>初支持 REGULAR/PRO/MASTER，NIA 支持 PRO/MASTER；约 30 分钟长流程，项目文档提醒可能卡在弹窗、样本不足或 UI 变化处。</td></tr>
+<tr><td>HIF 育成</td><td><span class="status partial">开发线核心方向</span></td><td>本报告第 5 节详述。主线实机覆盖已很深，但可选出牌、探索路径和角色覆盖不能等同于主线稳定发布。</td></tr>
+<tr><td>Round 模拟与分析 UI</td><td><span class="status done">代码已实现</span></td><td>RoundSim 实施计划记载 M1–M5、M-UIa/M-UIb 完成；模拟器是评估工具，不是已接入实机的策略替代品。</td></tr>
+<tr><td>跨平台 / 设备组合</td><td><span class="status partial">Windows 优先</span></td><td>目标基准 MuMu 12、1280×720、240 DPI；DMM 和插件汉化有适配，但并非所有组合完成覆盖。</td></tr>
+</tbody></table>
+</section>
+
+<section class="section" id="hif">
+<h2>HIF 深度盘点：主线闭环已经存在，默认策略仍保守</h2>
+<div class="grid two">
+<div class="card"><h3>实机主链 <span class="status done">已多次走通</span></h3><p>文档记录 Day1 日程、Round1、Interval、Round2、败退/结算、Memory、奖励和返回主页面的连续实机流程。五轮验证资料列出多轮接力，其中第 10 轮 35 分钟零 stop；第 11、12 轮各处理了新边界，收官口径按多轮趋势而非严格连续两轮零 stop。</p></div>
+<div class="card"><h3>保守停止与出牌 <span class="status partial">默认观察</span></h3><p>ProduceHIF.json 中默认分支是 Round1 观察手牌后停止；任务配置提供 Round1 出牌开关，Yes 时把执行接到 Play 节点。Round1Play 和 Round2Play 的出牌 Custom action 已在管线中，完整出牌不是默认体验。</p></div>
+<div class="card"><h3>页面路由 <span class="status done">73 节点</span></h3><p>准备段和日程段各有 DirectHit 路由根，日程根约 41 个候选边，包含浮层关闭、结果、DayChange、Round、奖励与安全停止。Round2、Interval、评分结算和 Memory 不再全部直达 UnknownStop。</p></div>
+<div class="card"><h3>安全与可追溯性 <span class="status done">工程约束较强</span></h3><p>UnknownStop 保留最外层安全出口。项目规则要求不确定候选停止，不猜测点击；HIF 点击/滑动/按键统一经守卫包装，带前后截图/画面指纹日志。实机报告以 scene_changed 和决策 JSONL 复盘。</p></div>
+</div>
+<h3>已落地能力切面</h3>
+<div class="barrow"><span>准备与日程</span><div class="small">已覆盖准备流程、日程与主要推进页面</div><b>覆盖较深</b></div>
+<div class="barrow"><span>奖励三选一</span><div class="small">结构化评分优先，关键词逻辑兜底</div><b>模型 + 兜底</b></div>
+<div class="barrow"><span>Round 对局</span><div class="small">代码可执行；默认观察手牌后停止</div><b>可选出牌</b></div>
+<div class="barrow"><span>Interval 商店</span><div class="small">已有基础处理，商店探索流程待补</div><b>部分覆盖</b></div>
+<div class="barrow"><span>探索分支 / 泛化</span><div class="small">分支取证未齐，多角色覆盖有限</div><b>待验证</b></div>
+<p class="small">这些标签概括代码与文档中的覆盖范围，不是测试率或完成百分比。</p>
+<h3>实机链路概览</h3>
+<div class="diagram"><div class="flow"><div class="step"><strong>入口 / 准备</strong>偶像、P 道具、模式与预设</div><div class="connector">→</div><div class="step"><strong>Day 1–6</strong>日程、授業、事件与奖励决策</div><div class="connector">→</div><div class="step"><strong>Round 1</strong>观察停止默认；可选 Custom 出牌</div><div class="connector">→</div><div class="step"><strong>Interval / Round 2</strong>状态转换、购买决策、第二轮出牌</div><div class="connector">→</div><div class="step"><strong>结算 / Memory</strong>成绩、回忆卡、道具、广告关闭</div><div class="connector">→</div><div class="step stop"><strong>安全终点</strong>返回主页 / 未识别时 UnknownStop</div></div></div>
+<h3>明确保留的缺口</h3><ul>
+<li>探索路径尚未齐全：Interval 商店全流程、特別指導、再挑战/胜利分支、Memory 再生成/转换、日志页手牌信息等。</li>
+<li>RoundSim 的角色构筑和部分机制仍是显式近似；实现计划列出 R1 终局分、R2 初始状态和卡组计数等实机校准输入缺失。</li>
+<li>适配重点集中在姫崎莉波「ガラクタロード」好调路线，不能推断多角色或多卡覆盖完成。</li>
+<li>文档列出的残余实机事项包括 P 道具入口坐标、牌堆查看器证据、灰卡阈值、P 饮料栏有瓶场景、跨天弹窗等边界。</li>
+</ul>
+</section>
+
+<section class="section" id="sim">
+<h2>Round 模拟器：离线能力完整，校准数据仍有限</h2>
+<p>模拟器在 <code>agent/hif/roundsim/</code> 内按牌组、效果引擎、状态和策略运行回合，支持 trace、A/B、固定随机种子和 Web UI。它与实机 pipeline 分离；仓库规则明确不把未经验证的模拟结果直接接到实机决策。</p>
+<table><thead><tr><th>实施块</th><th>文档状态</th><th>价值 / 限制</th></tr></thead><tbody>
+<tr><td>M1–M3</td><td><span class="status done">完成</span></td><td>运行骨架、部分效果、抽牌和 P item 触发；未建模效果通过 precheck 明确失败，避免静默近似。</td></tr>
+<tr><td>M4：策略与 A/B</td><td><span class="status done">完成</span></td><td>GarakutaRinamiStrategy、贪心基线、共同随机数及 bootstrap 区间；比较结果依赖预设牌组与模型假设。</td></tr>
+<tr><td>M5：实机校准</td><td><span class="status partial">框架完成，数据待补</span></td><td>文档记录模拟总分远低于实机落点，候选原因为准备期属性快照偏低、牌组重构近似及未建模乘区。用于绝对得分预测时证据不足。</td></tr>
+<tr><td>M-UIa / M-UIb</td><td><span class="status done">完成</span></td><td>FastAPI + Vue 离线单文件 UI，支持 trace、配置、A/B、接口 schema；UI 完成不等同于用户端功能发布。</td></tr>
+</tbody></table>
+<div class="fact warn">主用途目前更可信的是策略间相对比较与假设探索；绝对得分落点的预测要等真实 Round 记录、入场属性和卡组实测数据补齐。文档计划与实现状态冲突，RoundSim 实施计划的里程碑表更接近代码现状，设计文档顶部仍标注“未开工”。</div>
+</section>
+
+<section class="section" id="release">
+<h2>发布线与开发线</h2>
+<div class="timeline">
+<div class="event"><time>origin/main · v1.4.5</time><p>本地 refs 显示最新发布公告聚焦新卡牌、OCR 更新、培育、NIA、挑战、打工、购物与社团修复。</p></div>
+<div class="event"><time>开发线 · 2026-08-21 至 08-24</time><p>五轮 HIF 实机报告积累 Round、Interval、结算、Memory 和返回主页证据；Issue 批次修复并记录探索欠账。</p></div>
+<div class="event"><time>开发线 · 2026-08-28 / HEAD ca0611d</time><p>增加 HIF pipeline 状态机全景核验视图；文档明确 JSON 基线 73 节点。此提交以后本地 HEAD 未前进。</p></div>
+<div class="event"><time>本次检查 · 2026-10-15</time><p>checkout 仍停在 8 月 28 日；origin/main ref 指向 v1.4.5。未 fetch，因此不能确认远端当前最新状态。</p></div>
+</div>
+<div class="fact bad"><span class="callout-title">合并/发布前必须先解决：</span>主线领先 51、开发线领先 167；分支之间不是简单快进。先确定以哪个远端状态为准，再做变更清点、冲突处理和验证。此调研没有切分支、fetch、rebase、合并或改写已有文件。</div>
+<h3>版本信息的三重口径</h3><p><code>pyproject.toml = 1.3.8</code>、当前开发工作树 changelog = <code>v1.4.2</code>、本地 main 记录 = <code>v1.4.5</code>。它们分别属于包元数据、分支资源公告和主线发布标记；是否应统一需由发行流程决定，不能仅凭数字推断发布错误。</p>
+</section>
+
+<section class="section" id="docs">
+<h2>文档一致性：至少四处已确认的过期状态</h2>
+<table><thead><tr><th>位置</th><th>旧说法 / 现状</th><th>裁决依据</th></tr></thead><tbody>
+<tr><td>根 <code>AGENTS.md</code></td><td>写 ProduceHIF 约 37 节点，并称 Round2、Interval、结算、Memory 仍只导向 UnknownStop。</td><td>当前 JSON 有 73 节点；Round2Play、Interval、ScoreSettlement、Memory 均有实际后续节点。pipeline 状态机文档将这两项列为待修旧文档。</td></tr>
+<tr><td><code>README.md</code></td><td>HIF 说明段落日期是 2026-08-16，声称 Round1 到达后观察停止、不出牌。</td><td>观察仍是默认行为，但任务配置已存在 Round1 出牌 Yes/No 开关；后续实机报告有 Round1/Round2 出牌记录。README 的“不可出牌”表述过宽。</td></tr>
+<tr><td><code>docs/hif/README.md</code></td><td>称 Round 模拟器未开工、没有出牌模拟。</td><td><code>roundsim-implementation-plan.md</code> 记录 M1–M5、M-UIa/M-UIb 完成；仓库内存在 simulator、runner、engine、Web UI 和测试。</td></tr>
+<tr><td><code>docs/hif/roundsim-design.md</code></td><td>顶部仍标注未开工。</td><td>实现计划和源码显示里程碑已落地；设计文档需要更新为设计基线而非实现进度表。</td></tr>
+<tr><td>任务中文化配置</td><td><code>produce.json</code> 有 38 个选项；<code>produce_cn.json</code> 静态解析为 24 个。</td><td>项目规则要求任务选项新增/重命名双文件同步。差额可能来自基线翻译布局；应比较键集合和 GUI 实际入口再确认缺项，不应仅以数量判错。</td></tr>
+</tbody></table>
+<p>优先级建议：把根代理说明中的 HIF 节点数与控制流边界修正；再统一 README、HIF 总览和 RoundSim 实施/设计文档的“默认 vs 可选”与“已实现 vs 待验证”措辞。规则句只保留规则，详尽证据继续留在日期报告。</p>
+</section>
+
+<section class="section" id="workspace">
+<h2>工作区状态与风险</h2>
+<p>检查到 38 个 Git 状态条目，已修改的跟踪文件为两个实机测试技能文档和 <code>CONTEXT.md</code>；此外存在多个未跟踪目录、模型、临时资料、截图/视频和 SDK 文件。示例包括 <code>.scratch/</code>、<code>.venv/</code>、<code>assets/resource/model/</code>、<code>assets/video/</code>、<code>include/</code>、<code>lib/</code>、若干 autodev 裁图以及 <code>nul</code>。</p>
+<div class="fact warn">这些项目在本次开始前已经存在；本次没有覆盖、清理或移动它们。报告和索引是本次唯一拟新增的仓库文件。是否应纳入版本控制，需要对照各自来源、忽略规则和工作目的确认。</div>
+<p>本地有可用 <code>.venv/Scripts/python.exe</code>（Python 3.12.14）；系统 <code>python</code> 命令解析到 Microsoft Store 占位符。没有跑测试、lint、Prettier 或设备流程，因此本报告只给出静态事实，不宣称当前代码通过验证。</p>
+</section>
+
+<section class="section" id="next">
+<h2>建议按这个顺序收敛</h2>
+<ol class="check">
+<li><b>先审阅未提交工作区。</b>辨别两个技能改动和 CONTEXT 更新是否有意保留；将大模型/视频/SDK/临时文件逐项归类，避免与代码分支管理混在一起。</li>
+<li><b>刷新并确认远端基线。</b>在决定合并前核实 origin refs 是否新鲜，比较主线 51 个提交与开发线 167 个提交；形成明确的同步策略和可审查 diff。</li>
+<li><b>修订状态文档。</b>用当前 73 节点 JSON、五轮报告和 RoundSim 实施记录更新 AGENTS、README、HIF 总览及设计文档；明确“默认观察 / 可选出牌”“主线已跑通 / 探索未覆盖”“实现完成 / 实机校准未完”。</li>
+<li><b>再决定发布边界。</b>确认是否把 HIF 保持实验选项、何时同步 main、哪些探索和校准项构成发布门槛；发布前按影响面执行项目既定 Python、pipeline、replay 和实机验证。</li>
+</ol>
+<div class="end"><h2>建议的第一项实际工作</h2><p>先完成一次工作区与分支差异清点，然后据此更新项目状态文档；这会让后续是否同步主线或继续 HIF 开发有可靠基线。</p></div>
+</section>
+
+<section class="section" id="sources">
+<h2>主要证据来源与范围</h2>
+<ul>
+<li><a href="../../README.md">README.md</a>、<a href="../../docs/zh_cn/功能说明.md">功能说明</a>、<a href="../../docs/zh_cn/开发相关.md">开发相关</a>、<a href="../../AGENTS.md">AGENTS.md</a>。</li>
+<li><a href="../../assets/resource/Changelog.md">当前分支 Changelog</a>、<a href="../../assets/tasks/produce.json">produce.json</a>、<a href="../../assets/tasks/produce_cn.json">produce_cn.json</a>、<a href="../../pyproject.toml">pyproject.toml</a>。</li>
+<li><a href="../hif/five-round-validation-2026-08-21.md">HIF 五轮实机报告</a>、<a href="../hif/pipeline-state-machine.md">HIF pipeline 核验视图</a>、<a href="../hif/roundsim-implementation-plan.md">RoundSim 实施计划</a>、<a href="../hif/README.md">HIF 文档总览</a>、<a href="../hif/roundsim-design.md">RoundSim 设计</a>。</li>
+<li>Git 本地 refs：HEAD <code>ca0611d</code>，origin/main <code>d9afb82</code>（v1.4.5），upstream/main <code>8c7e80d</code>。未执行网络 fetch；refs 时间新鲜度未验证。</li>
+<li>静态计数：当前 pipeline JSON、Python 源码、test function 定义；未执行测试或设备操作。实机通过情况仅引用仓库已有日期报告。</li>
+</ul>
+<div class="foot">若源文件后续更新，本页中的节点数、分支差异、版本号、工作区状态和待办都会过期。此页是 2026-10-15 检查时基于 2026-08-28 checkout 的快照。</div>
+</section>
+</main>
+</div>
+</body>
+</html>
+
