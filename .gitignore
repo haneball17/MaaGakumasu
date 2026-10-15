@@ -456,3 +456,21 @@ debug
 .cache/gakumas-data/
 .worktrees/
 .scrape/
+
+# Local env & tooling (fork)
+.venv/
+.zcode/
+.scratch/
+include/
+lib/
+share/
+MaaGakumasu.egg-info/
+sample/
+skills.7z
+icons_list.txt
+nul
+
+# Local-only assets (not loaded at runtime; evidence/experiment artifacts)
+assets/resource/model/
+assets/resource/test/
+assets/video/
